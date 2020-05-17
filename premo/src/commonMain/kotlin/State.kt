@@ -27,6 +27,7 @@ package me.dmdev.premo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class State<T> internal constructor(
@@ -66,4 +67,8 @@ fun <T> PresentationModel.state(
     }
 
     return state
+}
+
+fun <T> Flow<T>.consumeBy(state: State<T>): Flow<T> {
+    return onEach { state.stateFlow.value = it }
 }

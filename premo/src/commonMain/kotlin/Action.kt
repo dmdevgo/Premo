@@ -28,6 +28,7 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class Action<T> internal constructor(internal val pm: PresentationModel) {
@@ -52,4 +53,8 @@ fun <T> PresentationModel.action(
     }
 
     return action
+}
+
+fun <T> Flow<T>.consumeBy(action: Action<T>): Flow<T> {
+    return onEach { action.accept(it) }
 }
