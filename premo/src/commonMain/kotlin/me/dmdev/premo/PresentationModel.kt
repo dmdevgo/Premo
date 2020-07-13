@@ -22,31 +22,38 @@
  * SOFTWARE.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+package me.dmdev.premo
 
-buildscript {
-    ext.kotlin_version = '1.3.72'
-    repositories {
-        google()
-        jcenter()
-        
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.onEach
+import kotlin.coroutines.EmptyCoroutineContext
+
+@Suppress("EXPERIMENTAL_API_USAGE")
+abstract class PresentationModel {
+
+    internal val lifeScope = CoroutineScope(EmptyCoroutineContext + Dispatchers.UI)
+    internal val lifecycle = action<LifecycleEvent> {
+        onEach { lifecycleEvent ->
+            when (lifecycleEvent) {
+                LifecycleEvent.ON_DESTROY -> lifeScope.cancel()
+            }
+        }
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha04'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+    fun <T> Action<T>.asFlow(): Flow<T> {
+        return this.channel.asFlow()
     }
-}
 
-allprojects {
-    repositories {
-        google()
-        jcenter()
+    protected fun <T> State<T>.update(value: T) {
+        stateFlow.value = value
     }
-}
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+//    protected var <T> State<T>.value: T
+//        get() = stateFlow.value
+//        set(value) {
+//            stateFlow.value = value
+//        }
 }

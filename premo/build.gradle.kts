@@ -24,11 +24,12 @@
 
 plugins {
     kotlin("multiplatform")
+    id("com.android.library")
 }
 
 kotlin {
 
-    jvm("android")
+    android()
     ios {
         binaries.framework {
             freeCompilerArgs += "-Xobjc-generics"
@@ -45,10 +46,13 @@ kotlin {
         }
 
         val androidMain by getting {
+            dependsOn(commonMain)
             dependencies {
                 api("org.jetbrains.kotlin:kotlin-stdlib")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.6")
+                compileOnly("androidx.appcompat:appcompat:1.3.0-alpha01")
+                compileOnly("com.google.android.material:material:1.3.0-alpha01")
             }
         }
 
@@ -58,5 +62,15 @@ kotlin {
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.3.6")
             }
         }
+    }
+}
+
+android {
+
+    compileSdkVersion(29)
+
+    defaultConfig {
+        minSdkVersion(21)
+        targetSdkVersion(29)
     }
 }

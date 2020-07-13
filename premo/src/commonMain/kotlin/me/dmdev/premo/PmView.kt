@@ -22,31 +22,33 @@
  * SOFTWARE.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+package me.dmdev.premo
 
-buildscript {
-    ext.kotlin_version = '1.3.72'
-    repositories {
-        google()
-        jcenter()
-        
+/**
+ * Interface that need to be implemented by the View part of the RxPM pattern.
+ * Has a few useful callbacks and extensions.
+ */
+interface PmView<PM : PresentationModel> {
+
+    /**
+     * [PresentationModel] for this view.
+     */
+    val presentationModel: PM
+
+    /**
+     * Provide presentation model to use with this fragment.
+     */
+    fun providePresentationModel(): PM
+
+    /**
+     * Bind to the [Presentation Model][presentationModel] in that method.
+     */
+    fun onBindPresentationModel(pm: PM)
+
+    /**
+     * Called when the view unbinds from the [Presentation Model][presentationModel].
+     */
+    fun onUnbindPresentationModel() {
+        // Nо-op. Override if you need it.
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha04'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        jcenter()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

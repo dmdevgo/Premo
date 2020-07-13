@@ -24,31 +24,15 @@
 
 package me.dmdev.premo
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlin.coroutines.EmptyCoroutineContext
+internal object PmStore {
 
-abstract class PresentationModel {
+    private val pmMap = mutableMapOf<String, PresentationModel>()
 
-    internal val lifeScope = CoroutineScope(EmptyCoroutineContext + Dispatchers.UI)
-
-    fun onDestroy() {
-        lifeScope.cancel()
+    fun getPm(key: String, pmProvider: () -> PresentationModel): PresentationModel {
+        return pmMap[key] ?: pmProvider().also { pmMap[key] = it }
     }
 
-    fun <T> Action<T>.asFlow(): Flow<T> {
-        return this.channel.asFlow()
+    fun removePm(key: String): PresentationModel? {
+        return pmMap.remove(key)
     }
-
-    protected fun <T> State<T>.update(value: T) {
-        stateFlow.value = value
-    }
-
-//    protected var <T> State<T>.value: T
-//        get() = stateFlow.value
-//        set(value) {
-//            stateFlow.value = value
-//        }
 }

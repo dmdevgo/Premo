@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     kotlin("multiplatform")
+    id("com.android.library")
 }
 
 kotlin {
@@ -46,7 +47,7 @@ kotlin {
         }
     }
 
-    jvm("android")
+    android()
 
     sourceSets {
         val commonMain by getting {
@@ -54,6 +55,24 @@ kotlin {
                 api(project(":premo"))
             }
         }
+
+        val androidMain by getting {
+            dependsOn(commonMain)
+        }
+    }
+}
+
+android {
+
+    compileSdkVersion(29)
+
+    defaultConfig {
+        minSdkVersion(21)
+        targetSdkVersion(29)
+    }
+
+    sourceSets {
+        getByName("main").java.srcDirs("src/androidMain/kotlin")
     }
 }
 

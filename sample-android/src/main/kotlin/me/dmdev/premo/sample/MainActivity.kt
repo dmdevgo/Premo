@@ -25,16 +25,21 @@
 package me.dmdev.premo.sample
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import me.dmdev.premo.view.PmActivity
 
-class MainActivity : AppCompatActivity() {
-
-    private val pm = CounterPm()
+class MainActivity : PmActivity<CounterPm>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+    }
+
+    override fun providePresentationModel(): CounterPm {
+        return CounterPm()
+    }
+
+    override fun onBindPresentationModel(pm: CounterPm) {
 
         pm.count bindTo {
             countText.text = it.toString()
@@ -55,10 +60,5 @@ class MainActivity : AppCompatActivity() {
         minusButton.setOnClickListener {
             pm.minus.accept(Unit)
         }
-    }
-
-    override fun onDestroy() {
-        pm.onDestroy()
-        super.onDestroy()
     }
 }
