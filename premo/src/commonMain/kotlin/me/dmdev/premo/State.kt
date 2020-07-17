@@ -42,7 +42,7 @@ class State<T> internal constructor(
 
     infix fun bindTo(consumer: (T) -> Unit) {
         with(pm) {
-            lifeScope.launch {
+            pmScope.launch {
                 stateFlow.collect { v ->
                     consumer(v)
                 }
@@ -59,7 +59,7 @@ fun <T> PresentationModel.state(
     val state = State(pm = this, initialValue = initialValue)
 
     if (stateSource != null) {
-        lifeScope.launch {
+        pmScope.launch {
             stateSource().collect { v ->
                 state.stateFlow.value = v
             }

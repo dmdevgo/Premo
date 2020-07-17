@@ -29,5 +29,5 @@ import kotlinx.coroutines.Dispatchers
 
 internal actual object Dispatchers {
     actual val UI: CoroutineDispatcher
-        get() = Dispatchers.Main
+        get() = Dispatchers.Main.immediate
 }

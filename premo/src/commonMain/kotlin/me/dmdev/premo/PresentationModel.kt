@@ -25,20 +25,20 @@
 package me.dmdev.premo
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.onEach
-import kotlin.coroutines.EmptyCoroutineContext
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 abstract class PresentationModel {
 
-    internal val lifeScope = CoroutineScope(EmptyCoroutineContext + Dispatchers.UI)
+    internal val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
     internal val lifecycle = action<LifecycleEvent> {
         onEach { lifecycleEvent ->
             when (lifecycleEvent) {
-                LifecycleEvent.ON_DESTROY -> lifeScope.cancel()
+                LifecycleEvent.ON_DESTROY -> pmScope.cancel()
             }
         }
     }

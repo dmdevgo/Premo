@@ -47,7 +47,7 @@ fun <T> PresentationModel.action(
     val action = Action<T>(pm = this)
 
     if (actionChain != null) {
-        lifeScope.launch {
+        pmScope.launch {
             actionChain(action.channel.asFlow()).collect {}
         }
     }
