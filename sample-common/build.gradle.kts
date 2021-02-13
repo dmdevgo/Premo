@@ -31,22 +31,13 @@ plugins {
 
 kotlin {
 
-    //select iOS target platform depending on the Xcode environment variables
-    val iOSTarget: (String, KotlinNativeTarget.() -> Unit) -> KotlinNativeTarget =
-        if (System.getenv("SDK_NAME")?.startsWith("iphoneos") == true)
-            ::iosArm64
-        else
-            ::iosX64
-
-    iOSTarget("ios") {
+    ios {
         binaries {
             framework {
                 baseName = "Common"
-                freeCompilerArgs += "-Xobjc-generics"
             }
         }
     }
-
     android()
 
     sourceSets {
@@ -55,20 +46,16 @@ kotlin {
                 api(project(":premo"))
             }
         }
-
-        val androidMain by getting {
-            dependsOn(commonMain)
-        }
     }
 }
 
 android {
 
-    compileSdkVersion(29)
+    compileSdkVersion(30)
 
     defaultConfig {
         minSdkVersion(21)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
     }
 
     sourceSets {
@@ -77,18 +64,14 @@ android {
 }
 
 val packForXcode by tasks.creating(Sync::class) {
-    val targetDir = File(buildDir, "xcode-frameworks")
-
-    /// selecting the right configuration for the iOS
-    /// framework depending on the environment
-    /// variables set by Xcode build
+    group = "build"
     val mode = System.getenv("CONFIGURATION") ?: "DEBUG"
-    val framework = kotlin.targets
-        .getByName<KotlinNativeTarget>("ios")
-        .binaries.getFramework(mode)
+    val sdkName = System.getenv("SDK_NAME") ?: "iphonesimulator"
+    val targetName = "ios" + if (sdkName.startsWith("iphoneos")) "Arm64" else "X64"
+    val framework = kotlin.targets.getByName<KotlinNativeTarget>(targetName).binaries.getFramework(mode)
     inputs.property("mode", mode)
     dependsOn(framework.linkTask)
-
+    val targetDir = File(buildDir, "xcode-frameworks")
     from({ framework.outputDirectory })
     into(targetDir)
 

@@ -30,36 +30,21 @@ plugins {
 kotlin {
 
     android()
-    ios {
-        binaries.framework {
-            freeCompilerArgs += "-Xobjc-generics"
-        }
-    }
+    ios()
 
     sourceSets {
 
         val commonMain by getting {
             dependencies {
-                api("org.jetbrains.kotlin:kotlin-stdlib-common")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.6")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
             }
         }
 
         val androidMain by getting {
-            dependsOn(commonMain)
             dependencies {
-                api("org.jetbrains.kotlin:kotlin-stdlib")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.6")
-                compileOnly("androidx.appcompat:appcompat:1.3.0-alpha01")
-                compileOnly("com.google.android.material:material:1.3.0-alpha01")
-            }
-        }
-
-        val iosMain by getting {
-            dependsOn(commonMain)
-            dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.3.6")
+                compileOnly("androidx.appcompat:appcompat:1.3.0-beta01")
+                compileOnly("com.google.android.material:material:1.3.0")
             }
         }
     }
@@ -67,10 +52,10 @@ kotlin {
 
 android {
 
-    compileSdkVersion(29)
+    compileSdkVersion(30)
 
     defaultConfig {
         minSdkVersion(21)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
     }
 }
