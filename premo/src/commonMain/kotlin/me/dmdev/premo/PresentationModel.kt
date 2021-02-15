@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.onEach
 abstract class PresentationModel {
 
     internal val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
-    internal val lifecycle = action<LifecycleEvent> {
+    internal val lifecycle = Action<LifecycleEvent> {
         onEach { lifecycleEvent ->
             when (lifecycleEvent) {
                 LifecycleEvent.ON_DESTROY -> pmScope.cancel()
@@ -50,5 +50,9 @@ abstract class PresentationModel {
 
     protected fun <T> Flow<T>.consumeBy(state: State<T>): Flow<T> {
         return onEach { state.mutableStateFlow.value = it }
+    }
+
+    protected fun <T> Flow<T>.consumeBy(action: Action<T>): Flow<T> {
+        return onEach { action.emit(it) }
     }
 }

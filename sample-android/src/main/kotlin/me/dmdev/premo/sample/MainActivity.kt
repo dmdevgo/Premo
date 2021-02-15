@@ -54,11 +54,11 @@ class MainActivity : PmActivity<CounterPm>() {
         }
 
         plusButton.setOnClickListener {
-            pm.plus.accept(Unit)
+            pm.plus.emit(Unit)
         }
 
         minusButton.setOnClickListener {
-            pm.minus.accept(Unit)
+            pm.minus.emit(Unit)
         }
     }
 }

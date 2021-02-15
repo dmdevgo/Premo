@@ -24,23 +24,31 @@
 
 package me.dmdev.premo
 
-import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class Action<T> internal constructor(internal val pm: PresentationModel) {
+class Action<T> internal constructor(
+    internal val pm: PresentationModel
+) {
 
-    internal val channel = BroadcastChannel<T>(1)
+    private val channel = Channel<T>(
+        capacity = Channel.RENDEZVOUS,
+        onBufferOverflow = BufferOverflow.SUSPEND
+    )
 
-    fun accept(v: T) {
-        channel.offer(v)
+    fun flow(): Flow<T> = channel.receiveAsFlow()
+
+    fun emit(value: T) {
+        channel.offer(value)
     }
 }
 
-fun <T> PresentationModel.action(
+@Suppress("FunctionName")
+fun <T> PresentationModel.Action(
     actionChain: (Flow<T>.() -> Flow<*>)? = null
 ): Action<T> {
 
@@ -48,13 +56,9 @@ fun <T> PresentationModel.action(
 
     if (actionChain != null) {
         pmScope.launch {
-            actionChain(action.channel.asFlow()).collect {}
+            actionChain(action.flow()).collect {}
         }
     }
 
     return action
-}
-
-fun <T> Flow<T>.consumeBy(action: Action<T>): Flow<T> {
-    return onEach { action.accept(it) }
 }

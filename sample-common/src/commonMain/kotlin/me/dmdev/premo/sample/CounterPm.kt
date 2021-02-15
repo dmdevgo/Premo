@@ -26,9 +26,9 @@ package me.dmdev.premo.sample
 
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import me.dmdev.premo.Action
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
-import me.dmdev.premo.action
 
 class CounterPm(
     private val maxCount: Int = 10
@@ -44,13 +44,13 @@ class CounterPm(
         count.flow().map { it > 0 }
     }
 
-    val plus = action<Unit> {
+    val plus = Action<Unit> {
         this.map { count.value + 1 }
             .filter { it <= maxCount }
             .consumeBy(count)
     }
 
-    val minus = action<Unit> {
+    val minus = Action<Unit> {
         this.map { count.value - 1 }
             .filter { it >= 0 }
             .consumeBy(count)
