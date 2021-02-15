@@ -25,6 +25,7 @@
 package me.dmdev.premo.sample
 
 import android.os.Bundle
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import me.dmdev.premo.view.PmActivity
 
@@ -41,16 +42,20 @@ class MainActivity : PmActivity<CounterPm>() {
 
     override fun onBindPresentationModel(pm: CounterPm) {
 
-        pm.count bindTo {
-            countText.text = it.toString()
+        pm.count bindTo { count ->
+            countText.text = count.toString()
         }
 
-        pm.plusButtonEnabled bindTo {
-            plusButton.isEnabled = it
+        pm.messages bindTo { message ->
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
 
-        pm.minusButtonEnabled bindTo {
-            minusButton.isEnabled = it
+        pm.plusButtonEnabled bindTo { enabled ->
+            plusButton.isEnabled = enabled
+        }
+
+        pm.minusButtonEnabled bindTo { enabled ->
+            minusButton.isEnabled = enabled
         }
 
         plusButton.setOnClickListener {

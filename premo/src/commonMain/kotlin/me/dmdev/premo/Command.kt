@@ -22,51 +22,50 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo
 
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import me.dmdev.premo.Action
-import me.dmdev.premo.Command
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.State
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-class CounterPm(
-    private val maxCount: Int = 10
-) : PresentationModel() {
+class Command<T> internal constructor(
+    internal val pm: PresentationModel,
+    extraBufferCapacity: Int,
+    onBufferOverflow: BufferOverflow
+) {
+    private val mutableStateFlow = MutableSharedFlow<T>(
+        replay = 0,
+        extraBufferCapacity = extraBufferCapacity,
+        onBufferOverflow = onBufferOverflow
+    )
 
-    val count = State(0)
+    fun flow(): Flow<T> = mutableStateFlow
 
-    val messages = Command<String>()
-
-    val plusButtonEnabled = State(false) {
-        count.flow().map { it < maxCount }
+    suspend fun emit(value: T) {
+        mutableStateFlow.emit(value)
     }
 
-    val minusButtonEnabled = State(false) {
-        count.flow().map { it > 0 }
-    }
-
-    val plus = Action<Unit> {
-        this.map { count.value + 1 }
-            .filter { it <= maxCount }
-            .onEach {
-                if (it == maxCount) {
-                    messages.emit("Max value reached")
+    infix fun bindTo(consumer: (T) -> Unit) {
+        with(pm) {
+            pmScope.launch {
+                mutableStateFlow.collect { v ->
+                    consumer(v)
                 }
             }
-            .consumeBy(count)
+        }
     }
+}
 
-    val minus = Action<Unit> {
-        this.map { count.value - 1 }
-            .filter { it >= 0 }
-            .onEach {
-                if (it == 0) {
-                    messages.emit("Min value reached")
-                }
-            }
-            .consumeBy(count)
-    }
+@Suppress("FunctionName")
+fun <T> PresentationModel.Command(
+    extraBufferCapacity: Int = 1,
+    onBufferOverflow: BufferOverflow = BufferOverflow.DROP_OLDEST
+): Command<T> {
+    return Command(
+        pm = this,
+        extraBufferCapacity = extraBufferCapacity,
+        onBufferOverflow = onBufferOverflow
+    )
 }
