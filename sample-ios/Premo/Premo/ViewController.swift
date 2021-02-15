@@ -27,7 +27,7 @@ import Common
 
 class ViewController: UIViewController {
     
-    let pm = CounterPm()
+    let pm = CounterPm(maxCount: 10)
 
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var plusButton: UIButton!
@@ -40,7 +40,13 @@ class ViewController: UIViewController {
             self.label.text = v!.stringValue
         })
         
-        pm.plus.accept(v: KotlinUnit.init())
+        pm.plus.emit(value: KotlinUnit.init())
+        
+        pm.messages.bindTo(consumer: { v in
+            let alert = UIAlertController(title: nil, message: v as String?, preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        })
         
         pm.plusButtonEnabled.bindTo(consumer: { enabled in
             self.plusButton.isEnabled = enabled!.boolValue
@@ -52,11 +58,11 @@ class ViewController: UIViewController {
     }
     
     @IBAction func plus(_ sender: Any) {
-        pm.plus.accept(v: KotlinUnit.init())
+        pm.plus.emit(value: KotlinUnit.init())
     }
     
     @IBAction func minus(_ sender: Any) {
-        pm.minus.accept(v: KotlinUnit.init())
+        pm.minus.emit(value: KotlinUnit.init())
     }
     
 }
