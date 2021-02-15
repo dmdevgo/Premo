@@ -28,7 +28,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.onEach
 
 @Suppress("EXPERIMENTAL_API_USAGE")
@@ -43,17 +42,13 @@ abstract class PresentationModel {
         }
     }
 
-    fun <T> Action<T>.asFlow(): Flow<T> {
-        return this.channel.asFlow()
-    }
+    protected var <T> State<T>.value: T
+        get() = mutableStateFlow.value
+        set(value) {
+            mutableStateFlow.value = value
+        }
 
-    protected fun <T> State<T>.update(value: T) {
-        stateFlow.value = value
+    protected fun <T> Flow<T>.consumeBy(state: State<T>): Flow<T> {
+        return onEach { state.mutableStateFlow.value = it }
     }
-
-//    protected var <T> State<T>.value: T
-//        get() = stateFlow.value
-//        set(value) {
-//            stateFlow.value = value
-//        }
 }

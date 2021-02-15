@@ -27,26 +27,25 @@ package me.dmdev.premo.sample
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.State
 import me.dmdev.premo.action
-import me.dmdev.premo.consumeBy
-import me.dmdev.premo.state
 
-class CounterPm : PresentationModel() {
+class CounterPm(
+    private val maxCount: Int = 10
+) : PresentationModel() {
 
-    private val maxCount = 10
+    val count = State(0)
 
-    val count = state(0)
-
-    val plusButtonEnabled = state(false) {
+    val plusButtonEnabled = State(false) {
         count.flow().map { it < maxCount }
     }
 
-    val minusButtonEnabled = state(false) {
+    val minusButtonEnabled = State(false) {
         count.flow().map { it > 0 }
     }
 
     val plus = action<Unit> {
-        this.map { count.value + 1}
+        this.map { count.value + 1 }
             .filter { it <= maxCount }
             .consumeBy(count)
     }

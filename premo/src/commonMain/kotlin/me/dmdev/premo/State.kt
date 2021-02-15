@@ -27,23 +27,20 @@ package me.dmdev.premo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class State<T> internal constructor(
     internal val pm: PresentationModel,
     initialValue: T
-){
-    internal val stateFlow = MutableStateFlow(initialValue)
+) {
+    internal val mutableStateFlow = MutableStateFlow(initialValue)
 
-    val value: T get() = stateFlow.value
-
-    fun flow() : Flow<T> = stateFlow
+    fun flow() : Flow<T> = mutableStateFlow
 
     infix fun bindTo(consumer: (T) -> Unit) {
         with(pm) {
             pmScope.launch {
-                stateFlow.collect { v ->
+                mutableStateFlow.collect { v ->
                     consumer(v)
                 }
             }
@@ -51,7 +48,10 @@ class State<T> internal constructor(
     }
 }
 
-fun <T> PresentationModel.state(
+val <T> State<T>.value: T get() = mutableStateFlow.value
+
+@Suppress("FunctionName")
+fun <T> PresentationModel.State(
     initialValue: T,
     stateSource: (() -> Flow<T>)? = null
 ): State<T> {
@@ -61,14 +61,10 @@ fun <T> PresentationModel.state(
     if (stateSource != null) {
         pmScope.launch {
             stateSource().collect { v ->
-                state.stateFlow.value = v
+                state.mutableStateFlow.value = v
             }
         }
     }
 
     return state
-}
-
-fun <T> Flow<T>.consumeBy(state: State<T>): Flow<T> {
-    return onEach { state.stateFlow.value = it }
 }
