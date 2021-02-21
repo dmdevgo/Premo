@@ -26,14 +26,17 @@ package me.dmdev.premo.sample
 
 import android.os.Bundle
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_main.*
+import by.kirich1409.viewbindingdelegate.viewBinding
+import me.dmdev.premo.sample.databinding.ActivityCounterBinding
 import me.dmdev.premo.view.PmActivity
 
-class MainActivity : PmActivity<CounterPm>() {
+class CounterActivity : PmActivity<CounterPm>() {
+
+    private val binding: ActivityCounterBinding by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_counter)
     }
 
     override fun providePresentationModel(): CounterPm {
@@ -43,7 +46,7 @@ class MainActivity : PmActivity<CounterPm>() {
     override fun onBindPresentationModel(pm: CounterPm) {
 
         pm.count bindTo { count ->
-            countText.text = count.toString()
+            binding.countText.text = count.toString()
         }
 
         pm.messages bindTo { message ->
@@ -51,18 +54,18 @@ class MainActivity : PmActivity<CounterPm>() {
         }
 
         pm.plusButtonEnabled bindTo { enabled ->
-            plusButton.isEnabled = enabled
+            binding.plusButton.isEnabled = enabled
         }
 
         pm.minusButtonEnabled bindTo { enabled ->
-            minusButton.isEnabled = enabled
+            binding.minusButton.isEnabled = enabled
         }
 
-        plusButton.setOnClickListener {
+        binding.plusButton.setOnClickListener {
             pm.plus.emit(Unit)
         }
 
-        minusButton.setOnClickListener {
+        binding.minusButton.setOnClickListener {
             pm.minus.emit(Unit)
         }
     }
