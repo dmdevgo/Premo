@@ -27,17 +27,46 @@ package me.dmdev.premo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
-@Suppress("EXPERIMENTAL_API_USAGE")
 abstract class PresentationModel {
 
     internal val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
-    internal val lifecycle = Action<LifecycleEvent> {
-        onEach { lifecycleEvent ->
-            when (lifecycleEvent) {
-                LifecycleEvent.ON_DESTROY -> pmScope.cancel()
+    internal var pmBindScope: CoroutineScope? = null
+
+    internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
+    internal val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
+    init {
+        pmScope.launch {
+            lifecycleEvent.collect { event ->
+                @Suppress("MemberVisibilityCanBePrivate")
+                when (event) {
+                    LifecycleEvent.ON_CREATE -> {
+                        lifecycleState.value = LifecycleState.CREATED
+                        onCreate()
+                    }
+                    LifecycleEvent.ON_FOREGROUND -> {
+                        pmBindScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
+                        lifecycleState.value = LifecycleState.IN_FOREGROUND
+                        onForeground()
+                    }
+                    LifecycleEvent.ON_BACKGROUND -> {
+                        pmBindScope?.cancel()
+                        lifecycleState.value = LifecycleState.CREATED
+                        onBackground()
+                    }
+                    LifecycleEvent.ON_DESTROY -> {
+                        lifecycleState.value = LifecycleState.DESTROYED
+                        onDestroy()
+                        pmScope.cancel()
+                    }
+                }
             }
         }
     }
@@ -54,5 +83,21 @@ abstract class PresentationModel {
 
     protected fun <T> Flow<T>.consumeBy(action: Action<T>): Flow<T> {
         return onEach { action.emit(it) }
+    }
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun onCreate() {
+    }
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun onForeground() {
+    }
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun onBackground() {
+    }
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun onDestroy() {
     }
 }

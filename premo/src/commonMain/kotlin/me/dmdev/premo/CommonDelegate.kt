@@ -49,29 +49,23 @@ class CommonDelegate<PM, V>(
 
     fun onCreate(pmTag: String) {
         this.pmTag = pmTag
-        presentationModel.lifecycle.emit(ON_CREATE)
+        if (presentationModel.lifecycleState.value == LifecycleState.INITIALIZED) {
+            presentationModel.lifecycleEvent.tryEmit(ON_CREATE)
+        }
     }
 
-    fun onBind() {
+    fun onForeground() {
+        presentationModel.lifecycleEvent.tryEmit(ON_FOREGROUND)
         pmView.onBindPresentationModel(presentationModel)
-        presentationModel.lifecycle.emit(ON_BIND)
     }
 
-    fun onResume() {
-        presentationModel.lifecycle.emit(ON_RESUME)
-    }
-
-    fun onPause() {
-        presentationModel.lifecycle.emit(ON_PAUSE)
-    }
-
-    fun onUnbind() {
-        presentationModel.lifecycle.emit(ON_UNBIND)
+    fun onBackground() {
+        presentationModel.lifecycleEvent.tryEmit(ON_BACKGROUND)
         pmView.onUnbindPresentationModel()
     }
 
     fun onDestroy() {
         PmStore.removePm(pmTag)
-        presentationModel.lifecycle.emit(ON_DESTROY)
+        presentationModel.lifecycleEvent.tryEmit(ON_DESTROY)
     }
 }

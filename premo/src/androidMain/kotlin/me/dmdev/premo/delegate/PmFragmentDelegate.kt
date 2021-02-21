@@ -77,22 +77,15 @@ class PmFragmentDelegate<PM, F>(
     /**
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
-    fun onActivityCreated(savedInstanceState: Bundle?) {
-        commonDelegate.onBind()
-    }
-
-    /**
-     * You must call this method from the containing [Fragment]'s corresponding method.
-     */
     fun onStart() {
-        // For symmetry, may be used in the future
+        commonDelegate.onForeground()
     }
 
     /**
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onResume() {
-        commonDelegate.onResume()
+        // For symmetry, may be used in the future
     }
 
     /**
@@ -100,28 +93,27 @@ class PmFragmentDelegate<PM, F>(
      */
     fun onSaveInstanceState(outState: Bundle) {
         outState.putString(SAVED_PM_TAG_KEY, pmTag)
-        commonDelegate.onPause()
     }
 
     /**
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
     fun onPause() {
-        commonDelegate.onPause()
-    }
-
-    /**
-     * You must call this method from the containing [Fragment]'s corresponding method.
-     */
-    fun onStop() {
         // For symmetry, may be used in the future
     }
 
     /**
      * You must call this method from the containing [Fragment]'s corresponding method.
      */
+    fun onStop() {
+        commonDelegate.onBackground()
+    }
+
+    /**
+     * You must call this method from the containing [Fragment]'s corresponding method.
+     */
     fun onDestroyView() {
-        commonDelegate.onUnbind()
+        // For symmetry, may be used in the future
     }
 
     /**

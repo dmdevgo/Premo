@@ -26,9 +26,7 @@ package me.dmdev.premo
 
 enum class LifecycleEvent {
     ON_CREATE,
-    ON_BIND,
-    ON_RESUME,
-    ON_PAUSE,
-    ON_UNBIND,
+    ON_FOREGROUND,
+    ON_BACKGROUND,
     ON_DESTROY
 }

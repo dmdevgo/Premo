@@ -24,48 +24,9 @@
 
 package me.dmdev.premo
 
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-
-class Command<T> internal constructor(
-    internal val pm: PresentationModel,
-    extraBufferCapacity: Int,
-    onBufferOverflow: BufferOverflow
-) {
-    private val mutableStateFlow = MutableSharedFlow<T>(
-        replay = 0,
-        extraBufferCapacity = extraBufferCapacity,
-        onBufferOverflow = onBufferOverflow
-    )
-
-    fun flow(): Flow<T> = mutableStateFlow
-
-    suspend fun emit(value: T) {
-        mutableStateFlow.emit(value)
-    }
-
-    infix fun bindTo(consumer: (T) -> Unit) {
-        with(pm) {
-            pmBindScope?.launch {
-                mutableStateFlow.collect { v ->
-                    consumer(v)
-                }
-            }
-        }
-    }
-}
-
-@Suppress("FunctionName")
-fun <T> PresentationModel.Command(
-    extraBufferCapacity: Int = 1,
-    onBufferOverflow: BufferOverflow = BufferOverflow.DROP_OLDEST
-): Command<T> {
-    return Command(
-        pm = this,
-        extraBufferCapacity = extraBufferCapacity,
-        onBufferOverflow = onBufferOverflow
-    )
+enum class LifecycleState {
+    INITIALIZED,
+    CREATED,
+    IN_FOREGROUND,
+    DESTROYED
 }

@@ -39,7 +39,7 @@ class State<T> internal constructor(
 
     infix fun bindTo(consumer: (T) -> Unit) {
         with(pm) {
-            pmScope.launch {
+            pmBindScope?.launch {
                 mutableStateFlow.collect { v ->
                     consumer(v)
                 }

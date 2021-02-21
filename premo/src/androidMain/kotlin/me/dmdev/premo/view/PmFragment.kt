@@ -59,11 +59,6 @@ abstract class PmFragment<PM : PresentationModel> : Fragment(), PmView<PM> {
         delegate.onViewCreated(savedInstanceState)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        delegate.onActivityCreated(savedInstanceState)
-    }
-
     override fun onStart() {
         super.onStart()
         delegate.onStart()
