@@ -32,11 +32,12 @@ import kotlinx.coroutines.launch
 
 class Command<T> internal constructor(
     internal val pm: PresentationModel,
+    replay: Int,
     extraBufferCapacity: Int,
     onBufferOverflow: BufferOverflow
 ) {
     private val mutableStateFlow = MutableSharedFlow<T>(
-        replay = 0,
+        replay = replay,
         extraBufferCapacity = extraBufferCapacity,
         onBufferOverflow = onBufferOverflow
     )
@@ -50,7 +51,7 @@ class Command<T> internal constructor(
     infix fun bindTo(consumer: (T) -> Unit) {
         with(pm) {
             pmBindScope?.launch {
-                mutableStateFlow.collect { v ->
+                flow().collect { v ->
                     consumer(v)
                 }
             }
@@ -60,12 +61,27 @@ class Command<T> internal constructor(
 
 @Suppress("FunctionName")
 fun <T> PresentationModel.Command(
+    replay: Int = 1,
     extraBufferCapacity: Int = 1,
-    onBufferOverflow: BufferOverflow = BufferOverflow.DROP_OLDEST
+    onBufferOverflow: BufferOverflow = BufferOverflow.DROP_OLDEST,
+    commandSource: (() -> Flow<T>)? = null
 ): Command<T> {
-    return Command(
+
+    val command = Command<T>(
         pm = this,
+        replay = replay,
         extraBufferCapacity = extraBufferCapacity,
         onBufferOverflow = onBufferOverflow
     )
+
+    if (commandSource != null) {
+        pmScope.launch {
+            commandSource().collect { value ->
+                command.emit(value)
+            }
+        }
+    }
+
+    return command
+
 }
