@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.map
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
-import me.dmdev.premo.navigation.Router
 
 class MainPm : PresentationModel() {
 
@@ -50,7 +49,11 @@ class MainPm : PresentationModel() {
     }
 
     override fun handleBack(): Boolean {
-        router.popTop()
-        return true
+        return if (router.pmStack.size > 1) {
+            router.popTop()
+            true
+        } else {
+            false
+        }
     }
 }

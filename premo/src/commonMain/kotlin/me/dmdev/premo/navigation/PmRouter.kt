@@ -27,10 +27,12 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import me.dmdev.premo.LifecycleState
 import me.dmdev.premo.PresentationModel
 
 interface PmRouter {
     val pmStackChanges: Flow<List<PresentationModel>>
+    val pmStack: List<PresentationModel>
     fun push(pm: PresentationModel)
     fun popTop()
 }
@@ -39,7 +41,8 @@ internal class PmRouterImpl(
     private val hostPm: PresentationModel
 ): PmRouter {
 
-    private var pmStack = mutableListOf<PresentationModel>()
+    private var _pmStack = mutableListOf<PresentationModel>()
+    override val pmStack: List<PresentationModel> get() = _pmStack
 
     private val _pmStackChanges = MutableSharedFlow<List<PresentationModel>>(
         extraBufferCapacity = 1,
@@ -50,20 +53,17 @@ internal class PmRouterImpl(
 
     override fun push(pm: PresentationModel) {
         pm.parentPm = hostPm
-        pmStack.add(pm)
+        _pmStack.add(pm)
+        pm.moveLifecycleTo(hostPm.lifecycleState.value)
         notifyChanges()
     }
 
     override fun popTop() {
-        pmStack.removeLast()
+        _pmStack.removeLast().moveLifecycleTo(LifecycleState.DESTROYED)
         notifyChanges()
     }
 
     private fun notifyChanges() {
-       _pmStackChanges.tryEmit(pmStack)
+       _pmStackChanges.tryEmit(_pmStack)
     }
-}
-
-fun PresentationModel.Router(): PmRouter {
-    return PmRouterImpl(this)
 }

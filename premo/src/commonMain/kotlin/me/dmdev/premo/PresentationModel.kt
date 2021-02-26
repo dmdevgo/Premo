@@ -28,14 +28,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.navigation.NavigationMessage
+import me.dmdev.premo.navigation.PmRouter
+import me.dmdev.premo.navigation.PmRouterImpl
 
 abstract class PresentationModel {
 
+    private val routers = mutableListOf<PmRouterImpl>()
+
     internal val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
-    internal var pmBindScope: CoroutineScope? = null
+    internal var pmInForegroundScope: CoroutineScope? = null
 
     internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
     internal val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(
@@ -44,35 +50,6 @@ abstract class PresentationModel {
     )
 
     internal var parentPm: PresentationModel? = null
-
-    init {
-        pmScope.launch {
-            lifecycleEvent.collect { event ->
-                @Suppress("MemberVisibilityCanBePrivate")
-                when (event) {
-                    LifecycleEvent.ON_CREATE -> {
-                        lifecycleState.value = LifecycleState.CREATED
-                        onCreate()
-                    }
-                    LifecycleEvent.ON_FOREGROUND -> {
-                        pmBindScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
-                        lifecycleState.value = LifecycleState.IN_FOREGROUND
-                        onForeground()
-                    }
-                    LifecycleEvent.ON_BACKGROUND -> {
-                        pmBindScope?.cancel()
-                        lifecycleState.value = LifecycleState.CREATED
-                        onBackground()
-                    }
-                    LifecycleEvent.ON_DESTROY -> {
-                        lifecycleState.value = LifecycleState.DESTROYED
-                        onDestroy()
-                        pmScope.cancel()
-                    }
-                }
-            }
-        }
-    }
 
     protected var <T> State<T>.value: T
         get() = mutableStateFlow.value
@@ -114,5 +91,96 @@ abstract class PresentationModel {
 
     open fun handleBack(): Boolean {
         return false
+    }
+
+    @Suppress("FunctionName")
+    protected fun Router(): PmRouter {
+        return PmRouterImpl(this).apply {
+            routers.add(this)
+        }
+    }
+
+    internal fun moveLifecycleTo(targetLifecycle: LifecycleState) {
+
+        fun moveRouterPm(targetLifecycle: LifecycleState) {
+            routers.forEach { router ->
+                router.pmStack.lastOrNull()?.moveLifecycleTo(targetLifecycle)
+            }
+        }
+
+        fun doOnCreate() {
+            lifecycleState.value = LifecycleState.CREATED
+            lifecycleEvent.tryEmit(LifecycleEvent.ON_CREATE)
+            onCreate()
+            moveRouterPm(LifecycleState.CREATED)
+        }
+
+        fun doOnForeground() {
+            pmInForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
+            lifecycleState.value = LifecycleState.IN_FOREGROUND
+            lifecycleEvent.tryEmit(LifecycleEvent.ON_FOREGROUND)
+            onForeground()
+            moveRouterPm(LifecycleState.IN_FOREGROUND)
+        }
+
+        fun doOnBackground() {
+            moveRouterPm(LifecycleState.CREATED)
+            pmInForegroundScope?.cancel()
+            lifecycleState.value = LifecycleState.CREATED
+            lifecycleEvent.tryEmit(LifecycleEvent.ON_BACKGROUND)
+            onBackground()
+        }
+
+        fun doOnDestroy() {
+            moveRouterPm(LifecycleState.DESTROYED)
+            pmScope.cancel()
+            lifecycleState.value = LifecycleState.DESTROYED
+            lifecycleEvent.tryEmit(LifecycleEvent.ON_DESTROY)
+            onDestroy()
+        }
+
+        when (targetLifecycle) {
+            LifecycleState.INITIALIZED -> {
+                // do nothing, initial lifecycle state is INITIALIZED
+            }
+            LifecycleState.CREATED -> {
+                when (lifecycleState.value) {
+                    LifecycleState.INITIALIZED -> {
+                        doOnCreate()
+                    }
+                    LifecycleState.IN_FOREGROUND -> {
+                        doOnBackground()
+                    }
+                    else -> { /*do nothing */ }
+                }
+            }
+            LifecycleState.IN_FOREGROUND -> {
+                when (lifecycleState.value) {
+                    LifecycleState.INITIALIZED -> {
+                        doOnCreate()
+                        doOnForeground()
+                    }
+                    LifecycleState.CREATED -> {
+                        doOnForeground()
+                    }
+                    else -> { /*do nothing */ }
+                }
+            }
+            LifecycleState.DESTROYED -> {
+                when (lifecycleState.value) {
+                    LifecycleState.INITIALIZED -> {
+                        doOnDestroy()
+                    }
+                    LifecycleState.CREATED -> {
+                        doOnDestroy()
+                    }
+                    LifecycleState.IN_FOREGROUND -> {
+                        doOnBackground()
+                        doOnDestroy()
+                    }
+                    LifecycleState.DESTROYED -> { /*do nothing */ }
+                }
+            }
+        }
     }
 }
