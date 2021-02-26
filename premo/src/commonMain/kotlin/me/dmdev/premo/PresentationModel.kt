@@ -30,6 +30,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import me.dmdev.premo.navigation.NavigationMessage
 
 abstract class PresentationModel {
 
@@ -41,6 +42,8 @@ abstract class PresentationModel {
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
+
+    internal var parentPm: PresentationModel? = null
 
     init {
         pmScope.launch {
@@ -85,19 +88,31 @@ abstract class PresentationModel {
         return onEach { action.emit(it) }
     }
 
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected fun onCreate() {
+    protected fun <T> Flow<T>.consumeBy(command: Command<T>): Flow<T> {
+        return onEach { command.emit(it) }
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected fun onForeground() {
+    protected open fun onCreate() {
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected fun onBackground() {
+    protected open fun onForeground() {
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected fun onDestroy() {
+    protected open fun onBackground() {
+    }
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected open fun onDestroy() {
+    }
+
+    protected open fun handleNavigationMessage(message: NavigationMessage) {
+        parentPm?.handleNavigationMessage(message)
+    }
+
+    open fun handleBack(): Boolean {
+        return false
     }
 }

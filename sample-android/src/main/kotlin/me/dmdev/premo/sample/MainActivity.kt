@@ -24,49 +24,34 @@
 
 package me.dmdev.premo.sample
 
-import android.os.Bundle
-import android.widget.Toast
-import by.kirich1409.viewbindingdelegate.viewBinding
-import me.dmdev.premo.sample.databinding.ActivityCounterBinding
+import androidx.fragment.app.Fragment
 import me.dmdev.premo.view.PmActivity
 
-class CounterActivity : PmActivity<CounterPm>() {
+class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
-    private val binding: ActivityCounterBinding by viewBinding()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_counter)
+    override fun providePresentationModel(): MainPm {
+        return MainPm()
     }
 
-    override fun providePresentationModel(): CounterPm {
-        return CounterPm()
+    override fun onBindPresentationModel(pm: MainPm) {
+        pm.currentPm bindTo { currentPm ->
+            when (currentPm) {
+                is CounterPm -> showFragment(CounterFragment(currentPm))
+                is SamplesPm -> showFragment(SamplesFragment(currentPm))
+            }
+        }
     }
 
-    override fun onBindPresentationModel(pm: CounterPm) {
-
-        pm.count bindTo { count ->
-            binding.countText.text = count.toString()
+    override fun onBackPressed() {
+        if (presentationModel.handleBack().not()) {
+            super.onBackPressed()
         }
+    }
 
-        pm.messages bindTo { message ->
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-        }
-
-        pm.plusButtonEnabled bindTo { enabled ->
-            binding.plusButton.isEnabled = enabled
-        }
-
-        pm.minusButtonEnabled bindTo { enabled ->
-            binding.minusButton.isEnabled = enabled
-        }
-
-        binding.plusButton.setOnClickListener {
-            pm.plus.emit(Unit)
-        }
-
-        binding.minusButton.setOnClickListener {
-            pm.minus.emit(Unit)
-        }
+    private fun showFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .setReorderingAllowed(true)
+            .replace(R.id.container, fragment, null)
+            .commit()
     }
 }

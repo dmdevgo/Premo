@@ -26,6 +26,7 @@ package me.dmdev.premo.view
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import me.dmdev.premo.PmView
 import me.dmdev.premo.PresentationModel
@@ -41,7 +42,9 @@ import me.dmdev.premo.delegate.PmFragmentDelegate.RetainMode
  * create a [PmFragmentDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class PmFragment<PM : PresentationModel> : Fragment(), PmView<PM> {
+abstract class PmFragment<PM : PresentationModel>(
+    @LayoutRes contentLayoutId: Int
+) : Fragment(contentLayoutId), PmView<PM> {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) {
         PmFragmentDelegate(this, RetainMode.CONFIGURATION_CHANGES)

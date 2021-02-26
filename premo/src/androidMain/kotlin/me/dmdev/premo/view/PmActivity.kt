@@ -25,6 +25,7 @@
 package me.dmdev.premo.view
 
 import android.os.Bundle
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import me.dmdev.premo.PmView
 import me.dmdev.premo.PresentationModel
@@ -40,7 +41,9 @@ import me.dmdev.premo.delegate.PmActivityDelegate.RetainMode
  * create a [PmActivityDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class PmActivity<PM : PresentationModel> : AppCompatActivity(), PmView<PM> {
+abstract class PmActivity<PM : PresentationModel>(
+    @LayoutRes contentLayoutId: Int
+) : AppCompatActivity(contentLayoutId), PmView<PM> {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) {
         PmActivityDelegate(this, RetainMode.CONFIGURATION_CHANGES)
