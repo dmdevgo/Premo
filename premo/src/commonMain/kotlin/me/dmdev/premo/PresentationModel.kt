@@ -33,18 +33,18 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.navigation.NavigationMessage
+import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
-import me.dmdev.premo.navigation.PmRouterImpl
 
 abstract class PresentationModel {
 
-    private val routers = mutableListOf<PmRouterImpl>()
+    private val routers = mutableListOf<PmRouter>()
 
     internal val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
     internal var pmInForegroundScope: CoroutineScope? = null
 
     internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
-    internal val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(
+    private val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
@@ -94,8 +94,8 @@ abstract class PresentationModel {
     }
 
     @Suppress("FunctionName")
-    protected fun Router(): PmRouter {
-        return PmRouterImpl(this).apply {
+    protected fun Router(pmFactory: PmFactory): PmRouter {
+        return PmRouter(this, pmFactory).apply {
             routers.add(this)
         }
     }

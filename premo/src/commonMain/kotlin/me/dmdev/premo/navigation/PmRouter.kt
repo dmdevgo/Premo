@@ -29,41 +29,37 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import me.dmdev.premo.LifecycleState
 import me.dmdev.premo.PresentationModel
+import kotlin.reflect.KClass
 
-interface PmRouter {
-    val pmStackChanges: Flow<List<PresentationModel>>
-    val pmStack: List<PresentationModel>
-    fun push(pm: PresentationModel)
-    fun popTop()
-}
-
-internal class PmRouterImpl(
-    private val hostPm: PresentationModel
-): PmRouter {
+class PmRouter internal constructor(
+    private val hostPm: PresentationModel,
+    private val pmFactory: PmFactory
+) {
 
     private var _pmStack = mutableListOf<PresentationModel>()
-    override val pmStack: List<PresentationModel> get() = _pmStack
+    val pmStack: List<PresentationModel> get() = _pmStack
 
     private val _pmStackChanges = MutableSharedFlow<List<PresentationModel>>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
-    override val pmStackChanges: Flow<List<PresentationModel>> get() = _pmStackChanges
+    val pmStackChanges: Flow<List<PresentationModel>> get() = _pmStackChanges
 
-    override fun push(pm: PresentationModel) {
+    fun push(clazz: KClass<out PresentationModel>, navigationMessage: NavigationMessage) {
+        val pm = pmFactory.createPm(clazz, navigationMessage)
         pm.parentPm = hostPm
         _pmStack.add(pm)
         pm.moveLifecycleTo(hostPm.lifecycleState.value)
         notifyChanges()
     }
 
-    override fun popTop() {
+    fun pop() {
         _pmStack.removeLast().moveLifecycleTo(LifecycleState.DESTROYED)
         notifyChanges()
     }
 
     private fun notifyChanges() {
-       _pmStackChanges.tryEmit(_pmStack)
+        _pmStackChanges.tryEmit(_pmStack)
     }
 }

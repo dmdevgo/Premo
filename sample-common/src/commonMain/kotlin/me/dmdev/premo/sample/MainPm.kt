@@ -28,29 +28,44 @@ import kotlinx.coroutines.flow.map
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
+import me.dmdev.premo.navigation.PmFactory
+import kotlin.reflect.KClass
 
 class MainPm : PresentationModel() {
 
-    private val router = Router()
+    private val pmFactory = object : PmFactory {
+        override fun createPm(
+            pmClass: KClass<out PresentationModel>,
+            message: NavigationMessage
+        ): PresentationModel {
+            return when (pmClass) {
+                SamplesPm::class -> SamplesPm()
+                CounterPm::class -> CounterPm(10)
+                else -> throw IllegalStateException("Not handled instance creation for class $pmClass")
+            }
+        }
+    }
+
+    private val router = Router(pmFactory)
 
     val currentPm = State(null) {
         router.pmStackChanges.map { it.lastOrNull() }
     }
 
     init {
-        router.push(SamplesPm())
+        router.push(SamplesPm::class, EmptyMessage)
     }
 
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
-            CounterSampleMessage -> router.push(CounterPm(10))
+            CounterSampleMessage -> router.push(CounterPm::class, message)
             else -> super.handleNavigationMessage(message)
         }
     }
 
     override fun handleBack(): Boolean {
         return if (router.pmStack.size > 1) {
-            router.popTop()
+            router.pop()
             true
         } else {
             false

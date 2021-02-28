@@ -27,3 +27,4 @@ package me.dmdev.premo.sample
 import me.dmdev.premo.navigation.NavigationMessage
 
 object CounterSampleMessage: NavigationMessage
+object EmptyMessage: NavigationMessage

@@ -24,4 +24,12 @@
 
 package me.dmdev.premo.navigation
 
-interface NavigationMessage
+import me.dmdev.premo.PresentationModel
+import kotlin.reflect.KClass
+
+interface PmFactory {
+    fun createPm(
+        pmClass: KClass<out PresentationModel>,
+        message: NavigationMessage
+    ): PresentationModel
+}
