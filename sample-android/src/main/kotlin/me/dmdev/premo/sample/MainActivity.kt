@@ -24,7 +24,16 @@
 
 package me.dmdev.premo.sample
 
-import androidx.fragment.app.Fragment
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import me.dmdev.premo.view.PmActivity
 
 class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
@@ -33,11 +42,67 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
         return MainPm()
     }
 
-    override fun onBindPresentationModel(pm: MainPm) {
-        pm.currentPm bindTo { currentPm ->
-            when (currentPm) {
-                is CounterPm -> showFragment(CounterFragment(currentPm))
-                is SamplesPm -> showFragment(SamplesFragment(currentPm))
+    override fun onBindPresentationModel(pm: MainPm) {}
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            manScreen(presentationModel)
+        }
+    }
+
+    @Composable
+    fun manScreen(pm: MainPm) {
+
+        val screenPmState = pm.currentPm.flow().collectAsState(null)
+
+        when (val screenPm = screenPmState.value) {
+            is CounterPm -> counterScreen(screenPm)
+            is SamplesPm -> samplesScreen(screenPm)
+            else -> {
+            }
+        }
+    }
+
+    @Composable
+    fun samplesScreen(pm: SamplesPm) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button(onClick = { pm.onCounterSampleClick() }) {
+                Text("Counter Sample")
+            }
+        }
+    }
+
+    @Composable
+    fun counterScreen(pm: CounterPm) {
+
+        val count = pm.count.flow().collectAsState(0)
+        val minusButtonEnabled = pm.minusButtonEnabled.flow().collectAsState(false)
+        val plusButtonEnabled = pm.plusButtonEnabled.flow().collectAsState(false)
+
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                onClick = { pm.minus.emit(Unit) },
+                enabled = minusButtonEnabled.value
+            ) {
+                Text(" - ")
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Text("Count: ${count.value}")
+            Spacer(modifier = Modifier.width(12.dp))
+            Button(
+                onClick = { pm.plus.emit(Unit) },
+                enabled = plusButtonEnabled.value
+            ) {
+                Text(" + ")
             }
         }
     }
@@ -46,12 +111,5 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
         if (presentationModel.handleBack().not()) {
             super.onBackPressed()
         }
-    }
-
-    private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .setReorderingAllowed(true)
-            .replace(R.id.container, fragment, null)
-            .commit()
     }
 }

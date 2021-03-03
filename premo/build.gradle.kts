@@ -42,7 +42,7 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.6")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
                 compileOnly("androidx.appcompat:appcompat:1.3.0-beta01")
                 compileOnly("com.google.android.material:material:1.3.0")
             }
