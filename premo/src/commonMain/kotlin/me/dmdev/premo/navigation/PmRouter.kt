@@ -48,6 +48,7 @@ class PmRouter internal constructor(
     val pmStackChanges: Flow<List<PresentationModel>> get() = _pmStackChanges
 
     fun push(clazz: KClass<out PresentationModel>, params: Parcelable?) {
+        _pmStack.lastOrNull()?.moveLifecycleTo(LifecycleState.CREATED)
         val pm = pmFactory.createPm(clazz, params)
         pm.parentPm = hostPm
         _pmStack.add(pm)
@@ -57,6 +58,7 @@ class PmRouter internal constructor(
 
     fun pop() {
         _pmStack.removeLast().moveLifecycleTo(LifecycleState.DESTROYED)
+        _pmStack.lastOrNull()?.moveLifecycleTo(hostPm.lifecycleState.value)
         notifyChanges()
     }
 
