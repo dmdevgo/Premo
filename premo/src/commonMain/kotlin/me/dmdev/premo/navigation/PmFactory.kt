@@ -24,12 +24,13 @@
 
 package me.dmdev.premo.navigation
 
+import me.dmdev.premo.Parcelable
 import me.dmdev.premo.PresentationModel
 import kotlin.reflect.KClass
 
 interface PmFactory {
     fun createPm(
         pmClass: KClass<out PresentationModel>,
-        message: NavigationMessage
+        params: Parcelable?
     ): PresentationModel
 }

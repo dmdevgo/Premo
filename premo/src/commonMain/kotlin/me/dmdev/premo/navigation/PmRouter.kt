@@ -28,6 +28,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import me.dmdev.premo.LifecycleState
+import me.dmdev.premo.Parcelable
 import me.dmdev.premo.PresentationModel
 import kotlin.reflect.KClass
 
@@ -46,8 +47,8 @@ class PmRouter internal constructor(
 
     val pmStackChanges: Flow<List<PresentationModel>> get() = _pmStackChanges
 
-    fun push(clazz: KClass<out PresentationModel>, navigationMessage: NavigationMessage) {
-        val pm = pmFactory.createPm(clazz, navigationMessage)
+    fun push(clazz: KClass<out PresentationModel>, params: Parcelable?) {
+        val pm = pmFactory.createPm(clazz, params)
         pm.parentPm = hostPm
         _pmStack.add(pm)
         pm.moveLifecycleTo(hostPm.lifecycleState.value)

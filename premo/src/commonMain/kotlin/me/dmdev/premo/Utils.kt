@@ -25,9 +25,9 @@
 package me.dmdev.premo
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
-internal actual object Dispatchers {
-    actual val UI: CoroutineDispatcher
-        get() = Dispatchers.Main.immediate
+internal expect object Dispatchers {
+    val UI: CoroutineDispatcher
 }
+
+expect interface Parcelable

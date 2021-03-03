@@ -25,7 +25,11 @@
 package me.dmdev.premo
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
-internal expect object Dispatchers {
-    val UI: CoroutineDispatcher
+internal actual object Dispatchers {
+    actual val UI: CoroutineDispatcher
+        get() = Dispatchers.Main.immediate
 }
+
+actual typealias Parcelable = android.os.Parcelable

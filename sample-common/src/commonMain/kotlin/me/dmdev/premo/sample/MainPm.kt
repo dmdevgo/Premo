@@ -25,6 +25,7 @@
 package me.dmdev.premo.sample
 
 import kotlinx.coroutines.flow.map
+import me.dmdev.premo.Parcelable
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
@@ -36,7 +37,7 @@ class MainPm : PresentationModel() {
     private val pmFactory = object : PmFactory {
         override fun createPm(
             pmClass: KClass<out PresentationModel>,
-            message: NavigationMessage
+            params: Parcelable?
         ): PresentationModel {
             return when (pmClass) {
                 SamplesPm::class -> SamplesPm()
@@ -53,12 +54,12 @@ class MainPm : PresentationModel() {
     }
 
     init {
-        router.push(SamplesPm::class, EmptyMessage)
+        router.push(SamplesPm::class, null)
     }
 
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
-            CounterSampleMessage -> router.push(CounterPm::class, message)
+            CounterSampleMessage -> router.push(CounterPm::class, null)
             else -> super.handleNavigationMessage(message)
         }
     }
