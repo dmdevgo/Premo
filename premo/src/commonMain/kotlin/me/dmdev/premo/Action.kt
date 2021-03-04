@@ -42,9 +42,13 @@ class Action<T> internal constructor(
 
     fun flow(): Flow<T> = channel.receiveAsFlow()
 
-    fun emit(value: T) {
+    operator fun invoke(value: T) {
         channel.offer(value)
     }
+}
+
+operator fun Action<Unit>.invoke() {
+    this.invoke(Unit)
 }
 
 @Suppress("FunctionName")
@@ -58,6 +62,20 @@ fun <T> PresentationModel.Action(
         pmScope.launch {
             actionChain(action.flow()).collect {}
         }
+    }
+
+    return action
+}
+
+@Suppress("FunctionName")
+fun <T> PresentationModel.SimpleAction(
+    doAction: (value: T) -> Unit
+): Action<T> {
+
+    val action = Action<T>(pm = this)
+
+    pmScope.launch {
+        action.flow().collect { doAction(it) }
     }
 
     return action

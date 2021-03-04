@@ -34,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import me.dmdev.premo.invoke
 import me.dmdev.premo.view.PmActivity
 
 class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
@@ -47,12 +48,12 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            manScreen(presentationModel)
+            mainScreen(presentationModel)
         }
     }
 
     @Composable
-    fun manScreen(pm: MainPm) {
+    fun mainScreen(pm: MainPm) {
 
         val screenPmState = pm.currentPm.flow().collectAsState(null)
 
@@ -71,7 +72,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = { pm.onCounterSampleClick() }) {
+            Button(onClick = { pm.counterSampleClicks() }) {
                 Text("Counter Sample")
             }
         }
@@ -90,7 +91,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
-                onClick = { pm.minus.emit(Unit) },
+                onClick = { pm.minus.invoke() },
                 enabled = minusButtonEnabled.value
             ) {
                 Text(" - ")
@@ -99,7 +100,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
             Text("Count: ${count.value}")
             Spacer(modifier = Modifier.width(12.dp))
             Button(
-                onClick = { pm.plus.emit(Unit) },
+                onClick = { pm.plus.invoke() },
                 enabled = plusButtonEnabled.value
             ) {
                 Text(" + ")

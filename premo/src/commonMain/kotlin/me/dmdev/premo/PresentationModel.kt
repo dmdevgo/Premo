@@ -40,8 +40,8 @@ abstract class PresentationModel {
 
     private val routers = mutableListOf<PmRouter>()
 
-    internal val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
-    internal var pmInForegroundScope: CoroutineScope? = null
+    val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
+    var pmInForegroundScope: CoroutineScope? = null
 
     internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
     private val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(
@@ -62,7 +62,7 @@ abstract class PresentationModel {
     }
 
     protected fun <T> Flow<T>.consumeBy(action: Action<T>): Flow<T> {
-        return onEach { action.emit(it) }
+        return onEach { action.invoke(it) }
     }
 
     protected fun <T> Flow<T>.consumeBy(command: Command<T>): Flow<T> {

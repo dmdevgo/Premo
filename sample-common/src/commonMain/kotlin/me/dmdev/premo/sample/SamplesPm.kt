@@ -25,10 +25,11 @@
 package me.dmdev.premo.sample
 
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.SimpleAction
 
 class SamplesPm : PresentationModel() {
 
-    fun onCounterSampleClick() {
+    val counterSampleClicks = SimpleAction<Unit> {
         handleNavigationMessage(CounterSampleMessage)
     }
 
