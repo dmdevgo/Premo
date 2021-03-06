@@ -38,7 +38,7 @@ import me.dmdev.premo.navigation.PmRouter
 
 abstract class PresentationModel {
 
-    private val routers = mutableListOf<PmRouter>()
+    internal val routers = mutableListOf<PmRouter>()
 
     val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
     var pmInForegroundScope: CoroutineScope? = null
@@ -104,7 +104,7 @@ abstract class PresentationModel {
 
         fun moveRouterPm(targetLifecycle: LifecycleState) {
             routers.forEach { router ->
-                router.pmStack.lastOrNull()?.moveLifecycleTo(targetLifecycle)
+                router.pmStack.lastOrNull()?.pm?.moveLifecycleTo(targetLifecycle)
             }
         }
 

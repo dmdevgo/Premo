@@ -22,17 +22,14 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.delegate
+package me.dmdev.premo
 
 import android.app.Activity
 import android.os.Bundle
-import me.dmdev.premo.CommonDelegate
-import me.dmdev.premo.PmView
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.delegate.PmActivityDelegate.RetainMode.CONFIGURATION_CHANGES
-import me.dmdev.premo.delegate.PmActivityDelegate.RetainMode.IS_FINISHING
-import me.dmdev.premo.view.PmActivity
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.util.*
+import kotlin.reflect.KClass
 
 /**
  * Delegate for the [Activity] that helps with creation and binding of
@@ -45,40 +42,42 @@ import java.util.*
  */
 class PmActivityDelegate<PM, A>(
     private val pmActivity: A,
-    private val retainMode: RetainMode
+    private val pmProvider: () -> PM
 )
         where PM : PresentationModel,
-              A : Activity, A : PmView<PM> {
+              A : Activity {
 
     companion object {
         private const val SAVED_PM_TAG_KEY = "premo_presentation_model_tag"
+        private const val SAVED_PM_STATE_KEY = "premo_presentation_model_state"
     }
 
-    private lateinit var pmTag: String
-    private val commonDelegate = CommonDelegate<PM, A>(pmActivity)
+    private var commonDelegate: CommonDelegate<PM>? = null
 
-    val presentationModel: PM get() = commonDelegate.presentationModel
+    val presentationModel: PM? get() = commonDelegate?.presentationModel
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
-        pmTag = savedInstanceState?.getString(SAVED_PM_TAG_KEY) ?: UUID.randomUUID().toString()
-        commonDelegate.onCreate(pmTag)
-    }
-
-    /**
-     * You must call this method from the containing [Activity]'s corresponding method.
-     */
-    fun onPostCreate() {
-        // For symmetry, may be used in the future
+        commonDelegate = CommonDelegate(
+            pmTag = getPmTag(savedInstanceState),
+            pmProvider = {
+                pmProvider().also { pm ->
+                    if (savedInstanceState != null) {
+                        restorePmState(pm, savedInstanceState)
+                    }
+                }
+            }
+        )
+        commonDelegate?.onCreate()
     }
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onStart() {
-        commonDelegate.onForeground()
+        commonDelegate?.onForeground()
     }
 
     /**
@@ -92,7 +91,7 @@ class PmActivityDelegate<PM, A>(
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(SAVED_PM_TAG_KEY, pmTag)
+        savePmState(outState)
     }
 
     /**
@@ -106,33 +105,66 @@ class PmActivityDelegate<PM, A>(
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onStop() {
-        commonDelegate.onBackground()
+        commonDelegate?.onBackground()
     }
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onDestroy() {
-
-        when (retainMode) {
-            RetainMode.IS_FINISHING -> {
-                if (pmActivity.isFinishing) {
-                    commonDelegate.onDestroy()
-                }
-            }
-
-            RetainMode.CONFIGURATION_CHANGES -> {
-                if (!pmActivity.isChangingConfigurations) {
-                    commonDelegate.onDestroy()
-                }
-            }
+        if (pmActivity.isFinishing) {
+            commonDelegate?.onDestroy()
         }
     }
 
     /**
-     * Strategies for retaining the PresentationModel[PresentationModel].
-     * [IS_FINISHING] - the PresentationModel will be destroyed if the Activity is finishing.
-     * [CONFIGURATION_CHANGES] - Retain the PresentationModel during a configuration change.
+     * You must call this method from the containing [Activity]'s corresponding method.
      */
-    enum class RetainMode { IS_FINISHING, CONFIGURATION_CHANGES }
+    fun handleBack(): Boolean {
+        return presentationModel?.handleBack() ?: false
+    }
+
+    private fun getPmTag(savedInstanceState: Bundle?): String {
+        return savedInstanceState?.getString(SAVED_PM_TAG_KEY) ?: UUID.randomUUID().toString()
+    }
+
+    private fun savePmState(outState: Bundle) {
+        outState.putString(SAVED_PM_TAG_KEY, commonDelegate?.pmTag)
+        val pmState = PmState(
+            presentationModel?.routers?.map { router ->
+                RouterState(
+                    router.pmStack.map { entry ->
+                        BackStackEntryState(entry.pm::class.qualifiedName.toString(), entry.params)
+                    }
+                )
+            }
+        )
+        outState.putParcelable(SAVED_PM_STATE_KEY, pmState)
+    }
+
+    private fun restorePmState(pm: PresentationModel, savedInstanceState: Bundle) {
+        val pmState = savedInstanceState.getParcelable<PmState>(SAVED_PM_STATE_KEY)
+        pmState?.routerStates?.forEachIndexed { index, routerState ->
+            val router = pm.routers[index]
+            routerState.backStackState.forEach { entry ->
+                @Suppress("UNCHECKED_CAST")
+                router.push(
+                    Class.forName(entry.pmClassName).kotlin as KClass<out PresentationModel>,
+                    entry.params
+                )
+            }
+        }
+    }
+
+    @Parcelize
+    internal data class PmState(val routerStates: List<RouterState>?) : Parcelable
+
+    @Parcelize
+    internal data class RouterState(val backStackState: List<BackStackEntryState>) : Parcelable
+
+    @Parcelize
+    internal data class BackStackEntryState(
+        val pmClassName: String,
+        val params: Parcelable?
+    ) : Parcelable
 }

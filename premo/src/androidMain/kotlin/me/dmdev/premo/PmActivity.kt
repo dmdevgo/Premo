@@ -22,15 +22,11 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.view
+package me.dmdev.premo
 
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import me.dmdev.premo.PmView
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.delegate.PmActivityDelegate
-import me.dmdev.premo.delegate.PmActivityDelegate.RetainMode
 
 /**
  * Predefined [Activity][AppCompatActivity] implementing the [PmView][PmView].
@@ -43,22 +39,24 @@ import me.dmdev.premo.delegate.PmActivityDelegate.RetainMode
  */
 abstract class PmActivity<PM : PresentationModel>(
     @LayoutRes contentLayoutId: Int
-) : AppCompatActivity(contentLayoutId), PmView<PM> {
+) : AppCompatActivity(contentLayoutId) {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) {
-        PmActivityDelegate(this, RetainMode.CONFIGURATION_CHANGES)
+        PmActivityDelegate(this) {
+            providePresentationModel()
+        }
     }
 
-    final override val presentationModel get() = delegate.presentationModel
+    fun getPresentationModel(): PM {
+        return delegate.presentationModel
+            ?: throw IllegalStateException("Presentation Model has not been initialized yet, call this method after onCreate.")
+    }
+
+    abstract fun providePresentationModel(): PM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         delegate.onCreate(savedInstanceState)
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        delegate.onPostCreate()
     }
 
     override fun onStart() {
@@ -89,5 +87,11 @@ abstract class PmActivity<PM : PresentationModel>(
     override fun onDestroy() {
         delegate.onDestroy()
         super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        if (delegate.handleBack().not()) {
+            super.onBackPressed()
+        }
     }
 }

@@ -28,37 +28,29 @@ import me.dmdev.premo.LifecycleEvent.*
 
 /**
  *  Common delegate serves for forwarding the lifecycle[LifecycleEvent] directly into the [PresentationModel][PresentationModel].
- *  Can be used to implement your delegate for the View[PmView].
+ *  Can be used to implement your delegate.
  *
- *  @see PmActivityDelegate
- *  @see PmFragmentDelegate
- *  @see PmControllerDelegate
+ *  @see PmActivityDelegat
  */
-class CommonDelegate<PM, V>(
-    private val pmView: PmView<PM>
-)
-        where PM : PresentationModel,
-              V : PmView<PM> {
+class CommonDelegate<PM : PresentationModel>(
+    val pmTag: String,
+    val pmProvider: () -> PM
+) {
 
-    private lateinit var pmTag: String
-
-    val presentationModel: PM by lazy(LazyThreadSafetyMode.NONE) {
-        @Suppress("UNCHECKED_CAST")
-        PmStore.getPm(pmTag) { pmView.providePresentationModel() } as PM
+    @Suppress("UNCHECKED_CAST")
+    val presentationModel: PM = PmStore.getPm(pmTag) as? PM ?: pmProvider().also { pm ->
+        PmStore.putPm(pmTag, pm)
     }
 
-    fun onCreate(pmTag: String) {
-        this.pmTag = pmTag
+    fun onCreate() {
         presentationModel.moveLifecycleTo(LifecycleState.CREATED)
     }
 
     fun onForeground() {
         presentationModel.moveLifecycleTo(LifecycleState.IN_FOREGROUND)
-        pmView.onBindPresentationModel(presentationModel)
     }
 
     fun onBackground() {
-        pmView.onUnbindPresentationModel()
         presentationModel.moveLifecycleTo(LifecycleState.CREATED)
     }
 

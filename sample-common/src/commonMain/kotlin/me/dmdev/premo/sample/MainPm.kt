@@ -24,10 +24,8 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.coroutines.flow.map
 import me.dmdev.premo.Parcelable
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import kotlin.reflect.KClass
@@ -41,22 +39,20 @@ class MainPm : PresentationModel() {
         ): PresentationModel {
             return when (pmClass) {
                 SamplesPm::class -> SamplesPm()
-                CounterPm::class -> CounterPm(10)
+                CounterPm::class -> CounterPm(maxCount = 10)
                 else -> throw IllegalStateException("Not handled instance creation for class $pmClass")
             }
         }
     }
 
-    private val router = Router(pmFactory)
+    val router = Router(pmFactory)
 
-    val currentPm = State(null) {
-        router.pmStackChanges.map { it.lastOrNull() }
+    override fun onCreate() {
+        super.onCreate()
+        if (router.pmStack.isEmpty()) {
+            router.push(SamplesPm::class, null)
+        }
     }
-
-    init {
-        router.push(SamplesPm::class, null)
-    }
-
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
             CounterSampleMessage -> router.push(CounterPm::class, null)

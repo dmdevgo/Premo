@@ -27,9 +27,11 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.map
 import me.dmdev.premo.LifecycleState
 import me.dmdev.premo.Parcelable
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.State
 import kotlin.reflect.KClass
 
 class PmRouter internal constructor(
@@ -37,32 +39,40 @@ class PmRouter internal constructor(
     private val pmFactory: PmFactory
 ) {
 
-    private var _pmStack = mutableListOf<PresentationModel>()
-    val pmStack: List<PresentationModel> get() = _pmStack
+    private var _pmStack = mutableListOf<BackStackEntry>()
+    val pmStack: List<BackStackEntry> get() = _pmStack
 
-    private val _pmStackChanges = MutableSharedFlow<List<PresentationModel>>(
+    private val _pmStackChanges = MutableSharedFlow<List<BackStackEntry>>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
-    val pmStackChanges: Flow<List<PresentationModel>> get() = _pmStackChanges
+    val pmStackChanges: Flow<List<BackStackEntry>> get() = _pmStackChanges
+    val pmOnTop = hostPm.State(null) {
+        pmStackChanges.map { it.lastOrNull()?.pm }
+    }
 
     fun push(clazz: KClass<out PresentationModel>, params: Parcelable?) {
-        _pmStack.lastOrNull()?.moveLifecycleTo(LifecycleState.CREATED)
+        _pmStack.lastOrNull()?.pm?.moveLifecycleTo(LifecycleState.CREATED)
         val pm = pmFactory.createPm(clazz, params)
         pm.parentPm = hostPm
-        _pmStack.add(pm)
+        _pmStack.add(BackStackEntry(pm, params))
         pm.moveLifecycleTo(hostPm.lifecycleState.value)
         notifyChanges()
     }
 
     fun pop() {
-        _pmStack.removeLast().moveLifecycleTo(LifecycleState.DESTROYED)
-        _pmStack.lastOrNull()?.moveLifecycleTo(hostPm.lifecycleState.value)
+        _pmStack.removeLast().pm.moveLifecycleTo(LifecycleState.DESTROYED)
+        _pmStack.lastOrNull()?.pm?.moveLifecycleTo(hostPm.lifecycleState.value)
         notifyChanges()
     }
 
     private fun notifyChanges() {
         _pmStackChanges.tryEmit(_pmStack)
     }
+
+    class BackStackEntry(
+        val pm: PresentationModel,
+        val params: Parcelable?
+    )
 }

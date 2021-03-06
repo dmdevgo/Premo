@@ -34,8 +34,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import me.dmdev.premo.PmActivity
 import me.dmdev.premo.invoke
-import me.dmdev.premo.view.PmActivity
 
 class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
@@ -43,19 +43,17 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
         return MainPm()
     }
 
-    override fun onBindPresentationModel(pm: MainPm) {}
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            mainScreen(presentationModel)
+            mainScreen(getPresentationModel())
         }
     }
 
     @Composable
     fun mainScreen(pm: MainPm) {
 
-        val screenPmState = pm.currentPm.stateFlow().collectAsState(null)
+        val screenPmState = pm.router.pmOnTop.stateFlow().collectAsState()
 
         when (val screenPm = screenPmState.value) {
             is CounterPm -> counterScreen(screenPm)
@@ -101,12 +99,6 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
             ) {
                 Text(" + ")
             }
-        }
-    }
-
-    override fun onBackPressed() {
-        if (presentationModel.handleBack().not()) {
-            super.onBackPressed()
         }
     }
 }
