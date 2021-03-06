@@ -22,50 +22,13 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.sample
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import me.dmdev.premo.State
 
-class State<T> internal constructor(
-    internal val pm: PresentationModel,
-    initialValue: T
-) {
-    internal val mutableStateFlow = MutableStateFlow(initialValue)
-
-    fun stateFlow() : StateFlow<T> = mutableStateFlow
-
-    infix fun bindTo(consumer: (T) -> Unit) {
-        with(pm) {
-            pmInForegroundScope?.launch {
-                mutableStateFlow.collect { v ->
-                    consumer(v)
-                }
-            }
-        }
-    }
-}
-
-val <T> State<T>.value: T get() = mutableStateFlow.value
-
-@Suppress("FunctionName")
-fun <T> PresentationModel.State(
-    initialValue: T,
-    stateSource: (() -> Flow<T>)? = null
-): State<T> {
-
-    val state = State(pm = this, initialValue = initialValue)
-
-    if (stateSource != null) {
-        pmScope.launch {
-            stateSource().collect { v ->
-                state.mutableStateFlow.value = v
-            }
-        }
-    }
-
-    return state
+@Composable
+fun <T> State<T>.bind(): T {
+    return stateFlow().collectAsState().value
 }

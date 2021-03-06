@@ -41,11 +41,11 @@ class CounterPm(
     val messages = Command<String>()
 
     val plusButtonEnabled = State(false) {
-        count.flow().map { it < maxCount }
+        count.stateFlow().map { it < maxCount }
     }
 
     val minusButtonEnabled = State(false) {
-        count.flow().map { it > 0 }
+        count.stateFlow().map { it > 0 }
     }
 
     val plus = Action<Unit> {

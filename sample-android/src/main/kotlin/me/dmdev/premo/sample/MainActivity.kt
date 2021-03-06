@@ -55,7 +55,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
     @Composable
     fun mainScreen(pm: MainPm) {
 
-        val screenPmState = pm.currentPm.flow().collectAsState(null)
+        val screenPmState = pm.currentPm.stateFlow().collectAsState(null)
 
         when (val screenPm = screenPmState.value) {
             is CounterPm -> counterScreen(screenPm)
@@ -81,10 +81,6 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
     @Composable
     fun counterScreen(pm: CounterPm) {
 
-        val count = pm.count.flow().collectAsState(0)
-        val minusButtonEnabled = pm.minusButtonEnabled.flow().collectAsState(false)
-        val plusButtonEnabled = pm.plusButtonEnabled.flow().collectAsState(false)
-
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center,
@@ -92,16 +88,16 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
         ) {
             Button(
                 onClick = { pm.minus.invoke() },
-                enabled = minusButtonEnabled.value
+                enabled = pm.minusButtonEnabled.bind()
             ) {
                 Text(" - ")
             }
             Spacer(modifier = Modifier.width(12.dp))
-            Text("Count: ${count.value}")
+            Text("Count: ${pm.count.bind()}")
             Spacer(modifier = Modifier.width(12.dp))
             Button(
                 onClick = { pm.plus.invoke() },
-                enabled = plusButtonEnabled.value
+                enabled = pm.plusButtonEnabled.bind()
             ) {
                 Text(" + ")
             }
