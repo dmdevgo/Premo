@@ -49,7 +49,13 @@ class State<T> internal constructor(
     }
 }
 
-val <T> State<T>.value: T get() = mutableStateFlow.value
+var <T> State<T>.value: T
+    get() {
+        return mutableStateFlow.value
+    }
+    internal set(value) {
+        mutableStateFlow.value = value
+    }
 
 @Suppress("FunctionName")
 fun <T> PresentationModel.State(
@@ -68,4 +74,13 @@ fun <T> PresentationModel.State(
     }
 
     return state
+}
+
+@Suppress("FunctionName")
+fun <T> PresentationModel.SaveableState(
+    initialValue: T
+): State<T> {
+    return State(pm = this, initialValue = initialValue).also {
+        saveableStates.add(it)
+    }
 }

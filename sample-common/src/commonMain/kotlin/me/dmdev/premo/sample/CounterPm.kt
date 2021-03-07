@@ -27,16 +27,13 @@ package me.dmdev.premo.sample
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import me.dmdev.premo.Action
-import me.dmdev.premo.Command
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.State
+import me.dmdev.premo.*
 
 class CounterPm(
     private val maxCount: Int = 10
 ) : PresentationModel() {
 
-    val count = State(0)
+    val count = SaveableState(0)
 
     val messages = Command<String>()
 

@@ -38,10 +38,11 @@ import me.dmdev.premo.navigation.PmRouter
 
 abstract class PresentationModel {
 
-    internal val routers = mutableListOf<PmRouter>()
-
     val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
     var pmInForegroundScope: CoroutineScope? = null
+
+    internal val routers = mutableListOf<PmRouter>()
+    internal val saveableStates = mutableListOf<State<*>>()
 
     internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
     private val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(

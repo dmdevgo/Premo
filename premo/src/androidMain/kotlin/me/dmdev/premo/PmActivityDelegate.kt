@@ -134,7 +134,28 @@ class PmActivityDelegate<PM, A>(
             presentationModel?.routers?.map { router ->
                 RouterState(
                     router.pmStack.map { entry ->
-                        BackStackEntryState(entry.pm::class.qualifiedName.toString(), entry.params)
+                        val bundle = Bundle()
+                        entry.pm.saveableStates.forEachIndexed { index, state ->
+                            val value = state.value
+                            val key = index.toString()
+                            when (value) {
+                                is Byte -> bundle.putByte(key, value)
+                                is Short -> bundle.putShort(key, value)
+                                is Int -> bundle.putInt(key, value)
+                                is Long -> bundle.putLong(key, value)
+                                is Float -> bundle.putFloat(key, value)
+                                is Double -> bundle.putDouble(key, value)
+                                is String -> bundle.putString(key, value)
+                                is Boolean -> bundle.putBoolean(key, value)
+                                null -> {}
+                                else -> throw IllegalStateException("Not supported saveable type: ${value::class}")
+                            }
+                        }
+                        BackStackEntryState(
+                            entry.pm::class.qualifiedName.toString(),
+                            entry.params,
+                            bundle
+                        )
                     }
                 )
             }
@@ -152,19 +173,25 @@ class PmActivityDelegate<PM, A>(
                     Class.forName(entry.pmClassName).kotlin as KClass<out PresentationModel>,
                     entry.params
                 )
+                router.pmStack.last().pm.saveableStates.forEachIndexed { index, state ->
+                    state.value = entry.states.get(index.toString())
+                }
             }
         }
     }
 
     @Parcelize
-    internal data class PmState(val routerStates: List<RouterState>?) : Parcelable
+    private data class PmState(
+        val routerStates: List<RouterState>?,
+    ) : Parcelable
 
     @Parcelize
-    internal data class RouterState(val backStackState: List<BackStackEntryState>) : Parcelable
+    private data class RouterState(val backStackState: List<BackStackEntryState>) : Parcelable
 
     @Parcelize
-    internal data class BackStackEntryState(
+    private data class BackStackEntryState(
         val pmClassName: String,
-        val params: Parcelable?
+        val params: Parcelable?,
+        val states: Bundle
     ) : Parcelable
 }
