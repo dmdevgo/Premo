@@ -31,5 +31,3 @@ internal actual object Dispatchers {
     actual val UI: CoroutineDispatcher
         get() = Dispatchers.Main.immediate
 }
-
-actual typealias Parcelable = android.os.Parcelable

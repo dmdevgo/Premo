@@ -26,8 +26,8 @@ package me.dmdev.premo
 
 import android.app.Activity
 import android.os.Bundle
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.*
+import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -42,7 +42,8 @@ import kotlin.reflect.KClass
  */
 class PmActivityDelegate<PM, A>(
     private val pmActivity: A,
-    private val pmProvider: () -> PM
+    private val json: Json,
+    private val pmProvider: () -> PM,
 )
         where PM : PresentationModel,
               A : Activity {
@@ -128,70 +129,58 @@ class PmActivityDelegate<PM, A>(
         return savedInstanceState?.getString(SAVED_PM_TAG_KEY) ?: UUID.randomUUID().toString()
     }
 
+    @ExperimentalSerializationApi
     private fun savePmState(outState: Bundle) {
         outState.putString(SAVED_PM_TAG_KEY, commonDelegate?.pmTag)
         val pmState = PmState(
             presentationModel?.routers?.map { router ->
                 RouterState(
                     router.pmStack.map { entry ->
-                        val bundle = Bundle()
-                        entry.pm.saveableStates.forEachIndexed { index, state ->
-                            val value = state.value
-                            val key = index.toString()
-                            when (value) {
-                                is Byte -> bundle.putByte(key, value)
-                                is Short -> bundle.putShort(key, value)
-                                is Int -> bundle.putInt(key, value)
-                                is Long -> bundle.putLong(key, value)
-                                is Float -> bundle.putFloat(key, value)
-                                is Double -> bundle.putDouble(key, value)
-                                is String -> bundle.putString(key, value)
-                                is Boolean -> bundle.putBoolean(key, value)
-                                null -> {}
-                                else -> throw IllegalStateException("Not supported saveable type: ${value::class}")
-                            }
-                        }
                         BackStackEntryState(
                             entry.pm::class.qualifiedName.toString(),
-                            entry.params,
-                            bundle
+                            params = entry.params,
+//                            states = entry.pm.saveableStates.map { it.mutableStateFlow.value }
                         )
                     }
                 )
             }
         )
-        outState.putParcelable(SAVED_PM_STATE_KEY, pmState)
+        outState.putString(SAVED_PM_STATE_KEY, json.encodeToString(pmState))
     }
 
     private fun restorePmState(pm: PresentationModel, savedInstanceState: Bundle) {
-        val pmState = savedInstanceState.getParcelable<PmState>(SAVED_PM_STATE_KEY)
+
+        val pmStateAsString = savedInstanceState.getString(SAVED_PM_STATE_KEY)
+        val pmState = if (pmStateAsString != null) {
+            json.decodeFromString<PmState>(pmStateAsString)
+        } else {
+            null
+        }
+
         pmState?.routerStates?.forEachIndexed { index, routerState ->
             val router = pm.routers[index]
             routerState.backStackState.forEach { entry ->
                 @Suppress("UNCHECKED_CAST")
-                router.push(
-                    Class.forName(entry.pmClassName).kotlin as KClass<out PresentationModel>,
-                    entry.params
-                )
-                router.pmStack.last().pm.saveableStates.forEachIndexed { index, state ->
-                    state.value = entry.states.get(index.toString())
-                }
+                val pmClass = Class.forName(entry.pmClassName).kotlin as KClass<out PresentationModel>
+                router.push(pmClass, entry.params)
+//                router.pmStack.last().pm.saveableStates.forEachIndexed { index, state ->
+//                    state.value = entry.states[index].value
+//                }
             }
         }
     }
 
-    @Parcelize
+    @Serializable
     private data class PmState(
         val routerStates: List<RouterState>?,
-    ) : Parcelable
+    )
 
-    @Parcelize
-    private data class RouterState(val backStackState: List<BackStackEntryState>) : Parcelable
+    @Serializable
+    private data class RouterState(val backStackState: List<BackStackEntryState>)
 
-    @Parcelize
+    @Serializable
     private data class BackStackEntryState(
         val pmClassName: String,
-        val params: Parcelable?,
-        val states: Bundle
-    ) : Parcelable
+        @Polymorphic val params: Any?
+    )
 }

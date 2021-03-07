@@ -27,14 +27,17 @@ package me.dmdev.premo.sample
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
 
-class CounterPm(
-    private val maxCount: Int = 10
-) : PresentationModel() {
+class CounterPm(params: Params) : PresentationModel() {
+
+    @Serializable
+    class Params(val maxCount: Int)
+
+    private val maxCount = params.maxCount
 
     val count = SaveableState(0)
-
     val messages = Command<String>()
 
     val plusButtonEnabled = State(false) {

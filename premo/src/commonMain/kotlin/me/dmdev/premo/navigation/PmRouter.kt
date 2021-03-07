@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 import me.dmdev.premo.LifecycleState
-import me.dmdev.premo.Parcelable
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import kotlin.reflect.KClass
@@ -52,7 +51,7 @@ class PmRouter internal constructor(
         pmStackChanges.map { it.lastOrNull()?.pm }
     }
 
-    fun push(clazz: KClass<out PresentationModel>, params: Parcelable?) {
+    fun push(clazz: KClass<out PresentationModel>, params: Any?) {
         _pmStack.lastOrNull()?.pm?.moveLifecycleTo(LifecycleState.CREATED)
         val pm = pmFactory.createPm(clazz, params)
         pm.parentPm = hostPm
@@ -73,6 +72,6 @@ class PmRouter internal constructor(
 
     class BackStackEntry(
         val pm: PresentationModel,
-        val params: Parcelable?
+        val params: Any?
     )
 }

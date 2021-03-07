@@ -30,10 +30,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
 import me.dmdev.premo.PmActivity
 import me.dmdev.premo.invoke
 
@@ -52,10 +53,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
     @Composable
     fun mainScreen(pm: MainPm) {
-
-        val screenPmState = pm.router.pmOnTop.stateFlow().collectAsState()
-
-        when (val screenPm = screenPmState.value) {
+        when (val screenPm = pm.router.pmOnTop.bind()) {
             is CounterPm -> counterScreen(screenPm)
             is SamplesPm -> samplesScreen(screenPm)
             else -> {
@@ -98,6 +96,14 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
                 enabled = pm.plusButtonEnabled.bind()
             ) {
                 Text(" + ")
+            }
+        }
+    }
+
+    override fun provideJson(): Json {
+        return Json {
+            serializersModule = SerializersModule {
+                polymorphic(Any::class, CounterPm.Params::class, CounterPm.Params.serializer())
             }
         }
     }

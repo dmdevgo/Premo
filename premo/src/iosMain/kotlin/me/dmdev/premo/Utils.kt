@@ -33,8 +33,6 @@ internal actual object Dispatchers {
         get() = UIDispatcher()
 }
 
-actual interface Parcelable
-
 @OptIn(InternalCoroutinesApi::class)
 internal class UIDispatcher : CoroutineDispatcher(), Delay {
     private val mQueue = dispatch_get_main_queue()

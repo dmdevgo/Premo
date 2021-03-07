@@ -29,5 +29,3 @@ import kotlinx.coroutines.CoroutineDispatcher
 internal expect object Dispatchers {
     val UI: CoroutineDispatcher
 }
-
-expect interface Parcelable

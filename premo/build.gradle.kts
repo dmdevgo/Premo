@@ -24,7 +24,7 @@
 
 plugins {
     kotlin("multiplatform")
-    id("kotlin-parcelize")
+    kotlin("plugin.serialization")
     id("com.android.library")
 }
 
@@ -38,6 +38,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
             }
         }
 

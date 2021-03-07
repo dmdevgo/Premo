@@ -24,7 +24,6 @@
 
 package me.dmdev.premo.sample
 
-import me.dmdev.premo.Parcelable
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
@@ -35,11 +34,11 @@ class MainPm : PresentationModel() {
     private val pmFactory = object : PmFactory {
         override fun createPm(
             pmClass: KClass<out PresentationModel>,
-            params: Parcelable?
+            params: Any?
         ): PresentationModel {
             return when (pmClass) {
                 SamplesPm::class -> SamplesPm()
-                CounterPm::class -> CounterPm(maxCount = 10)
+                CounterPm::class -> CounterPm(params as CounterPm.Params)
                 else -> throw IllegalStateException("Not handled instance creation for class $pmClass")
             }
         }
@@ -55,7 +54,7 @@ class MainPm : PresentationModel() {
     }
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
-            CounterSampleMessage -> router.push(CounterPm::class, null)
+            CounterSampleMessage -> router.push(CounterPm::class, CounterPm.Params(10))
             else -> super.handleNavigationMessage(message)
         }
     }
