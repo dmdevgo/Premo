@@ -44,27 +44,12 @@ class MainPm : PresentationModel() {
         }
     }
 
-    val router = Router(pmFactory)
+    val router = Router(pmFactory, initialPmClass = SamplesPm::class, null)
 
-    override fun onCreate() {
-        super.onCreate()
-        if (router.pmStack.isEmpty()) {
-            router.push(SamplesPm::class, null)
-        }
-    }
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
             CounterSampleMessage -> router.push(CounterPm::class, CounterPm.Params(10))
             else -> super.handleNavigationMessage(message)
-        }
-    }
-
-    override fun handleBack(): Boolean {
-        return if (router.pmStack.size > 1) {
-            router.pop()
-            true
-        } else {
-            false
         }
     }
 }

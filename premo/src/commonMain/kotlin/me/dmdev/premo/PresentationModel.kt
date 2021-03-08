@@ -28,13 +28,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
+import kotlin.reflect.KClass
 
 abstract class PresentationModel {
 
@@ -91,13 +90,36 @@ abstract class PresentationModel {
     }
 
     open fun handleBack(): Boolean {
+        routers.forEach { router ->
+            val handledByNestedPm = router.pmStack.lastOrNull()?.pm?.handleBack() ?: false
+            if (handledByNestedPm.not()) {
+                if (router.pmStack.size > 1) {
+                    router.pop()
+                    return true
+                }
+            } else {
+                return true
+            }
+        }
         return false
     }
 
     @Suppress("FunctionName")
-    protected fun Router(pmFactory: PmFactory): PmRouter {
-        return PmRouter(this, pmFactory).apply {
-            routers.add(this)
+    protected fun Router(
+        pmFactory: PmFactory,
+        initialPmClass: KClass<out PresentationModel>,
+        pmParams: Any?
+    ): PmRouter {
+        return PmRouter(this, pmFactory).also { router ->
+            routers.add(router)
+            pmScope.launch {
+                lifecycleState.takeWhile { it != LifecycleState.CREATED }
+                    .collect {
+                        if (router.pmStack.isEmpty()) {
+                            router.push(initialPmClass, pmParams)
+                        }
+                    }
+            }
         }
     }
 
