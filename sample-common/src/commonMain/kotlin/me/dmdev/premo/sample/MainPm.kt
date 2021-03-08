@@ -27,28 +27,24 @@ package me.dmdev.premo.sample
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
-import kotlin.reflect.KClass
 
 class MainPm : PresentationModel() {
 
     private val pmFactory = object : PmFactory {
-        override fun createPm(
-            pmClass: KClass<out PresentationModel>,
-            params: Any?
-        ): PresentationModel {
-            return when (pmClass) {
-                SamplesPm::class -> SamplesPm()
-                CounterPm::class -> CounterPm(params as CounterPm.Params)
-                else -> throw IllegalStateException("Not handled instance creation for class $pmClass")
+        override fun createPm(params: Any): PresentationModel {
+            return when (params) {
+                is SamplesPm.Params -> SamplesPm()
+                is CounterPm.Params -> CounterPm(params.maxCount)
+                else -> throw IllegalStateException("Not handled instance creation for params $params")
             }
         }
     }
 
-    val router = Router(pmFactory, initialPmClass = SamplesPm::class, null)
+    val router = Router(pmFactory, SamplesPm.Params())
 
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
-            CounterSampleMessage -> router.push(CounterPm::class, CounterPm.Params(10))
+            CounterSampleMessage -> router.push(CounterPm.Params(10))
             else -> super.handleNavigationMessage(message)
         }
     }

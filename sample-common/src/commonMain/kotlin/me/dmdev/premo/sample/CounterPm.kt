@@ -28,12 +28,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
 
-class CounterPm(params: Params) : PresentationModel() {
+class CounterPm(
+    private val maxCount: Int
+) : PresentationModel() {
 
     @Serializable
     class Params(val maxCount: Int)
-
-    private val maxCount = params.maxCount
 
     val count = SaveableState(0)
     val messages = Command<String>()

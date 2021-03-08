@@ -30,7 +30,6 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import java.util.*
-import kotlin.reflect.KClass
 
 /**
  * Delegate for the [Activity] that helps with creation and binding of
@@ -156,7 +155,6 @@ class PmActivityDelegate<PM, A>(
                 RouterState(
                     router.pmStack.map { entry ->
                         BackStackEntryState(
-                            entry.pm::class.qualifiedName.toString(),
                             params = entry.params,
                             states = entry.pm.saveableStates.map { state ->
                                 when (val value = state.value) {
@@ -193,8 +191,7 @@ class PmActivityDelegate<PM, A>(
             val router = pm.routers[index]
             routerState.backStackState.forEach { entry ->
                 @Suppress("UNCHECKED_CAST")
-                val pmClass = Class.forName(entry.pmClassName).kotlin as KClass<out PresentationModel>
-                router.push(pmClass, entry.params)
+                router.push(entry.params)
                 router.pmStack.last().pm.saveableStates.forEachIndexed { index, state ->
                     val stateValue = entry.states[index]
                     state.value = when (stateValue) {
@@ -250,8 +247,7 @@ class PmActivityDelegate<PM, A>(
 
     @Serializable
     private data class BackStackEntryState(
-        val pmClassName: String,
-        @Polymorphic val params: Any?,
+        @Polymorphic val params: Any,
         val states: List<@Polymorphic Saveable?>
     )
 }

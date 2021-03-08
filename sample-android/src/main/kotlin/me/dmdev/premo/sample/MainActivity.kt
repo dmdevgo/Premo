@@ -103,6 +103,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
     override fun provideJson(): Json {
         return Json {
             serializersModule = SerializersModule {
+                polymorphic(Any::class, SamplesPm.Params::class, SamplesPm.Params.serializer())
                 polymorphic(Any::class, CounterPm.Params::class, CounterPm.Params.serializer())
             }
         }
