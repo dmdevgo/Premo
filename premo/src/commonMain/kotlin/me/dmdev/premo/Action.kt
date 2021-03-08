@@ -69,7 +69,7 @@ fun <T> PresentationModel.Action(
 
 @Suppress("FunctionName")
 fun <T> PresentationModel.SimpleAction(
-    doAction: (value: T) -> Unit
+    doAction: suspend (value: T) -> Unit
 ): Action<T> {
 
     val action = Action<T>(pm = this)

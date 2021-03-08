@@ -24,9 +24,7 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
 
@@ -48,25 +46,19 @@ class CounterPm(params: Params) : PresentationModel() {
         count.stateFlow().map { it > 0 }
     }
 
-    val plus = Action<Unit> {
-        this.map { count.value + 1 }
-            .filter { it <= maxCount }
-            .onEach {
-                if (it == maxCount) {
-                    messages.emit("Max value reached")
-                }
-            }
-            .consumeBy(count)
+    val plus = SimpleAction<Unit> {
+        if (count.value < maxCount) {
+            count.value = count.value + 1
+        } else {
+            messages.emit("Max value reached")
+        }
     }
 
-    val minus = Action<Unit> {
-        this.map { count.value - 1 }
-            .filter { it >= 0 }
-            .onEach {
-                if (it == 0) {
-                    messages.emit("Min value reached")
-                }
-            }
-            .consumeBy(count)
+    val minus = SimpleAction<Unit> {
+        if (count.value > 0 ) {
+            count.value = count.value - 1
+        } else {
+            messages.emit("Min value reached")
+        }
     }
 }
