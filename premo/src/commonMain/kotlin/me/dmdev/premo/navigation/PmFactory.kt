@@ -25,7 +25,8 @@
 package me.dmdev.premo.navigation
 
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.Saveable
 
 interface PmFactory {
-    fun createPm(params: Any): PresentationModel
+    fun createPm(description: Saveable): PresentationModel
 }

@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 import me.dmdev.premo.LifecycleState
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.Saveable
 import me.dmdev.premo.State
 
 class PmRouter internal constructor(
@@ -50,11 +51,11 @@ class PmRouter internal constructor(
         pmStackChanges.map { it.lastOrNull()?.pm }
     }
 
-    fun push(params: Any) {
+    fun push(description: Saveable) {
         _pmStack.lastOrNull()?.pm?.moveLifecycleTo(LifecycleState.CREATED)
-        val pm = pmFactory.createPm(params)
+        val pm = pmFactory.createPm(description)
         pm.parentPm = hostPm
-        _pmStack.add(BackStackEntry(pm, params))
+        _pmStack.add(BackStackEntry(pm, description))
         pm.moveLifecycleTo(hostPm.lifecycleState.value)
         notifyChanges()
     }
@@ -71,6 +72,6 @@ class PmRouter internal constructor(
 
     class BackStackEntry(
         val pm: PresentationModel,
-        val params: Any
+        val description: Saveable
     )
 }

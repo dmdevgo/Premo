@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import me.dmdev.premo.PmActivity
+import me.dmdev.premo.Saveable
 import me.dmdev.premo.invoke
 
 class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
@@ -103,8 +104,8 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
     override fun provideJson(): Json {
         return Json {
             serializersModule = SerializersModule {
-                polymorphic(Any::class, SamplesPm.Params::class, SamplesPm.Params.serializer())
-                polymorphic(Any::class, CounterPm.Params::class, CounterPm.Params.serializer())
+                polymorphic(Saveable::class, SamplesPm.Description::class, SamplesPm.Description.serializer())
+                polymorphic(Saveable::class, CounterPm.Description::class, CounterPm.Description.serializer())
             }
         }
     }

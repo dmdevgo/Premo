@@ -26,12 +26,13 @@ package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.Saveable
 import me.dmdev.premo.SimpleAction
 
 class SamplesPm : PresentationModel() {
 
     @Serializable
-    class Params
+    class Description: Saveable
 
     val counterSampleClicks = SimpleAction<Unit> {
         handleNavigationMessage(CounterSampleMessage)

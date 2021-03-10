@@ -33,7 +33,7 @@ class CounterPm(
 ) : PresentationModel() {
 
     @Serializable
-    class Params(val maxCount: Int)
+    class Description(val maxCount: Int): Saveable
 
     val count = SaveableState(0)
     val messages = Command<String>()

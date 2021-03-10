@@ -22,31 +22,6 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo
 
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
-import me.dmdev.premo.navigation.NavigationMessage
-import me.dmdev.premo.navigation.PmFactory
-
-class MainPm : PresentationModel() {
-
-    private val pmFactory = object : PmFactory {
-        override fun createPm(description: Saveable): PresentationModel {
-            return when (description) {
-                is SamplesPm.Description -> SamplesPm()
-                is CounterPm.Description -> CounterPm(description.maxCount)
-                else -> throw IllegalStateException("Not handled instance creation for pm description $description")
-            }
-        }
-    }
-
-    val router = Router(pmFactory, SamplesPm.Description())
-
-    override fun handleNavigationMessage(message: NavigationMessage) {
-        when (message) {
-            CounterSampleMessage -> router.push(CounterPm.Description(10))
-            else -> super.handleNavigationMessage(message)
-        }
-    }
-}
+interface Saveable

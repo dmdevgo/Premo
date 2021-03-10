@@ -106,7 +106,7 @@ abstract class PresentationModel {
     @Suppress("FunctionName")
     protected fun Router(
         pmFactory: PmFactory,
-        initialPmParams: Any,
+        initialDescription: Saveable,
     ): PmRouter {
         return PmRouter(this, pmFactory).also { router ->
             routers.add(router)
@@ -114,7 +114,7 @@ abstract class PresentationModel {
                 lifecycleState.takeWhile { it != LifecycleState.CREATED }
                     .collect {
                         if (router.pmStack.isEmpty()) {
-                            router.push(initialPmParams)
+                            router.push(initialDescription)
                         }
                     }
             }

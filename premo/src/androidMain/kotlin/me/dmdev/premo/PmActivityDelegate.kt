@@ -155,7 +155,7 @@ class PmActivityDelegate<PM, A>(
                 RouterState(
                     router.pmStack.map { entry ->
                         BackStackEntryState(
-                            params = entry.params,
+                            description = entry.description,
                             states = entry.pm.saveableStates.map { state ->
                                 when (val value = state.value) {
                                     is Boolean -> SaveableBoolean(value)
@@ -191,11 +191,11 @@ class PmActivityDelegate<PM, A>(
             val router = pm.routers[index]
             routerState.backStackState.forEach { entry ->
                 @Suppress("UNCHECKED_CAST")
-                router.push(entry.params)
+                router.push(entry.description)
                 router.pmStack.last().pm.saveableStates.forEachIndexed { index, state ->
                     val stateValue = entry.states[index]
                     state.value = when (stateValue) {
-                        is Saveable -> stateValue.value
+                        is SaveableValue -> stateValue.value
                         else -> null
                     }
                 }
@@ -203,39 +203,39 @@ class PmActivityDelegate<PM, A>(
         }
     }
 
-    private interface Saveable {
+    private interface SaveableValue: Saveable {
         val value: Any?
     }
 
     @Serializable
-    private data class SaveableBoolean(override val value: Boolean): Saveable
+    private data class SaveableBoolean(override val value: Boolean): SaveableValue
 
     @Serializable
-    private data class SaveableByte(override val value: Byte): Saveable
+    private data class SaveableByte(override val value: Byte): SaveableValue
 
     @Serializable
-    private data class SaveableShort(override val value: Short): Saveable
+    private data class SaveableShort(override val value: Short): SaveableValue
 
     @Serializable
-    private data class SaveableInt(override val value: Int): Saveable
+    private data class SaveableInt(override val value: Int): SaveableValue
 
     @Serializable
-    private data class SaveableLong(override val value: Long): Saveable
+    private data class SaveableLong(override val value: Long): SaveableValue
 
     @Serializable
-    private data class SaveableFloat(override val value: Float): Saveable
+    private data class SaveableFloat(override val value: Float): SaveableValue
 
     @Serializable
-    private data class SaveableDouble(override val value: Double): Saveable
+    private data class SaveableDouble(override val value: Double): SaveableValue
 
     @Serializable
-    private data class SaveableChar(override val value: Char): Saveable
+    private data class SaveableChar(override val value: Char): SaveableValue
 
     @Serializable
-    private data class SaveableString(override val value: String): Saveable
+    private data class SaveableString(override val value: String): SaveableValue
 
     @Serializable
-    private data class SaveableAny(@Polymorphic override val value: Any?): Saveable
+    private data class SaveableAny(@Polymorphic override val value: Any?): SaveableValue
 
     @Serializable
     private data class PmState(
@@ -247,7 +247,7 @@ class PmActivityDelegate<PM, A>(
 
     @Serializable
     private data class BackStackEntryState(
-        @Polymorphic val params: Any,
+        @Polymorphic val description: Saveable,
         val states: List<@Polymorphic Saveable?>
     )
 }
