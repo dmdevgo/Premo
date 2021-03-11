@@ -25,12 +25,17 @@
 package me.dmdev.premo
 
 import kotlinx.coroutines.*
+import platform.Foundation.NSUUID
 import platform.darwin.*
 import kotlin.coroutines.CoroutineContext
 
 internal actual object Dispatchers {
     actual val UI: CoroutineDispatcher
         get() = UIDispatcher()
+}
+
+internal actual fun randomUUID(): String {
+    return NSUUID().UUIDString
 }
 
 @OptIn(InternalCoroutinesApi::class)

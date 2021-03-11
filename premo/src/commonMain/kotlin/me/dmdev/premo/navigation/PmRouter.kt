@@ -24,50 +24,62 @@
 
 package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.map
-import me.dmdev.premo.LifecycleState
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
-import me.dmdev.premo.State
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import me.dmdev.premo.*
 
 class PmRouter internal constructor(
     private val hostPm: PresentationModel,
     private val pmFactory: PmFactory
 ) {
 
-    private var _pmStack = mutableListOf<BackStackEntry>()
-    val pmStack: List<BackStackEntry> get() = _pmStack
+    val pmStack: State<List<BackStackEntry>> = hostPm.State(listOf())
 
-    private val _pmStackChanges = MutableSharedFlow<List<BackStackEntry>>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    val pmStackChanges: Flow<PmStackChange> = flow {
+        var oldPmStack: List<BackStackEntry> = pmStack.value
+        pmStack.stateFlow().collect { newPmStack ->
 
-    val pmStackChanges: Flow<List<BackStackEntry>> get() = _pmStackChanges
-    val pmOnTop = hostPm.State(null) {
-        pmStackChanges.map { it.lastOrNull()?.pm }
+            val oldTop = oldPmStack.lastOrNull()
+            val newTop = newPmStack.lastOrNull()
+
+            val pmStackChange = if (newTop != null && oldTop != null) {
+                when {
+                    oldTop === newTop -> {
+                        PmStackChange.Set(newTop.pm)
+                    }
+                    oldPmStack.any { it === newTop } -> {
+                        PmStackChange.Pop(newTop.pm, oldTop.pm)
+                    }
+                    else -> {
+                        PmStackChange.Push(newTop.pm, oldTop.pm)
+                    }
+                }
+            } else if (newTop != null) {
+                PmStackChange.Set(newTop.pm)
+            } else {
+                null
+            }
+            if (pmStackChange != null) {
+                emit(pmStackChange)
+            }
+            oldPmStack = newPmStack
+        }
     }
 
-    fun push(description: Saveable) {
-        _pmStack.lastOrNull()?.pm?.moveLifecycleTo(LifecycleState.CREATED)
+    fun push(description: Saveable, pmTag: String = randomUUID()) {
+        pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(LifecycleState.CREATED)
         val pm = pmFactory.createPm(description)
+        pm.tag = pmTag
         pm.parentPm = hostPm
-        _pmStack.add(BackStackEntry(pm, description))
         pm.moveLifecycleTo(hostPm.lifecycleState.value)
-        notifyChanges()
+        pmStack.value = pmStack.value.plus(BackStackEntry(pm, description))
     }
 
     fun pop() {
-        _pmStack.removeLast().pm.moveLifecycleTo(LifecycleState.DESTROYED)
-        _pmStack.lastOrNull()?.pm?.moveLifecycleTo(hostPm.lifecycleState.value)
-        notifyChanges()
-    }
-
-    private fun notifyChanges() {
-        _pmStackChanges.tryEmit(_pmStack)
+        pmStack.value.last().pm.moveLifecycleTo(LifecycleState.DESTROYED)
+        pmStack.value = pmStack.value.dropLast(1)
+        pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(hostPm.lifecycleState.value)
     }
 
     class BackStackEntry(

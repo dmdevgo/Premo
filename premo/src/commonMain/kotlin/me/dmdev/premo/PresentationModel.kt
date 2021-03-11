@@ -56,6 +56,9 @@ abstract class PresentationModel {
             mutableStateFlow.value = value
         }
 
+    var tag: String = randomUUID()
+        internal set
+
     protected fun <T> Flow<T>.consumeBy(state: State<T>): Flow<T> {
         return onEach { state.mutableStateFlow.value = it }
     }
@@ -90,9 +93,9 @@ abstract class PresentationModel {
 
     open fun handleBack(): Boolean {
         routers.forEach { router ->
-            val handledByNestedPm = router.pmStack.lastOrNull()?.pm?.handleBack() ?: false
+            val handledByNestedPm = router.pmStack.value.lastOrNull()?.pm?.handleBack() ?: false
             if (handledByNestedPm.not()) {
-                if (router.pmStack.size > 1) {
+                if (router.pmStack.value.size > 1) {
                     router.pop()
                     return true
                 }
@@ -113,7 +116,7 @@ abstract class PresentationModel {
             pmScope.launch {
                 lifecycleState.takeWhile { it != LifecycleState.CREATED }
                     .collect {
-                        if (router.pmStack.isEmpty()) {
+                        if (router.pmStack.value.isEmpty()) {
                             router.push(initialDescription)
                         }
                     }
@@ -125,7 +128,7 @@ abstract class PresentationModel {
 
         fun moveRouterPm(targetLifecycle: LifecycleState) {
             routers.forEach { router ->
-                router.pmStack.lastOrNull()?.pm?.moveLifecycleTo(targetLifecycle)
+                router.pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(targetLifecycle)
             }
         }
 

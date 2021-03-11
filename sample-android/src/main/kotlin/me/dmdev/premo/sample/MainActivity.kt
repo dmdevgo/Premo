@@ -54,10 +54,12 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
     @Composable
     fun mainScreen(pm: MainPm) {
-        when (val screenPm = pm.router.pmOnTop.bind()) {
-            is CounterPm -> counterScreen(screenPm)
-            is SamplesPm -> samplesScreen(screenPm)
-            else -> {
+        navigation(pm.router.pmStackChanges.bind()) { pm ->
+            when (pm) {
+                is CounterPm -> counterScreen(pm)
+                is SamplesPm -> samplesScreen(pm)
+                else -> {
+                }
             }
         }
     }
@@ -77,7 +79,6 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
     @Composable
     fun counterScreen(pm: CounterPm) {
-
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center,
@@ -104,8 +105,16 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
     override fun provideJson(): Json {
         return Json {
             serializersModule = SerializersModule {
-                polymorphic(Saveable::class, SamplesPm.Description::class, SamplesPm.Description.serializer())
-                polymorphic(Saveable::class, CounterPm.Description::class, CounterPm.Description.serializer())
+                polymorphic(
+                    Saveable::class,
+                    SamplesPm.Description::class,
+                    SamplesPm.Description.serializer()
+                )
+                polymorphic(
+                    Saveable::class,
+                    CounterPm.Description::class,
+                    CounterPm.Description.serializer()
+                )
             }
         }
     }

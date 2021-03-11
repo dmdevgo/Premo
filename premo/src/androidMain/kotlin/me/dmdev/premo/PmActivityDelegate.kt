@@ -153,9 +153,10 @@ class PmActivityDelegate<PM, A>(
         val pmState = PmState(
             presentationModel?.routers?.map { router ->
                 RouterState(
-                    router.pmStack.map { entry ->
+                    router.pmStack.value.map { entry ->
                         BackStackEntryState(
                             description = entry.description,
+                            pmTag = entry.pm.tag,
                             states = entry.pm.saveableStates.map { state ->
                                 when (val value = state.value) {
                                     is Boolean -> SaveableBoolean(value)
@@ -191,8 +192,8 @@ class PmActivityDelegate<PM, A>(
             val router = pm.routers[index]
             routerState.backStackState.forEach { entry ->
                 @Suppress("UNCHECKED_CAST")
-                router.push(entry.description)
-                router.pmStack.last().pm.saveableStates.forEachIndexed { index, state ->
+                router.push(entry.description, entry.pmTag)
+                router.pmStack.value.last().pm.saveableStates.forEachIndexed { index, state ->
                     val stateValue = entry.states[index]
                     state.value = when (stateValue) {
                         is SaveableValue -> stateValue.value
@@ -248,6 +249,7 @@ class PmActivityDelegate<PM, A>(
     @Serializable
     private data class BackStackEntryState(
         @Polymorphic val description: Saveable,
+        val pmTag: String,
         val states: List<@Polymorphic Saveable?>
     )
 }

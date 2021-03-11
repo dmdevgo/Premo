@@ -24,11 +24,56 @@
 
 package me.dmdev.premo.sample
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import androidx.compose.ui.Modifier
+import kotlinx.coroutines.flow.Flow
+import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
+import me.dmdev.premo.navigation.PmStackChange
 
 @Composable
 fun <T> State<T>.bind(): T {
     return stateFlow().collectAsState().value
+}
+
+@Composable
+fun <T> Flow<T>.bind(): T? {
+    return collectAsState(null).value
+}
+
+
+@Composable
+fun navigation(
+    pmStackChange: PmStackChange?,
+    modifier: Modifier = Modifier,
+    content: @Composable (PresentationModel) -> Unit
+) {
+
+    val stateHolder = rememberSaveableStateHolder()
+
+    val pm = when (pmStackChange) {
+        is PmStackChange.Push -> {
+            stateHolder.removeState(pmStackChange.enterPm.tag)
+            pmStackChange.enterPm
+        }
+        is PmStackChange.Pop -> {
+            stateHolder.removeState(pmStackChange.exitPm.tag)
+            pmStackChange.enterPm
+        }
+        is PmStackChange.Set -> {
+            pmStackChange.pm
+        }
+        else -> null
+    }
+
+    Box(modifier) {
+        if (pm != null) {
+            stateHolder.SaveableStateProvider(pm.tag) {
+                content(pm)
+            }
+        }
+    }
 }

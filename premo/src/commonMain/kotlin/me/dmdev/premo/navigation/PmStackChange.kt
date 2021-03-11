@@ -22,17 +22,12 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import java.util.*
+import me.dmdev.premo.PresentationModel
 
-internal actual object Dispatchers {
-    actual val UI: CoroutineDispatcher
-        get() = Dispatchers.Main.immediate
-}
-
-internal actual fun randomUUID(): String {
-    return UUID.randomUUID().toString()
+sealed class PmStackChange {
+    class Push(val enterPm: PresentationModel, val exitPm: PresentationModel) : PmStackChange()
+    class Pop(val enterPm: PresentationModel, val exitPm: PresentationModel) : PmStackChange()
+    class Set(val pm: PresentationModel) : PmStackChange()
 }
