@@ -114,8 +114,9 @@ abstract class PresentationModel {
         return PmRouter(this, pmFactory).also { router ->
             routers.add(router)
             pmScope.launch {
-                lifecycleState.takeWhile { it != LifecycleState.CREATED }
-                    .collect {
+                lifecycleState
+                    .first { it == LifecycleState.CREATED }
+                    .apply {
                         if (router.pmStack.value.isEmpty()) {
                             router.push(initialDescription)
                         }
