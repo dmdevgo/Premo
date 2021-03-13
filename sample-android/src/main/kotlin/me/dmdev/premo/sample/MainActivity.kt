@@ -56,8 +56,9 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
     fun mainScreen(pm: MainPm) {
         navigation(pm.router.pmStackChanges.bind()) { pm ->
             when (pm) {
-                is CounterPm -> counterScreen(pm)
                 is SamplesPm -> samplesScreen(pm)
+                is CounterPm -> counterScreen(pm)
+                is MultistackPm -> multistackScreen(pm)
                 else -> {
                 }
             }
@@ -71,33 +72,12 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = { pm.counterSampleClicks() }) {
+            Button(onClick = { pm.counterSampleClick() }) {
                 Text("Counter Sample")
             }
-        }
-    }
-
-    @Composable
-    fun counterScreen(pm: CounterPm) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                onClick = { pm.minus.invoke() },
-                enabled = pm.minusButtonEnabled.bind()
-            ) {
-                Text(" - ")
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            Text("Count: ${pm.count.bind()}")
-            Spacer(modifier = Modifier.width(12.dp))
-            Button(
-                onClick = { pm.plus.invoke() },
-                enabled = pm.plusButtonEnabled.bind()
-            ) {
-                Text(" + ")
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { pm.multistackSampleClick() }) {
+                Text("Multistack Sample")
             }
         }
     }
@@ -114,6 +94,16 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
                     Saveable::class,
                     CounterPm.Description::class,
                     CounterPm.Description.serializer()
+                )
+                polymorphic(
+                    Saveable::class,
+                    MultistackPm.Description::class,
+                    MultistackPm.Description.serializer()
+                )
+                polymorphic(
+                    Saveable::class,
+                    ItemPm.Description::class,
+                    ItemPm.Description.serializer()
                 )
             }
         }

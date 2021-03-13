@@ -24,22 +24,36 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.serialization.Serializable
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
-import me.dmdev.premo.SimpleAction
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import me.dmdev.premo.invoke
 
-class SamplesPm : PresentationModel() {
-
-    @Serializable
-    object Description: Saveable
-
-    val counterSampleClick = SimpleAction<Unit> {
-        handleNavigationMessage(CounterSampleMessage)
+@Composable
+fun counterScreen(pm: CounterPm) {
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            onClick = { pm.minus.invoke() },
+            enabled = pm.minusButtonEnabled.bind()
+        ) {
+            Text(" - ")
+        }
+        Spacer(modifier = Modifier.width(12.dp))
+        Text("Count: ${pm.count.bind()}")
+        Spacer(modifier = Modifier.width(12.dp))
+        Button(
+            onClick = { pm.plus.invoke() },
+            enabled = pm.plusButtonEnabled.bind()
+        ) {
+            Text(" + ")
+        }
     }
-
-    val multistackSampleClick = SimpleAction<Unit> {
-        handleNavigationMessage(MultistackSampleMessage)
-    }
-
 }

@@ -29,17 +29,17 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
 import me.dmdev.premo.SimpleAction
 
-class SamplesPm : PresentationModel() {
+class ItemPm(val title: String) : PresentationModel() {
 
     @Serializable
-    object Description: Saveable
+    class Description(val title: String): Saveable
 
-    val counterSampleClick = SimpleAction<Unit> {
-        handleNavigationMessage(CounterSampleMessage)
+    val nextClick = SimpleAction<Unit> {
+        handleNavigationMessage(NextClickMessage)
     }
 
-    val multistackSampleClick = SimpleAction<Unit> {
-        handleNavigationMessage(MultistackSampleMessage)
+    val previousClick = SimpleAction<Unit> {
+        handleNavigationMessage(PreviousClickMessage)
     }
 
 }

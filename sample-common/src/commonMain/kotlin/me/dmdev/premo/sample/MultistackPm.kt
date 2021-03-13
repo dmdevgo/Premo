@@ -24,31 +24,68 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.serialization.Serializable
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
+import me.dmdev.premo.SimpleAction
+import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
+import me.dmdev.premo.navigation.PmRouter
+import me.dmdev.premo.navigation.PmStackChange
 
-class MainPm : PresentationModel() {
+class MultistackPm : PresentationModel() {
 
     private val pmFactory = object : PmFactory {
         override fun createPm(description: Saveable): PresentationModel {
             return when (description) {
-                is SamplesPm.Description -> SamplesPm()
-                is CounterPm.Description -> CounterPm(description.maxCount)
-                is MultistackPm.Description -> MultistackPm()
+                is ItemPm.Description -> ItemPm(description.title)
                 else -> throw IllegalStateException("Not handled instance creation for pm description $description")
             }
         }
     }
 
-    val router = Router(pmFactory, SamplesPm.Description)
+    @Serializable
+    object Description : Saveable
+
+    val routers = listOf(
+        Router(pmFactory, ItemPm.Description(1.toString())),
+        Router(pmFactory, ItemPm.Description(1.toString())),
+        Router(pmFactory, ItemPm.Description(1.toString()))
+    )
+
+    val currentTabRouter = State(routers.first())
+
+    val currentTabStackChanges: Flow<PmStackChange>
+        get() {
+            return currentTabRouter.stateFlow().flatMapLatest { it.pmStackChanges }
+        }
+
+    val onRouterTabClick = SimpleAction<PmRouter> { router ->
+        currentTabRouter.value = router
+    }
 
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
-            CounterSampleMessage -> router.push(CounterPm.Description(10))
-            MultistackSampleMessage -> router.push(MultistackPm.Description)
+            NextClickMessage -> {
+                val number = currentTabRouter.value.pmStack.value.size + 1
+                currentTabRouter.value.push(
+                    ItemPm.Description(number.toString())
+                )
+            }
+            PreviousClickMessage -> currentTabRouter.value.pop()
             else -> super.handleNavigationMessage(message)
+        }
+    }
+
+    override fun handleBack(): Boolean {
+        return if (currentTabRouter.value.pmStack.value.size > 1) {
+            currentTabRouter.value.pop()
+            true
+        } else {
+            false
         }
     }
 }
