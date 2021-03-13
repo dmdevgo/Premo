@@ -42,6 +42,21 @@ kotlin {
             }
         }
 
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
+        }
+
+        // Fix test run: https://youtrack.jetbrains.com/issue/KT-40571
+        val androidTest  by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(kotlin("test-junit"))
+            }
+        }
+
         val androidMain by getting {
             dependencies {
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
