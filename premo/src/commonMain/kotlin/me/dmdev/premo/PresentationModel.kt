@@ -153,18 +153,18 @@ abstract class PresentationModel {
 
         fun doOnBackground() {
             moveRouterPm(LifecycleState.CREATED)
-            pmInForegroundScope?.cancel()
             lifecycleState.value = LifecycleState.CREATED
             lifecycleEvent.tryEmit(LifecycleEvent.ON_BACKGROUND)
             onBackground()
+            pmInForegroundScope?.cancel()
         }
 
         fun doOnDestroy() {
             moveRouterPm(LifecycleState.DESTROYED)
-            pmScope.cancel()
             lifecycleState.value = LifecycleState.DESTROYED
             lifecycleEvent.tryEmit(LifecycleEvent.ON_DESTROY)
             onDestroy()
+            pmScope.cancel()
         }
 
         when (targetLifecycle) {

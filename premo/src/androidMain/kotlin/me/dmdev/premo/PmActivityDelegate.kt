@@ -148,35 +148,60 @@ class PmActivityDelegate<PM, A>(
         return savedInstanceState?.getString(SAVED_PM_TAG_KEY) ?: UUID.randomUUID().toString()
     }
 
-    private fun savePmState(outState: Bundle) {
-        outState.putString(SAVED_PM_TAG_KEY, commonDelegate?.pmTag)
-        val pmState = PmState(
-            presentationModel?.routers?.map { router ->
+    private fun savePm(pm: PresentationModel): PmState {
+        return PmState(
+            pmTag = pm.tag,
+            routers = pm.routers.map { router ->
                 RouterState(
                     router.pmStack.value.map { entry ->
                         BackStackEntryState(
                             description = entry.description,
-                            pmTag = entry.pm.tag,
-                            states = entry.pm.saveableStates.map { state ->
-                                when (val value = state.value) {
-                                    is Boolean -> SaveableBoolean(value)
-                                    is Byte -> SaveableByte(value)
-                                    is Short -> SaveableShort(value)
-                                    is Int -> SaveableInt(value)
-                                    is Long -> SaveableLong(value)
-                                    is Float -> SaveableFloat(value)
-                                    is Double -> SaveableDouble(value)
-                                    is Char -> SaveableChar(value)
-                                    is String -> SaveableString(value)
-                                    else -> SaveableAny(value)
-                                }
-                            }
+                            pmState = savePm(entry.pm)
                         )
                     }
                 )
+            },
+            states = pm.saveableStates.map { state ->
+                when (val value = state.value) {
+                    is Boolean -> SaveableBoolean(value)
+                    is Byte -> SaveableByte(value)
+                    is Short -> SaveableShort(value)
+                    is Int -> SaveableInt(value)
+                    is Long -> SaveableLong(value)
+                    is Float -> SaveableFloat(value)
+                    is Double -> SaveableDouble(value)
+                    is Char -> SaveableChar(value)
+                    is String -> SaveableString(value)
+                    else -> SaveableAny(value)
+                }
             }
         )
+    }
+
+    private fun savePmState(outState: Bundle) {
+        outState.putString(SAVED_PM_TAG_KEY, commonDelegate?.pmTag)
+        val pmState = presentationModel?.let { pm ->
+            savePm(pm)
+        }
         outState.putString(SAVED_PM_STATE_KEY, json.encodeToString(pmState))
+    }
+
+    private fun restorePm(pm: PresentationModel, pmState: PmState) {
+        pm.tag = pmState.pmTag
+        pmState.states.forEachIndexed { index, saveable ->
+            pm.saveableStates[index].value = when (saveable) {
+                is SaveableValue -> saveable.value
+                else -> null
+            }
+        }
+        pmState.routers.forEachIndexed { index, routerState ->
+            val router = pm.routers[index]
+            routerState.backStackState.forEach { entry ->
+                @Suppress("UNCHECKED_CAST")
+                router.push(entry.description, entry.pmState.pmTag)
+                restorePm(router.pmStack.value.last().pm, entry.pmState)
+            }
+        }
     }
 
     private fun restorePmState(pm: PresentationModel, savedInstanceState: Bundle) {
@@ -188,59 +213,50 @@ class PmActivityDelegate<PM, A>(
             null
         }
 
-        pmState?.routerStates?.forEachIndexed { index, routerState ->
-            val router = pm.routers[index]
-            routerState.backStackState.forEach { entry ->
-                @Suppress("UNCHECKED_CAST")
-                router.push(entry.description, entry.pmTag)
-                router.pmStack.value.last().pm.saveableStates.forEachIndexed { index, state ->
-                    val stateValue = entry.states[index]
-                    state.value = when (stateValue) {
-                        is SaveableValue -> stateValue.value
-                        else -> null
-                    }
-                }
-            }
+        if (pmState != null) {
+            restorePm(pm, pmState)
         }
     }
 
-    private interface SaveableValue: Saveable {
+    private interface SaveableValue : Saveable {
         val value: Any?
     }
 
     @Serializable
-    private data class SaveableBoolean(override val value: Boolean): SaveableValue
+    private data class SaveableBoolean(override val value: Boolean) : SaveableValue
 
     @Serializable
-    private data class SaveableByte(override val value: Byte): SaveableValue
+    private data class SaveableByte(override val value: Byte) : SaveableValue
 
     @Serializable
-    private data class SaveableShort(override val value: Short): SaveableValue
+    private data class SaveableShort(override val value: Short) : SaveableValue
 
     @Serializable
-    private data class SaveableInt(override val value: Int): SaveableValue
+    private data class SaveableInt(override val value: Int) : SaveableValue
 
     @Serializable
-    private data class SaveableLong(override val value: Long): SaveableValue
+    private data class SaveableLong(override val value: Long) : SaveableValue
 
     @Serializable
-    private data class SaveableFloat(override val value: Float): SaveableValue
+    private data class SaveableFloat(override val value: Float) : SaveableValue
 
     @Serializable
-    private data class SaveableDouble(override val value: Double): SaveableValue
+    private data class SaveableDouble(override val value: Double) : SaveableValue
 
     @Serializable
-    private data class SaveableChar(override val value: Char): SaveableValue
+    private data class SaveableChar(override val value: Char) : SaveableValue
 
     @Serializable
-    private data class SaveableString(override val value: String): SaveableValue
+    private data class SaveableString(override val value: String) : SaveableValue
 
     @Serializable
-    private data class SaveableAny(@Polymorphic override val value: Any?): SaveableValue
+    private data class SaveableAny(@Polymorphic override val value: Any?) : SaveableValue
 
     @Serializable
     private data class PmState(
-        val routerStates: List<RouterState>?,
+        val pmTag: String,
+        val routers: List<RouterState>,
+        val states: List<@Polymorphic Saveable?>
     )
 
     @Serializable
@@ -249,7 +265,6 @@ class PmActivityDelegate<PM, A>(
     @Serializable
     private data class BackStackEntryState(
         @Polymorphic val description: Saveable,
-        val pmTag: String,
-        val states: List<@Polymorphic Saveable?>
+        val pmState: PmState
     )
 }
