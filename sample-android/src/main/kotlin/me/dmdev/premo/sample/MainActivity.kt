@@ -36,13 +36,27 @@ import androidx.compose.ui.unit.dp
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import me.dmdev.premo.PmActivity
+import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
 import me.dmdev.premo.invoke
+import me.dmdev.premo.navigation.PmFactory
 
 class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
+    private val pmFactory = object : PmFactory {
+        override fun createPm(description: Saveable): PresentationModel {
+            return when (description) {
+                is SamplesPm.Description -> SamplesPm()
+                is CounterPm.Description -> CounterPm(description.maxCount)
+                is MultistackPm.Description -> MultistackPm(this)
+                is ItemPm.Description -> ItemPm(description.screenTitle, description.tabTitle)
+                else -> throw IllegalStateException("Not handled instance creation for pm description $description")
+            }
+        }
+    }
+
     override fun providePresentationModel(): MainPm {
-        return MainPm()
+        return MainPm(pmFactory)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -29,10 +29,16 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
 import me.dmdev.premo.SimpleAction
 
-class ItemPm(val title: String) : PresentationModel() {
+class ItemPm(
+    val screenTitle: String,
+    val tabTitle: String
+) : PresentationModel() {
 
     @Serializable
-    class Description(val title: String): Saveable
+    class Description(
+        val screenTitle: String,
+        val tabTitle: String
+    ) : Saveable
 
     val nextClick = SimpleAction<Unit> {
         handleNavigationMessage(NextClickMessage)

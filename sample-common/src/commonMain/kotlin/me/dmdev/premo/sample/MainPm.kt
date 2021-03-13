@@ -25,22 +25,10 @@
 package me.dmdev.premo.sample
 
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 
-class MainPm : PresentationModel() {
-
-    private val pmFactory = object : PmFactory {
-        override fun createPm(description: Saveable): PresentationModel {
-            return when (description) {
-                is SamplesPm.Description -> SamplesPm()
-                is CounterPm.Description -> CounterPm(description.maxCount)
-                is MultistackPm.Description -> MultistackPm()
-                else -> throw IllegalStateException("Not handled instance creation for pm description $description")
-            }
-        }
-    }
+class MainPm(pmFactory: PmFactory) : PresentationModel() {
 
     val router = Router(pmFactory, SamplesPm.Description)
 

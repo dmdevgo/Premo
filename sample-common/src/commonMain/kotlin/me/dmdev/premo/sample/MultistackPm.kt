@@ -36,24 +36,15 @@ import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
 import me.dmdev.premo.navigation.PmStackChange
 
-class MultistackPm : PresentationModel() {
-
-    private val pmFactory = object : PmFactory {
-        override fun createPm(description: Saveable): PresentationModel {
-            return when (description) {
-                is ItemPm.Description -> ItemPm(description.title)
-                else -> throw IllegalStateException("Not handled instance creation for pm description $description")
-            }
-        }
-    }
+class MultistackPm(pmFactory: PmFactory) : PresentationModel() {
 
     @Serializable
     object Description : Saveable
 
     val routers = listOf(
-        Router(pmFactory, ItemPm.Description(1.toString())),
-        Router(pmFactory, ItemPm.Description(1.toString())),
-        Router(pmFactory, ItemPm.Description(1.toString()))
+        Router(pmFactory, ItemPm.Description(1.toString(), 1.toString())),
+        Router(pmFactory, ItemPm.Description(1.toString(), 2.toString())),
+        Router(pmFactory, ItemPm.Description(1.toString(), 3.toString()))
     )
 
     val currentTabRouter = State(routers.first())
@@ -71,8 +62,12 @@ class MultistackPm : PresentationModel() {
         when (message) {
             NextClickMessage -> {
                 val number = currentTabRouter.value.pmStack.value.size + 1
+                val tabNumber = routers.indexOf(currentTabRouter.value) + 1
                 currentTabRouter.value.push(
-                    ItemPm.Description(number.toString())
+                    ItemPm.Description(
+                        screenTitle = number.toString(),
+                        tabTitle = tabNumber.toString()
+                    )
                 )
             }
             PreviousClickMessage -> currentTabRouter.value.pop()

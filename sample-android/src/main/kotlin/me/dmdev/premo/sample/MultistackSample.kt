@@ -74,7 +74,12 @@ fun itemScreen(pm: ItemPm) {
     ) {
         Text(
             fontSize = 24.sp,
-            text = "Screen ${pm.title}"
+            text = "Screen: ${pm.screenTitle}"
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            fontSize = 24.sp,
+            text = "Tab: ${pm.tabTitle}"
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(onClick = { pm.nextClick() }) {
