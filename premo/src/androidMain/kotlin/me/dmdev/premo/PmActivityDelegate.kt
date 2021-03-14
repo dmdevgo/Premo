@@ -149,18 +149,25 @@ class PmActivityDelegate<PM, A>(
     }
 
     private fun savePm(pm: PresentationModel): PmState {
+
+        val router = pm.routerOrNull
+        val routerState = if (router != null) {
+            RouterState(
+                router.pmStack.value.map { entry ->
+                    BackStackEntryState(
+                        description = entry.description,
+                        pmState = savePm(entry.pm)
+                    )
+                }
+            )
+        } else {
+            null
+        }
+
         return PmState(
             pmTag = pm.tag,
-            routers = pm.routers.map { router ->
-                RouterState(
-                    router.pmStack.value.map { entry ->
-                        BackStackEntryState(
-                            description = entry.description,
-                            pmState = savePm(entry.pm)
-                        )
-                    }
-                )
-            },
+            router = routerState,
+            children = pm.children.map { childPm -> savePm(childPm) },
             states = pm.saveableStates.map { state ->
                 when (val value = state.value) {
                     is Boolean -> SaveableBoolean(value)
@@ -194,10 +201,13 @@ class PmActivityDelegate<PM, A>(
                 else -> null
             }
         }
-        pmState.routers.forEachIndexed { index, routerState ->
-            val router = pm.routers[index]
-            routerState.backStackState.forEach { entry ->
-                @Suppress("UNCHECKED_CAST")
+        pmState.children.forEachIndexed { index, pmState ->
+            restorePm(pm.children[index], pmState)
+        }
+
+        val router = pm.routerOrNull
+        if (router != null && pmState.router != null) {
+            pmState.router.backStackState.forEach { entry ->
                 router.push(entry.description, entry.pmState.pmTag)
                 restorePm(router.pmStack.value.last().pm, entry.pmState)
             }
@@ -255,7 +265,8 @@ class PmActivityDelegate<PM, A>(
     @Serializable
     private data class PmState(
         val pmTag: String,
-        val routers: List<RouterState>,
+        val router: RouterState?,
+        val children: List<PmState>,
         val states: List<@Polymorphic Saveable?>
     )
 

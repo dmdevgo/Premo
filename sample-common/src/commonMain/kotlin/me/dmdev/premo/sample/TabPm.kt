@@ -24,60 +24,51 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
-import me.dmdev.premo.SimpleAction
-import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
-import me.dmdev.premo.navigation.PmRouter
-import me.dmdev.premo.navigation.PmStackChange
 
-class MultistackPm(pmFactory: PmFactory) : PresentationModel() {
+class TabPm(
+    pmFactory: PmFactory,
+    private val tabTitle: String
+) : PresentationModel(pmFactory) {
 
     @Serializable
-    object Description : Saveable
+    class Description(
+        val tabTitle: String
+    ) : Saveable
 
-    val routers = listOf(
-        Router(pmFactory, ItemPm.Description(1.toString(), 1.toString())),
-        Router(pmFactory, ItemPm.Description(1.toString(), 2.toString())),
-        Router(pmFactory, ItemPm.Description(1.toString(), 3.toString()))
-    )
-
-    val currentTabRouter = State(routers.first())
-
-    val currentTabStackChanges: Flow<PmStackChange>
-        get() {
-            return currentTabRouter.stateFlow().flatMapLatest { it.pmStackChanges }
+    override fun onCreate() {
+        super.onCreate()
+        if (router.pmStack.value.isEmpty()) {
+            router.push(ItemPm.Description(nextNumber().toString(), tabTitle))
         }
+    }
 
-    val onRouterTabClick = SimpleAction<PmRouter> { router ->
-        currentTabRouter.value = router
+    private fun nextNumber(): Int {
+        return router.pmStack.value.size + 1
     }
 
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
             NextClickMessage -> {
-                val number = currentTabRouter.value.pmStack.value.size + 1
-                val tabNumber = routers.indexOf(currentTabRouter.value) + 1
-                currentTabRouter.value.push(
+                router.push(
                     ItemPm.Description(
-                        screenTitle = number.toString(),
-                        tabTitle = tabNumber.toString()
+                        screenTitle = nextNumber().toString(),
+                        tabTitle = tabTitle
                     )
                 )
             }
-            PreviousClickMessage -> currentTabRouter.value.pop()
+            PreviousClickMessage -> router.pop()
             else -> super.handleNavigationMessage(message)
         }
     }
 
     override fun handleBack(): Boolean {
-        return if (currentTabRouter.value.pmStack.value.size > 1) {
-            currentTabRouter.value.pop()
+        return if (router.pmStack.value.size > 1) {
+            router.pop()
             true
         } else {
             false

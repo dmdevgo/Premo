@@ -25,23 +25,18 @@
 package me.dmdev.premo.sample
 
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.NavigationMessage
+import me.dmdev.premo.Saveable
 import me.dmdev.premo.navigation.PmFactory
 
-class MainPm(pmFactory: PmFactory) : PresentationModel(pmFactory) {
-
-    override fun onCreate() {
-        super.onCreate()
-        if (router.pmStack.value.isEmpty()) {
-            router.push(SamplesPm.Description)
-        }
-    }
-
-    override fun handleNavigationMessage(message: NavigationMessage) {
-        when (message) {
-            CounterSampleMessage -> router.push(CounterPm.Description(10))
-            MultistackSampleMessage -> router.push(BottomBarPm.Description)
-            else -> super.handleNavigationMessage(message)
+class MainPmFactory : PmFactory {
+    override fun createPm(description: Saveable): PresentationModel {
+        return when (description) {
+            is SamplesPm.Description -> SamplesPm()
+            is CounterPm.Description -> CounterPm(description.maxCount)
+            is BottomBarPm.Description -> BottomBarPm(pmFactory = this)
+            is TabPm.Description -> TabPm(pmFactory = this, description.tabTitle)
+            is ItemPm.Description -> ItemPm(description.screenTitle, description.tabTitle)
+            else -> throw IllegalStateException("Not handled instance creation for pm description $description")
         }
     }
 }

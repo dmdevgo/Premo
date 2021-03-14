@@ -24,24 +24,33 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.serialization.Serializable
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.NavigationMessage
+import me.dmdev.premo.Saveable
+import me.dmdev.premo.SimpleAction
+import me.dmdev.premo.State
 import me.dmdev.premo.navigation.PmFactory
 
-class MainPm(pmFactory: PmFactory) : PresentationModel(pmFactory) {
+class BottomBarPm(pmFactory: PmFactory) : PresentationModel(pmFactory) {
 
-    override fun onCreate() {
-        super.onCreate()
-        if (router.pmStack.value.isEmpty()) {
-            router.push(SamplesPm.Description)
-        }
+    @Serializable
+    object Description : Saveable
+
+    val tabPmList by lazy {
+        listOf<TabPm>(
+            createChildPm(TabPm.Description("1")),
+            createChildPm(TabPm.Description("2")),
+            createChildPm(TabPm.Description("3")),
+        )
     }
 
-    override fun handleNavigationMessage(message: NavigationMessage) {
-        when (message) {
-            CounterSampleMessage -> router.push(CounterPm.Description(10))
-            MultistackSampleMessage -> router.push(BottomBarPm.Description)
-            else -> super.handleNavigationMessage(message)
-        }
+    val currentTabPm = State(tabPmList.first())
+
+    val onRouterTabClick = SimpleAction<TabPm> { tabPm ->
+        currentTabPm.value = tabPm
+    }
+
+    override fun handleBack(): Boolean {
+        return currentTabPm.value.handleBack()
     }
 }

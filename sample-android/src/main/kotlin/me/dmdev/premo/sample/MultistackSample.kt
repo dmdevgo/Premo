@@ -36,14 +36,17 @@ import androidx.compose.ui.unit.sp
 import me.dmdev.premo.invoke
 
 @Composable
-fun multistackScreen(pm: MultistackPm) {
+fun bottomBarScreen(pm: BottomBarPm) {
+
+    val currentTabPm = pm.currentTabPm.bind()
+
     Scaffold(
         bottomBar = {
             BottomNavigation {
-                pm.routers.forEach { router ->
+                pm.tabPmList.forEach { tabPm ->
                     BottomNavigationItem(
-                        selected = router == pm.currentTabRouter.bind(),
-                        onClick = { pm.onRouterTabClick(router) },
+                        selected = tabPm == currentTabPm,
+                        onClick = { pm.onRouterTabClick(tabPm) },
                         icon = {
                             Icon(
                                 imageVector = Icons.Filled.Android,
@@ -55,7 +58,7 @@ fun multistackScreen(pm: MultistackPm) {
             }
         }
     ) {
-        navigation(pm.currentTabStackChanges.bind()) { pm ->
+        navigation(currentTabPm.pmStackChanges.bind()) { pm ->
             when (pm) {
                 is ItemPm -> itemScreen(pm)
                 else -> {

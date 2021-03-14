@@ -36,27 +36,13 @@ import androidx.compose.ui.unit.dp
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import me.dmdev.premo.PmActivity
-import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
 import me.dmdev.premo.invoke
-import me.dmdev.premo.navigation.PmFactory
 
 class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
-    private val pmFactory = object : PmFactory {
-        override fun createPm(description: Saveable): PresentationModel {
-            return when (description) {
-                is SamplesPm.Description -> SamplesPm()
-                is CounterPm.Description -> CounterPm(description.maxCount)
-                is MultistackPm.Description -> MultistackPm(this)
-                is ItemPm.Description -> ItemPm(description.screenTitle, description.tabTitle)
-                else -> throw IllegalStateException("Not handled instance creation for pm description $description")
-            }
-        }
-    }
-
     override fun providePresentationModel(): MainPm {
-        return MainPm(pmFactory)
+        return MainPm(pmFactory = MainPmFactory())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,11 +54,11 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
     @Composable
     fun mainScreen(pm: MainPm) {
-        navigation(pm.router.pmStackChanges.bind()) { pm ->
+        navigation(pm.pmStackChanges.bind()) { pm ->
             when (pm) {
                 is SamplesPm -> samplesScreen(pm)
                 is CounterPm -> counterScreen(pm)
-                is MultistackPm -> multistackScreen(pm)
+                is BottomBarPm -> bottomBarScreen(pm)
                 else -> {
                 }
             }
@@ -111,8 +97,8 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
                 )
                 polymorphic(
                     Saveable::class,
-                    MultistackPm.Description::class,
-                    MultistackPm.Description.serializer()
+                    BottomBarPm.Description::class,
+                    BottomBarPm.Description.serializer()
                 )
                 polymorphic(
                     Saveable::class,

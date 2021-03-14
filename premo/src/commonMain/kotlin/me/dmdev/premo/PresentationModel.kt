@@ -32,26 +32,56 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
+import me.dmdev.premo.navigation.PmStackChange
 
-abstract class PresentationModel {
+abstract class PresentationModel(
+    private val pmFactory: PmFactory? = null
+) {
 
     val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
+
     var pmInForegroundScope: CoroutineScope? = null
+        private set
 
-    internal val routers = mutableListOf<PmRouter>()
-    internal val saveableStates = mutableListOf<State<*>>()
+    var tag: String = randomUUID()
+        internal set
 
-    internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
-    private val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    var parentPm: PresentationModel? = null
+        internal set
 
-    internal var parentPm: PresentationModel? = null
+    val pmStackChanges: Flow<PmStackChange> get() = router.pmStackChanges
+
+    protected val router: PmRouter by lazy {
+        PmRouter(this, requirePmFactory())
+    }
+
+    internal val routerOrNull: PmRouter? get() {
+        return if (pmFactory != null) {
+            router
+        } else  {
+            null
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    protected fun <PM : PresentationModel> createChildPm(description: Saveable): PM {
+        return requirePmFactory()
+            .createPm(description)
+            .also { pm ->
+                pm.parentPm = this
+                children.add(pm)
+                pm.moveLifecycleTo(lifecycleState.value)
+            } as PM
+    }
+
+    private fun requirePmFactory(): PmFactory {
+        println("DDDD PM = ${this::class.qualifiedName} pmFactory = $pmFactory, parentPm = $parentPm")
+        return pmFactory
+            ?: throw IllegalStateException("PmFactory is null. Please, pass PmFactory to the PM constructor")
+    }
 
     protected var <T> State<T>.value: T
         get() = mutableStateFlow.value
@@ -59,8 +89,14 @@ abstract class PresentationModel {
             mutableStateFlow.value = value
         }
 
-    var tag: String = randomUUID()
-        internal set
+    internal val children = mutableListOf<PresentationModel>()
+    internal val saveableStates = mutableListOf<State<*>>()
+
+    internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
+    private val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
 
     protected fun <T> Flow<T>.consumeBy(state: State<T>): Flow<T> {
         return onEach { state.mutableStateFlow.value = it }
@@ -95,8 +131,10 @@ abstract class PresentationModel {
     }
 
     open fun handleBack(): Boolean {
-        routers.forEach { router ->
-            val handledByNestedPm = router.pmStack.value.lastOrNull()?.pm?.handleBack() ?: false
+        val router = routerOrNull
+        if (router != null) {
+            val handledByNestedPm =
+                router.pmStack.value.lastOrNull()?.pm?.handleBack() ?: false
             if (handledByNestedPm.not()) {
                 if (router.pmStack.value.size > 1) {
                     router.pop()
@@ -105,42 +143,26 @@ abstract class PresentationModel {
             } else {
                 return true
             }
-        }
-        return false
-    }
-
-    @Suppress("FunctionName")
-    protected fun Router(
-        pmFactory: PmFactory,
-        initialDescription: Saveable,
-    ): PmRouter {
-        return PmRouter(this, pmFactory).also { router ->
-            routers.add(router)
-            pmScope.launch {
-                lifecycleState
-//                    .first { it == LifecycleState.CREATED }
-                    .apply {
-                        if (router.pmStack.value.isEmpty()) {
-                            router.push(initialDescription)
-                        }
-                    }
-            }
+            return false
+        } else {
+            return false
         }
     }
 
     internal fun moveLifecycleTo(targetLifecycle: LifecycleState) {
 
-        fun moveRouterPm(targetLifecycle: LifecycleState) {
-            routers.forEach { router ->
-                router.pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(targetLifecycle)
+        fun moveChildren(targetLifecycle: LifecycleState) {
+            children.forEach { pm ->
+                pm.moveLifecycleTo(targetLifecycle)
             }
+            routerOrNull?.pmStack?.value?.lastOrNull()?.pm?.moveLifecycleTo(targetLifecycle)
         }
 
         fun doOnCreate() {
             lifecycleState.value = LifecycleState.CREATED
             lifecycleEvent.tryEmit(LifecycleEvent.ON_CREATE)
             onCreate()
-            moveRouterPm(LifecycleState.CREATED)
+            moveChildren(LifecycleState.CREATED)
         }
 
         fun doOnForeground() {
@@ -148,11 +170,11 @@ abstract class PresentationModel {
             lifecycleState.value = LifecycleState.IN_FOREGROUND
             lifecycleEvent.tryEmit(LifecycleEvent.ON_FOREGROUND)
             onForeground()
-            moveRouterPm(LifecycleState.IN_FOREGROUND)
+            moveChildren(LifecycleState.IN_FOREGROUND)
         }
 
         fun doOnBackground() {
-            moveRouterPm(LifecycleState.CREATED)
+            moveChildren(LifecycleState.CREATED)
             lifecycleState.value = LifecycleState.CREATED
             lifecycleEvent.tryEmit(LifecycleEvent.ON_BACKGROUND)
             onBackground()
@@ -160,7 +182,7 @@ abstract class PresentationModel {
         }
 
         fun doOnDestroy() {
-            moveRouterPm(LifecycleState.DESTROYED)
+            moveChildren(LifecycleState.DESTROYED)
             lifecycleState.value = LifecycleState.DESTROYED
             lifecycleEvent.tryEmit(LifecycleEvent.ON_DESTROY)
             onDestroy()
@@ -179,7 +201,8 @@ abstract class PresentationModel {
                     LifecycleState.IN_FOREGROUND -> {
                         doOnBackground()
                     }
-                    else -> { /*do nothing */ }
+                    else -> { /*do nothing */
+                    }
                 }
             }
             LifecycleState.IN_FOREGROUND -> {
@@ -191,7 +214,8 @@ abstract class PresentationModel {
                     LifecycleState.CREATED -> {
                         doOnForeground()
                     }
-                    else -> { /*do nothing */ }
+                    else -> { /*do nothing */
+                    }
                 }
             }
             LifecycleState.DESTROYED -> {
@@ -206,7 +230,8 @@ abstract class PresentationModel {
                         doOnBackground()
                         doOnDestroy()
                     }
-                    LifecycleState.DESTROYED -> { /*do nothing */ }
+                    LifecycleState.DESTROYED -> { /*do nothing */
+                    }
                 }
             }
         }
