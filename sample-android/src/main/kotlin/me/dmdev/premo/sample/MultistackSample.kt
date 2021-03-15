@@ -60,7 +60,7 @@ fun bottomBarScreen(pm: BottomBarPm) {
     ) {
         navigation(currentTabPm.pmStackChanges.bind()) { pm ->
             when (pm) {
-                is ItemPm -> itemScreen(pm)
+                is TabItemPm -> itemScreen(pm)
                 else -> {
                 }
             }
@@ -69,7 +69,7 @@ fun bottomBarScreen(pm: BottomBarPm) {
 }
 
 @Composable
-fun itemScreen(pm: ItemPm) {
+fun itemScreen(pmTab: TabItemPm) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -77,19 +77,19 @@ fun itemScreen(pm: ItemPm) {
     ) {
         Text(
             fontSize = 24.sp,
-            text = "Screen: ${pm.screenTitle}"
+            text = "Screen: ${pmTab.screenTitle}"
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             fontSize = 24.sp,
-            text = "Tab: ${pm.tabTitle}"
+            text = "Tab: ${pmTab.tabTitle}"
         )
         Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = { pm.nextClick() }) {
+        Button(onClick = { pmTab.nextClick() }) {
             Text("Next")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { pm.previousClick() }) {
+        Button(onClick = { pmTab.previousClick() }) {
             Text("Previous")
         }
     }

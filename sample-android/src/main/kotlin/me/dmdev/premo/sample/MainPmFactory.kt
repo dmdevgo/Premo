@@ -33,10 +33,18 @@ class MainPmFactory : PmFactory {
         return when (description) {
             is SamplesPm.Description -> SamplesPm()
             is CounterPm.Description -> CounterPm(description.maxCount)
-            is BottomBarPm.Description -> BottomBarPm(pmFactory = this)
+            is BottomBarPm.Description -> createBottomBarPm()
             is TabPm.Description -> TabPm(pmFactory = this, description.tabTitle)
-            is ItemPm.Description -> ItemPm(description.screenTitle, description.tabTitle)
+            is TabItemPm.Description -> TabItemPm(description.screenTitle, description.tabTitle)
             else -> throw IllegalStateException("Not handled instance creation for pm description $description")
         }
+    }
+
+    private fun createBottomBarPm(): BottomBarPm {
+        return BottomBarPm(
+            createTabPm = { description ->
+                TabPm(pmFactory = this, tabTitle = description.tabTitle)
+            }
+        )
     }
 }

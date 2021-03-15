@@ -29,20 +29,19 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
 import me.dmdev.premo.SimpleAction
 import me.dmdev.premo.State
-import me.dmdev.premo.navigation.PmFactory
 
-class BottomBarPm(pmFactory: PmFactory) : PresentationModel(pmFactory) {
+class BottomBarPm(
+    createTabPm: (description: TabPm.Description) -> TabPm
+) : PresentationModel() {
 
     @Serializable
     object Description : Saveable
 
-    val tabPmList by lazy {
-        listOf<TabPm>(
-            createChildPm(TabPm.Description("1")),
-            createChildPm(TabPm.Description("2")),
-            createChildPm(TabPm.Description("3")),
-        )
-    }
+    val tabPmList = listOf(
+        Child(createTabPm(TabPm.Description("1"))),
+        Child(createTabPm(TabPm.Description("2"))),
+        Child(createTabPm(TabPm.Description("3"))),
+    )
 
     val currentTabPm = State(tabPmList.first())
 

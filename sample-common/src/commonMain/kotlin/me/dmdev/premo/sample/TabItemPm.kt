@@ -29,7 +29,7 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
 import me.dmdev.premo.SimpleAction
 
-class ItemPm(
+class TabItemPm(
     val screenTitle: String,
     val tabTitle: String
 ) : PresentationModel() {

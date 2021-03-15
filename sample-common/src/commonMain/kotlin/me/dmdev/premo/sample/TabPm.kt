@@ -24,44 +24,47 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
+import me.dmdev.premo.navigation.PmStackChange
 
 class TabPm(
     pmFactory: PmFactory,
     private val tabTitle: String
-) : PresentationModel(pmFactory) {
+) : PresentationModel() {
 
     @Serializable
     class Description(
         val tabTitle: String
     ) : Saveable
 
-    override fun onCreate() {
-        super.onCreate()
-        if (router.pmStack.value.isEmpty()) {
-            router.push(ItemPm.Description(nextNumber().toString(), tabTitle))
-        }
-    }
+    private var number: Int = 1
+
+    private val router = Router(pmFactory, TabItemPm.Description(nextNumber().toString(), tabTitle))
+    val pmStackChanges: Flow<PmStackChange> get() = router.pmStackChanges
 
     private fun nextNumber(): Int {
-        return router.pmStack.value.size + 1
+        return number++
     }
 
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
             NextClickMessage -> {
                 router.push(
-                    ItemPm.Description(
+                    TabItemPm.Description(
                         screenTitle = nextNumber().toString(),
                         tabTitle = tabTitle
                     )
                 )
             }
-            PreviousClickMessage -> router.pop()
+            PreviousClickMessage -> {
+                router.pop()
+                number--
+            }
             else -> super.handleNavigationMessage(message)
         }
     }

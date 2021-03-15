@@ -102,8 +102,8 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
                 )
                 polymorphic(
                     Saveable::class,
-                    ItemPm.Description::class,
-                    ItemPm.Description.serializer()
+                    TabItemPm.Description::class,
+                    TabItemPm.Description.serializer()
                 )
             }
         }

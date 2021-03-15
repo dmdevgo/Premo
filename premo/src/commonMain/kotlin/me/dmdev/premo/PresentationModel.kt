@@ -35,11 +35,8 @@ import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
-import me.dmdev.premo.navigation.PmStackChange
 
-abstract class PresentationModel(
-    private val pmFactory: PmFactory? = null
-) {
+abstract class PresentationModel {
 
     val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
 
@@ -52,35 +49,23 @@ abstract class PresentationModel(
     var parentPm: PresentationModel? = null
         internal set
 
-    val pmStackChanges: Flow<PmStackChange> get() = router.pmStackChanges
+    internal var routerOrNull: PmRouter? = null
+        private set
 
-    protected val router: PmRouter by lazy {
-        PmRouter(this, requirePmFactory())
-    }
 
-    internal val routerOrNull: PmRouter? get() {
-        return if (pmFactory != null) {
-            router
-        } else  {
-            null
+    protected fun PresentationModel.Router(pmFactory: PmFactory, initialDescription: Saveable?): PmRouter {
+        return routerOrNull ?: PmRouter(this, pmFactory).also { router ->
+            if (initialDescription != null) router.push(initialDescription)
+            routerOrNull = router
         }
     }
 
     @Suppress("UNCHECKED_CAST")
-    protected fun <PM : PresentationModel> createChildPm(description: Saveable): PM {
-        return requirePmFactory()
-            .createPm(description)
-            .also { pm ->
-                pm.parentPm = this
-                children.add(pm)
-                pm.moveLifecycleTo(lifecycleState.value)
-            } as PM
-    }
-
-    private fun requirePmFactory(): PmFactory {
-        println("DDDD PM = ${this::class.qualifiedName} pmFactory = $pmFactory, parentPm = $parentPm")
-        return pmFactory
-            ?: throw IllegalStateException("PmFactory is null. Please, pass PmFactory to the PM constructor")
+    protected fun <PM : PresentationModel> Child(pm: PM): PM {
+        pm.parentPm = this
+        children.add(pm)
+        pm.moveLifecycleTo(lifecycleState.value)
+        return pm
     }
 
     protected var <T> State<T>.value: T

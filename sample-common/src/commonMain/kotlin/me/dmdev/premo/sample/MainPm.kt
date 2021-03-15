@@ -24,18 +24,16 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.coroutines.flow.Flow
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
+import me.dmdev.premo.navigation.PmStackChange
 
-class MainPm(pmFactory: PmFactory) : PresentationModel(pmFactory) {
+class MainPm(pmFactory: PmFactory) : PresentationModel() {
 
-    override fun onCreate() {
-        super.onCreate()
-        if (router.pmStack.value.isEmpty()) {
-            router.push(SamplesPm.Description)
-        }
-    }
+    private val router = Router(pmFactory, SamplesPm.Description)
+    val pmStackChanges: Flow<PmStackChange> get() = router.pmStackChanges
 
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
