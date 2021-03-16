@@ -27,7 +27,6 @@ package me.dmdev.premo
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.serialization.json.Json
 
 /**
  * Predefined [Activity][AppCompatActivity] implementing the [PmView][PmView].
@@ -43,7 +42,7 @@ abstract class PmActivity<PM : PresentationModel>(
 ) : AppCompatActivity(contentLayoutId) {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) {
-        PmActivityDelegate(this, provideJson()) {
+        PmActivityDelegate(this, providePmStateSaver()) {
             providePresentationModel()
         }
     }
@@ -54,7 +53,7 @@ abstract class PmActivity<PM : PresentationModel>(
     }
 
     abstract fun providePresentationModel(): PM
-    abstract fun provideJson(): Json
+    abstract fun providePmStateSaver(): PmStateSaver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

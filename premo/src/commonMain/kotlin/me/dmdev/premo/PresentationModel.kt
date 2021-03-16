@@ -75,7 +75,7 @@ abstract class PresentationModel {
         }
 
     internal val children = mutableListOf<PresentationModel>()
-    internal val saveableStates = mutableListOf<State<*>>()
+    internal val saveableStates = mutableListOf<SaveableState<*, *>>()
 
     internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
     private val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(

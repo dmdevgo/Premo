@@ -35,9 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
-import me.dmdev.premo.PmActivity
-import me.dmdev.premo.Saveable
-import me.dmdev.premo.invoke
+import me.dmdev.premo.*
 
 class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
@@ -82,30 +80,32 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
         }
     }
 
-    override fun provideJson(): Json {
-        return Json {
-            serializersModule = SerializersModule {
-                polymorphic(
-                    Saveable::class,
-                    SamplesPm.Description::class,
-                    SamplesPm.Description.serializer()
-                )
-                polymorphic(
-                    Saveable::class,
-                    CounterPm.Description::class,
-                    CounterPm.Description.serializer()
-                )
-                polymorphic(
-                    Saveable::class,
-                    BottomBarPm.Description::class,
-                    BottomBarPm.Description.serializer()
-                )
-                polymorphic(
-                    Saveable::class,
-                    TabItemPm.Description::class,
-                    TabItemPm.Description.serializer()
-                )
+    override fun providePmStateSaver(): PmStateSaver {
+        return JsonPmStateSaver(
+            providedJson = Json {
+                serializersModule = SerializersModule {
+                    polymorphic(
+                        Saveable::class,
+                        SamplesPm.Description::class,
+                        SamplesPm.Description.serializer()
+                    )
+                    polymorphic(
+                        Saveable::class,
+                        CounterPm.Description::class,
+                        CounterPm.Description.serializer()
+                    )
+                    polymorphic(
+                        Saveable::class,
+                        BottomBarPm.Description::class,
+                        BottomBarPm.Description.serializer()
+                    )
+                    polymorphic(
+                        Saveable::class,
+                        TabItemPm.Description::class,
+                        TabItemPm.Description.serializer()
+                    )
+                }
             }
-        }
+        )
     }
 }

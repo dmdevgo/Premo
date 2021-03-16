@@ -27,8 +27,6 @@ package me.dmdev.premo
 import android.app.Activity
 import android.os.Bundle
 import kotlinx.serialization.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
 import java.util.*
 
 /**
@@ -42,7 +40,7 @@ import java.util.*
  */
 class PmActivityDelegate<PM, A>(
     private val pmActivity: A,
-    providedJson: Json,
+    private val pmStateSaver: PmStateSaver,
     private val pmProvider: () -> PM,
 )
         where PM : PresentationModel,
@@ -53,28 +51,9 @@ class PmActivityDelegate<PM, A>(
         private const val SAVED_PM_STATE_KEY = "premo_presentation_model_state"
     }
 
-    private var json: Json
     private var commonDelegate: CommonDelegate<PM>? = null
 
     val presentationModel: PM? get() = commonDelegate?.presentationModel
-
-    init {
-        json = Json(providedJson) {
-            serializersModule = SerializersModule {
-                include(providedJson.serializersModule)
-                polymorphic(Saveable::class, SaveableBoolean::class, SaveableBoolean.serializer())
-                polymorphic(Saveable::class, SaveableByte::class, SaveableByte.serializer())
-                polymorphic(Saveable::class, SaveableShort::class, SaveableShort.serializer())
-                polymorphic(Saveable::class, SaveableInt::class, SaveableInt.serializer())
-                polymorphic(Saveable::class, SaveableLong::class, SaveableLong.serializer())
-                polymorphic(Saveable::class, SaveableFloat::class, SaveableFloat.serializer())
-                polymorphic(Saveable::class, SaveableDouble::class, SaveableDouble.serializer())
-                polymorphic(Saveable::class, SaveableChar::class, SaveableChar.serializer())
-                polymorphic(Saveable::class, SaveableString::class, SaveableString.serializer())
-                polymorphic(Saveable::class, SaveableAny::class, SaveableAny.serializer())
-            }
-        }
-    }
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
@@ -151,36 +130,19 @@ class PmActivityDelegate<PM, A>(
     private fun savePm(pm: PresentationModel): PmState {
 
         val router = pm.routerOrNull
-        val routerState = if (router != null) {
-            RouterState(
-                router.pmStack.value.map { entry ->
-                    BackStackEntryState(
-                        description = entry.description,
-                        pmState = savePm(entry.pm)
-                    )
-                }
+        val routerState = router?.pmStack?.value?.map { entry ->
+            BackStackEntryState(
+                description = entry.description,
+                pmState = savePm(entry.pm)
             )
-        } else {
-            null
-        }
+        } ?: listOf()
 
         return PmState(
             pmTag = pm.tag,
-            router = routerState,
+            routerState = routerState,
             children = pm.children.map { childPm -> savePm(childPm) },
             states = pm.saveableStates.map { state ->
-                when (val value = state.value) {
-                    is Boolean -> SaveableBoolean(value)
-                    is Byte -> SaveableByte(value)
-                    is Short -> SaveableShort(value)
-                    is Int -> SaveableInt(value)
-                    is Long -> SaveableLong(value)
-                    is Float -> SaveableFloat(value)
-                    is Double -> SaveableDouble(value)
-                    is Char -> SaveableChar(value)
-                    is String -> SaveableString(value)
-                    else -> SaveableAny(value)
-                }
+                state.saveableValue
             }
         )
     }
@@ -190,24 +152,23 @@ class PmActivityDelegate<PM, A>(
         val pmState = presentationModel?.let { pm ->
             savePm(pm)
         }
-        outState.putString(SAVED_PM_STATE_KEY, json.encodeToString(pmState))
+        if (pmState != null) {
+            outState.putByteArray(SAVED_PM_STATE_KEY, pmStateSaver.save(pmState))
+        }
     }
 
     private fun restorePm(pm: PresentationModel, pmState: PmState) {
         pm.tag = pmState.pmTag
         pmState.states.forEachIndexed { index, saveable ->
-            pm.saveableStates[index].value = when (saveable) {
-                is SaveableValue -> saveable.value
-                else -> null
-            }
+            pm.saveableStates[index].saveableValue = saveable
         }
         pmState.children.forEachIndexed { index, pmState ->
             restorePm(pm.children[index], pmState)
         }
 
         val router = pm.routerOrNull
-        if (router != null && pmState.router != null) {
-            pmState.router.backStackState.forEach { entry ->
+        if (router != null) {
+            pmState.routerState.forEach { entry ->
                 router.push(entry.description, entry.pmState.pmTag)
                 restorePm(router.pmStack.value.last().pm, entry.pmState)
             }
@@ -216,9 +177,9 @@ class PmActivityDelegate<PM, A>(
 
     private fun restorePmState(pm: PresentationModel, savedInstanceState: Bundle) {
 
-        val pmStateAsString = savedInstanceState.getString(SAVED_PM_STATE_KEY)
-        val pmState = if (pmStateAsString != null) {
-            json.decodeFromString<PmState>(pmStateAsString)
+        val pmStateAsByteArray = savedInstanceState.getByteArray(SAVED_PM_STATE_KEY)
+        val pmState = if (pmStateAsByteArray != null) {
+            pmStateSaver.restore(pmStateAsByteArray)
         } else {
             null
         }
@@ -227,55 +188,4 @@ class PmActivityDelegate<PM, A>(
             restorePm(pm, pmState)
         }
     }
-
-    private interface SaveableValue : Saveable {
-        val value: Any?
-    }
-
-    @Serializable
-    private data class SaveableBoolean(override val value: Boolean) : SaveableValue
-
-    @Serializable
-    private data class SaveableByte(override val value: Byte) : SaveableValue
-
-    @Serializable
-    private data class SaveableShort(override val value: Short) : SaveableValue
-
-    @Serializable
-    private data class SaveableInt(override val value: Int) : SaveableValue
-
-    @Serializable
-    private data class SaveableLong(override val value: Long) : SaveableValue
-
-    @Serializable
-    private data class SaveableFloat(override val value: Float) : SaveableValue
-
-    @Serializable
-    private data class SaveableDouble(override val value: Double) : SaveableValue
-
-    @Serializable
-    private data class SaveableChar(override val value: Char) : SaveableValue
-
-    @Serializable
-    private data class SaveableString(override val value: String) : SaveableValue
-
-    @Serializable
-    private data class SaveableAny(@Polymorphic override val value: Any?) : SaveableValue
-
-    @Serializable
-    private data class PmState(
-        val pmTag: String,
-        val router: RouterState?,
-        val children: List<PmState>,
-        val states: List<@Polymorphic Saveable?>
-    )
-
-    @Serializable
-    private data class RouterState(val backStackState: List<BackStackEntryState>)
-
-    @Serializable
-    private data class BackStackEntryState(
-        @Polymorphic val description: Saveable,
-        val pmState: PmState
-    )
 }

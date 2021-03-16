@@ -30,13 +30,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class State<T> internal constructor(
+open class State<T> internal constructor(
     internal val pm: PresentationModel,
     initialValue: T
 ) {
     internal val mutableStateFlow = MutableStateFlow(initialValue)
 
-    fun stateFlow() : StateFlow<T> = mutableStateFlow
+    fun stateFlow(): StateFlow<T> = mutableStateFlow
 
     infix fun bindTo(consumer: (T) -> Unit) {
         with(pm) {
@@ -74,13 +74,4 @@ fun <T> PresentationModel.State(
     }
 
     return state
-}
-
-@Suppress("FunctionName")
-fun <T> PresentationModel.SaveableState(
-    initialValue: T
-): State<T> {
-    return State(pm = this, initialValue = initialValue).also {
-        saveableStates.add(it)
-    }
 }
