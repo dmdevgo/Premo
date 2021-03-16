@@ -68,13 +68,4 @@ class TabPm(
             else -> super.handleNavigationMessage(message)
         }
     }
-
-    override fun handleBack(): Boolean {
-        return if (router.pmStack.value.size > 1) {
-            router.pop()
-            true
-        } else {
-            false
-        }
-    }
 }
