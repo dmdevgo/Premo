@@ -24,39 +24,28 @@
 
 package me.dmdev.premo.sample
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import me.dmdev.premo.PmActivity
-import me.dmdev.premo.PmStateSaver
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import me.dmdev.premo.invoke
 
-class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
-
-    override fun providePresentationModel(): MainPm {
-        return MainPm(pmFactory = MainPmFactory())
-    }
-
-    override fun providePmStateSaver(): PmStateSaver {
-        return JsonPmStateSave()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            mainScreen(getPresentationModel())
+@Composable
+fun samplesScreen(pm: SamplesPm) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = { pm.counterSampleClick() }) {
+            Text("Counter Sample")
         }
-    }
-
-    @Composable
-    fun mainScreen(pm: MainPm) {
-        navigation(pm.pmStackChanges.bind()) { pm ->
-            when (pm) {
-                is SamplesPm -> samplesScreen(pm)
-                is CounterPm -> counterScreen(pm)
-                is BottomBarPm -> bottomBarScreen(pm)
-                else -> {
-                }
-            }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { pm.multistackSampleClick() }) {
+            Text("Multistack Sample")
         }
     }
 }

@@ -22,20 +22,18 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.sample
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
+import me.dmdev.premo.*
 
-class JsonPmStateSaver(
-    providedJson: Json
-): PmStateSaver {
+class JsonPmStateSave: PmStateSaver {
 
-    private val json: Json = Json(providedJson) {
+    private val json = Json {
         serializersModule = SerializersModule {
-            include(providedJson.serializersModule)
             polymorphic(Saveable::class, SaveableBoolean::class, SaveableBoolean.serializer())
             polymorphic(Saveable::class, SaveableByte::class, SaveableByte.serializer())
             polymorphic(Saveable::class, SaveableShort::class, SaveableShort.serializer())
@@ -45,6 +43,27 @@ class JsonPmStateSaver(
             polymorphic(Saveable::class, SaveableDouble::class, SaveableDouble.serializer())
             polymorphic(Saveable::class, SaveableChar::class, SaveableChar.serializer())
             polymorphic(Saveable::class, SaveableString::class, SaveableString.serializer())
+
+            polymorphic(
+                Saveable::class,
+                SamplesPm.Description::class,
+                SamplesPm.Description.serializer()
+            )
+            polymorphic(
+                Saveable::class,
+                CounterPm.Description::class,
+                CounterPm.Description.serializer()
+            )
+            polymorphic(
+                Saveable::class,
+                BottomBarPm.Description::class,
+                BottomBarPm.Description.serializer()
+            )
+            polymorphic(
+                Saveable::class,
+                TabItemPm.Description::class,
+                TabItemPm.Description.serializer()
+            )
         }
     }
 
