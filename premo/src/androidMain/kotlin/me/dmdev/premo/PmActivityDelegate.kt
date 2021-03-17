@@ -127,65 +127,18 @@ class PmActivityDelegate<PM, A>(
         return savedInstanceState?.getString(SAVED_PM_TAG_KEY) ?: UUID.randomUUID().toString()
     }
 
-    private fun savePm(pm: PresentationModel): PmState {
-
-        val router = pm.routerOrNull
-        val routerState = router?.pmStack?.value?.map { entry ->
-            BackStackEntryState(
-                description = entry.description,
-                pmState = savePm(entry.pm)
-            )
-        } ?: listOf()
-
-        return PmState(
-            pmTag = pm.tag,
-            routerState = routerState,
-            children = pm.children.map { childPm -> savePm(childPm) },
-            states = pm.saveableStates.map { state ->
-                state.saveableValue
-            }
-        )
-    }
-
     private fun savePmState(outState: Bundle) {
         outState.putString(SAVED_PM_TAG_KEY, commonDelegate?.pmTag)
-        val pmState = presentationModel?.let { pm ->
-            savePm(pm)
-        }
-        if (pmState != null) {
+        presentationModel?.let { pm ->
+            val pmState = pm.saveState()
             outState.putByteArray(SAVED_PM_STATE_KEY, pmStateSaver.save(pmState))
         }
     }
 
-    private fun restorePm(pm: PresentationModel, pmState: PmState) {
-        pm.tag = pmState.pmTag
-        pmState.states.forEachIndexed { index, saveable ->
-            pm.saveableStates[index].saveableValue = saveable
-        }
-        pmState.children.forEachIndexed { index, pmState ->
-            restorePm(pm.children[index], pmState)
-        }
-
-        val router = pm.routerOrNull
-        if (router != null) {
-            pmState.routerState.forEach { entry ->
-                router.push(entry.description, entry.pmState.pmTag)
-                restorePm(router.pmStack.value.last().pm, entry.pmState)
-            }
-        }
-    }
-
     private fun restorePmState(pm: PresentationModel, savedInstanceState: Bundle) {
-
         val pmStateAsByteArray = savedInstanceState.getByteArray(SAVED_PM_STATE_KEY)
-        val pmState = if (pmStateAsByteArray != null) {
-            pmStateSaver.restore(pmStateAsByteArray)
-        } else {
-            null
-        }
-
-        if (pmState != null) {
-            restorePm(pm, pmState)
+        if (pmStateAsByteArray != null) {
+            pm.restoreState(pmState = pmStateSaver.restore(pmStateAsByteArray))
         }
     }
 }

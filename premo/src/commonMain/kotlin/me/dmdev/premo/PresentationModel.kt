@@ -28,10 +28,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
@@ -49,9 +47,7 @@ abstract class PresentationModel {
     var parentPm: PresentationModel? = null
         internal set
 
-    internal var routerOrNull: PmRouter? = null
-        private set
-
+    private var routerOrNull: PmRouter? = null
 
     protected fun PresentationModel.Router(pmFactory: PmFactory, initialDescription: Saveable?): PmRouter {
         return routerOrNull ?: PmRouter(this, pmFactory).also { router ->
@@ -74,26 +70,14 @@ abstract class PresentationModel {
             mutableStateFlow.value = value
         }
 
-    internal val children = mutableListOf<PresentationModel>()
     internal val saveableStates = mutableListOf<SaveableState<*, *>>()
+    private val children = mutableListOf<PresentationModel>()
 
     internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
     private val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-
-    protected fun <T> Flow<T>.consumeBy(state: State<T>): Flow<T> {
-        return onEach { state.mutableStateFlow.value = it }
-    }
-
-    protected fun <T> Flow<T>.consumeBy(action: Action<T>): Flow<T> {
-        return onEach { action.invoke(it) }
-    }
-
-    protected fun <T> Flow<T>.consumeBy(command: Command<T>): Flow<T> {
-        return onEach { command.emit(it) }
-    }
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected open fun onCreate() {
@@ -131,6 +115,44 @@ abstract class PresentationModel {
             return false
         } else {
             return false
+        }
+    }
+
+    internal fun saveState(pm: PresentationModel = this): PmState {
+
+        val router = pm.routerOrNull
+        val routerState = router?.pmStack?.value?.map { entry ->
+            BackStackEntryState(
+                description = entry.description,
+                pmState = saveState(entry.pm)
+            )
+        } ?: listOf()
+
+        return PmState(
+            pmTag = pm.tag,
+            routerState = routerState,
+            children = pm.children.map { childPm -> saveState(childPm) },
+            states = pm.saveableStates.map { state ->
+                state.saveableValue
+            }
+        )
+    }
+
+    internal fun restoreState(pm: PresentationModel = this, pmState: PmState) {
+        pm.tag = pmState.pmTag
+        pmState.states.forEachIndexed { index, saveable ->
+            pm.saveableStates[index].saveableValue = saveable
+        }
+        pmState.children.forEachIndexed { index, pmState ->
+            restoreState(pm.children[index], pmState)
+        }
+
+        val router = pm.routerOrNull
+        if (router != null) {
+            pmState.routerState.forEach { entry ->
+                router.push(entry.description, entry.pmState.pmTag)
+                restoreState(router.pmStack.value.last().pm, entry.pmState)
+            }
         }
     }
 
