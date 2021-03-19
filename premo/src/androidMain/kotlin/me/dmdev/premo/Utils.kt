@@ -24,14 +24,7 @@
 
 package me.dmdev.premo
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import java.util.*
-
-internal actual object Dispatchers {
-    actual val UI: CoroutineDispatcher
-        get() = Dispatchers.Main.immediate
-}
 
 internal actual fun randomUUID(): String {
     return UUID.randomUUID().toString()

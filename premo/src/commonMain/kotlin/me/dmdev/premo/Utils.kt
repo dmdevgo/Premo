@@ -24,10 +24,5 @@
 
 package me.dmdev.premo
 
-import kotlinx.coroutines.CoroutineDispatcher
-
-internal expect object Dispatchers {
-    val UI: CoroutineDispatcher
-}
 
 internal expect fun randomUUID(): String

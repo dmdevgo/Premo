@@ -25,6 +25,7 @@
 package me.dmdev.premo
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -36,7 +37,7 @@ import me.dmdev.premo.navigation.PmRouter
 
 abstract class PresentationModel {
 
-    val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
+    val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     var pmInForegroundScope: CoroutineScope? = null
         private set
@@ -173,7 +174,7 @@ abstract class PresentationModel {
         }
 
         fun doOnForeground() {
-            pmInForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.UI)
+            pmInForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
             lifecycleState.value = LifecycleState.IN_FOREGROUND
             lifecycleEvent.tryEmit(LifecycleEvent.ON_FOREGROUND)
             onForeground()
