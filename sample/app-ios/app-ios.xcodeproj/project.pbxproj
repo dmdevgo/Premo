@@ -10,10 +10,10 @@
 		DD2A8D5C260666DC00BE07A7 /* PremoSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2A8D5B260666DC00BE07A7 /* PremoSampleApp.swift */; };
 		DD2A8D60260666DE00BE07A7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2A8D5F260666DE00BE07A7 /* Assets.xcassets */; };
 		DD2A8D63260666DE00BE07A7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2A8D62260666DE00BE07A7 /* Preview Assets.xcassets */; };
-		DD2A8D6E260667A500BE07A7 /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2A8D6D260667A500BE07A7 /* CounterView.swift */; };
-		DD6833332606682000FE13F4 /* ObservableState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6833322606682000FE13F4 /* ObservableState.swift */; };
 		DD68333726066B3B00FE13F4 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD68333626066B3B00FE13F4 /* Common.framework */; };
 		DD68333826066B3B00FE13F4 /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD68333626066B3B00FE13F4 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DD68333B26066DA600FE13F4 /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD68333A26066DA600FE13F4 /* CounterView.swift */; };
+		DD68333D26066DD200FE13F4 /* ObservableState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD68333C26066DD200FE13F4 /* ObservableState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -36,9 +36,9 @@
 		DD2A8D5F260666DE00BE07A7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DD2A8D62260666DE00BE07A7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		DD2A8D64260666DE00BE07A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DD2A8D6D260667A500BE07A7 /* CounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView.swift; sourceTree = "<group>"; };
-		DD6833322606682000FE13F4 /* ObservableState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableState.swift; sourceTree = "<group>"; };
 		DD68333626066B3B00FE13F4 /* Common.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Common.framework; path = "../app-common/build/xcode-frameworks/Common.framework"; sourceTree = "<group>"; };
+		DD68333A26066DA600FE13F4 /* CounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView.swift; sourceTree = "<group>"; };
+		DD68333C26066DD200FE13F4 /* ObservableState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,8 +77,8 @@
 				DD2A8D5F260666DE00BE07A7 /* Assets.xcassets */,
 				DD2A8D64260666DE00BE07A7 /* Info.plist */,
 				DD2A8D61260666DE00BE07A7 /* Preview Content */,
-				DD2A8D6D260667A500BE07A7 /* CounterView.swift */,
-				DD6833322606682000FE13F4 /* ObservableState.swift */,
+				DD68333A26066DA600FE13F4 /* CounterView.swift */,
+				DD68333C26066DD200FE13F4 /* ObservableState.swift */,
 			);
 			path = "app-ios";
 			sourceTree = "<group>";
@@ -170,8 +170,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD2A8D5C260666DC00BE07A7 /* PremoSampleApp.swift in Sources */,
-				DD6833332606682000FE13F4 /* ObservableState.swift in Sources */,
-				DD2A8D6E260667A500BE07A7 /* CounterView.swift in Sources */,
+				DD68333D26066DD200FE13F4 /* ObservableState.swift in Sources */,
+				DD68333B26066DA600FE13F4 /* CounterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
