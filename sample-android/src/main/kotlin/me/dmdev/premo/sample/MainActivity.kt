@@ -29,6 +29,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import me.dmdev.premo.PmActivity
 import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.navigation.PmStackChange
 
 class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
@@ -49,13 +50,12 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
     @Composable
     fun mainScreen(pm: MainPm) {
-        navigation(pm.pmStackChanges.bind()) { pm ->
+        navigation(pm.pmStackChanges.bind(PmStackChange.Empty)) { pm ->
             when (pm) {
                 is SamplesPm -> samplesScreen(pm)
                 is CounterPm -> counterScreen(pm)
                 is BottomBarPm -> bottomBarScreen(pm)
-                else -> {
-                }
+                else -> emptyScreen()
             }
         }
     }

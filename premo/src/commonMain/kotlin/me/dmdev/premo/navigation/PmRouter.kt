@@ -58,11 +58,10 @@ class PmRouter internal constructor(
             } else if (newTop != null) {
                 PmStackChange.Set(newTop.pm)
             } else {
-                null
+                PmStackChange.Empty
             }
-            if (pmStackChange != null) {
-                emit(pmStackChange)
-            }
+
+            emit(pmStackChange)
             oldPmStack = newPmStack
         }
     }
@@ -76,10 +75,15 @@ class PmRouter internal constructor(
         pmStack.value = pmStack.value.plus(BackStackEntry(pm, description))
     }
 
-    fun pop() {
-        pmStack.value.last().pm.moveLifecycleTo(LifecycleState.DESTROYED)
-        pmStack.value = pmStack.value.dropLast(1)
-        pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(hostPm.lifecycleState.value)
+    fun pop(): Boolean {
+        return if (pmStack.value.isNotEmpty()) {
+            pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(LifecycleState.DESTROYED)
+            if (pmStack.value.isNotEmpty()) pmStack.value = pmStack.value.dropLast(1)
+            pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(hostPm.lifecycleState.value)
+            true
+        } else {
+            false
+        }
     }
 
     class BackStackEntry(

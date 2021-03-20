@@ -100,6 +100,15 @@ abstract class PresentationModel {
         parentPm?.handleNavigationMessage(message)
     }
 
+    open fun back() {
+        val router = routerOrNull
+        if (router != null && router.pmStack.value.size > 1) {
+            router.pop()
+        } else {
+            parentPm?.back()
+        }
+    }
+
     open fun handleBack(): Boolean {
         val router = routerOrNull
         if (router != null) {

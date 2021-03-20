@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.dmdev.premo.invoke
+import me.dmdev.premo.navigation.PmStackChange
 
 @Composable
 fun bottomBarScreen(pm: BottomBarPm) {
@@ -58,11 +59,10 @@ fun bottomBarScreen(pm: BottomBarPm) {
             }
         }
     ) {
-        navigation(currentTabPm.pmStackChanges.bind()) { pm ->
+        navigation(currentTabPm.pmStackChanges.bind(PmStackChange.Empty)) { pm ->
             when (pm) {
                 is TabItemPm -> itemScreen(pm)
-                else -> {
-                }
+                else -> emptyScreen()
             }
         }
     }

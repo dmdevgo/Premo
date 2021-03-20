@@ -62,7 +62,7 @@ class TabPm(
                 )
             }
             PreviousClickMessage -> {
-                router.pop()
+                back()
                 number--
             }
             else -> super.handleNavigationMessage(message)

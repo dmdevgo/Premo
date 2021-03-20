@@ -44,12 +44,16 @@ fun <T> Flow<T>.bind(): T? {
     return collectAsState(null).value
 }
 
+@Composable
+fun <T> Flow<T>.bind(initialValue: T): T {
+    return collectAsState(initialValue).value
+}
 
 @Composable
 fun navigation(
-    pmStackChange: PmStackChange?,
+    pmStackChange: PmStackChange,
     modifier: Modifier = Modifier,
-    content: @Composable (PresentationModel) -> Unit
+    content: @Composable (PresentationModel?) -> Unit
 ) {
 
     val stateHolder = rememberSaveableStateHolder()
@@ -66,14 +70,12 @@ fun navigation(
         is PmStackChange.Set -> {
             pmStackChange.pm
         }
-        else -> null
+        is PmStackChange.Empty -> null
     }
 
     Box(modifier) {
-        if (pm != null) {
-            stateHolder.SaveableStateProvider(pm.tag) {
-                content(pm)
-            }
+        stateHolder.SaveableStateProvider(pm?.tag ?: "") {
+            content(pm)
         }
     }
 }
