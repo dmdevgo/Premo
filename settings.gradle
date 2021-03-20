@@ -1,4 +1,4 @@
 rootProject.name='Premo'
-include ':sample-android'
-include ':sample-common'
+include ':sample:app-android'
+include ':sample:app-common'
 include ':premo'

@@ -7,23 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DDE68E21260624E300BEFE78 /* PremoSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE68E20260624E300BEFE78 /* PremoSampleApp.swift */; };
-		DDE68E23260624E300BEFE78 /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE68E22260624E300BEFE78 /* CounterView.swift */; };
-		DDE68E25260624E400BEFE78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDE68E24260624E400BEFE78 /* Assets.xcassets */; };
-		DDE68E28260624E400BEFE78 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDE68E27260624E400BEFE78 /* Preview Assets.xcassets */; };
-		DDE68E32260626E500BEFE78 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDE68E31260626E500BEFE78 /* Common.framework */; };
-		DDE68E33260626E500BEFE78 /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DDE68E31260626E500BEFE78 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		DDE68E362606282A00BEFE78 /* ObservableState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE68E352606282A00BEFE78 /* ObservableState.swift */; };
+		DD2A8D5C260666DC00BE07A7 /* PremoSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2A8D5B260666DC00BE07A7 /* PremoSampleApp.swift */; };
+		DD2A8D60260666DE00BE07A7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2A8D5F260666DE00BE07A7 /* Assets.xcassets */; };
+		DD2A8D63260666DE00BE07A7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2A8D62260666DE00BE07A7 /* Preview Assets.xcassets */; };
+		DD2A8D6E260667A500BE07A7 /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2A8D6D260667A500BE07A7 /* CounterView.swift */; };
+		DD6833332606682000FE13F4 /* ObservableState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6833322606682000FE13F4 /* ObservableState.swift */; };
+		DD68333726066B3B00FE13F4 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD68333626066B3B00FE13F4 /* Common.framework */; };
+		DD68333826066B3B00FE13F4 /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD68333626066B3B00FE13F4 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		DDE68E34260626E500BEFE78 /* Embed Frameworks */ = {
+		DD68333926066B3B00FE13F4 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				DDE68E33260626E500BEFE78 /* Common.framework in Embed Frameworks */,
+				DD68333826066B3B00FE13F4 /* Common.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -31,70 +31,70 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		DDE68E1D260624E300BEFE78 /* PremoSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PremoSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		DDE68E20260624E300BEFE78 /* PremoSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremoSampleApp.swift; sourceTree = "<group>"; };
-		DDE68E22260624E300BEFE78 /* CounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView.swift; sourceTree = "<group>"; };
-		DDE68E24260624E400BEFE78 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		DDE68E27260624E400BEFE78 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		DDE68E29260624E400BEFE78 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DDE68E31260626E500BEFE78 /* Common.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Common.framework; path = "../../sample-common/build/xcode-frameworks/Common.framework"; sourceTree = "<group>"; };
-		DDE68E352606282A00BEFE78 /* ObservableState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableState.swift; sourceTree = "<group>"; };
+		DD2A8D58260666DC00BE07A7 /* app-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "app-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD2A8D5B260666DC00BE07A7 /* PremoSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremoSampleApp.swift; sourceTree = "<group>"; };
+		DD2A8D5F260666DE00BE07A7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DD2A8D62260666DE00BE07A7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		DD2A8D64260666DE00BE07A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD2A8D6D260667A500BE07A7 /* CounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView.swift; sourceTree = "<group>"; };
+		DD6833322606682000FE13F4 /* ObservableState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableState.swift; sourceTree = "<group>"; };
+		DD68333626066B3B00FE13F4 /* Common.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Common.framework; path = "../app-common/build/xcode-frameworks/Common.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		DDE68E1A260624E300BEFE78 /* Frameworks */ = {
+		DD2A8D55260666DC00BE07A7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DDE68E32260626E500BEFE78 /* Common.framework in Frameworks */,
+				DD68333726066B3B00FE13F4 /* Common.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		DDE68E14260624E300BEFE78 = {
+		DD2A8D4F260666DC00BE07A7 = {
 			isa = PBXGroup;
 			children = (
-				DDE68E1F260624E300BEFE78 /* PremoSample */,
-				DDE68E1E260624E300BEFE78 /* Products */,
-				DDE68E30260626E500BEFE78 /* Frameworks */,
+				DD2A8D5A260666DC00BE07A7 /* app-ios */,
+				DD2A8D59260666DC00BE07A7 /* Products */,
+				DD68333526066B3B00FE13F4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		DDE68E1E260624E300BEFE78 /* Products */ = {
+		DD2A8D59260666DC00BE07A7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DDE68E1D260624E300BEFE78 /* PremoSample.app */,
+				DD2A8D58260666DC00BE07A7 /* app-ios.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		DDE68E1F260624E300BEFE78 /* PremoSample */ = {
+		DD2A8D5A260666DC00BE07A7 /* app-ios */ = {
 			isa = PBXGroup;
 			children = (
-				DDE68E20260624E300BEFE78 /* PremoSampleApp.swift */,
-				DDE68E22260624E300BEFE78 /* CounterView.swift */,
-				DDE68E24260624E400BEFE78 /* Assets.xcassets */,
-				DDE68E29260624E400BEFE78 /* Info.plist */,
-				DDE68E26260624E400BEFE78 /* Preview Content */,
-				DDE68E352606282A00BEFE78 /* ObservableState.swift */,
+				DD2A8D5B260666DC00BE07A7 /* PremoSampleApp.swift */,
+				DD2A8D5F260666DE00BE07A7 /* Assets.xcassets */,
+				DD2A8D64260666DE00BE07A7 /* Info.plist */,
+				DD2A8D61260666DE00BE07A7 /* Preview Content */,
+				DD2A8D6D260667A500BE07A7 /* CounterView.swift */,
+				DD6833322606682000FE13F4 /* ObservableState.swift */,
 			);
-			path = PremoSample;
+			path = "app-ios";
 			sourceTree = "<group>";
 		};
-		DDE68E26260624E400BEFE78 /* Preview Content */ = {
+		DD2A8D61260666DE00BE07A7 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				DDE68E27260624E400BEFE78 /* Preview Assets.xcassets */,
+				DD2A8D62260666DE00BE07A7 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		DDE68E30260626E500BEFE78 /* Frameworks */ = {
+		DD68333526066B3B00FE13F4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DDE68E31260626E500BEFE78 /* Common.framework */,
+				DD68333626066B3B00FE13F4 /* Common.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -102,39 +102,39 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DDE68E1C260624E300BEFE78 /* PremoSample */ = {
+		DD2A8D57260666DC00BE07A7 /* app-ios */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DDE68E2C260624E400BEFE78 /* Build configuration list for PBXNativeTarget "PremoSample" */;
+			buildConfigurationList = DD2A8D67260666DE00BE07A7 /* Build configuration list for PBXNativeTarget "app-ios" */;
 			buildPhases = (
-				DDE68E19260624E300BEFE78 /* Sources */,
-				DDE68E1A260624E300BEFE78 /* Frameworks */,
-				DDE68E1B260624E300BEFE78 /* Resources */,
-				DDE68E34260626E500BEFE78 /* Embed Frameworks */,
+				DD2A8D54260666DC00BE07A7 /* Sources */,
+				DD2A8D55260666DC00BE07A7 /* Frameworks */,
+				DD2A8D56260666DC00BE07A7 /* Resources */,
+				DD68333926066B3B00FE13F4 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = PremoSample;
-			productName = PremoSample;
-			productReference = DDE68E1D260624E300BEFE78 /* PremoSample.app */;
+			name = "app-ios";
+			productName = "app-ios";
+			productReference = DD2A8D58260666DC00BE07A7 /* app-ios.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		DDE68E15260624E300BEFE78 /* Project object */ = {
+		DD2A8D50260666DC00BE07A7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
-					DDE68E1C260624E300BEFE78 = {
+					DD2A8D57260666DC00BE07A7 = {
 						CreatedOnToolsVersion = 12.4;
 					};
 				};
 			};
-			buildConfigurationList = DDE68E18260624E300BEFE78 /* Build configuration list for PBXProject "PremoSample" */;
+			buildConfigurationList = DD2A8D53260666DC00BE07A7 /* Build configuration list for PBXProject "app-ios" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -142,43 +142,43 @@
 				en,
 				Base,
 			);
-			mainGroup = DDE68E14260624E300BEFE78;
-			productRefGroup = DDE68E1E260624E300BEFE78 /* Products */;
+			mainGroup = DD2A8D4F260666DC00BE07A7;
+			productRefGroup = DD2A8D59260666DC00BE07A7 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DDE68E1C260624E300BEFE78 /* PremoSample */,
+				DD2A8D57260666DC00BE07A7 /* app-ios */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		DDE68E1B260624E300BEFE78 /* Resources */ = {
+		DD2A8D56260666DC00BE07A7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DDE68E28260624E400BEFE78 /* Preview Assets.xcassets in Resources */,
-				DDE68E25260624E400BEFE78 /* Assets.xcassets in Resources */,
+				DD2A8D63260666DE00BE07A7 /* Preview Assets.xcassets in Resources */,
+				DD2A8D60260666DE00BE07A7 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		DDE68E19260624E300BEFE78 /* Sources */ = {
+		DD2A8D54260666DC00BE07A7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DDE68E23260624E300BEFE78 /* CounterView.swift in Sources */,
-				DDE68E362606282A00BEFE78 /* ObservableState.swift in Sources */,
-				DDE68E21260624E300BEFE78 /* PremoSampleApp.swift in Sources */,
+				DD2A8D5C260666DC00BE07A7 /* PremoSampleApp.swift in Sources */,
+				DD6833332606682000FE13F4 /* ObservableState.swift in Sources */,
+				DD2A8D6E260667A500BE07A7 /* CounterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		DDE68E2A260624E400BEFE78 /* Debug */ = {
+		DD2A8D65260666DE00BE07A7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -239,7 +239,7 @@
 			};
 			name = Debug;
 		};
-		DDE68E2B260624E400BEFE78 /* Release */ = {
+		DD2A8D66260666DE00BE07A7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -294,44 +294,44 @@
 			};
 			name = Release;
 		};
-		DDE68E2D260624E400BEFE78 /* Debug */ = {
+		DD2A8D68260666DE00BE07A7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"PremoSample/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"app-ios/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../sample-common/build/xcode-frameworks";
-				INFOPLIST_FILE = PremoSample/Info.plist;
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../app-common/build/xcode-frameworks";
+				INFOPLIST_FILE = "app-ios/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.dmdev.premo.sample.PremoSample;
+				PRODUCT_BUNDLE_IDENTIFIER = me.dmdev.premo.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		DDE68E2E260624E400BEFE78 /* Release */ = {
+		DD2A8D69260666DE00BE07A7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"PremoSample/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"app-ios/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../sample-common/build/xcode-frameworks";
-				INFOPLIST_FILE = PremoSample/Info.plist;
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../app-common/build/xcode-frameworks";
+				INFOPLIST_FILE = "app-ios/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.dmdev.premo.sample.PremoSample;
+				PRODUCT_BUNDLE_IDENTIFIER = me.dmdev.premo.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -341,25 +341,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DDE68E18260624E300BEFE78 /* Build configuration list for PBXProject "PremoSample" */ = {
+		DD2A8D53260666DC00BE07A7 /* Build configuration list for PBXProject "app-ios" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DDE68E2A260624E400BEFE78 /* Debug */,
-				DDE68E2B260624E400BEFE78 /* Release */,
+				DD2A8D65260666DE00BE07A7 /* Debug */,
+				DD2A8D66260666DE00BE07A7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DDE68E2C260624E400BEFE78 /* Build configuration list for PBXNativeTarget "PremoSample" */ = {
+		DD2A8D67260666DE00BE07A7 /* Build configuration list for PBXNativeTarget "app-ios" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DDE68E2D260624E400BEFE78 /* Debug */,
-				DDE68E2E260624E400BEFE78 /* Release */,
+				DD2A8D68260666DE00BE07A7 /* Debug */,
+				DD2A8D69260666DE00BE07A7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = DDE68E15260624E300BEFE78 /* Project object */;
+	rootObject = DD2A8D50260666DC00BE07A7 /* Project object */;
 }
