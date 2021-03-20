@@ -24,6 +24,7 @@
 
 package me.dmdev.premo
 
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,12 +39,10 @@ open class State<T> internal constructor(
 
     fun stateFlow(): StateFlow<T> = mutableStateFlow
 
-    infix fun bindTo(consumer: (T) -> Unit) {
-        with(pm) {
-            pmInForegroundScope?.launch {
-                mutableStateFlow.collect { v ->
-                    consumer(v)
-                }
+    infix fun bind(consumer: (T) -> Unit): Job {
+        return pm.pmScope.launch {
+            mutableStateFlow.collect { value ->
+                consumer(value)
             }
         }
     }
@@ -67,8 +66,8 @@ fun <T> PresentationModel.State(
 
     if (stateSource != null) {
         pmScope.launch {
-            stateSource().collect { v ->
-                state.mutableStateFlow.value = v
+            stateSource().collect { value ->
+                state.mutableStateFlow.value = value
             }
         }
     }

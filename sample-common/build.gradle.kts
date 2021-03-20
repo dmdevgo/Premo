@@ -36,6 +36,7 @@ kotlin {
         binaries {
             framework {
                 baseName = "Common"
+                export(project(":premo"))
             }
         }
     }
