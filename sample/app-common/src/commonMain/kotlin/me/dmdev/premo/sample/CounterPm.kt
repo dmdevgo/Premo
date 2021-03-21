@@ -36,7 +36,6 @@ class CounterPm(
     class Description(val maxCount: Int): Saveable
 
     val count = SaveableState(0)
-    val messages = Command<String>()
 
     val plusButtonEnabled = State(false) {
         count.stateFlow().map { it < maxCount }
@@ -49,16 +48,12 @@ class CounterPm(
     val plus = SimpleAction<Unit> {
         if (count.value < maxCount) {
             count.value = count.value + 1
-        } else {
-            messages.emit("Max value reached")
         }
     }
 
     val minus = SimpleAction<Unit> {
         if (count.value > 0 ) {
             count.value = count.value - 1
-        } else {
-            messages.emit("Min value reached")
         }
     }
 }
