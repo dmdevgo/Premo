@@ -29,7 +29,7 @@ import Common
 struct PremoSampleApp: App {
     var body: some Scene {
         WindowGroup {
-            CounterView(pm: CounterPm(maxCount: 10))
+            MainView(pm: MainPm(pmFactory: MainPmFactory()))
         }
     }
 }

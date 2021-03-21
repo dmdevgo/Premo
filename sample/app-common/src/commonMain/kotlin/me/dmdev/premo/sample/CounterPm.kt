@@ -38,11 +38,11 @@ class CounterPm(
     val count = SaveableState(0)
 
     val plusButtonEnabled = State(false) {
-        count.stateFlow().map { it < maxCount }
+        count.flow().map { it < maxCount }
     }
 
     val minusButtonEnabled = State(false) {
-        count.stateFlow().map { it > 0 }
+        count.flow().map { it > 0 }
     }
 
     val plus = SimpleAction<Unit> {

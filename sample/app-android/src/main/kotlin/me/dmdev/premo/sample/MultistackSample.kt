@@ -48,6 +48,7 @@ fun bottomBarScreen(pm: BottomBarPm) {
                     BottomNavigationItem(
                         selected = tabPm == currentTabPm,
                         onClick = { pm.onRouterTabClick(tabPm) },
+                        label = { Text(tabPm.tabTitle) },
                         icon = {
                             Icon(
                                 imageVector = Icons.Filled.Android,
@@ -77,12 +78,12 @@ fun itemScreen(pmTab: TabItemPm) {
     ) {
         Text(
             fontSize = 24.sp,
-            text = "Screen: ${pmTab.screenTitle}"
+            text = pmTab.screenTitle
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             fontSize = 24.sp,
-            text = "Tab: ${pmTab.tabTitle}"
+            text = pmTab.tabTitle
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(onClick = { pmTab.nextClick() }) {

@@ -38,7 +38,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
     }
 
     override fun providePmStateSaver(): PmStateSaver {
-        return JsonPmStateSave()
+        return JsonPmStateSaver()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

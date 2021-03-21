@@ -22,29 +22,36 @@
  * SOFTWARE.
  */
 
-
-import Foundation
+import SwiftUI
 import Common
 
-public class ObservableState<T : AnyObject> : ObservableObject {
-    
-    private let observableState: State<T>
 
-    @Published
-    var value: T?
+struct TabItemView: View {
     
-    private var job: Kotlinx_coroutines_coreJob? = nil
+    private let pm: TabItemPm
     
-    init(_ value: State<T>) {
-        self.observableState = value
-        self.value = observableState.flow().value_ as? T
-        
-        job = observableState.bind(consumer: { value in
-            self.value = value
-        })
+    init(pm: TabItemPm) {
+        self.pm = pm
     }
     
-    deinit {
-        self.job?.cancel(cause: nil)
+    var body: some View {
+        VStack {
+            Text(pm.screenTitle)
+                .padding()
+            Text(pm.tabTitle)
+                .padding()
+            Button("Next", action: {
+                pm.nextClick.invoke()
+            }).padding()
+            Button("Previous", action: {
+                pm.previousClick.invoke()
+            }).padding()
+        }
+    }
+}
+
+struct TabItemView_Previews: PreviewProvider {
+    static var previews: some View {
+        TabItemView(pm: TabItemPm(screenTitle: "", tabTitle: ""))
     }
 }

@@ -14,6 +14,12 @@
 		DD68333826066B3B00FE13F4 /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD68333626066B3B00FE13F4 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DD68333B26066DA600FE13F4 /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD68333A26066DA600FE13F4 /* CounterView.swift */; };
 		DD68333D26066DD200FE13F4 /* ObservableState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD68333C26066DD200FE13F4 /* ObservableState.swift */; };
+		DD68334526075C5000FE13F4 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD68334426075C5000FE13F4 /* MainView.swift */; };
+		DD6833472607908A00FE13F4 /* SamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6833462607908A00FE13F4 /* SamplesView.swift */; };
+		DD68334D2607984A00FE13F4 /* MultistackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD68334C2607984A00FE13F4 /* MultistackView.swift */; };
+		DD68334F2607AF1600FE13F4 /* TabContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD68334E2607AF1600FE13F4 /* TabContainerView.swift */; };
+		DD6833512607B02500FE13F4 /* TabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6833502607B02500FE13F4 /* TabItemView.swift */; };
+		DD6833532607BC0900FE13F4 /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6833522607BC0900FE13F4 /* EmptyView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +45,12 @@
 		DD68333626066B3B00FE13F4 /* Common.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Common.framework; path = "../app-common/build/xcode-frameworks/Common.framework"; sourceTree = "<group>"; };
 		DD68333A26066DA600FE13F4 /* CounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView.swift; sourceTree = "<group>"; };
 		DD68333C26066DD200FE13F4 /* ObservableState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableState.swift; sourceTree = "<group>"; };
+		DD68334426075C5000FE13F4 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		DD6833462607908A00FE13F4 /* SamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesView.swift; sourceTree = "<group>"; };
+		DD68334C2607984A00FE13F4 /* MultistackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultistackView.swift; sourceTree = "<group>"; };
+		DD68334E2607AF1600FE13F4 /* TabContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabContainerView.swift; sourceTree = "<group>"; };
+		DD6833502607B02500FE13F4 /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
+		DD6833522607BC0900FE13F4 /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +91,12 @@
 				DD2A8D61260666DE00BE07A7 /* Preview Content */,
 				DD68333A26066DA600FE13F4 /* CounterView.swift */,
 				DD68333C26066DD200FE13F4 /* ObservableState.swift */,
+				DD68334426075C5000FE13F4 /* MainView.swift */,
+				DD6833462607908A00FE13F4 /* SamplesView.swift */,
+				DD68334C2607984A00FE13F4 /* MultistackView.swift */,
+				DD68334E2607AF1600FE13F4 /* TabContainerView.swift */,
+				DD6833502607B02500FE13F4 /* TabItemView.swift */,
+				DD6833522607BC0900FE13F4 /* EmptyView.swift */,
 			);
 			path = "app-ios";
 			sourceTree = "<group>";
@@ -169,9 +187,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD6833472607908A00FE13F4 /* SamplesView.swift in Sources */,
+				DD6833532607BC0900FE13F4 /* EmptyView.swift in Sources */,
+				DD68334D2607984A00FE13F4 /* MultistackView.swift in Sources */,
 				DD2A8D5C260666DC00BE07A7 /* PremoSampleApp.swift in Sources */,
 				DD68333D26066DD200FE13F4 /* ObservableState.swift in Sources */,
+				DD68334526075C5000FE13F4 /* MainView.swift in Sources */,
+				DD6833512607B02500FE13F4 /* TabItemView.swift in Sources */,
 				DD68333B26066DA600FE13F4 /* CounterView.swift in Sources */,
+				DD68334F2607AF1600FE13F4 /* TabContainerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

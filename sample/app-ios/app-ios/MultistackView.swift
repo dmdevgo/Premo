@@ -22,29 +22,34 @@
  * SOFTWARE.
  */
 
-
-import Foundation
+import SwiftUI
 import Common
 
-public class ObservableState<T : AnyObject> : ObservableObject {
+struct MultistackView: View {
     
-    private let observableState: State<T>
-
-    @Published
-    var value: T?
+    private let pm: BottomBarPm
     
-    private var job: Kotlinx_coroutines_coreJob? = nil
-    
-    init(_ value: State<T>) {
-        self.observableState = value
-        self.value = observableState.flow().value_ as? T
-        
-        job = observableState.bind(consumer: { value in
-            self.value = value
-        })
+    init(pm: BottomBarPm) {
+        self.pm = pm
     }
     
-    deinit {
-        self.job?.cancel(cause: nil)
+    var body: some View {
+        TabView {
+            ForEach(pm.tabPmList, id: \.self) { tabPm in
+                TabContainerView(pm: tabPm)
+                    .tabItem {
+                        Image(systemName: "star.fill")
+                        Text(tabPm.tabTitle)
+                    }
+            }
+        }
+    }
+}
+
+struct MultistackView_Previews: PreviewProvider {
+    static var previews: some View {
+        MultistackView(pm: BottomBarPm(createTabPm: { desc in
+            TabPm(pmFactory: MainPmFactory(), tabTitle: "#tab")
+        }))
     }
 }

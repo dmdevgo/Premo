@@ -37,7 +37,7 @@ open class State<T> internal constructor(
 ) {
     internal val mutableStateFlow = MutableStateFlow(initialValue)
 
-    fun stateFlow(): StateFlow<T> = mutableStateFlow
+    fun flow(): StateFlow<T> = mutableStateFlow
 
     infix fun bind(consumer: (T) -> Unit): Job {
         return pm.pmScope.launch {

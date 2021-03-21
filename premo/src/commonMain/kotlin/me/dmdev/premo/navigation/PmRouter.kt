@@ -38,7 +38,7 @@ class PmRouter internal constructor(
 
     val pmStackChanges: Flow<PmStackChange> = flow {
         var oldPmStack: List<BackStackEntry> = pmStack.value
-        pmStack.stateFlow().collect { newPmStack ->
+        pmStack.flow().collect { newPmStack ->
 
             val oldTop = oldPmStack.lastOrNull()
             val newTop = newPmStack.lastOrNull()

@@ -36,7 +36,7 @@ import me.dmdev.premo.navigation.PmStackChange
 
 @Composable
 fun <T> State<T>.bind(): T {
-    return stateFlow().collectAsState().value
+    return flow().collectAsState().value
 }
 
 @Composable

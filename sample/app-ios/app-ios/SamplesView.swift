@@ -22,29 +22,34 @@
  * SOFTWARE.
  */
 
-
-import Foundation
+import SwiftUI
 import Common
 
-public class ObservableState<T : AnyObject> : ObservableObject {
+struct SamplesView: View {
     
-    private let observableState: State<T>
-
-    @Published
-    var value: T?
+    private let pm: SamplesPm
     
-    private var job: Kotlinx_coroutines_coreJob? = nil
-    
-    init(_ value: State<T>) {
-        self.observableState = value
-        self.value = observableState.flow().value_ as? T
-        
-        job = observableState.bind(consumer: { value in
-            self.value = value
-        })
+    init(pm: SamplesPm) {
+        self.pm = pm
     }
     
-    deinit {
-        self.job?.cancel(cause: nil)
+    var body: some View {
+        VStack {
+            Button("Counter", action: {
+                pm.counterSampleClick.invoke()
+            })
+            .padding()
+            
+            Button("Multistack", action: {
+                pm.multistackSampleClick.invoke()
+            })
+            .padding()
+        }
+    }
+}
+
+struct SamplesView_Previews: PreviewProvider {
+    static var previews: some View {
+        SamplesView(pm: SamplesPm())
     }
 }

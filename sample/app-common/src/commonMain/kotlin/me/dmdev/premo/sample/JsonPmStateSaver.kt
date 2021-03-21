@@ -30,7 +30,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import me.dmdev.premo.*
 
-class JsonPmStateSave: PmStateSaver {
+class JsonPmStateSaver: PmStateSaver {
 
     private val json = Json {
         serializersModule = SerializersModule {

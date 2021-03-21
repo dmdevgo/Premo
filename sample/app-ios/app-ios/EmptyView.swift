@@ -22,29 +22,16 @@
  * SOFTWARE.
  */
 
+import SwiftUI
 
-import Foundation
-import Common
-
-public class ObservableState<T : AnyObject> : ObservableObject {
-    
-    private let observableState: State<T>
-
-    @Published
-    var value: T?
-    
-    private var job: Kotlinx_coroutines_coreJob? = nil
-    
-    init(_ value: State<T>) {
-        self.observableState = value
-        self.value = observableState.flow().value_ as? T
-        
-        job = observableState.bind(consumer: { value in
-            self.value = value
-        })
+struct EmptyView: View {
+    var body: some View {
+        Text("Empty Screen")
     }
-    
-    deinit {
-        self.job?.cancel(cause: nil)
+}
+
+struct EmptyView_Previews: PreviewProvider {
+    static var previews: some View {
+        EmptyView()
     }
 }

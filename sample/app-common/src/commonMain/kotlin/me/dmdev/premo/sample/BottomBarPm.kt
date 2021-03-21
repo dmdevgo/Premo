@@ -38,9 +38,9 @@ class BottomBarPm(
     object Description : Saveable
 
     val tabPmList = listOf(
-        Child(createTabPm(TabPm.Description("1"))),
-        Child(createTabPm(TabPm.Description("2"))),
-        Child(createTabPm(TabPm.Description("3"))),
+        Child(createTabPm(TabPm.Description("Tab #1"))),
+        Child(createTabPm(TabPm.Description("Tab #2"))),
+        Child(createTabPm(TabPm.Description("Tab #3"))),
     )
 
     val currentTabPm = State(tabPmList.first())
