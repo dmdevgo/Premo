@@ -24,26 +24,29 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
 import me.dmdev.premo.SimpleAction
+import me.dmdev.premo.State
 
-class SamplesPm : PresentationModel() {
+class CountdownPm : PresentationModel() {
 
     @Serializable
-    object Description: Saveable
+    object Description : Saveable
 
-    val counterClick = SimpleAction<Unit> {
-        handleNavigationMessage(CounterSampleMessage)
+    companion object {
+        private const val CLICK_TO_START_TEXT = "Click to start"
     }
 
-    val countdownClick = SimpleAction<Unit> {
-        handleNavigationMessage(CountdownSampleMessage)
-    }
+    val text = State(CLICK_TO_START_TEXT)
 
-    val multistackClick = SimpleAction<Unit> {
-        handleNavigationMessage(MultistackSampleMessage)
+    val start = SimpleAction<Unit> {
+        for (i in 10 downTo 0) {
+            text.value = i.toString()
+            delay(1000)
+        }
+        text.value = CLICK_TO_START_TEXT
     }
-
 }

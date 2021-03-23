@@ -45,6 +45,7 @@ class MainPm(pmFactory: PmFactory) : PresentationModel() {
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
             CounterSampleMessage -> router.push(CounterPm.Description(10))
+            CountdownSampleMessage -> router.push(CountdownPm.Description)
             MultistackSampleMessage -> router.push(BottomBarPm.Description)
             else -> super.handleNavigationMessage(message)
         }

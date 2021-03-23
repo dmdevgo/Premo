@@ -40,12 +40,16 @@ fun samplesScreen(pm: SamplesPm) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { pm.counterSampleClick() }) {
-            Text("Counter Sample")
+        Button(onClick = { pm.counterClick() }) {
+            Text("Counter")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { pm.multistackSampleClick() }) {
-            Text("Multistack Sample")
+        Button(onClick = { pm.countdownClick() }) {
+            Text("Countdown")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { pm.multistackClick() }) {
+            Text("Multistack")
         }
     }
 }

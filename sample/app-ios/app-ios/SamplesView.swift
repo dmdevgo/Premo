@@ -36,12 +36,17 @@ struct SamplesView: View {
     var body: some View {
         VStack {
             Button("Counter", action: {
-                pm.counterSampleClick.invoke()
+                pm.counterClick.invoke()
+            })
+            .padding()
+            
+            Button("Countdown", action: {
+                pm.countdownClick.invoke()
             })
             .padding()
             
             Button("Multistack", action: {
-                pm.multistackSampleClick.invoke()
+                pm.multistackClick.invoke()
             })
             .padding()
         }

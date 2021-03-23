@@ -22,28 +22,41 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+import SwiftUI
+import Common
 
-import kotlinx.serialization.Serializable
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
-import me.dmdev.premo.SimpleAction
 
-class SamplesPm : PresentationModel() {
-
-    @Serializable
-    object Description: Saveable
-
-    val counterClick = SimpleAction<Unit> {
-        handleNavigationMessage(CounterSampleMessage)
+struct CountdownView: View {
+    
+    private let pm: CountdownPm
+    
+    @ObservedObject
+    private var text: ObservableState<NSString>
+    
+    init(pm: CountdownPm) {
+        self.pm = pm
+        text = ObservableState(pm.text)
     }
-
-    val countdownClick = SimpleAction<Unit> {
-        handleNavigationMessage(CountdownSampleMessage)
+    
+    var body: some View {
+        VStack {
+            
+            Text(text.value as String? ?? "")
+                .padding()
+            
+            Button("Start Countdown", action: {
+                pm.start.invoke()
+            }).padding()
+            
+            Text("During the countdown, button clicks are ignored\nuntil the counter reaches zero.")
+                .padding()
+                .font(.system(size: 12))
+        }
     }
+}
 
-    val multistackClick = SimpleAction<Unit> {
-        handleNavigationMessage(MultistackSampleMessage)
+struct CountdownView_Previews: PreviewProvider {
+    static var previews: some View {
+        CountdownView(pm: CountdownPm())
     }
-
 }

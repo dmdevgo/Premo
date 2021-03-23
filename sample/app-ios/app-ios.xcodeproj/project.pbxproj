@@ -20,6 +20,7 @@
 		DD68334F2607AF1600FE13F4 /* TabContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD68334E2607AF1600FE13F4 /* TabContainerView.swift */; };
 		DD6833512607B02500FE13F4 /* TabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6833502607B02500FE13F4 /* TabItemView.swift */; };
 		DD6833532607BC0900FE13F4 /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6833522607BC0900FE13F4 /* EmptyView.swift */; };
+		DDFB278D260A6C4F00AA7C9B /* CountdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFB278C260A6C4F00AA7C9B /* CountdownView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,6 +52,7 @@
 		DD68334E2607AF1600FE13F4 /* TabContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabContainerView.swift; sourceTree = "<group>"; };
 		DD6833502607B02500FE13F4 /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
 		DD6833522607BC0900FE13F4 /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
+		DDFB278C260A6C4F00AA7C9B /* CountdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				DD68334E2607AF1600FE13F4 /* TabContainerView.swift */,
 				DD6833502607B02500FE13F4 /* TabItemView.swift */,
 				DD6833522607BC0900FE13F4 /* EmptyView.swift */,
+				DDFB278C260A6C4F00AA7C9B /* CountdownView.swift */,
 			);
 			path = "app-ios";
 			sourceTree = "<group>";
@@ -193,6 +196,7 @@
 				DD2A8D5C260666DC00BE07A7 /* PremoSampleApp.swift in Sources */,
 				DD68333D26066DD200FE13F4 /* ObservableState.swift in Sources */,
 				DD68334526075C5000FE13F4 /* MainView.swift in Sources */,
+				DDFB278D260A6C4F00AA7C9B /* CountdownView.swift in Sources */,
 				DD6833512607B02500FE13F4 /* TabItemView.swift in Sources */,
 				DD68333B26066DA600FE13F4 /* CounterView.swift in Sources */,
 				DD68334F2607AF1600FE13F4 /* TabContainerView.swift in Sources */,

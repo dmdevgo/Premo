@@ -33,6 +33,7 @@ class MainPmFactory : PmFactory {
         return when (description) {
             is SamplesPm.Description -> SamplesPm()
             is CounterPm.Description -> CounterPm(description.maxCount)
+            is CountdownPm.Description -> CountdownPm()
             is BottomBarPm.Description -> createBottomBarPm()
             is TabPm.Description -> TabPm(pmFactory = this, description.tabTitle)
             is TabItemPm.Description -> TabItemPm(description.screenTitle, description.tabTitle)

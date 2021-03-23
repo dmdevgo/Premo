@@ -49,11 +49,19 @@ class JsonPmStateSaver: PmStateSaver {
                 SamplesPm.Description::class,
                 SamplesPm.Description.serializer()
             )
+
             polymorphic(
                 Saveable::class,
                 CounterPm.Description::class,
                 CounterPm.Description.serializer()
             )
+
+            polymorphic(
+                Saveable::class,
+                CountdownPm.Description::class,
+                CountdownPm.Description.serializer()
+            )
+
             polymorphic(
                 Saveable::class,
                 BottomBarPm.Description::class,

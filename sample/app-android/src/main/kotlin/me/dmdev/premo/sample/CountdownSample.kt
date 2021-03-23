@@ -24,26 +24,38 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.serialization.Serializable
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
-import me.dmdev.premo.SimpleAction
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import me.dmdev.premo.invoke
 
-class SamplesPm : PresentationModel() {
-
-    @Serializable
-    object Description: Saveable
-
-    val counterClick = SimpleAction<Unit> {
-        handleNavigationMessage(CounterSampleMessage)
+@Composable
+fun countdownScreen(pm: CountdownPm) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = pm.text.bind(),
+            fontSize = 24.sp
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        Button(
+            onClick = { pm.start.invoke() }
+        ) {
+            Text("Start Countdown")
+        }
+        Spacer(modifier = Modifier.height(32.dp))
+        Text(
+            text = "During the countdown, button clicks are ignored\n until the counter reaches zero.",
+            textAlign = TextAlign.Center
+        )
     }
-
-    val countdownClick = SimpleAction<Unit> {
-        handleNavigationMessage(CountdownSampleMessage)
-    }
-
-    val multistackClick = SimpleAction<Unit> {
-        handleNavigationMessage(MultistackSampleMessage)
-    }
-
 }
