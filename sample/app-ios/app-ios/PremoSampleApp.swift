@@ -27,9 +27,35 @@ import Common
 
 @main
 struct PremoSampleApp: App {
+    
+    @Environment(\.scenePhase) var scenePhase
+    
+    private let delegate: CommonDelegate<MainPm>
+    
+    init() {
+        delegate = CommonDelegate(pmTag: "MainPm") {
+            MainPm(pmFactory: MainPmFactory())
+        }
+        delegate.onCreate()
+    }
+    
     var body: some Scene {
         WindowGroup {
             MainView(pm: MainPm(pmFactory: MainPmFactory()))
+        }
+        .onChange(of: scenePhase) { newScenePhase in
+              switch newScenePhase {
+              case .active:
+                print("App is active")
+                delegate.onForeground()
+              case .inactive:
+                print("App is inactive")
+              case .background:
+                print("App is in background")
+                delegate.onBackground()
+              @unknown default:
+                print("Unexpected Scene Phase")
+              }
         }
     }
 }

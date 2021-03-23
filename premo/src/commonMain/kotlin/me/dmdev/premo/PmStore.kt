@@ -24,6 +24,9 @@
 
 package me.dmdev.premo
 
+import kotlin.native.concurrent.ThreadLocal
+
+@ThreadLocal
 internal object PmStore {
 
     private val pmMap = mutableMapOf<String, PresentationModel>()
