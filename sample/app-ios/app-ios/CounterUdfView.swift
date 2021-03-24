@@ -19,52 +19,47 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+ * SOFTWARE.
  */
 
 import SwiftUI
 import Common
 
-struct MainView: View {
+
+struct CounterUdfView: View {
     
-    private let pm: MainPm
+    private let pm: CounterUdfPm
     
     @ObservedObject
-    private var currentPm: ObservableState<PresentationModel>
+    private var state: ObservableState<CounterUdfPm.CounterState>
     
-    init(pm: MainPm) {
+    init(pm: CounterUdfPm) {
         self.pm = pm
-        currentPm = ObservableState(pm.currentPm)
+        state = ObservableState(pm.state)
     }
     
     var body: some View {
-        VStack {
-            HStack {
-                Button(action: {
-                    pm.handleBack()
-                }) { Text("Back") }
+        HStack {
+            Button("Minus", action: {
+                pm.minusClick()
+            })
+            .disabled(state.value?.minusEnabled == false)
+            .padding()
+            
+            Text("\(state.value?.count ?? 0)")
                 .padding()
-                Spacer()
-            }
             
-            Spacer()
-            
-            switch currentPm.value {
-            case let pm as SamplesPm: SamplesView(pm: pm)
-            case let pm as CounterPm: CounterView(pm: pm)
-            case let pm as CounterUdfPm: CounterUdfView(pm: pm)
-            case let pm as CountdownPm: CountdownView(pm: pm)
-            case let pm as BottomBarPm: MultistackView(pm: pm)
-            default: EmptyView()
-            }
-            
-            Spacer()
+            Button("Plus", action: {
+                pm.plusClick()
+            })
+            .disabled(state.value?.plusEnabled == false)
+            .padding()
         }
     }
 }
 
-struct MainView_Previews: PreviewProvider {
+struct CounterUdfView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView(pm: MainPm(pmFactory: MainPmFactory()))
+        CounterUdfView(pm: CounterUdfPm(maxCount: 10))
     }
 }

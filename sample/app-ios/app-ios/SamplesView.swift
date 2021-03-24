@@ -40,6 +40,11 @@ struct SamplesView: View {
             })
             .padding()
             
+            Button("Counter UDF", action: {
+                pm.counterUdfClick.invoke()
+            })
+            .padding()
+            
             Button("Countdown", action: {
                 pm.countdownClick.invoke()
             })

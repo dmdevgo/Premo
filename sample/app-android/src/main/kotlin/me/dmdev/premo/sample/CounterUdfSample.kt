@@ -24,42 +24,38 @@
 
 package me.dmdev.premo.sample
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import me.dmdev.premo.PmActivity
-import me.dmdev.premo.PmStateSaver
-import me.dmdev.premo.navigation.PmStackChange
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
-class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
+@Composable
+fun counterUdfScreen(pm: CounterUdfPm) {
 
-    override fun providePresentationModel(): MainPm {
-        return MainPm(pmFactory = MainPmFactory())
-    }
+    val state = pm.state.bind()
 
-    override fun providePmStateSaver(): PmStateSaver {
-        return JsonPmStateSaver()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            mainScreen(getPresentationModel())
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            onClick = { pm.minusClick() },
+            enabled = state.minusEnabled
+        ) {
+            Text(" - ")
         }
-    }
-
-    @Composable
-    fun mainScreen(mainPm: MainPm) {
-        navigation(mainPm.pmStackChanges.bind(PmStackChange.Empty)) { pm ->
-            when (pm) {
-                is SamplesPm -> samplesScreen(pm)
-                is CounterPm -> counterScreen(pm)
-                is CounterUdfPm -> counterUdfScreen(pm)
-                is CountdownPm -> countdownScreen(pm)
-                is BottomBarPm -> bottomBarScreen(pm)
-                else -> emptyScreen()
-            }
+        Spacer(modifier = Modifier.width(12.dp))
+        Text("Count: ${state.count}")
+        Spacer(modifier = Modifier.width(12.dp))
+        Button(
+            onClick = { pm.plusClick() },
+            enabled = state.plusEnabled
+        ) {
+            Text(" + ")
         }
     }
 }

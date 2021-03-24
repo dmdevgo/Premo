@@ -38,6 +38,10 @@ class SamplesPm : PresentationModel() {
         handleNavigationMessage(CounterSampleMessage)
     }
 
+    val counterUdfClick = SimpleAction<Unit> {
+        handleNavigationMessage(CounterUdfSampleMessage)
+    }
+
     val countdownClick = SimpleAction<Unit> {
         handleNavigationMessage(CountdownSampleMessage)
     }

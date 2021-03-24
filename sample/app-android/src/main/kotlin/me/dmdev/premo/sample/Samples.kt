@@ -44,6 +44,10 @@ fun samplesScreen(pm: SamplesPm) {
             Text("Counter")
         }
         Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { pm.counterUdfClick() }) {
+            Text("Counter UDF")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { pm.countdownClick() }) {
             Text("Countdown")
         }

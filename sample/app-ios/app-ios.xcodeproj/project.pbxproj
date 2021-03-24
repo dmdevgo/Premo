@@ -21,6 +21,7 @@
 		DD6833512607B02500FE13F4 /* TabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6833502607B02500FE13F4 /* TabItemView.swift */; };
 		DD6833532607BC0900FE13F4 /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6833522607BC0900FE13F4 /* EmptyView.swift */; };
 		DDFB278D260A6C4F00AA7C9B /* CountdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFB278C260A6C4F00AA7C9B /* CountdownView.swift */; };
+		DDFB278F260BC22100AA7C9B /* CounterUdfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFB278E260BC22100AA7C9B /* CounterUdfView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,6 +54,7 @@
 		DD6833502607B02500FE13F4 /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
 		DD6833522607BC0900FE13F4 /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
 		DDFB278C260A6C4F00AA7C9B /* CountdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownView.swift; sourceTree = "<group>"; };
+		DDFB278E260BC22100AA7C9B /* CounterUdfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterUdfView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 				DD6833502607B02500FE13F4 /* TabItemView.swift */,
 				DD6833522607BC0900FE13F4 /* EmptyView.swift */,
 				DDFB278C260A6C4F00AA7C9B /* CountdownView.swift */,
+				DDFB278E260BC22100AA7C9B /* CounterUdfView.swift */,
 			);
 			path = "app-ios";
 			sourceTree = "<group>";
@@ -199,6 +202,7 @@
 				DDFB278D260A6C4F00AA7C9B /* CountdownView.swift in Sources */,
 				DD6833512607B02500FE13F4 /* TabItemView.swift in Sources */,
 				DD68333B26066DA600FE13F4 /* CounterView.swift in Sources */,
+				DDFB278F260BC22100AA7C9B /* CounterUdfView.swift in Sources */,
 				DD68334F2607AF1600FE13F4 /* TabContainerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
