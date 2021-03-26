@@ -25,28 +25,28 @@
 package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
+import me.dmdev.premo.Action
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
-import me.dmdev.premo.SimpleAction
 
 class SamplesPm : PresentationModel() {
 
     @Serializable
     object Description: Saveable
 
-    val counterClick = SimpleAction<Unit> {
+    val counterClick = Action<Unit> {
         handleNavigationMessage(CounterSampleMessage)
     }
 
-    val counterUdfClick = SimpleAction<Unit> {
+    val counterUdfClick = Action<Unit> {
         handleNavigationMessage(CounterUdfSampleMessage)
     }
 
-    val countdownClick = SimpleAction<Unit> {
+    val countdownClick = Action<Unit> {
         handleNavigationMessage(CountdownSampleMessage)
     }
 
-    val multistackClick = SimpleAction<Unit> {
+    val multistackClick = Action<Unit> {
         handleNavigationMessage(MultistackSampleMessage)
     }
 

@@ -26,9 +26,9 @@ package me.dmdev.premo.sample
 
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
+import me.dmdev.premo.Action
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
-import me.dmdev.premo.SimpleAction
 import me.dmdev.premo.State
 
 class CountdownPm : PresentationModel() {
@@ -42,7 +42,7 @@ class CountdownPm : PresentationModel() {
 
     val text = State(CLICK_TO_START_TEXT)
 
-    val start = SimpleAction<Unit> {
+    val start = Action<Unit> {
         for (i in 10 downTo 0) {
             text.value = i.toString()
             delay(1000)

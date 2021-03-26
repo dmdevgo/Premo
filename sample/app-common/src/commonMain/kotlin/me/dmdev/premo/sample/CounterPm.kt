@@ -45,13 +45,13 @@ class CounterPm(
         count.flow().map { it > 0 }
     }
 
-    val plus = SimpleAction<Unit> {
+    val plus = this.Action<Unit> {
         if (count.value < maxCount) {
             count.value = count.value + 1
         }
     }
 
-    val minus = SimpleAction<Unit> {
+    val minus = this.Action<Unit> {
         if (count.value > 0 ) {
             count.value = count.value - 1
         }

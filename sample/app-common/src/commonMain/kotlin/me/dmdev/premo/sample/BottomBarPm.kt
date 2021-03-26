@@ -25,9 +25,9 @@
 package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
+import me.dmdev.premo.Action
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
-import me.dmdev.premo.SimpleAction
 import me.dmdev.premo.State
 
 class BottomBarPm(
@@ -45,7 +45,7 @@ class BottomBarPm(
 
     val currentTabPm = State(tabPmList.first())
 
-    val onRouterTabClick = SimpleAction<TabPm> { tabPm ->
+    val onRouterTabClick = Action<TabPm> { tabPm ->
         currentTabPm.value = tabPm
     }
 

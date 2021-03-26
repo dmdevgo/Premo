@@ -27,13 +27,11 @@ package me.dmdev.premo
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
 
-class Action<T> internal constructor(
-    internal val pm: PresentationModel
-) {
+class Action<T> {
 
     private val channel = Channel<T>(
         capacity = Channel.RENDEZVOUS,
@@ -52,31 +50,29 @@ operator fun Action<Unit>.invoke() {
 }
 
 @Suppress("FunctionName")
-fun <T> PresentationModel.Action(
-    actionChain: (Flow<T>.() -> Flow<*>)? = null
+fun <T> PresentationModel.ActionChain(
+    actionChain: (Flow<T>.() -> Flow<*>)
 ): Action<T> {
 
-    val action = Action<T>(pm = this)
+    val action = Action<T>()
 
-    if (actionChain != null) {
-        pmScope.launch {
-            actionChain(action.flow()).collect {}
-        }
-    }
+    actionChain
+        .invoke(action.flow())
+        .launchIn(pmScope)
 
     return action
 }
 
 @Suppress("FunctionName")
-fun <T> PresentationModel.SimpleAction(
+fun <T> PresentationModel.Action(
     doAction: suspend (value: T) -> Unit
 ): Action<T> {
 
-    val action = Action<T>(pm = this)
+    val action = Action<T>()
 
-    pmScope.launch {
-        action.flow().collect { doAction(it) }
-    }
+    action.flow()
+        .onEach { doAction(it) }
+        .launchIn(pmScope)
 
     return action
 }
