@@ -47,6 +47,7 @@ class MainPm(pmFactory: PmFactory) : PresentationModel() {
             CounterSampleMessage -> router.push(CounterPm.Description(10))
             CounterUdfSampleMessage -> router.push(CounterUdfPm.Description(10))
             CountdownSampleMessage -> router.push(CountdownPm.Description)
+            DialogSampleMessage -> router.push(DialogPm.Description)
             MultistackSampleMessage -> router.push(BottomBarPm.Description)
             else -> super.handleNavigationMessage(message)
         }

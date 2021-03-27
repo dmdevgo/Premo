@@ -57,6 +57,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
                 is CounterPm -> counterScreen(pm)
                 is CounterUdfPm -> counterUdfScreen(pm)
                 is CountdownPm -> countdownScreen(pm)
+                is DialogPm -> dialogScreen(pm)
                 is BottomBarPm -> bottomBarScreen(pm)
                 else -> emptyScreen()
             }

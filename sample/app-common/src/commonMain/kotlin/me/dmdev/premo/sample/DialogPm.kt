@@ -24,34 +24,69 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.coroutines.flow.first
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.Action
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
+import me.dmdev.premo.State
 
-class SamplesPm : PresentationModel() {
+class DialogPm : PresentationModel() {
 
     @Serializable
-    object Description: Saveable
+    object Description : Saveable
 
-    val counterClick = Action<Unit> {
-        handleNavigationMessage(CounterSampleMessage)
+    val alertPm = Child(AlertPm())
+    val alertResult = State("")
+
+    val showDialog = Action<Unit> {
+        alertPm.show("Hello! I'm a simple dialog.")
     }
 
-    val counterUdfClick = Action<Unit> {
-        handleNavigationMessage(CounterUdfSampleMessage)
+    val showDialogForResult = Action<Unit> {
+        alertResult.value = alertPm.showForResult(
+            "Hi, I am a dialog to get the result. Click the button or just close me."
+        ).toString()
     }
 
-    val countdownClick = Action<Unit> {
-        handleNavigationMessage(CountdownSampleMessage)
+    val hideResult = Action<Unit>{
+        alertResult.value = ""
+    }
+}
+
+class AlertPm : PresentationModel() {
+
+    enum class Result { OK, CANCEL, CLOSE }
+
+    val isShown = State(false)
+    val message = State("")
+
+    private val result = Action<Result>()
+
+    fun okClick() {
+        result.invoke(Result.OK)
+        isShown.value = false
     }
 
-    val dialogClick = Action<Unit> {
-        handleNavigationMessage(DialogSampleMessage)
+    fun cancelClick() {
+        result.invoke(Result.CANCEL)
+        isShown.value = false
     }
 
-    val multistackClick = Action<Unit> {
-        handleNavigationMessage(MultistackSampleMessage)
+    fun dismiss() {
+        result.invoke(Result.CLOSE)
+        isShown.value = false
     }
 
+    fun show(message: String) {
+        this.message.value = message
+        isShown.value = true
+    }
+
+    suspend fun showForResult(message: String): AlertPm.Result {
+        show(message)
+        return result.flow().first().also {
+            isShown.value = false
+        }
+    }
 }

@@ -29,6 +29,7 @@ import me.dmdev.premo.navigation.NavigationMessage
 object CounterSampleMessage: NavigationMessage
 object CounterUdfSampleMessage: NavigationMessage
 object CountdownSampleMessage: NavigationMessage
+object DialogSampleMessage: NavigationMessage
 object MultistackSampleMessage: NavigationMessage
 object NextClickMessage: NavigationMessage
 object PreviousClickMessage: NavigationMessage

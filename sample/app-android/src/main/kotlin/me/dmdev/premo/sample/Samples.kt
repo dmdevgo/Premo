@@ -52,6 +52,10 @@ fun samplesScreen(pm: SamplesPm) {
             Text("Countdown")
         }
         Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { pm.dialogClick() }) {
+            Text("Dialog")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { pm.multistackClick() }) {
             Text("Multistack")
         }

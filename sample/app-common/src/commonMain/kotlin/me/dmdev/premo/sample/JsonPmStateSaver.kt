@@ -64,6 +64,12 @@ class JsonPmStateSaver: PmStateSaver {
 
             polymorphic(
                 Saveable::class,
+                DialogPm.Description::class,
+                DialogPm.Description.serializer()
+            )
+
+            polymorphic(
+                Saveable::class,
                 BottomBarPm.Description::class,
                 BottomBarPm.Description.serializer()
             )
