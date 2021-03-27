@@ -26,11 +26,10 @@
 
 package me.dmdev.premo
 
-class SaveableState<T, S : Saveable> internal constructor(
-    pm: PresentationModel,
+class SaveableState<T, S : Saveable>(
     initialValue: T,
     val saver: Saver<T, S>
-) : State<T>(pm, initialValue) {
+) : State<T>(initialValue) {
 
     @Suppress("UNCHECKED_CAST")
     var saveableValue: Saveable?
@@ -44,7 +43,6 @@ fun PresentationModel.SaveableState(
     initialValue: Byte
 ): State<Byte> {
     return SaveableState(
-        pm = this,
         initialValue = initialValue,
         saver = ByteSaver
     ).also {
@@ -56,7 +54,6 @@ fun PresentationModel.SaveableState(
     initialValue: Short
 ): State<Short> {
     return SaveableState(
-        pm = this,
         initialValue = initialValue,
         saver = ShortSaver
     ).also {
@@ -68,7 +65,6 @@ fun PresentationModel.SaveableState(
     initialValue: Int
 ): State<Int> {
     return SaveableState(
-        pm = this,
         initialValue = initialValue,
         saver = IntSaver
     ).also {
@@ -80,7 +76,6 @@ fun PresentationModel.SaveableState(
     initialValue: Long
 ): State<Long> {
     return SaveableState(
-        pm = this,
         initialValue = initialValue,
         saver = LongSaver
     ).also {
@@ -92,7 +87,6 @@ fun PresentationModel.SaveableState(
     initialValue: Float
 ): State<Float> {
     return SaveableState(
-        pm = this,
         initialValue = initialValue,
         saver = FloatSaver
     ).also {
@@ -104,7 +98,6 @@ fun PresentationModel.SaveableState(
     initialValue: Double
 ): State<Double> {
     return SaveableState(
-        pm = this,
         initialValue = initialValue,
         saver = DoubleSaver
     ).also {
@@ -116,7 +109,6 @@ fun PresentationModel.SaveableState(
     initialValue: Char
 ): State<Char> {
     return SaveableState(
-        pm = this,
         initialValue = initialValue,
         saver = CharSaver
     ).also {
@@ -128,7 +120,6 @@ fun PresentationModel.SaveableState(
     initialValue: Boolean
 ): State<Boolean> {
     return SaveableState(
-        pm = this,
         initialValue = initialValue,
         saver = BooleanSaver
     ).also {
@@ -140,7 +131,6 @@ fun PresentationModel.SaveableState(
     initialValue: String
 ): State<String> {
     return SaveableState(
-        pm = this,
         initialValue = initialValue,
         saver = StringSaver
     ).also {
@@ -153,23 +143,9 @@ fun <T: Saveable> PresentationModel.SaveableState(
 ): State<T> {
     @Suppress("UNCHECKED_CAST")
     return SaveableState(
-        pm = this,
         initialValue = initialValue,
         saver = SaveableSaver
     ).also {
         saveableStates.add(it)
     } as State<T>
-}
-
-fun <T, S: Saveable> PresentationModel.SaveableState(
-    initialValue: T,
-    saver: Saver<T, S>
-): State<T> {
-    return SaveableState(
-        pm = this,
-        initialValue = initialValue,
-        saver = saver
-    ).also {
-        saveableStates.add(it)
-    }
 }

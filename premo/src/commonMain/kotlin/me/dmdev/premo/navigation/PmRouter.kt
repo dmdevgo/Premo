@@ -34,7 +34,7 @@ class PmRouter internal constructor(
     private val pmFactory: PmFactory
 ) {
 
-    val pmStack: State<List<BackStackEntry>> = hostPm.State(listOf())
+    val pmStack: State<List<BackStackEntry>> = State(listOf())
 
     val pmStackChanges: Flow<PmStackChange> = flow {
         var oldPmStack: List<BackStackEntry> = pmStack.value

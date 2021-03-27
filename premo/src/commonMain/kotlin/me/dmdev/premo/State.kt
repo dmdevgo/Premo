@@ -24,28 +24,17 @@
 
 package me.dmdev.premo
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.*
 
-open class State<T> internal constructor(
-    internal val pm: PresentationModel,
+open class State<T>(
     initialValue: T
 ) {
     internal val mutableStateFlow = MutableStateFlow(initialValue)
 
     fun flow(): StateFlow<T> = mutableStateFlow
-
-    infix fun bind(consumer: (T) -> Unit): Job {
-        return pm.pmScope.launch {
-            mutableStateFlow.collect { value ->
-                consumer(value)
-            }
-        }
-    }
 }
 
 var <T> State<T>.value: T
@@ -59,18 +48,26 @@ var <T> State<T>.value: T
 @Suppress("FunctionName")
 fun <T> PresentationModel.State(
     initialValue: T,
-    stateSource: (() -> Flow<T>)? = null
+    stateSource: (() -> Flow<T>)
 ): State<T> {
 
-    val state = State(pm = this, initialValue = initialValue)
+    val state = State(initialValue = initialValue)
 
-    if (stateSource != null) {
-        pmScope.launch {
-            stateSource().collect { value ->
-                state.mutableStateFlow.value = value
-            }
-        }
-    }
+    stateSource
+        .invoke()
+        .onEach { state.value = it }
+        .launchIn(pmScope)
 
     return state
+}
+
+infix fun <T> State<T>.bind(consumer: (T) -> Unit): Job {
+
+    val job = Job()
+
+    mutableStateFlow
+        .onEach { value = it }
+        .launchIn(CoroutineScope(Dispatchers.Main + job))
+
+    return job
 }
