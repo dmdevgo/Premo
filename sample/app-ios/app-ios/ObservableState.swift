@@ -40,7 +40,7 @@ public class ObservableState<T : AnyObject> : ObservableObject {
         self.value = observableState.flow().value_ as? T
         
         job = observableState.bind(consumer: { value in
-            self.value = value
+            self.value = value as? T
         })
     }
     
