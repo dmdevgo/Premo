@@ -66,7 +66,7 @@ infix fun <T> State<T>.bind(consumer: (T) -> Unit): Job {
     val job = Job()
 
     mutableStateFlow
-        .onEach { value = it }
+        .onEach { consumer(it) }
         .launchIn(CoroutineScope(Dispatchers.Main + job))
 
     return job
