@@ -22,52 +22,29 @@
  * SOFTWARE.
  */
 
-import SwiftUI
+
+import Foundation
 import Common
 
-struct CounterView: View {
+public class ObservableInt : ObservableObject {
     
-    private let pm: CounterPm
-    
-    @ObservedObject
-    private var counter: ObservableInt
-    
-    @ObservedObject
-    private var minusButtonEnabled: ObservableBoolean
-    
-    @ObservedObject
-    private var plusButtonEnabled: ObservableBoolean
-    
-    init(pm: CounterPm) {
-        self.pm = pm
-        counter = ObservableInt(pm.count)
-        minusButtonEnabled = ObservableBoolean(pm.minusButtonEnabled)
-        plusButtonEnabled = ObservableBoolean(pm.plusButtonEnabled)
-    }
-    
-    var body: some View {
-        HStack {
-            
-            Button("Minus", action: {
-                pm.minus.invoke()
-            })
-            .disabled(minusButtonEnabled.value == false)
-            .padding()
-            
-            Text("\(counter.value)")
-                .padding()
-            
-            Button("Plus", action: {
-                pm.plus.invoke()
-            })
-            .disabled(plusButtonEnabled.value == false)
-            .padding()
-        }
-    }
-}
+    private let observableState: State<KotlinInt>
 
-struct CounterView_Previews: PreviewProvider {
-    static var previews: some View {
-        CounterView(pm: CounterPm(maxCount: 10))
+    @Published
+    var value: Int
+    
+    private var job: Kotlinx_coroutines_coreJob? = nil
+    
+    init(_ value: State<KotlinInt>) {
+        self.observableState = value
+        self.value = (observableState.value as? KotlinInt)?.intValue ?? 0
+        
+        job = observableState.bind(consumer: { value in
+            self.value = (value as? KotlinInt)?.intValue ?? 0
+        })
+    }
+    
+    deinit {
+        self.job?.cancel(cause: nil)
     }
 }

@@ -23,6 +23,7 @@
 		DDB533F4260FC4D00086C183 /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB533F3260FC4D00086C183 /* DialogView.swift */; };
 		DDB533F6261096220086C183 /* ObservableBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB533F5261096220086C183 /* ObservableBoolean.swift */; };
 		DDB533F82610C56D0086C183 /* ObservableString.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB533F72610C56D0086C183 /* ObservableString.swift */; };
+		DDB533FB2610FD520086C183 /* ObservableInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB533FA2610FD520086C183 /* ObservableInt.swift */; };
 		DDFB278D260A6C4F00AA7C9B /* CountdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFB278C260A6C4F00AA7C9B /* CountdownView.swift */; };
 		DDFB278F260BC22100AA7C9B /* CounterUdfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFB278E260BC22100AA7C9B /* CounterUdfView.swift */; };
 /* End PBXBuildFile section */
@@ -59,6 +60,7 @@
 		DDB533F3260FC4D00086C183 /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
 		DDB533F5261096220086C183 /* ObservableBoolean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableBoolean.swift; sourceTree = "<group>"; };
 		DDB533F72610C56D0086C183 /* ObservableString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableString.swift; sourceTree = "<group>"; };
+		DDB533FA2610FD520086C183 /* ObservableInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableInt.swift; sourceTree = "<group>"; };
 		DDFB278C260A6C4F00AA7C9B /* CountdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownView.swift; sourceTree = "<group>"; };
 		DDFB278E260BC22100AA7C9B /* CounterUdfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterUdfView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -100,7 +102,6 @@
 				DD2A8D64260666DE00BE07A7 /* Info.plist */,
 				DD2A8D61260666DE00BE07A7 /* Preview Content */,
 				DD68333A26066DA600FE13F4 /* CounterView.swift */,
-				DD68333C26066DD200FE13F4 /* ObservableState.swift */,
 				DD68334426075C5000FE13F4 /* MainView.swift */,
 				DD6833462607908A00FE13F4 /* SamplesView.swift */,
 				DD68334C2607984A00FE13F4 /* MultistackView.swift */,
@@ -110,8 +111,10 @@
 				DDFB278C260A6C4F00AA7C9B /* CountdownView.swift */,
 				DDFB278E260BC22100AA7C9B /* CounterUdfView.swift */,
 				DDB533F3260FC4D00086C183 /* DialogView.swift */,
+				DD68333C26066DD200FE13F4 /* ObservableState.swift */,
 				DDB533F5261096220086C183 /* ObservableBoolean.swift */,
 				DDB533F72610C56D0086C183 /* ObservableString.swift */,
+				DDB533FA2610FD520086C183 /* ObservableInt.swift */,
 			);
 			path = "app-ios";
 			sourceTree = "<group>";
@@ -211,6 +214,7 @@
 				DDFB278D260A6C4F00AA7C9B /* CountdownView.swift in Sources */,
 				DD6833512607B02500FE13F4 /* TabItemView.swift in Sources */,
 				DD68333B26066DA600FE13F4 /* CounterView.swift in Sources */,
+				DDB533FB2610FD520086C183 /* ObservableInt.swift in Sources */,
 				DDB533F82610C56D0086C183 /* ObservableString.swift in Sources */,
 				DDFB278F260BC22100AA7C9B /* CounterUdfView.swift in Sources */,
 				DDB533F4260FC4D00086C183 /* DialogView.swift in Sources */,

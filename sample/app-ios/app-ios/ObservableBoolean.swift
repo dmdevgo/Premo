@@ -37,7 +37,6 @@ public class ObservableBoolean : ObservableObject {
     
     init(_ value: State<KotlinBoolean>) {
         self.observableState = value
-        self.value = false
         self.value = (observableState.value as? KotlinBoolean)?.boolValue ?? false
         
         job = observableState.bind(consumer: { value in

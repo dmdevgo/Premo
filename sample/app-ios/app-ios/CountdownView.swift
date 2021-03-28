@@ -31,17 +31,17 @@ struct CountdownView: View {
     private let pm: CountdownPm
     
     @ObservedObject
-    private var text: ObservableState<NSString>
+    private var text: ObservableString
     
     init(pm: CountdownPm) {
         self.pm = pm
-        text = ObservableState(pm.text)
+        text = ObservableString(pm.text)
     }
     
     var body: some View {
         VStack {
             
-            Text(text.value as String? ?? "")
+            Text(text.value)
                 .padding()
             
             Button("Start Countdown", action: {
