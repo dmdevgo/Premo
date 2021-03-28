@@ -22,49 +22,46 @@
  * SOFTWARE.
  */
 
-import SwiftUI
-import Common
+package me.dmdev.premo.sample
 
-struct SamplesView: View {
-    
-    private let pm: SamplesPm
-    
-    init(pm: SamplesPm) {
-        self.pm = pm
+import kotlinx.coroutines.flow.first
+import me.dmdev.premo.Action
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.State
+
+class AlertPm : PresentationModel() {
+
+    enum class Result { OK, CANCEL, CLOSE }
+
+    val isShown = State(false)
+    val message = State("")
+
+    private val result = Action<Result>()
+
+    fun okClick() {
+        result.invoke(Result.OK)
+        isShown.value = false
     }
-    
-    var body: some View {
-        VStack {
-            Button("Counter", action: {
-                pm.counterClick.invoke()
-            })
-            .padding()
-            
-            Button("Counter UDF", action: {
-                pm.counterUdfClick.invoke()
-            })
-            .padding()
-            
-            Button("Countdown", action: {
-                pm.countdownClick.invoke()
-            })
-            .padding()
-            
-            Button("Dialog", action: {
-                pm.dialogClick.invoke()
-            })
-            .padding()
-            
-            Button("Multistack", action: {
-                pm.multistackClick.invoke()
-            })
-            .padding()
+
+    fun cancelClick() {
+        result.invoke(Result.CANCEL)
+        isShown.value = false
+    }
+
+    fun dismiss() {
+        result.invoke(Result.CLOSE)
+        isShown.value = false
+    }
+
+    fun show(message: String) {
+        this.message.value = message
+        isShown.value = true
+    }
+
+    suspend fun showForResult(message: String): AlertPm.Result {
+        show(message)
+        return result.flow().first().also {
+            isShown.value = false
         }
-    }
-}
-
-struct SamplesView_Previews: PreviewProvider {
-    static var previews: some View {
-        SamplesView(pm: SamplesPm())
     }
 }

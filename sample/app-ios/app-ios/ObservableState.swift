@@ -37,7 +37,7 @@ public class ObservableState<T : AnyObject> : ObservableObject {
     
     init(_ value: State<T>) {
         self.observableState = value
-        self.value = observableState.flow().value_ as? T
+        self.value = observableState.value as? T
         
         job = observableState.bind(consumer: { value in
             self.value = value as? T

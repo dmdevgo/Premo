@@ -19,53 +19,32 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+ * SOFTWARE.
  */
 
-import SwiftUI
+
+import Foundation
 import Common
 
-struct MainView: View {
+public class ObservableString : ObservableObject {
     
-    private let pm: MainPm
-    
-    @ObservedObject
-    private var currentPm: ObservableState<PresentationModel>
-    
-    init(pm: MainPm) {
-        self.pm = pm
-        currentPm = ObservableState(pm.currentPm)
-    }
-    
-    var body: some View {
-        VStack {
-            HStack {
-                Button(action: {
-                    pm.handleBack()
-                }) { Text("Back") }
-                .padding()
-                Spacer()
-            }
-            
-            Spacer()
-            
-            switch currentPm.value {
-            case let pm as SamplesPm: SamplesView(pm: pm)
-            case let pm as CounterPm: CounterView(pm: pm)
-            case let pm as CounterUdfPm: CounterUdfView(pm: pm)
-            case let pm as CountdownPm: CountdownView(pm: pm)
-            case let pm as DialogPm: DialogView(pm: pm)
-            case let pm as BottomBarPm: MultistackView(pm: pm)
-            default: EmptyView()
-            }
-            
-            Spacer()
-        }
-    }
-}
+    private let observableState: State<NSString>
 
-struct MainView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView(pm: MainPm(pmFactory: MainPmFactory()))
+    @Published
+    var value: String
+    
+    private var job: Kotlinx_coroutines_coreJob? = nil
+    
+    init(_ value: State<NSString>) {
+        self.observableState = value
+        self.value = observableState.value as? String ?? ""
+        
+        job = observableState.bind(consumer: { value in
+            self.value = value as? String ?? ""
+        })
+    }
+    
+    deinit {
+        self.job?.cancel(cause: nil)
     }
 }
