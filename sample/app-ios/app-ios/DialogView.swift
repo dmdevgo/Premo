@@ -71,7 +71,7 @@ struct DialogView: View {
                 )
             }
             
-            Button("Shoe dialog for result", action: {
+            Button("Show dialog for result", action: {
                 pm.showDialogForResult.invoke()
             })
             .padding()
