@@ -42,8 +42,8 @@ abstract class PmActivity<PM : PresentationModel>(
 ) : AppCompatActivity(contentLayoutId) {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) {
-        PmActivityDelegate(this, providePmStateSaver()) {
-            providePresentationModel()
+        PmActivityDelegate(this, providePmStateSaver()) { pmState ->
+            providePresentationModel(pmState)
         }
     }
 
@@ -52,7 +52,7 @@ abstract class PmActivity<PM : PresentationModel>(
             ?: throw IllegalStateException("Presentation Model has not been initialized yet, call this method after onCreate.")
     }
 
-    abstract fun providePresentationModel(): PM
+    abstract fun providePresentationModel(pmState: PmState?): PM
     abstract fun providePmStateSaver(): PmStateSaver
 
     override fun onCreate(savedInstanceState: Bundle?) {

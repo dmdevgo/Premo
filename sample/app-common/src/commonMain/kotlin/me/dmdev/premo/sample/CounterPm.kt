@@ -29,8 +29,9 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
 
 class CounterPm(
-    private val maxCount: Int
-) : PresentationModel() {
+    private val maxCount: Int,
+    pmState: PmState?
+) : PresentationModel(pmState) {
 
     @Serializable
     class Description(val maxCount: Int): Saveable

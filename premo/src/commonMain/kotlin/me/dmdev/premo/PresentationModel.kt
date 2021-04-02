@@ -35,14 +35,16 @@ import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
 
-abstract class PresentationModel {
+abstract class PresentationModel(
+    internal val pmState: PmState?
+) {
 
     val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     var pmInForegroundScope: CoroutineScope? = null
         private set
 
-    var tag: String = randomUUID()
+    var tag: String = pmState?.tag ?: randomUUID()
         internal set
 
     var parentPm: PresentationModel? = null
@@ -51,15 +53,30 @@ abstract class PresentationModel {
     private var routerOrNull: PmRouter? = null
 
     @Suppress("FunctionName")
-    protected fun Router(pmFactory: PmFactory, initialDescription: Saveable?): PmRouter {
-        return routerOrNull ?: PmRouter(this, pmFactory).also { router ->
-            if (initialDescription != null) router.push(initialDescription)
+    protected fun Router(initialDescription: Saveable, pmFactory: PmFactory): PmRouter {
+        return routerOrNull ?: PmRouter(
+            initialDescription = initialDescription,
+            hostPm = this,
+            pmFactory = pmFactory
+        ).also { router ->
             routerOrNull = router
         }
     }
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
     protected fun <PM : PresentationModel> Child(pm: PM, key: String): PM {
+        pm.parentPm = this
+        pm.moveLifecycleTo(lifecycleState.value)
+        return pm
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    protected fun <PM : PresentationModel> saveableChild(
+        description: Saveable,
+        pmFactory: PmFactory,
+        key: String
+    ): PM {
+        val pm: PM = pmFactory.createPm(description, pmState?.childrenStates?.get(key)) as PM
         pm.parentPm = this
         children[key] = pm
         pm.moveLifecycleTo(lifecycleState.value)
@@ -129,43 +146,24 @@ abstract class PresentationModel {
         }
     }
 
-    internal fun saveState(pm: PresentationModel = this): PmState {
+    internal fun saveState(): PmState {
 
-        val router = pm.routerOrNull
+        val router = routerOrNull
         val routerState = router?.pmStack?.value?.map { entry ->
             BackStackEntryState(
                 description = entry.description,
-                pmState = saveState(entry.pm)
+                pmState = entry.pm.saveState()
             )
         } ?: listOf()
 
         return PmState(
-            tag = pm.tag,
+            tag = tag,
             routerState = routerState,
-            children = pm.children.mapValues { entry -> saveState(entry.value) },
-            states = pm.saveableStates.mapValues { entry ->
+            childrenStates = children.mapValues { entry -> entry.value.saveState() },
+            states = saveableStates.mapValues { entry ->
                 entry.value.saveableValue
             }
         )
-    }
-
-    internal fun restoreState(pmState: PmState) {
-        tag = pmState.tag
-
-        pmState.states.forEach { entry ->
-            saveableStates[entry.key]?.saveableValue = entry.value
-        }
-        pmState.children.forEach { entry ->
-            children[entry.key]?.restoreState(entry.value)
-        }
-
-        val router = routerOrNull
-        if (router != null) {
-            pmState.routerState.forEach { entry ->
-                router.push(entry.description, entry.pmState.tag)
-                router.pmStack.value.last().pm.restoreState(entry.pmState)
-            }
-        }
     }
 
     internal fun moveLifecycleTo(targetLifecycle: LifecycleState) {

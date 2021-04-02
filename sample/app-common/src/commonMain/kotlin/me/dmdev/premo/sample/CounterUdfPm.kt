@@ -28,14 +28,12 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.Action
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
-import me.dmdev.premo.State
+import me.dmdev.premo.*
 
 class CounterUdfPm(
-    private val maxCount: Int
-) : PresentationModel() {
+    private val maxCount: Int,
+    pmState: PmState?
+) : PresentationModel(pmState) {
 
     @Serializable
     class Description(val maxCount: Int) : Saveable

@@ -41,7 +41,7 @@ import java.util.*
 class PmActivityDelegate<PM, A>(
     private val pmActivity: A,
     private val pmStateSaver: PmStateSaver,
-    private val pmProvider: () -> PM,
+    private val pmProvider: (pmState: PmState?) -> PM,
 )
         where PM : PresentationModel,
               A : Activity {
@@ -62,11 +62,7 @@ class PmActivityDelegate<PM, A>(
         commonDelegate = CommonDelegate(
             pmTag = getPmTag(savedInstanceState),
             pmProvider = {
-                pmProvider().also { pm ->
-                    if (savedInstanceState != null) {
-                        restorePmState(pm, savedInstanceState)
-                    }
-                }
+                pmProvider(restorePmState(savedInstanceState))
             }
         )
         commonDelegate?.onCreate()
@@ -135,10 +131,12 @@ class PmActivityDelegate<PM, A>(
         }
     }
 
-    private fun restorePmState(pm: PresentationModel, savedInstanceState: Bundle) {
-        val pmStateAsByteArray = savedInstanceState.getByteArray(SAVED_PM_STATE_KEY)
-        if (pmStateAsByteArray != null) {
-            pm.restoreState(pmState = pmStateSaver.restore(pmStateAsByteArray))
+    private fun restorePmState(savedInstanceState: Bundle?): PmState? {
+        val pmStateAsByteArray = savedInstanceState?.getByteArray(SAVED_PM_STATE_KEY)
+        return if (pmStateAsByteArray != null) {
+            pmStateSaver.restore(pmStateAsByteArray)
+        } else {
+            null
         }
     }
 }

@@ -30,11 +30,30 @@ import kotlinx.coroutines.flow.flow
 import me.dmdev.premo.*
 
 class PmRouter internal constructor(
+    initialDescription: Saveable,
     private val hostPm: PresentationModel,
     private val pmFactory: PmFactory
 ) {
 
     val pmStack: State<List<BackStackEntry>> = State(listOf())
+
+    init {
+
+        hostPm.pmState?.routerState?.let { restoreBackStack(it) }
+
+        if (pmStack.value.isEmpty()) {
+            push(initialDescription)
+        }
+    }
+
+    private fun restoreBackStack(backStackState: List<BackStackEntryState>) {
+        backStackState.forEach { entry ->
+            val pm = pmFactory.createPm(entry.description, entry.pmState)
+            pm.parentPm = hostPm
+            pm.moveLifecycleTo(hostPm.lifecycleState.value)
+            pmStack.value = pmStack.value.plus(BackStackEntry(pm, entry.description))
+        }
+    }
 
     val pmStackChanges: Flow<PmStackChange> = flow {
         var oldPmStack: List<BackStackEntry> = pmStack.value
@@ -68,7 +87,7 @@ class PmRouter internal constructor(
 
     fun push(description: Saveable, pmTag: String = randomUUID()) {
         pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(LifecycleState.CREATED)
-        val pm = pmFactory.createPm(description)
+        val pm = pmFactory.createPm(description, null)
         pm.tag = pmTag
         pm.parentPm = hostPm
         pm.moveLifecycleTo(hostPm.lifecycleState.value)

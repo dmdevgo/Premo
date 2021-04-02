@@ -29,13 +29,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import me.dmdev.premo.PmActivity
+import me.dmdev.premo.PmState
 import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.navigation.PmStackChange
 
 class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
-    override fun providePresentationModel(): MainPm {
-        return MainPm(pmFactory = MainPmFactory())
+    override fun providePresentationModel(pmState: PmState?): MainPm {
+        return MainPm(pmFactory = MainPmFactory(), pmState)
     }
 
     override fun providePmStateSaver(): PmStateSaver {

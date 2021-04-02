@@ -26,13 +26,15 @@ package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.Action
+import me.dmdev.premo.PmState
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
 
 class TabItemPm(
     val screenTitle: String,
-    val tabTitle: String
-) : PresentationModel() {
+    val tabTitle: String,
+    pmState: PmState?
+) : PresentationModel(pmState) {
 
     @Serializable
     class Description(

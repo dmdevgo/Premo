@@ -29,7 +29,7 @@ import me.dmdev.premo.Action
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 
-class AlertPm : PresentationModel() {
+class AlertPm : PresentationModel(null) {
 
     enum class Result { OK, CANCEL, CLOSE }
 

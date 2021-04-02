@@ -26,12 +26,9 @@ package me.dmdev.premo.sample
 
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.Action
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
-import me.dmdev.premo.State
+import me.dmdev.premo.*
 
-class CountdownPm : PresentationModel() {
+class CountdownPm(pmState: PmState?) : PresentationModel(pmState) {
 
     @Serializable
     object Description : Saveable
