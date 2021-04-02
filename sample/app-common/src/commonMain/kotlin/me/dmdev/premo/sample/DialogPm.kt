@@ -36,9 +36,9 @@ class DialogPm : PresentationModel() {
     @Serializable
     object Description : Saveable
 
-    val alertPm = Child(AlertPm())
+    val alertPm = Child(AlertPm(), "alert")
     val alertResult = State("")
-    val showResult = State<Boolean>(false) {
+    val showResult = State(false) {
          alertResult.flow().map { it.isNotEmpty() }
     }
 

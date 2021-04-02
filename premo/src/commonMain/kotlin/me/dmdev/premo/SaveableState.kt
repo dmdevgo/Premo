@@ -40,112 +40,122 @@ class SaveableState<T, S : Saveable>(
 }
 
 fun PresentationModel.SaveableState(
-    initialValue: Byte
+    initialValue: Byte,
+    key: String
 ): State<Byte> {
     return SaveableState(
         initialValue = initialValue,
         saver = ByteSaver
     ).also {
-        saveableStates.add(it)
+        saveableStates[key] = it
     }
 }
 
 fun PresentationModel.SaveableState(
-    initialValue: Short
+    initialValue: Short,
+    key: String
 ): State<Short> {
     return SaveableState(
         initialValue = initialValue,
         saver = ShortSaver
     ).also {
-        saveableStates.add(it)
+        saveableStates[key] = it
     }
 }
 
 fun PresentationModel.SaveableState(
-    initialValue: Int
+    initialValue: Int,
+    key: String
 ): State<Int> {
     return SaveableState(
         initialValue = initialValue,
         saver = IntSaver
     ).also {
-        saveableStates.add(it)
+        saveableStates[key] = it
     }
 }
 
 fun PresentationModel.SaveableState(
-    initialValue: Long
+    initialValue: Long,
+    key: String
 ): State<Long> {
     return SaveableState(
         initialValue = initialValue,
         saver = LongSaver
     ).also {
-        saveableStates.add(it)
+        saveableStates[key] = it
     }
 }
 
 fun PresentationModel.SaveableState(
-    initialValue: Float
+    initialValue: Float,
+    key: String
 ): State<Float> {
     return SaveableState(
         initialValue = initialValue,
         saver = FloatSaver
     ).also {
-        saveableStates.add(it)
+        saveableStates[key] = it
     }
 }
 
 fun PresentationModel.SaveableState(
-    initialValue: Double
+    initialValue: Double,
+    key: String
 ): State<Double> {
     return SaveableState(
         initialValue = initialValue,
         saver = DoubleSaver
     ).also {
-        saveableStates.add(it)
+        saveableStates[key] = it
     }
 }
 
 fun PresentationModel.SaveableState(
-    initialValue: Char
+    initialValue: Char,
+    key: String
 ): State<Char> {
     return SaveableState(
         initialValue = initialValue,
         saver = CharSaver
     ).also {
-        saveableStates.add(it)
+        saveableStates[key] = it
     }
 }
 
 fun PresentationModel.SaveableState(
-    initialValue: Boolean
+    initialValue: Boolean,
+    key: String
 ): State<Boolean> {
     return SaveableState(
         initialValue = initialValue,
         saver = BooleanSaver
     ).also {
-        saveableStates.add(it)
+        saveableStates[key] = it
     }
 }
 
 fun PresentationModel.SaveableState(
-    initialValue: String
+    initialValue: String,
+    key: String
 ): State<String> {
     return SaveableState(
         initialValue = initialValue,
         saver = StringSaver
     ).also {
-        saveableStates.add(it)
+        saveableStates[key] = it
     }
 }
 
 fun <T: Saveable> PresentationModel.SaveableState(
-    initialValue: T
+    initialValue: T,
+    key: String
 ): State<T> {
     @Suppress("UNCHECKED_CAST")
     return SaveableState(
         initialValue = initialValue,
         saver = SaveableSaver
     ).also {
-        saveableStates.add(it)
+        saveableStates[key] = it
     } as State<T>
 }

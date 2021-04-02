@@ -35,7 +35,7 @@ class CounterPm(
     @Serializable
     class Description(val maxCount: Int): Saveable
 
-    val count = SaveableState(0)
+    val count = SaveableState(0, "count")
 
     val plusButtonEnabled = State(false) {
         count.flow().map { it < maxCount }

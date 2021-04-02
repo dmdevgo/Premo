@@ -50,17 +50,18 @@ abstract class PresentationModel {
 
     private var routerOrNull: PmRouter? = null
 
-    protected fun PresentationModel.Router(pmFactory: PmFactory, initialDescription: Saveable?): PmRouter {
+    @Suppress("FunctionName")
+    protected fun Router(pmFactory: PmFactory, initialDescription: Saveable?): PmRouter {
         return routerOrNull ?: PmRouter(this, pmFactory).also { router ->
             if (initialDescription != null) router.push(initialDescription)
             routerOrNull = router
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    protected fun <PM : PresentationModel> Child(pm: PM): PM {
+    @Suppress("UNCHECKED_CAST", "FunctionName")
+    protected fun <PM : PresentationModel> Child(pm: PM, key: String): PM {
         pm.parentPm = this
-        children.add(pm)
+        children[key] = pm
         pm.moveLifecycleTo(lifecycleState.value)
         return pm
     }
@@ -71,8 +72,8 @@ abstract class PresentationModel {
             mutableStateFlow.value = value
         }
 
-    internal val saveableStates = mutableListOf<SaveableState<*, *>>()
-    private val children = mutableListOf<PresentationModel>()
+    internal val saveableStates = mutableMapOf<String, SaveableState<*, *>>()
+    private val children = mutableMapOf<String, PresentationModel>()
 
     internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
     private val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(
@@ -139,29 +140,30 @@ abstract class PresentationModel {
         } ?: listOf()
 
         return PmState(
-            pmTag = pm.tag,
+            tag = pm.tag,
             routerState = routerState,
-            children = pm.children.map { childPm -> saveState(childPm) },
-            states = pm.saveableStates.map { state ->
-                state.saveableValue
+            children = pm.children.mapValues { entry -> saveState(entry.value) },
+            states = pm.saveableStates.mapValues { entry ->
+                entry.value.saveableValue
             }
         )
     }
 
-    internal fun restoreState(pm: PresentationModel = this, pmState: PmState) {
-        pm.tag = pmState.pmTag
-        pmState.states.forEachIndexed { index, saveable ->
-            pm.saveableStates[index].saveableValue = saveable
+    internal fun restoreState(pmState: PmState) {
+        tag = pmState.tag
+
+        pmState.states.forEach { entry ->
+            saveableStates[entry.key]?.saveableValue = entry.value
         }
-        pmState.children.forEachIndexed { index, pmState ->
-            restoreState(pm.children[index], pmState)
+        pmState.children.forEach { entry ->
+            children[entry.key]?.restoreState(entry.value)
         }
 
-        val router = pm.routerOrNull
+        val router = routerOrNull
         if (router != null) {
             pmState.routerState.forEach { entry ->
-                router.push(entry.description, entry.pmState.pmTag)
-                restoreState(router.pmStack.value.last().pm, entry.pmState)
+                router.push(entry.description, entry.pmState.tag)
+                router.pmStack.value.last().pm.restoreState(entry.pmState)
             }
         }
     }
@@ -169,8 +171,8 @@ abstract class PresentationModel {
     internal fun moveLifecycleTo(targetLifecycle: LifecycleState) {
 
         fun moveChildren(targetLifecycle: LifecycleState) {
-            children.forEach { pm ->
-                pm.moveLifecycleTo(targetLifecycle)
+            children.forEach { entry ->
+                entry.value.moveLifecycleTo(targetLifecycle)
             }
             routerOrNull?.pmStack?.value?.lastOrNull()?.pm?.moveLifecycleTo(targetLifecycle)
         }
