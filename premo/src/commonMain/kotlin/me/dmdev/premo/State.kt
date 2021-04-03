@@ -29,7 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
-open class State<T>(
+class State<T>(
     initialValue: T
 ) {
     internal val mutableStateFlow = MutableStateFlow(initialValue)

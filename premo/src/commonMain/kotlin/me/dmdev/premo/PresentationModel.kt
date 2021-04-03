@@ -83,13 +83,58 @@ abstract class PresentationModel(
         return pm
     }
 
+    @Suppress("UNCHECKED_CAST", "FunctionName")
+    inline fun <reified T> SaveableState(
+        initialValue: T,
+        key: String
+    ): State<T> {
+        val saver = when {
+            T::class == Boolean::class -> BooleanSaver
+            T::class == Byte::class -> ByteSaver
+            T::class == Short::class -> ShortSaver
+            T::class == Int::class -> IntSaver
+            T::class == Long::class -> LongSaver
+            T::class == Float::class -> FloatSaver
+            T::class == Double::class -> DoubleSaver
+            T::class == Char::class -> CharSaver
+            T::class == String::class -> StringSaver
+            else -> SaveableSaver
+        }
+
+        return SaveableState(initialValue, key, saver as Saver<T, Saveable>)
+    }
+
+    @Suppress("UNCHECKED_CAST", "FunctionName")
+    fun <T, S : Saveable> SaveableState(
+        initialValue: T,
+        key: String,
+        saver: Saver<T, S>
+    ): State<T> {
+        val state: State<T> = if (pmState != null && pmState.states.containsKey(key)) {
+            State(saver.restore(pmState.states[key] as S))
+        } else {
+            State(initialValue)
+        }
+        saveableStates[key] = SaveableState(state, saver)
+        return state
+    }
+
+    private class SaveableState<T, S : Saveable>(
+        val state: State<T>,
+        val saver: Saver<T, S>
+    ) {
+        @Suppress("UNCHECKED_CAST")
+        val saveableValue: Saveable
+            get() = saver.save(state.value)
+    }
+
     protected var <T> State<T>.value: T
         get() = mutableStateFlow.value
         set(value) {
             mutableStateFlow.value = value
         }
 
-    internal val saveableStates = mutableMapOf<String, SaveableState<*, *>>()
+    private val saveableStates = mutableMapOf<String, SaveableState<*, *>>()
     private val children = mutableMapOf<String, PresentationModel>()
 
     internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
@@ -160,9 +205,7 @@ abstract class PresentationModel(
             tag = tag,
             routerState = routerState,
             childrenStates = children.mapValues { entry -> entry.value.saveState() },
-            states = saveableStates.mapValues { entry ->
-                entry.value.saveableValue
-            }
+            states = saveableStates.mapValues { entry -> entry.value.saveableValue }
         )
     }
 

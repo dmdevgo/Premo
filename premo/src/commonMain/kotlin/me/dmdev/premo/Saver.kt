@@ -29,7 +29,7 @@ interface Saver<T, S : Saveable> {
     fun restore(saveable: S): T
 }
 
-internal object SaveableSaver: Saver<Saveable, Saveable> {
+object SaveableSaver: Saver<Saveable, Saveable> {
     override fun save(value: Saveable): Saveable {
         return value
     }
@@ -39,92 +39,92 @@ internal object SaveableSaver: Saver<Saveable, Saveable> {
     }
 }
 
-internal object CharSaver: Saver<Char, SaveableChar> {
-    override fun save(value: Char): SaveableChar {
+object CharSaver: Saver<Char?, SaveableChar> {
+    override fun save(value: Char?): SaveableChar {
         return SaveableChar(value)
     }
 
-    override fun restore(saveable: SaveableChar): Char {
+    override fun restore(saveable: SaveableChar): Char? {
         return saveable.value
     }
 }
 
-internal object ByteSaver: Saver<Byte, SaveableByte> {
-    override fun save(value: Byte): SaveableByte {
+object ByteSaver: Saver<Byte?, SaveableByte> {
+    override fun save(value: Byte?): SaveableByte {
         return SaveableByte(value)
     }
 
-    override fun restore(saveable: SaveableByte): Byte {
+    override fun restore(saveable: SaveableByte): Byte? {
         return saveable.value
     }
 }
 
-internal object ShortSaver: Saver<Short, SaveableShort> {
-    override fun save(value: Short): SaveableShort {
+object ShortSaver: Saver<Short?, SaveableShort> {
+    override fun save(value: Short?): SaveableShort {
         return SaveableShort(value)
     }
 
-    override fun restore(saveable: SaveableShort): Short {
+    override fun restore(saveable: SaveableShort): Short? {
         return saveable.value
     }
 }
 
-internal object IntSaver: Saver<Int, SaveableInt> {
-    override fun save(value: Int): SaveableInt {
+object IntSaver: Saver<Int?, SaveableInt> {
+    override fun save(value: Int?): SaveableInt {
         return SaveableInt(value)
     }
 
-    override fun restore(saveable: SaveableInt): Int {
+    override fun restore(saveable: SaveableInt): Int? {
         return saveable.value
     }
 }
 
-internal object LongSaver: Saver<Long, SaveableLong> {
-    override fun save(value: Long): SaveableLong {
+object LongSaver: Saver<Long?, SaveableLong> {
+    override fun save(value: Long?): SaveableLong {
         return SaveableLong(value)
     }
 
-    override fun restore(saveable: SaveableLong): Long {
+    override fun restore(saveable: SaveableLong): Long? {
         return saveable.value
     }
 }
 
-internal object FloatSaver: Saver<Float, SaveableFloat> {
-    override fun save(value: Float): SaveableFloat {
+object FloatSaver: Saver<Float?, SaveableFloat> {
+    override fun save(value: Float?): SaveableFloat {
         return SaveableFloat(value)
     }
 
-    override fun restore(saveable: SaveableFloat): Float {
+    override fun restore(saveable: SaveableFloat): Float? {
         return saveable.value
     }
 }
 
-internal object DoubleSaver: Saver<Double, SaveableDouble> {
-    override fun save(value: Double): SaveableDouble {
+object DoubleSaver: Saver<Double?, SaveableDouble> {
+    override fun save(value: Double?): SaveableDouble {
         return SaveableDouble(value)
     }
 
-    override fun restore(saveable: SaveableDouble): Double {
+    override fun restore(saveable: SaveableDouble): Double? {
         return saveable.value
     }
 }
 
-internal object BooleanSaver: Saver<Boolean, SaveableBoolean> {
-    override fun save(value: Boolean): SaveableBoolean {
+object BooleanSaver: Saver<Boolean?, SaveableBoolean> {
+    override fun save(value: Boolean?): SaveableBoolean {
         return SaveableBoolean(value)
     }
 
-    override fun restore(saveable: SaveableBoolean): Boolean {
+    override fun restore(saveable: SaveableBoolean): Boolean? {
         return saveable.value
     }
 }
 
-internal object StringSaver: Saver<String, SaveableString> {
-    override fun save(value: String): SaveableString {
+object StringSaver: Saver<String?, SaveableString> {
+    override fun save(value: String?): SaveableString {
         return SaveableString(value)
     }
 
-    override fun restore(saveable: SaveableString): String {
+    override fun restore(saveable: SaveableString): String? {
         return saveable.value
     }
 }
