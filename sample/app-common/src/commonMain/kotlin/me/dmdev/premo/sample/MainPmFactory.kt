@@ -24,23 +24,22 @@
 
 package me.dmdev.premo.sample
 
-import me.dmdev.premo.PmState
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
 import me.dmdev.premo.navigation.PmFactory
 
 class MainPmFactory : PmFactory {
-    override fun createPm(description: Saveable, pmState: PmState?): PresentationModel {
-        return when (description) {
-            is SamplesPm.Description -> SamplesPm(pmState)
-            is CounterPm.Description -> CounterPm(description.maxCount, pmState)
-            is CounterUdfPm.Description -> CounterUdfPm(description.maxCount, pmState)
-            is CountdownPm.Description -> CountdownPm(pmState)
-            is DialogPm.Description -> DialogPm(pmState)
-            is BottomBarPm.Description -> BottomBarPm(pmFactory = this, pmState = pmState)
-            is TabPm.Description -> TabPm(pmFactory = this, description.tabTitle, pmState)
-            is TabItemPm.Description -> TabItemPm(description.screenTitle, description.tabTitle, pmState)
-            else -> throw IllegalStateException("Not handled instance creation for pm description $description")
+    override fun createPm(args: PresentationModel.Args): PresentationModel {
+        return when (args) {
+            is SamplesPm.Args -> SamplesPm(args)
+            is CounterPm.Args -> CounterPm(args)
+            is CounterUdfPm.Args -> CounterUdfPm(args)
+            is CountdownPm.Args -> CountdownPm(args)
+            is AlertPm.Args -> AlertPm(args)
+            is DialogPm.Args -> DialogPm(args, pmFactory = this)
+            is BottomBarPm.Args -> BottomBarPm(args, pmFactory = this)
+            is TabPm.Args -> TabPm(args, pmFactory = this)
+            is TabItemPm.Args -> TabItemPm(args)
+            else -> throw IllegalStateException("Not handled instance creation for pm args $args")
         }
     }
 }

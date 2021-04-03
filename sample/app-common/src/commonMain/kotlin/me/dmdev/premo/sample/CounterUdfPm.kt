@@ -28,25 +28,28 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.*
+import me.dmdev.premo.Action
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.Saveable
+import me.dmdev.premo.State
 
 class CounterUdfPm(
-    private val maxCount: Int,
-    pmState: PmState?
-) : PresentationModel(pmState) {
+    private val args: Args
+) : PresentationModel(args) {
 
     @Serializable
-    class Description(val maxCount: Int) : Saveable
+    class Args(val maxCount: Int) : PresentationModel.Args()
 
     private sealed class ActionType {
         object Minus : ActionType()
         object Plus : ActionType()
     }
 
+    @Serializable
     data class CounterState(
         val count: Int = 0,
         val maxCount: Int
-    ) {
+    ) : Saveable {
         val plusEnabled get() = count < maxCount
         val minusEnabled get() = count > 0
     }
@@ -54,12 +57,12 @@ class CounterUdfPm(
     private val action: Action<ActionType> = Action()
 
     val state = UDF(
-        initialValue = CounterState(maxCount = maxCount),
+        initialValue = CounterState(maxCount = args.maxCount),
         action = action
     ) { state, action ->
         when (action) {
             ActionType.Plus -> {
-                if (state.count < maxCount) {
+                if (state.count < args.maxCount) {
                     state.copy(count = state.count + 1)
                 } else {
                     state
@@ -83,8 +86,12 @@ class CounterUdfPm(
         action.invoke(ActionType.Plus)
     }
 
-    fun <T, A> UDF(initialValue: T, action: Action<A>, reducer: (state: T, action: A) -> T): State<T> {
-        val state = State(initialValue)
+    private inline fun <reified T, A> UDF(
+        initialValue: T,
+        action: Action<A>,
+        crossinline reducer: (state: T, action: A) -> T
+    ): State<T> {
+        val state = SaveableState(initialValue, "udf_state")
         action.flow()
             .map { act -> reducer(state.value, act) }
             .onEach { state.value = it }

@@ -29,19 +29,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import me.dmdev.premo.PmActivity
-import me.dmdev.premo.PmState
 import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.navigation.PmStackChange
 
-class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
-
-    override fun providePresentationModel(pmState: PmState?): MainPm {
-        return MainPm(pmFactory = MainPmFactory(), pmState)
-    }
-
-    override fun providePmStateSaver(): PmStateSaver {
-        return JsonPmStateSaver()
-    }
+class MainActivity : PmActivity<MainPm, MainPm.Args>(R.layout.activity_main) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,5 +54,17 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
                 else -> emptyScreen()
             }
         }
+    }
+
+    override fun providePresentationModelArgs(): MainPm.Args {
+        return MainPm.Args()
+    }
+
+    override fun providePresentationModel(args: MainPm.Args): MainPm {
+        return MainPm(args, pmFactory = MainPmFactory())
+    }
+
+    override fun providePmStateSaver(): PmStateSaver {
+        return JsonPmStateSaver()
     }
 }

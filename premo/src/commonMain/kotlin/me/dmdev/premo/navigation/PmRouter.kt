@@ -30,28 +30,30 @@ import kotlinx.coroutines.flow.flow
 import me.dmdev.premo.*
 
 class PmRouter internal constructor(
-    initialDescription: Saveable,
+    initialPmArgs: PresentationModel.Args,
     private val hostPm: PresentationModel,
-    private val pmFactory: PmFactory
+    private val pmFactory: PmFactory,
+    backStackState: List<BackStackEntryState>?
 ) {
 
     val pmStack: State<List<BackStackEntry>> = State(listOf())
 
     init {
 
-        hostPm.pmState?.routerState?.let { restoreBackStack(it) }
+        restoreBackStack(backStackState)
 
         if (pmStack.value.isEmpty()) {
-            push(initialDescription)
+            push(initialPmArgs)
         }
     }
 
-    private fun restoreBackStack(backStackState: List<BackStackEntryState>) {
-        backStackState.forEach { entry ->
-            val pm = pmFactory.createPm(entry.description, entry.pmState)
-            pm.parentPm = hostPm
+    private fun restoreBackStack(backStackState: List<BackStackEntryState>?) {
+        backStackState?.forEach { entry ->
+            entry.args.parent = hostPm
+            entry.args.state = entry.pmState
+            val pm = pmFactory.createPm(entry.args)
             pm.moveLifecycleTo(hostPm.lifecycleState.value)
-            pmStack.value = pmStack.value.plus(BackStackEntry(pm, entry.description))
+            pmStack.value = pmStack.value.plus(BackStackEntry(pm, entry.args))
         }
     }
 
@@ -85,13 +87,13 @@ class PmRouter internal constructor(
         }
     }
 
-    fun push(description: Saveable, pmTag: String = randomUUID()) {
+    fun push(args: PresentationModel.Args, pmTag: String = randomUUID()) {
         pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(LifecycleState.CREATED)
-        val pm = pmFactory.createPm(description, null)
-        pm.tag = pmTag
-        pm.parentPm = hostPm
+        args.parent = hostPm
+        args.tag = pmTag
+        val pm = pmFactory.createPm(args)
         pm.moveLifecycleTo(hostPm.lifecycleState.value)
-        pmStack.value = pmStack.value.plus(BackStackEntry(pm, description))
+        pmStack.value = pmStack.value.plus(BackStackEntry(pm, args))
     }
 
     fun pop(): Boolean {
@@ -107,6 +109,6 @@ class PmRouter internal constructor(
 
     class BackStackEntry(
         val pm: PresentationModel,
-        val description: Saveable
+        val args: PresentationModel.Args
     )
 }

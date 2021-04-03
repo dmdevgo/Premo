@@ -37,14 +37,17 @@ import androidx.appcompat.app.AppCompatActivity
  * create a [PmActivityDelegate] and pass the lifecycle callbacks to it.
  * See this class's source code for the example.
  */
-abstract class PmActivity<PM : PresentationModel>(
+abstract class PmActivity<PM : PresentationModel, ARGS : PresentationModel.Args>(
     @LayoutRes contentLayoutId: Int
 ) : AppCompatActivity(contentLayoutId) {
 
     private val delegate by lazy(LazyThreadSafetyMode.NONE) {
-        PmActivityDelegate(this, providePmStateSaver()) { pmState ->
-            providePresentationModel(pmState)
-        }
+        PmActivityDelegate(
+            pmActivity = this,
+            pmStateSaver = providePmStateSaver(),
+            pmArgsProvider = { providePresentationModelArgs() },
+            pmProvider = {providePresentationModel(it) }
+        )
     }
 
     fun getPresentationModel(): PM {
@@ -52,7 +55,8 @@ abstract class PmActivity<PM : PresentationModel>(
             ?: throw IllegalStateException("Presentation Model has not been initialized yet, call this method after onCreate.")
     }
 
-    abstract fun providePresentationModel(pmState: PmState?): PM
+    abstract fun providePresentationModelArgs(): ARGS
+    abstract fun providePresentationModel(args: ARGS): PM
     abstract fun providePmStateSaver(): PmStateSaver
 
     override fun onCreate(savedInstanceState: Bundle?) {
