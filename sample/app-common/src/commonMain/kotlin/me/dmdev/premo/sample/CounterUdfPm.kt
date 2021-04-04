@@ -43,10 +43,11 @@ class CounterUdfPm(
         object Plus : ActionType()
     }
 
+    @Serializable
     data class CounterState(
         val count: Int = 0,
         val maxCount: Int
-    ) {
+    ) : Saveable {
         val plusEnabled get() = count < maxCount
         val minusEnabled get() = count > 0
     }
@@ -83,8 +84,8 @@ class CounterUdfPm(
         action.invoke(ActionType.Plus)
     }
 
-    fun <T, A> UDF(initialValue: T, action: Action<A>, reducer: (state: T, action: A) -> T): State<T> {
-        val state = State(initialValue)
+    private inline fun <reified T, A> UDF(initialValue: T, action: Action<A>, crossinline reducer: (state: T, action: A) -> T): State<T> {
+        val state = SaveableState(initialValue, "udf_state")
         action.flow()
             .map { act -> reducer(state.value, act) }
             .onEach { state.value = it }
