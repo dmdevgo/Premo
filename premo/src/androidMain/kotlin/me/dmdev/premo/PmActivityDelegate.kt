@@ -27,6 +27,7 @@ package me.dmdev.premo
 import android.app.Activity
 import android.os.Bundle
 import kotlinx.serialization.*
+import me.dmdev.premo.navigation.PmFactory
 import java.util.*
 
 /**
@@ -41,7 +42,8 @@ import java.util.*
 class PmActivityDelegate<PM, A>(
     private val pmActivity: A,
     private val pmStateSaver: PmStateSaver,
-    private val pmProvider: (pmState: PmState?) -> PM,
+    private val pmFactory: PmFactory,
+    private val pmProvider: (config: PmConfig) -> PM,
 )
         where PM : PresentationModel,
               A : Activity {
@@ -59,11 +61,17 @@ class PmActivityDelegate<PM, A>(
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
+
+        val config = PmConfig(
+            tag = getPmTag(savedInstanceState),
+            parent = null,
+            state = restorePmState(savedInstanceState),
+            pmFactory = pmFactory
+        )
+
         commonDelegate = CommonDelegate(
-            pmTag = getPmTag(savedInstanceState),
-            pmProvider = {
-                pmProvider(restorePmState(savedInstanceState))
-            }
+            pmTag = config.tag,
+            pmProvider = { pmProvider(config) }
         )
         commonDelegate?.onCreate()
     }

@@ -35,51 +35,64 @@ import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
 
-abstract class PresentationModel(
-    internal val pmState: PmState?
-) {
+abstract class PresentationModel(config: PmConfig) {
+
+    private val pmState: PmState? = config.state
+    private val pmFactory: PmFactory = config.pmFactory
+    val tag: String = pmState?.tag ?: config.tag
+    val parentPm: PresentationModel? = config.parent
 
     val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-
     var pmInForegroundScope: CoroutineScope? = null
         private set
-
-    var tag: String = pmState?.tag ?: randomUUID()
-        internal set
-
-    var parentPm: PresentationModel? = null
-        internal set
 
     private var routerOrNull: PmRouter? = null
 
     @Suppress("FunctionName")
-    protected fun Router(initialDescription: Saveable, pmFactory: PmFactory): PmRouter {
+    protected fun Router(initialDescription: Saveable): PmRouter {
         return routerOrNull ?: PmRouter(
             initialDescription = initialDescription,
             hostPm = this,
-            pmFactory = pmFactory
+            pmFactory = pmFactory,
+            backStackState = pmState?.routerState
         ).also { router ->
             routerOrNull = router
         }
     }
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
-    protected fun <PM : PresentationModel> Child(pm: PM, key: String): PM {
-        pm.parentPm = this
+    protected fun <PM : PresentationModel> Child(key: String, createPm: (config: PmConfig) -> PM ): PM {
+
+        val config = PmConfig(
+            tag = key,
+            parent = this,
+            state = null,
+            pmFactory = pmFactory
+        )
+
+        val pm = createPm(config)
         pm.moveLifecycleTo(lifecycleState.value)
+
         return pm
     }
 
     @Suppress("UNCHECKED_CAST")
     protected fun <PM : PresentationModel> saveableChild(
         description: Saveable,
-        pmFactory: PmFactory,
-        key: String
+        key: String,
     ): PM {
-        val pm: PM = pmFactory.createPm(description, pmState?.childrenStates?.get(key)) as PM
-        pm.parentPm = this
+
+        val config = PmConfig(
+            tag = key,
+            parent = this,
+            state = pmState?.childrenStates?.get(key),
+            pmFactory = pmFactory
+        )
+
+        val pm: PM = pmFactory.createPm(description, config) as PM
         children[key] = pm
         pm.moveLifecycleTo(lifecycleState.value)
+
         return pm
     }
 

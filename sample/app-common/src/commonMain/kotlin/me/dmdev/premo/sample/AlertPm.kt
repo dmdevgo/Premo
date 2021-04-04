@@ -26,10 +26,11 @@ package me.dmdev.premo.sample
 
 import kotlinx.coroutines.flow.first
 import me.dmdev.premo.Action
+import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 
-class AlertPm : PresentationModel(null) {
+class AlertPm(config: PmConfig) : PresentationModel(config) {
 
     enum class Result { OK, CANCEL, CLOSE }
 

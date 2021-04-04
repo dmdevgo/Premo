@@ -32,8 +32,8 @@ import me.dmdev.premo.*
 
 class CounterUdfPm(
     private val maxCount: Int,
-    pmState: PmState?
-) : PresentationModel(pmState) {
+    config: PmConfig
+) : PresentationModel(config) {
 
     @Serializable
     class Description(val maxCount: Int) : Saveable

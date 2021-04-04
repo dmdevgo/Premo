@@ -32,24 +32,30 @@ import me.dmdev.premo.*
 class PmRouter internal constructor(
     initialDescription: Saveable,
     private val hostPm: PresentationModel,
-    private val pmFactory: PmFactory
+    private val pmFactory: PmFactory,
+    backStackState: List<BackStackEntryState>?
 ) {
 
     val pmStack: State<List<BackStackEntry>> = State(listOf())
 
     init {
-
-        hostPm.pmState?.routerState?.let { restoreBackStack(it) }
-
+        restoreBackStack(backStackState)
         if (pmStack.value.isEmpty()) {
             push(initialDescription)
         }
     }
 
-    private fun restoreBackStack(backStackState: List<BackStackEntryState>) {
-        backStackState.forEach { entry ->
-            val pm = pmFactory.createPm(entry.description, entry.pmState)
-            pm.parentPm = hostPm
+    private fun restoreBackStack(backStackState: List<BackStackEntryState>?) {
+        backStackState?.forEach { entry ->
+
+            val config = PmConfig(
+                tag = entry.pmState.tag,
+                parent = hostPm,
+                state = entry.pmState,
+                pmFactory = pmFactory
+            )
+
+            val pm = pmFactory.createPm(entry.description, config)
             pm.moveLifecycleTo(hostPm.lifecycleState.value)
             pmStack.value = pmStack.value.plus(BackStackEntry(pm, entry.description))
         }
@@ -85,11 +91,18 @@ class PmRouter internal constructor(
         }
     }
 
-    fun push(description: Saveable, pmTag: String = randomUUID()) {
+    fun push(description: Saveable, tag: String = randomUUID()) {
+
         pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(LifecycleState.CREATED)
-        val pm = pmFactory.createPm(description, null)
-        pm.tag = pmTag
-        pm.parentPm = hostPm
+
+        val config = PmConfig(
+            tag = tag,
+            parent = hostPm,
+            state = null,
+            pmFactory = pmFactory
+        )
+
+        val pm = pmFactory.createPm(description, config)
         pm.moveLifecycleTo(hostPm.lifecycleState.value)
         pmStack.value = pmStack.value.plus(BackStackEntry(pm, description))
     }

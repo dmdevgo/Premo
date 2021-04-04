@@ -24,10 +24,10 @@
 
 package me.dmdev.premo.navigation
 
-import me.dmdev.premo.PmState
+import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.Saveable
 
 interface PmFactory {
-    fun createPm(description: Saveable, pmState: PmState?): PresentationModel
+    fun createPm(description: Saveable, config: PmConfig): PresentationModel
 }

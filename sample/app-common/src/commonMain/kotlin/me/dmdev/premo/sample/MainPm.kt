@@ -26,16 +26,15 @@ package me.dmdev.premo.sample
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import me.dmdev.premo.PmState
+import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
-import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmStackChange
 
-class MainPm(pmFactory: PmFactory, pmState: PmState?) : PresentationModel(pmState) {
+class MainPm(config: PmConfig) : PresentationModel(config) {
 
-    private val router = Router(SamplesPm.Description, pmFactory)
+    private val router = Router(SamplesPm.Description)
 
     val currentPm = State(null) {
         router.pmStack.flow().map { it.lastOrNull()?.pm }

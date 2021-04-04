@@ -22,28 +22,13 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo
 
-import kotlinx.coroutines.delay
-import kotlinx.serialization.Serializable
-import me.dmdev.premo.*
+import me.dmdev.premo.navigation.PmFactory
 
-class CountdownPm(config: PmConfig) : PresentationModel(config) {
-
-    @Serializable
-    object Description : Saveable
-
-    companion object {
-        private const val CLICK_TO_START_TEXT = "Click to start"
-    }
-
-    val text = State(CLICK_TO_START_TEXT)
-
-    val start = Action<Unit> {
-        for (i in 10 downTo 0) {
-            text.value = i.toString()
-            delay(1000)
-        }
-        text.value = CLICK_TO_START_TEXT
-    }
-}
+class PmConfig internal constructor(
+    val tag: String,
+    val parent: PresentationModel?,
+    val state: PmState?,
+    val pmFactory: PmFactory
+)
