@@ -60,24 +60,8 @@ abstract class PresentationModel(config: PmConfig) {
         }
     }
 
-    @Suppress("UNCHECKED_CAST", "FunctionName")
-    protected fun <PM : PresentationModel> Child(key: String, createPm: (config: PmConfig) -> PM ): PM {
-
-        val config = PmConfig(
-            tag = key,
-            parent = this,
-            state = null,
-            pmFactory = pmFactory
-        )
-
-        val pm = createPm(config)
-        pm.moveLifecycleTo(lifecycleState.value)
-
-        return pm
-    }
-
     @Suppress("UNCHECKED_CAST")
-    protected fun <PM : PresentationModel> saveableChild(
+    protected fun <PM : PresentationModel> Child(
         description: Saveable,
         key: String,
     ): PM {

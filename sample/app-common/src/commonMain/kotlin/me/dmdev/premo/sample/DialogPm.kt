@@ -33,7 +33,7 @@ class DialogPm(config: PmConfig) : PresentationModel(config) {
     @Serializable
     object Description : Saveable
 
-    val alertPm = Child("alert") { config -> AlertPm(config) }
+    val alertPm = Child<AlertPm>(AlertPm.Description,"alert")
     val alertResult = State("")
     val showResult = State(false) {
          alertResult.flow().map { it.isNotEmpty() }
