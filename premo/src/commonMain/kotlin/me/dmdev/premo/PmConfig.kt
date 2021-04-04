@@ -26,7 +26,7 @@ package me.dmdev.premo
 
 import me.dmdev.premo.navigation.PmFactory
 
-class PmConfig internal constructor(
+class PmConfig(
     val tag: String,
     val parent: PresentationModel?,
     val state: PmState?,

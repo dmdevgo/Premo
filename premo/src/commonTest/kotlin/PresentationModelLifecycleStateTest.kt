@@ -23,7 +23,10 @@
  */
 
 import me.dmdev.premo.LifecycleState
+import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.Saveable
+import me.dmdev.premo.navigation.PmFactory
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -64,4 +67,15 @@ class PresentationModelLifecycleStateTest {
     }
 }
 
-class TestPm: PresentationModel()
+class TestPm: PresentationModel(
+    PmConfig(
+        tag = "",
+        parent = null,
+        state = null,
+        pmFactory = object : PmFactory {
+            override fun createPm(description: Saveable, config: PmConfig): PresentationModel {
+                TODO("Not yet implemented")
+            }
+        }
+    )
+)
