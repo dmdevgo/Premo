@@ -26,20 +26,14 @@ package me.dmdev.premo.sample
 
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.Action
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.State
-import me.dmdev.premo.navigation.PmFactory
+import me.dmdev.premo.*
 
-class DialogPm(
-    args: Args,
-    pmFactory: PmFactory
-) : PresentationModel(args) {
+class DialogPm(pmState: PmState?) : PresentationModel(pmState) {
 
     @Serializable
-    class Args : PresentationModel.Args()
+    object Description : Saveable
 
-    val alertPm = saveableChild<AlertPm>(AlertPm.Args(), pmFactory, "alert")
+    val alertPm = Child(AlertPm(), "alert")
     val alertResult = State("")
     val showResult = State(false) {
          alertResult.flow().map { it.isNotEmpty() }

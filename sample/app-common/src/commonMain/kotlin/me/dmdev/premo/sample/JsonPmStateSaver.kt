@@ -44,18 +44,40 @@ class JsonPmStateSaver: PmStateSaver {
             polymorphic(Saveable::class, SaveableChar::class, SaveableChar.serializer())
             polymorphic(Saveable::class, SaveableString::class, SaveableString.serializer())
 
-            polymorphic(Saveable::class, CounterUdfPm.CounterState::class, CounterUdfPm.CounterState.serializer())
+            polymorphic(
+                Saveable::class,
+                SamplesPm.Description::class,
+                SamplesPm.Description.serializer()
+            )
 
-            polymorphic(PresentationModel.Args::class, MainPm.Args::class, MainPm.Args.serializer())
-            polymorphic(PresentationModel.Args::class, SamplesPm.Args::class, SamplesPm.Args.serializer())
-            polymorphic(PresentationModel.Args::class, CounterPm.Args::class, CounterPm.Args.serializer())
-            polymorphic(PresentationModel.Args::class, CountdownPm.Args::class, CountdownPm.Args.serializer())
-            polymorphic(PresentationModel.Args::class, CounterUdfPm.Args::class, CounterUdfPm.Args.serializer())
-            polymorphic(PresentationModel.Args::class, DialogPm.Args::class, DialogPm.Args.serializer())
-            polymorphic(PresentationModel.Args::class, AlertPm.Args::class, AlertPm.Args.serializer())
-            polymorphic(PresentationModel.Args::class, BottomBarPm.Args::class, BottomBarPm.Args.serializer())
-            polymorphic(PresentationModel.Args::class, TabPm.Args::class, TabPm.Args.serializer())
-            polymorphic(PresentationModel.Args::class, TabItemPm.Args::class, TabItemPm.Args.serializer())
+            polymorphic(
+                Saveable::class,
+                CounterPm.Description::class,
+                CounterPm.Description.serializer()
+            )
+
+            polymorphic(
+                Saveable::class,
+                CountdownPm.Description::class,
+                CountdownPm.Description.serializer()
+            )
+
+            polymorphic(
+                Saveable::class,
+                DialogPm.Description::class,
+                DialogPm.Description.serializer()
+            )
+
+            polymorphic(
+                Saveable::class,
+                BottomBarPm.Description::class,
+                BottomBarPm.Description.serializer()
+            )
+            polymorphic(
+                Saveable::class,
+                TabItemPm.Description::class,
+                TabItemPm.Description.serializer()
+            )
         }
     }
 

@@ -38,11 +38,10 @@ import java.util.*
  * Users of this class must forward all the lifecycle methods from the containing Activity
  * to the corresponding ones in this class.
  */
-class PmActivityDelegate<PM, A, ARGS : PresentationModel.Args>(
+class PmActivityDelegate<PM, A>(
     private val pmActivity: A,
     private val pmStateSaver: PmStateSaver,
-    private val pmArgsProvider: () -> ARGS,
-    private val pmProvider: (args: ARGS) -> PM,
+    private val pmProvider: (pmState: PmState?) -> PM,
 )
         where PM : PresentationModel,
               A : Activity {
@@ -63,9 +62,7 @@ class PmActivityDelegate<PM, A, ARGS : PresentationModel.Args>(
         commonDelegate = CommonDelegate(
             pmTag = getPmTag(savedInstanceState),
             pmProvider = {
-                val args = pmArgsProvider()
-                args.state = restorePmState(savedInstanceState)
-                pmProvider(args)
+                pmProvider(restorePmState(savedInstanceState))
             }
         )
         commonDelegate?.onCreate()

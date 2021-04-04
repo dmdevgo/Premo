@@ -37,6 +37,6 @@ class PmState(
 
 @Serializable
 class BackStackEntryState(
-    @Polymorphic val args: PresentationModel.Args,
+    @Polymorphic val description: Saveable,
     val pmState: PmState
 )

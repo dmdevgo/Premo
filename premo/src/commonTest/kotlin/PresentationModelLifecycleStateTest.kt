@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-import kotlinx.serialization.Serializable
 import me.dmdev.premo.LifecycleState
 import me.dmdev.premo.PresentationModel
 import kotlin.test.BeforeTest
@@ -65,9 +64,4 @@ class PresentationModelLifecycleStateTest {
     }
 }
 
-
-class TestPm : PresentationModel(Args()) {
-
-    @Serializable
-    class Args : PresentationModel.Args()
-}
+class TestPm: PresentationModel()

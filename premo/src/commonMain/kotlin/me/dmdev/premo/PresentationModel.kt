@@ -31,57 +31,53 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
 
 abstract class PresentationModel(
-    private val args: Args
+    internal val pmState: PmState?
 ) {
-
-    @Serializable
-    abstract class Args : Saveable {
-        @Transient var state: PmState? = null
-        @Transient var tag: String? = null
-        @Transient internal var parent: PresentationModel? = null
-    }
-
-    private val pmState: PmState? get() = args.state
 
     val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     var pmInForegroundScope: CoroutineScope? = null
         private set
 
-    val tag: String = pmState?.tag ?: args.tag ?: randomUUID()
+    var tag: String = pmState?.tag ?: randomUUID()
+        internal set
 
-    val parentPm: PresentationModel? = args.parent
+    var parentPm: PresentationModel? = null
+        internal set
 
     private var routerOrNull: PmRouter? = null
 
     @Suppress("FunctionName")
-    protected fun Router(initialPmArgs: Args, pmFactory: PmFactory): PmRouter {
+    protected fun Router(initialDescription: Saveable, pmFactory: PmFactory): PmRouter {
         return routerOrNull ?: PmRouter(
-            initialPmArgs = initialPmArgs,
+            initialDescription = initialDescription,
             hostPm = this,
-            pmFactory = pmFactory,
-            backStackState = pmState?.routerState
+            pmFactory = pmFactory
         ).also { router ->
             routerOrNull = router
         }
     }
 
+    @Suppress("UNCHECKED_CAST", "FunctionName")
+    protected fun <PM : PresentationModel> Child(pm: PM, key: String): PM {
+        pm.parentPm = this
+        pm.moveLifecycleTo(lifecycleState.value)
+        return pm
+    }
+
     @Suppress("UNCHECKED_CAST")
     protected fun <PM : PresentationModel> saveableChild(
-        args: Args,
+        description: Saveable,
         pmFactory: PmFactory,
         key: String
     ): PM {
-        args.state = pmState?.childrenStates?.get(key)
-        args.parent = this
-        val pm: PM = pmFactory.createPm(args) as PM
+        val pm: PM = pmFactory.createPm(description, pmState?.childrenStates?.get(key)) as PM
+        pm.parentPm = this
         children[key] = pm
         pm.moveLifecycleTo(lifecycleState.value)
         return pm
@@ -114,8 +110,7 @@ abstract class PresentationModel(
         key: String,
         saver: Saver<T, S>
     ): State<T> {
-        val pmState = this.pmState
-        val state: State<T> = if (pmState?.states?.containsKey(key) == true) {
+        val state: State<T> = if (pmState != null && pmState.states.containsKey(key)) {
             State(saver.restore(pmState.states[key] as S))
         } else {
             State(initialValue)
@@ -201,7 +196,7 @@ abstract class PresentationModel(
         val router = routerOrNull
         val routerState = router?.pmStack?.value?.map { entry ->
             BackStackEntryState(
-                args = entry.args,
+                description = entry.description,
                 pmState = entry.pm.saveState()
             )
         } ?: listOf()
