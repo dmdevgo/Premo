@@ -32,6 +32,7 @@ import me.dmdev.premo.navigation.PmFactory
 class MainPmFactory : PmFactory {
     override fun createPm(description: Saveable, config: PmConfig): PresentationModel {
         return when (description) {
+            is MainPm.Description -> MainPm(config)
             is SamplesPm.Description -> SamplesPm(config)
             is CounterPm.Description -> CounterPm(description.maxCount, config)
             is CounterUdfPm.Description -> CounterUdfPm(description.maxCount, config)

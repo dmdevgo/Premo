@@ -39,14 +39,12 @@ import java.util.*
  * Users of this class must forward all the lifecycle methods from the containing Activity
  * to the corresponding ones in this class.
  */
-class PmActivityDelegate<PM, A>(
-    private val pmActivity: A,
+class PmActivityDelegate<PM : PresentationModel>(
+    private val pmActivity: Activity,
     private val pmStateSaver: PmStateSaver,
     private val pmFactory: PmFactory,
-    private val pmProvider: (config: PmConfig) -> PM,
-)
-        where PM : PresentationModel,
-              A : Activity {
+    private val pmDescription: Saveable,
+) {
 
     companion object {
         private const val SAVED_PM_TAG_KEY = "premo_presentation_model_tag"
@@ -71,7 +69,10 @@ class PmActivityDelegate<PM, A>(
 
         commonDelegate = CommonDelegate(
             pmTag = config.tag,
-            pmProvider = { pmProvider(config) }
+            pmProvider = {
+                @Suppress("UNCHECKED_CAST")
+                pmFactory.createPm(pmDescription, config) as PM
+            }
         )
         commonDelegate?.onCreate()
     }

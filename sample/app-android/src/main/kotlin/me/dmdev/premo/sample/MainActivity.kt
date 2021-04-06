@@ -29,8 +29,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import me.dmdev.premo.PmActivity
-import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.Saveable
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmStackChange
 
@@ -58,8 +58,8 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
         }
     }
 
-    override fun providePresentationModel(config: PmConfig): MainPm {
-        return MainPm(config)
+    override fun providePmDescription(): Saveable {
+        return MainPm.Description
     }
 
     override fun providePmFactory(): PmFactory {
