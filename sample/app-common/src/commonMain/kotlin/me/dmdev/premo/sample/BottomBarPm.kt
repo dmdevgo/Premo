@@ -27,17 +27,15 @@ package me.dmdev.premo.sample
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
 
-class BottomBarPm(
-    config: PmConfig
-) : PresentationModel(config) {
+class BottomBarPm(config: PmConfig) : PresentationModel(config) {
 
     @Serializable
     object Description : Saveable
 
     val tabPmList = listOf<TabPm>(
-        Child(TabPm.Description("Tab #1"), "Tab #1"),
-        Child(TabPm.Description("Tab #2"), "Tab #2"),
-        Child(TabPm.Description("Tab #3"), "Tab #3"),
+        AttachedChild(TabPm.Description("Tab #1"), "Tab #1"),
+        AttachedChild(TabPm.Description("Tab #2"), "Tab #2"),
+        AttachedChild(TabPm.Description("Tab #3"), "Tab #3"),
     )
 
     val currentTabPm = State(tabPmList.first())

@@ -49,7 +49,7 @@ class TabPm(
     private val router = Router(TabItemPm.Description(nextScreenTitle(), tabTitle))
 
     val currentPm = State(null) {
-        router.pmStack.flow().map { it.lastOrNull()?.pm }
+        router.pmStack.flow().map { it.lastOrNull() }
     }
 
     val pmStackChanges: Flow<PmStackChange> get() = router.pmStackChanges
@@ -62,9 +62,11 @@ class TabPm(
         when (message) {
             NextClickMessage -> {
                 router.push(
-                    TabItemPm.Description(
-                        screenTitle = nextScreenTitle(),
-                        tabTitle = tabTitle
+                    Child(
+                        TabItemPm.Description(
+                            screenTitle = nextScreenTitle(),
+                            tabTitle = tabTitle
+                        )
                     )
                 )
             }

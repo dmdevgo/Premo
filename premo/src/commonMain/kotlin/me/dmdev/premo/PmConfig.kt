@@ -30,5 +30,6 @@ class PmConfig(
     val tag: String,
     val parent: PresentationModel?,
     val state: PmState?,
-    val pmFactory: PmFactory
+    val factory: PmFactory,
+    val description: Saveable
 )

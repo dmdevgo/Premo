@@ -42,18 +42,18 @@ class MainPm(config: PmConfig) : PresentationModel(config) {
     private val router = Router(SamplesPm.Description)
 
     val currentPm = State(null) {
-        router.pmStack.flow().map { it.lastOrNull()?.pm }
+        router.pmStack.flow().map { it.lastOrNull() }
     }
 
     val pmStackChanges: Flow<PmStackChange> get() = router.pmStackChanges
 
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
-            CounterSampleMessage -> router.push(CounterPm.Description(10))
-            CounterUdfSampleMessage -> router.push(CounterUdfPm.Description(10))
-            CountdownSampleMessage -> router.push(CountdownPm.Description)
-            DialogSampleMessage -> router.push(DialogPm.Description)
-            MultistackSampleMessage -> router.push(BottomBarPm.Description)
+            CounterSampleMessage -> router.push(Child(CounterPm.Description(10)))
+            CounterUdfSampleMessage -> router.push(Child(CounterUdfPm.Description(10)))
+            CountdownSampleMessage -> router.push(Child(CountdownPm.Description))
+            DialogSampleMessage -> router.push(Child(DialogPm.Description))
+            MultistackSampleMessage -> router.push(Child(BottomBarPm.Description))
             else -> super.handleNavigationMessage(message)
         }
     }

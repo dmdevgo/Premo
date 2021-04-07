@@ -27,61 +27,38 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import me.dmdev.premo.*
+import me.dmdev.premo.LifecycleState
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.State
+import me.dmdev.premo.value
 
 class PmRouter internal constructor(
-    initialDescription: Saveable,
     private val hostPm: PresentationModel,
-    private val pmFactory: PmFactory,
-    backStackState: List<BackStackEntryState>?
 ) {
 
-    val pmStack: State<List<BackStackEntry>> = State(listOf())
-
-    init {
-        restoreBackStack(backStackState)
-        if (pmStack.value.isEmpty()) {
-            push(initialDescription)
-        }
-    }
-
-    private fun restoreBackStack(backStackState: List<BackStackEntryState>?) {
-        backStackState?.forEach { entry ->
-
-            val config = PmConfig(
-                tag = entry.pmState.tag,
-                parent = hostPm,
-                state = entry.pmState,
-                pmFactory = pmFactory
-            )
-
-            val pm = pmFactory.createPm(entry.description, config)
-            pm.moveLifecycleTo(hostPm.lifecycleState.value)
-            pmStack.value = pmStack.value.plus(BackStackEntry(pm, entry.description))
-        }
-    }
+    val pmStack: State<List<PresentationModel>> = State(listOf())
 
     val pmStackChanges: Flow<PmStackChange> = flow {
-        var oldPmStack: List<BackStackEntry> = pmStack.value
+        var oldPmStack: List<PresentationModel> = pmStack.value
         pmStack.flow().collect { newPmStack ->
 
-            val oldTop = oldPmStack.lastOrNull()
-            val newTop = newPmStack.lastOrNull()
+            val oldTopPm = oldPmStack.lastOrNull()
+            val newTopPm = newPmStack.lastOrNull()
 
-            val pmStackChange = if (newTop != null && oldTop != null) {
+            val pmStackChange = if (newTopPm != null && oldTopPm != null) {
                 when {
-                    oldTop === newTop -> {
-                        PmStackChange.Set(newTop.pm)
+                    oldTopPm === newTopPm -> {
+                        PmStackChange.Set(newTopPm)
                     }
-                    oldPmStack.any { it === newTop } -> {
-                        PmStackChange.Pop(newTop.pm, oldTop.pm)
+                    oldPmStack.any { it === newTopPm } -> {
+                        PmStackChange.Pop(newTopPm, oldTopPm)
                     }
                     else -> {
-                        PmStackChange.Push(newTop.pm, oldTop.pm)
+                        PmStackChange.Push(newTopPm, oldTopPm)
                     }
                 }
-            } else if (newTop != null) {
-                PmStackChange.Set(newTop.pm)
+            } else if (newTopPm != null) {
+                PmStackChange.Set(newTopPm)
             } else {
                 PmStackChange.Empty
             }
@@ -91,35 +68,28 @@ class PmRouter internal constructor(
         }
     }
 
-    fun push(description: Saveable, tag: String = randomUUID()) {
-
-        pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(LifecycleState.CREATED)
-
-        val config = PmConfig(
-            tag = tag,
-            parent = hostPm,
-            state = null,
-            pmFactory = pmFactory
-        )
-
-        val pm = pmFactory.createPm(description, config)
+    fun push(pm: PresentationModel) {
+        pmStack.value.lastOrNull()?.moveLifecycleTo(LifecycleState.CREATED)
         pm.moveLifecycleTo(hostPm.lifecycleState.value)
-        pmStack.value = pmStack.value.plus(BackStackEntry(pm, description))
+        pmStack.value = pmStack.value.plus(pm)
     }
 
     fun pop(): Boolean {
         return if (pmStack.value.isNotEmpty()) {
-            pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(LifecycleState.DESTROYED)
+            pmStack.value.lastOrNull()?.moveLifecycleTo(LifecycleState.DESTROYED)
             if (pmStack.value.isNotEmpty()) pmStack.value = pmStack.value.dropLast(1)
-            pmStack.value.lastOrNull()?.pm?.moveLifecycleTo(hostPm.lifecycleState.value)
+            pmStack.value.lastOrNull()?.moveLifecycleTo(hostPm.lifecycleState.value)
             true
         } else {
             false
         }
     }
 
-    class BackStackEntry(
-        val pm: PresentationModel,
-        val description: Saveable
-    )
+    fun setBackStack(pmList: List<PresentationModel>) {
+        pmStack.value = pmList
+        pmList.forEach { pm ->
+            pm.moveLifecycleTo(LifecycleState.INITIALIZED)
+        }
+        pmList.lastOrNull()?.moveLifecycleTo(hostPm.lifecycleState.value)
+    }
 }

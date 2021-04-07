@@ -64,14 +64,15 @@ class PmActivityDelegate<PM : PresentationModel>(
             tag = getPmTag(savedInstanceState),
             parent = null,
             state = restorePmState(savedInstanceState),
-            pmFactory = pmFactory
+            factory = pmFactory,
+            description = pmDescription
         )
 
         commonDelegate = CommonDelegate(
             pmTag = config.tag,
             pmProvider = {
                 @Suppress("UNCHECKED_CAST")
-                pmFactory.createPm(pmDescription, config) as PM
+                pmFactory.createPm(config) as PM
             }
         )
         commonDelegate?.onCreate()

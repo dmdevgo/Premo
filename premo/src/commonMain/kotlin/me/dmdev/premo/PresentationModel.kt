@@ -38,7 +38,8 @@ import me.dmdev.premo.navigation.PmRouter
 abstract class PresentationModel(config: PmConfig) {
 
     private val pmState: PmState? = config.state
-    private val pmFactory: PmFactory = config.pmFactory
+    private val pmFactory: PmFactory = config.factory
+    private val pmDescription: Saveable = config.description
     val tag: String = pmState?.tag ?: config.tag
     val parentPm: PresentationModel? = config.parent
 
@@ -50,31 +51,59 @@ abstract class PresentationModel(config: PmConfig) {
 
     @Suppress("FunctionName")
     protected fun Router(initialDescription: Saveable): PmRouter {
+
+        val restoredPmBackStack = pmState?.routerState?.map { entry ->
+
+            val config = PmConfig(
+                tag = entry.pmState.tag,
+                parent = this,
+                state = entry.pmState,
+                factory = pmFactory,
+                description = entry.description
+            )
+
+            pmFactory.createPm(config)
+        }
+
         return routerOrNull ?: PmRouter(
-            initialDescription = initialDescription,
             hostPm = this,
-            pmFactory = pmFactory,
-            backStackState = pmState?.routerState
         ).also { router ->
+
+            if (restoredPmBackStack != null) {
+                router.setBackStack(restoredPmBackStack)
+            }
+
+            if (router.pmStack.value.isEmpty()) {
+                router.push(Child(initialDescription))
+            }
             routerOrNull = router
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST", "FunctionName")
     protected fun <PM : PresentationModel> Child(
         description: Saveable,
-        key: String,
+        tag: String = randomUUID()
     ): PM {
-
         val config = PmConfig(
-            tag = key,
+            tag = tag,
             parent = this,
-            state = pmState?.childrenStates?.get(key),
-            pmFactory = pmFactory
+            state = pmState?.childrenStates?.get(tag),
+            factory = pmFactory,
+            description = description
         )
 
-        val pm: PM = pmFactory.createPm(description, config) as PM
-        children[key] = pm
+        return pmFactory.createPm(config) as PM
+    }
+
+    @Suppress("FunctionName")
+    protected fun <PM : PresentationModel> AttachedChild(
+        description: Saveable,
+        tag: String
+    ): PM {
+
+        val pm = Child<PM>(description, tag)
+        children[tag] = pm
         pm.moveLifecycleTo(lifecycleState.value)
 
         return pm
@@ -173,7 +202,7 @@ abstract class PresentationModel(config: PmConfig) {
         val router = routerOrNull
         if (router != null) {
             val handledByNestedPm =
-                router.pmStack.value.lastOrNull()?.pm?.handleBack() ?: false
+                router.pmStack.value.lastOrNull()?.handleBack() ?: false
             if (handledByNestedPm.not()) {
                 if (router.pmStack.value.size > 1) {
                     router.pop()
@@ -191,10 +220,10 @@ abstract class PresentationModel(config: PmConfig) {
     internal fun saveState(): PmState {
 
         val router = routerOrNull
-        val routerState = router?.pmStack?.value?.map { entry ->
+        val routerState = router?.pmStack?.value?.map { pm ->
             BackStackEntryState(
-                description = entry.description,
-                pmState = entry.pm.saveState()
+                description = pm.pmDescription,
+                pmState = pm.saveState()
             )
         } ?: listOf()
 
@@ -212,7 +241,7 @@ abstract class PresentationModel(config: PmConfig) {
             children.forEach { entry ->
                 entry.value.moveLifecycleTo(targetLifecycle)
             }
-            routerOrNull?.pmStack?.value?.lastOrNull()?.pm?.moveLifecycleTo(targetLifecycle)
+            routerOrNull?.pmStack?.value?.lastOrNull()?.moveLifecycleTo(targetLifecycle)
         }
 
         fun doOnCreate() {
