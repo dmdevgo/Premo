@@ -73,10 +73,10 @@ class TestPm: PresentationModel(
         parent = null,
         state = null,
         factory = object : PmFactory {
-            override fun createPm(config: Description): PresentationModel {
+            override fun createPm(config: PmConfig): PresentationModel {
                 TODO("Not yet implemented")
             }
         },
-        description = object : Saveable
+        description = object : Saveable {}
     )
 )
