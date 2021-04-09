@@ -30,13 +30,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 class PmState(
     val tag: String,
-    val routerState: List<BackStackEntryState>,
+    @Polymorphic val description: Saveable,
+    val routerState: List<PmState>,
     val childrenStates: Map<String, PmState>,
     val states: Map<String, @Polymorphic Saveable?>
-)
-
-@Serializable
-class BackStackEntryState(
-    @Polymorphic val description: Saveable,
-    val pmState: PmState
 )
