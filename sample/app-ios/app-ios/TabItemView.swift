@@ -52,6 +52,6 @@ struct TabItemView: View {
 
 struct TabItemView_Previews: PreviewProvider {
     static var previews: some View {
-        TabItemView(pm: TabItemPm(screenTitle: "", tabTitle: ""))
+        TabItemView(pm: Stubs.init().tabItemPm)
     }
 }

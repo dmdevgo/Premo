@@ -47,6 +47,6 @@ struct TabContainerView: View {
 
 struct TabContainerView_Previews: PreviewProvider {
     static var previews: some View {
-        TabContainerView(pm: TabPm(pmFactory: MainPmFactory(), tabTitle: "#Tab"))
+        TabContainerView(pm: Stubs.init().tabPm)
     }
 }

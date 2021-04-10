@@ -48,8 +48,6 @@ struct MultistackView: View {
 
 struct MultistackView_Previews: PreviewProvider {
     static var previews: some View {
-        MultistackView(pm: BottomBarPm(createTabPm: { desc in
-            TabPm(pmFactory: MainPmFactory(), tabTitle: "#tab")
-        }))
+        MultistackView(pm: Stubs.init().bottomBarPm)
     }
 }

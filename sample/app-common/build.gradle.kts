@@ -40,6 +40,7 @@ kotlin {
             }
         }
     }
+
     android()
 
     sourceSets {
@@ -49,6 +50,8 @@ kotlin {
                 api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
             }
         }
+
+        val iosMain by getting {}
     }
 }
 

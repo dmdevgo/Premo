@@ -65,6 +65,6 @@ struct SamplesView: View {
 
 struct SamplesView_Previews: PreviewProvider {
     static var previews: some View {
-        SamplesView(pm: SamplesPm())
+        SamplesView(pm: Stubs.init().samplesPm)
     }
 }

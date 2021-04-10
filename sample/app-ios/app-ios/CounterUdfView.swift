@@ -60,6 +60,6 @@ struct CounterUdfView: View {
 
 struct CounterUdfView_Previews: PreviewProvider {
     static var previews: some View {
-        CounterUdfView(pm: CounterUdfPm(maxCount: 10))
+        CounterUdfView(pm: Stubs.init().counterUdfPm)
     }
 }

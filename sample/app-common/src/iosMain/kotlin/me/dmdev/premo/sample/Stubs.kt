@@ -22,41 +22,34 @@
  * SOFTWARE.
  */
 
-import SwiftUI
-import Common
+package me.dmdev.premo.sample
 
+import me.dmdev.premo.PmConfig
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.Saveable
 
-struct CountdownView: View {
-    
-    private let pm: CountdownPm
-    
-    @ObservedObject
-    private var text: ObservableString
-    
-    init(pm: CountdownPm) {
-        self.pm = pm
-        text = ObservableString(pm.text)
-    }
-    
-    var body: some View {
-        VStack {
-            
-            Text(text.value)
-                .padding()
-            
-            Button("Start Countdown", action: {
-                pm.start.invoke()
-            }).padding()
-            
-            Text("During the countdown, button clicks are ignored\nuntil the counter reaches zero.")
-                .padding()
-                .font(.system(size: 12))
-        }
-    }
-}
+object Stubs {
 
-struct CountdownView_Previews: PreviewProvider {
-    static var previews: some View {
-        CountdownView(pm: Stubs.init().countdownPm)
+    private val mainPmFactory = MainPmFactory()
+
+    val samplesPm = createPm<SamplesPm>(SamplesPm.Description)
+    val counterPm = createPm<CounterPm>(CounterPm.Description(10))
+    val counterUdfPm = createPm<CounterUdfPm>(CounterUdfPm.Description(10))
+    val countdownPm = createPm<CountdownPm>(CountdownPm.Description)
+    val dialogPm = createPm<DialogPm>(DialogPm.Description)
+    val bottomBarPm = createPm<BottomBarPm>(BottomBarPm.Description)
+    val tabPm = createPm<TabPm>(TabPm.Description("Tab #"))
+    val tabItemPm = createPm<TabItemPm>(TabItemPm.Description("Screen #", "Tab #"))
+
+    private fun <PM : PresentationModel> createPm(description: Saveable): PM {
+        val config = PmConfig(
+            tag = "",
+            parent = null,
+            state = null,
+            factory = mainPmFactory,
+            description = description
+        )
+        @Suppress("UNCHECKED_CAST")
+        return mainPmFactory.createPm(config) as PM
     }
 }

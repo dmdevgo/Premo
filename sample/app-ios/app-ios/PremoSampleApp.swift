@@ -34,14 +34,21 @@ struct PremoSampleApp: App {
     
     init() {
         delegate = CommonDelegate(pmTag: "MainPm") {
-            MainPm(pmFactory: MainPmFactory())
+            let config = PmConfig(
+                tag: "MainPm",
+                parent: nil,
+                state: nil,
+                factory: MainPmFactory(),
+                description: MainPm.Description()
+            )
+            return MainPm(config: config)
         }
         delegate.onCreate()
     }
     
     var body: some Scene {
         WindowGroup {
-            MainView(pm: MainPm(pmFactory: MainPmFactory()))
+            MainView(pm: delegate.presentationModel as MainPm)
         }
         .onChange(of: scenePhase) { newScenePhase in
               switch newScenePhase {

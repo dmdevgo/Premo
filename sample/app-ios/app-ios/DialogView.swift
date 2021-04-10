@@ -90,6 +90,6 @@ struct DialogView: View {
 
 struct DialogView_Previews: PreviewProvider {
     static var previews: some View {
-        DialogView(pm: DialogPm())
+        DialogView(pm: Stubs.init().dialogPm)
     }
 }
