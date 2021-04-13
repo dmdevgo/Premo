@@ -53,6 +53,7 @@ class MainPm(config: PmConfig) : PresentationModel(config) {
             CounterUdfSampleMessage -> router.push(Child(CounterUdfPm.Description(10)))
             CountdownSampleMessage -> router.push(Child(CountdownPm.Description))
             DialogSampleMessage -> router.push(Child(DialogPm.Description))
+            ControlsSampleMessage -> router.push(Child(ControlsPm.Description))
             MultistackSampleMessage -> router.push(Child(BottomBarPm.Description))
             else -> super.handleNavigationMessage(message)
         }

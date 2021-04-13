@@ -35,6 +35,8 @@ import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
 
+object EmptyDescription : Saveable
+
 abstract class PresentationModel(config: PmConfig) {
 
     private val pmState: PmState? = config.state
@@ -81,7 +83,7 @@ abstract class PresentationModel(config: PmConfig) {
     }
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
-    protected fun <PM : PresentationModel> Child(
+    fun <PM : PresentationModel> Child(
         description: Saveable,
         tag: String = randomUUID()
     ): PM {
@@ -97,14 +99,33 @@ abstract class PresentationModel(config: PmConfig) {
     }
 
     @Suppress("FunctionName")
-    protected fun <PM : PresentationModel> AttachedChild(
+    fun <PM : PresentationModel> AttachedChild(
         description: Saveable,
         tag: String
     ): PM {
 
         val pm = Child<PM>(description, tag)
-        children[tag] = pm
         pm.moveLifecycleTo(lifecycleState.value)
+        children[tag] = pm
+        return pm
+    }
+
+    @Suppress("FunctionName")
+    fun <PM : PresentationModel> AttachedChild(
+        createPm: (config: PmConfig) -> PM
+    ): PM {
+
+        val config = PmConfig(
+            tag = randomUUID(),
+            parent = this,
+            state = null,
+            factory = pmFactory,
+            description = EmptyDescription
+        )
+
+        val pm = createPm(config)
+        pm.moveLifecycleTo(lifecycleState.value)
+        children[tag] = pm
 
         return pm
     }

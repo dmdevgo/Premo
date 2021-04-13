@@ -51,6 +51,10 @@ class SamplesPm(config: PmConfig) : PresentationModel(config) {
         handleNavigationMessage(DialogSampleMessage)
     }
 
+    val controlsClick = Action<Unit> {
+        handleNavigationMessage(ControlsSampleMessage)
+    }
+
     val multistackClick = Action<Unit> {
         handleNavigationMessage(MultistackSampleMessage)
     }

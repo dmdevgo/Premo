@@ -24,25 +24,35 @@
 
 package me.dmdev.premo.sample
 
-import me.dmdev.premo.PmConfig
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.PmFactory
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
-class MainPmFactory : PmFactory {
-    override fun createPm(config: PmConfig): PresentationModel {
-        return when (val description = config.description) {
-            is MainPm.Description -> MainPm(config)
-            is SamplesPm.Description -> SamplesPm(config)
-            is CounterPm.Description -> CounterPm(description.maxCount, config)
-            is CounterUdfPm.Description -> CounterUdfPm(description.maxCount, config)
-            is CountdownPm.Description -> CountdownPm(config)
-            is DialogPm.Description -> DialogPm(config)
-            is AlertPm.Description -> AlertPm(config)
-            is ControlsPm.Description -> ControlsPm(config)
-            is BottomBarPm.Description -> BottomBarPm(config)
-            is TabPm.Description -> TabPm(description.tabTitle, config)
-            is TabItemPm.Description -> TabItemPm(description.screenTitle, description.tabTitle, config)
-            else -> throw IllegalStateException("Not handled instance creation for pm description $description")
+@Composable
+fun controlsScreen(pm: ControlsPm) {
+    Column (
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TextField(
+            value = pm.input.text.bind(),
+            onValueChange = { pm.input.textChanges(it) },
+            enabled = pm.input.enabled.bind()
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        Row {
+            Text("Enable input")
+            Spacer(modifier = Modifier.width(16.dp))
+            Checkbox(
+                checked = pm.check.checked.bind(),
+                onCheckedChange = { pm.check.checkedChanges(it) }
+            )
         }
     }
 }

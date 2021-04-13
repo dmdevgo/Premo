@@ -30,6 +30,7 @@ object CounterSampleMessage: NavigationMessage
 object CounterUdfSampleMessage: NavigationMessage
 object CountdownSampleMessage: NavigationMessage
 object DialogSampleMessage: NavigationMessage
+object ControlsSampleMessage: NavigationMessage
 object MultistackSampleMessage: NavigationMessage
 object NextClickMessage: NavigationMessage
 object PreviousClickMessage: NavigationMessage
