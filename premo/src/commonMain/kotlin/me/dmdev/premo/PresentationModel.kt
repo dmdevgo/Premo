@@ -28,9 +28,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
@@ -50,6 +49,38 @@ abstract class PresentationModel(config: PmConfig) {
         private set
 
     private var routerOrNull: PmRouter? = null
+    private val saveableStates = mutableMapOf<String, SaveableState<*, *>>()
+    private val children = mutableMapOf<String, PresentationModel>()
+    val lifecycle: PmLifecycle = PmLifecycle()
+
+    init {
+
+        lifecycle.stateFlow.onEach { state ->
+            children.forEach { entry ->
+                entry.value.lifecycle.moveTo(state)
+            }
+        }.launchIn(pmScope)
+
+        lifecycle.eventFlow.onEach { event ->
+            when (event) {
+                PmLifecycle.Event.ON_CREATE -> {
+                    onCreate()
+                }
+                PmLifecycle.Event.ON_FOREGROUND -> {
+                    pmInForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+                    onForeground()
+                }
+                PmLifecycle.Event.ON_BACKGROUND -> {
+                    onBackground()
+                    pmInForegroundScope?.cancel()
+                }
+                PmLifecycle.Event.ON_DESTROY -> {
+                    onDestroy()
+                    pmScope.cancel()
+                }
+            }
+        }.launchIn(pmScope)
+    }
 
     @Suppress("FunctionName")
     protected fun Router(initialDescription: Saveable): PmRouter {
@@ -105,7 +136,7 @@ abstract class PresentationModel(config: PmConfig) {
     ): PM {
 
         val pm = Child<PM>(description, tag)
-        pm.moveLifecycleTo(lifecycleState.value)
+        pm.lifecycle.moveTo(lifecycle.state)
         children[tag] = pm
         return pm
     }
@@ -124,7 +155,7 @@ abstract class PresentationModel(config: PmConfig) {
         )
 
         val pm = createPm(config)
-        pm.moveLifecycleTo(lifecycleState.value)
+        pm.lifecycle.moveTo(lifecycle.state)
         children[tag] = pm
 
         return pm
@@ -180,15 +211,6 @@ abstract class PresentationModel(config: PmConfig) {
         set(value) {
             mutableStateFlow.value = value
         }
-
-    private val saveableStates = mutableMapOf<String, SaveableState<*, *>>()
-    private val children = mutableMapOf<String, PresentationModel>()
-
-    internal val lifecycleState = MutableStateFlow(LifecycleState.INITIALIZED)
-    private val lifecycleEvent = MutableSharedFlow<LifecycleEvent>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected open fun onCreate() {
@@ -250,93 +272,5 @@ abstract class PresentationModel(config: PmConfig) {
             states = saveableStates.mapValues { entry -> entry.value.saveableValue },
             description = pmDescription
         )
-    }
-
-    internal fun moveLifecycleTo(targetLifecycle: LifecycleState) {
-
-        fun moveChildren(targetLifecycle: LifecycleState) {
-            children.forEach { entry ->
-                entry.value.moveLifecycleTo(targetLifecycle)
-            }
-            routerOrNull?.pmStack?.value?.lastOrNull()?.moveLifecycleTo(targetLifecycle)
-        }
-
-        fun doOnCreate() {
-            lifecycleState.value = LifecycleState.CREATED
-            lifecycleEvent.tryEmit(LifecycleEvent.ON_CREATE)
-            onCreate()
-            moveChildren(LifecycleState.CREATED)
-        }
-
-        fun doOnForeground() {
-            pmInForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-            lifecycleState.value = LifecycleState.IN_FOREGROUND
-            lifecycleEvent.tryEmit(LifecycleEvent.ON_FOREGROUND)
-            onForeground()
-            moveChildren(LifecycleState.IN_FOREGROUND)
-        }
-
-        fun doOnBackground() {
-            moveChildren(LifecycleState.CREATED)
-            lifecycleState.value = LifecycleState.CREATED
-            lifecycleEvent.tryEmit(LifecycleEvent.ON_BACKGROUND)
-            onBackground()
-            pmInForegroundScope?.cancel()
-        }
-
-        fun doOnDestroy() {
-            moveChildren(LifecycleState.DESTROYED)
-            lifecycleState.value = LifecycleState.DESTROYED
-            lifecycleEvent.tryEmit(LifecycleEvent.ON_DESTROY)
-            onDestroy()
-            pmScope.cancel()
-        }
-
-        when (targetLifecycle) {
-            LifecycleState.INITIALIZED -> {
-                // do nothing, initial lifecycle state is INITIALIZED
-            }
-            LifecycleState.CREATED -> {
-                when (lifecycleState.value) {
-                    LifecycleState.INITIALIZED -> {
-                        doOnCreate()
-                    }
-                    LifecycleState.IN_FOREGROUND -> {
-                        doOnBackground()
-                    }
-                    else -> { /*do nothing */
-                    }
-                }
-            }
-            LifecycleState.IN_FOREGROUND -> {
-                when (lifecycleState.value) {
-                    LifecycleState.INITIALIZED -> {
-                        doOnCreate()
-                        doOnForeground()
-                    }
-                    LifecycleState.CREATED -> {
-                        doOnForeground()
-                    }
-                    else -> { /*do nothing */
-                    }
-                }
-            }
-            LifecycleState.DESTROYED -> {
-                when (lifecycleState.value) {
-                    LifecycleState.INITIALIZED -> {
-                        doOnDestroy()
-                    }
-                    LifecycleState.CREATED -> {
-                        doOnDestroy()
-                    }
-                    LifecycleState.IN_FOREGROUND -> {
-                        doOnBackground()
-                        doOnDestroy()
-                    }
-                    LifecycleState.DESTROYED -> { /*do nothing */
-                    }
-                }
-            }
-        }
     }
 }

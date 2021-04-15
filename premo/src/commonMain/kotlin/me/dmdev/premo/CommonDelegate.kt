@@ -24,7 +24,7 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.LifecycleEvent.*
+import me.dmdev.premo.PmLifecycle.State.*
 
 /**
  *  Common delegate serves for forwarding the lifecycle[LifecycleEvent] directly into the [PresentationModel][PresentationModel].
@@ -43,19 +43,19 @@ class CommonDelegate<PM : PresentationModel>(
     }
 
     fun onCreate() {
-        presentationModel.moveLifecycleTo(LifecycleState.CREATED)
+        presentationModel.lifecycle.moveTo(CREATED)
     }
 
     fun onForeground() {
-        presentationModel.moveLifecycleTo(LifecycleState.IN_FOREGROUND)
+        presentationModel.lifecycle.moveTo(IN_FOREGROUND)
     }
 
     fun onBackground() {
-        presentationModel.moveLifecycleTo(LifecycleState.CREATED)
+        presentationModel.lifecycle.moveTo(CREATED)
     }
 
     fun onDestroy() {
-        presentationModel.moveLifecycleTo(LifecycleState.DESTROYED)
+        presentationModel.lifecycle.moveTo(DESTROYED)
         PmStore.removePm(pmTag)
     }
 }

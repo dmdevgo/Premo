@@ -24,10 +24,8 @@
 
 package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import me.dmdev.premo.LifecycleState
+import kotlinx.coroutines.flow.*
+import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import me.dmdev.premo.value
@@ -35,6 +33,12 @@ import me.dmdev.premo.value
 class PmRouter internal constructor(
     private val hostPm: PresentationModel,
 ) {
+
+    init {
+        hostPm.lifecycle.stateFlow.onEach { state ->
+            pmStack.value.lastOrNull()?.lifecycle?.moveTo(state)
+        }.launchIn(hostPm.pmScope)
+    }
 
     val pmStack: State<List<PresentationModel>> = State(listOf())
 
@@ -69,16 +73,16 @@ class PmRouter internal constructor(
     }
 
     fun push(pm: PresentationModel) {
-        pmStack.value.lastOrNull()?.moveLifecycleTo(LifecycleState.CREATED)
-        pm.moveLifecycleTo(hostPm.lifecycleState.value)
+        pmStack.value.lastOrNull()?.lifecycle?.moveTo(CREATED)
+        pm.lifecycle.moveTo(hostPm.lifecycle.state)
         pmStack.value = pmStack.value.plus(pm)
     }
 
     fun pop(): Boolean {
         return if (pmStack.value.isNotEmpty()) {
-            pmStack.value.lastOrNull()?.moveLifecycleTo(LifecycleState.DESTROYED)
+            pmStack.value.lastOrNull()?.lifecycle?.moveTo(DESTROYED)
             if (pmStack.value.isNotEmpty()) pmStack.value = pmStack.value.dropLast(1)
-            pmStack.value.lastOrNull()?.moveLifecycleTo(hostPm.lifecycleState.value)
+            pmStack.value.lastOrNull()?.lifecycle?.moveTo(hostPm.lifecycle.state)
             true
         } else {
             false
@@ -88,8 +92,8 @@ class PmRouter internal constructor(
     fun setBackStack(pmList: List<PresentationModel>) {
         pmStack.value = pmList
         pmList.forEach { pm ->
-            pm.moveLifecycleTo(LifecycleState.INITIALIZED)
+            pm.lifecycle.moveTo(INITIALIZED)
         }
-        pmList.lastOrNull()?.moveLifecycleTo(hostPm.lifecycleState.value)
+        pmList.lastOrNull()?.lifecycle?.moveTo(hostPm.lifecycle.state)
     }
 }
