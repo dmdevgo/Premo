@@ -50,30 +50,26 @@ class ControlsPm(config: PmConfig) : PresentationModel(config) {
 fun PresentationModel.Input(
     initialText: String = "",
     formatter: (String) -> String = { it }
-): InputPm {
-    return AttachedChild { config ->
-        InputPm(initialText, formatter, config)
-    }
+): Input {
+    return Input(this, initialText, formatter)
 }
 
 @Suppress("FunctionName")
 fun PresentationModel.Check(
     initialChecked: Boolean,
     onChange: (checked: Boolean) -> Unit = {}
-): CheckPm {
-    return AttachedChild { config ->
-        CheckPm(initialChecked, onChange, config)
-    }
+): Check {
+    return Check(this, initialChecked, onChange)
 }
 
-class InputPm(
+class Input(
+    pm: PresentationModel,
     initialText: String,
-    formatter: (String) -> String = { it },
-    config: PmConfig
-) : PresentationModel(config) {
+    formatter: (String) -> String = { it }
+) {
 
     val text = State(formatter(initialText))
-    val textChanges = Action<String> {
+    val textChanges = pm.Action<String> {
         if (enabled.value) {
             text.value = formatter(it)
         } else {
@@ -84,13 +80,13 @@ class InputPm(
     val enabled = State(true)
 }
 
-class CheckPm(
+class Check(
+    pm: PresentationModel,
     initialChecked: Boolean,
-    onChange: (checked: Boolean) -> Unit,
-    config: PmConfig
-) : PresentationModel(config) {
+    onChange: (checked: Boolean) -> Unit
+) {
     val checked = State(initialChecked)
-    val checkedChanges = Action<Boolean> {
+    val checkedChanges = pm.Action<Boolean> {
         checked.value = it
         onChange(it)
     }

@@ -34,8 +34,6 @@ import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
 
-object EmptyDescription : Saveable
-
 abstract class PresentationModel(config: PmConfig) {
 
     private val pmState: PmState? = config.state
@@ -141,26 +139,6 @@ abstract class PresentationModel(config: PmConfig) {
         return pm
     }
 
-    @Suppress("FunctionName")
-    fun <PM : PresentationModel> AttachedChild(
-        createPm: (config: PmConfig) -> PM
-    ): PM {
-
-        val config = PmConfig(
-            tag = randomUUID(),
-            parent = this,
-            state = null,
-            factory = pmFactory,
-            description = EmptyDescription
-        )
-
-        val pm = createPm(config)
-        pm.lifecycle.moveTo(lifecycle.state)
-        children[tag] = pm
-
-        return pm
-    }
-
     @Suppress("UNCHECKED_CAST", "FunctionName")
     inline fun <reified T> SaveableState(
         initialValue: T,
@@ -206,7 +184,7 @@ abstract class PresentationModel(config: PmConfig) {
             get() = saver.save(state.value)
     }
 
-    protected var <T> State<T>.value: T
+    var <T> State<T>.value: T
         get() = mutableStateFlow.value
         set(value) {
             mutableStateFlow.value = value

@@ -65,7 +65,7 @@ fun <T> PresentationModel.ActionChain(
 
 @Suppress("FunctionName")
 fun <T> PresentationModel.Action(
-    doAction: suspend (value: T) -> Unit
+    doAction: suspend PresentationModel.(value: T) -> Unit
 ): Action<T> {
 
     val action = Action<T>()
