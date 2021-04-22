@@ -24,6 +24,7 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
@@ -33,23 +34,72 @@ class DialogPm(config: PmConfig) : PresentationModel(config) {
     @Serializable
     object Description : Saveable
 
-    val alertPm = AttachedChild<AlertPm>(AlertPm.Description,"alert")
+    val alert = Alert(this)
     val alertResult = State("")
     val showResult = State(false) {
          alertResult.flow().map { it.isNotEmpty() }
     }
 
     val showDialog = Action<Unit> {
-        alertPm.show("Hello! I'm a simple dialog.")
+        alert.show("Hello! I'm a simple dialog.")
     }
 
     val showDialogForResult = Action<Unit> {
-        alertResult.value = alertPm.showForResult(
+        alertResult.value = alert.showForResult(
             "Hi! I am a dialog to get the result. Click the button or just close me."
         ).toString()
     }
 
     val hideResult = Action<Unit>{
         alertResult.value = ""
+    }
+}
+
+class Alert(
+    private val pm: PresentationModel
+) {
+
+    enum class Result { OK, CANCEL, CLOSE }
+
+    val isShown = State(false)
+    val message = State("")
+
+    private val result = Action<Result>()
+
+    fun okClick() {
+        result.invoke(Result.OK)
+        hide()
+    }
+
+    fun cancelClick() {
+        result.invoke(Result.CANCEL)
+        hide()
+    }
+
+    fun dismiss() {
+        result.invoke(Result.CLOSE)
+        hide()
+    }
+
+    fun show(message: String) {
+        with(pm) {
+            this@Alert.message.value = message
+            isShown.value = true
+        }
+    }
+
+    fun hide() {
+        with(pm) {
+            isShown.value = false
+        }
+    }
+
+    suspend fun showForResult(message: String): Alert.Result {
+        show(message)
+        return result.flow().first().also {
+            with(pm) {
+                isShown.value = false
+            }
+        }
     }
 }

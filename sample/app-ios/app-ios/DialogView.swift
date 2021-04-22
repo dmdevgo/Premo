@@ -28,7 +28,6 @@ import Common
 struct DialogView: View {
     
     private let pm: DialogPm
-    private let alertPm: AlertPm
     
     @ObservedObject
     private var showDialog: ObservableBoolean
@@ -44,11 +43,10 @@ struct DialogView: View {
     
     init(pm: DialogPm) {
         self.pm = pm
-        self.alertPm = pm.alertPm
-        showDialog = ObservableBoolean(alertPm.isShown)
+        showDialog = ObservableBoolean(pm.alert.isShown)
         showResult = ObservableBoolean(pm.showResult)
         result = ObservableString(pm.alertResult)
-        alertMessage = ObservableString(alertPm.message)
+        alertMessage = ObservableString(pm.alert.message)
     }
     
     var body: some View {
@@ -62,11 +60,11 @@ struct DialogView: View {
                     title: Text("Dialog"),
                     message: Text(alertMessage.value),
                     primaryButton: .default(Text("Ok")) {
-                        alertPm.okClick()
+                        pm.alert.okClick()
                     },
                     
                     secondaryButton: .cancel() {
-                        alertPm.cancelClick()
+                        pm.alert.cancelClick()
                     }
                 )
             }

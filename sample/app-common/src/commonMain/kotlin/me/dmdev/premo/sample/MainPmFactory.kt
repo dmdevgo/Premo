@@ -37,7 +37,6 @@ class MainPmFactory : PmFactory {
             is CounterUdfPm.Description -> CounterUdfPm(description.maxCount, config)
             is CountdownPm.Description -> CountdownPm(config)
             is DialogPm.Description -> DialogPm(config)
-            is AlertPm.Description -> AlertPm(config)
             is ControlsPm.Description -> ControlsPm(config)
             is BottomBarPm.Description -> BottomBarPm(config)
             is TabPm.Description -> TabPm(description.tabTitle, config)

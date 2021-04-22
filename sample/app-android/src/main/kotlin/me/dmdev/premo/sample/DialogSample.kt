@@ -65,8 +65,8 @@ fun dialogScreen(pm: DialogPm) {
                     Text("Show dialog for result")
                 }
 
-                if (pm.alertPm.isShown.bind()) {
-                    alert(pm.alertPm)
+                if (pm.alert.isShown.bind()) {
+                    alert(pm.alert)
                 }
             }
         }
@@ -74,17 +74,17 @@ fun dialogScreen(pm: DialogPm) {
 }
 
 @Composable
-fun alert(pm: AlertPm) {
+fun alert(alert: Alert) {
     AlertDialog(
-        onDismissRequest = { pm.dismiss() },
-        text = { Text(pm.message.value) },
+        onDismissRequest = { alert.dismiss() },
+        text = { Text(alert.message.value) },
         confirmButton = {
-            Button(onClick = { pm.okClick() }) {
+            Button(onClick = { alert.okClick() }) {
                 Text("Ok")
             }
         },
         dismissButton = {
-            Button(onClick = { pm.cancelClick() }) {
+            Button(onClick = { alert.cancelClick() }) {
                 Text("Cancel")
             }
         }
