@@ -39,7 +39,7 @@ struct MultistackView: View {
                 TabContainerView(pm: tabPm)
                     .tabItem {
                         Image(systemName: "star.fill")
-                        Text(tabPm.tabTitle)
+                        Text(tabPm.args.tabTitle)
                     }
             }
         }

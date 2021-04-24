@@ -27,26 +27,21 @@ package me.dmdev.premo.sample
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
 import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmStackChange
 
-class TabPm(
-    val tabTitle: String,
-    config: PmConfig
-) : PresentationModel(config) {
+class TabPm(val args: Args) : PresentationModel(args) {
 
     @Serializable
-    class Description(
+    class Args(
         val tabTitle: String
-    ) : Saveable
+    ) : PresentationModel.Args()
 
     private var number: Int = 1
 
-    private val router = Router(TabItemPm.Description(nextScreenTitle(), tabTitle))
+    private val router = Router(TabItemPm.Args(nextScreenTitle(), args.tabTitle))
 
     val currentPm = State(null) {
         router.pmStack.flow().map { it.lastOrNull() }
@@ -63,9 +58,9 @@ class TabPm(
             NextClickMessage -> {
                 router.push(
                     Child(
-                        TabItemPm.Description(
+                        TabItemPm.Args(
                             screenTitle = nextScreenTitle(),
-                            tabTitle = tabTitle
+                            tabTitle = args.tabTitle
                         )
                     )
                 )

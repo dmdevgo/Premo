@@ -26,21 +26,15 @@ package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.Action
-import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
 
-class TabItemPm(
-    val screenTitle: String,
-    val tabTitle: String,
-    config: PmConfig
-) : PresentationModel(config) {
+class TabItemPm(val args: Args) : PresentationModel(args) {
 
     @Serializable
-    class Description(
+    class Args(
         val screenTitle: String,
         val tabTitle: String
-    ) : Saveable
+    ) : PresentationModel.Args()
 
     val nextClick = Action<Unit> {
         handleNavigationMessage(NextClickMessage)

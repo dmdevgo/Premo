@@ -25,6 +25,7 @@
 package me.dmdev.premo
 
 import me.dmdev.premo.PmLifecycle.State.*
+import me.dmdev.premo.navigation.PmFactory
 
 /**
  *  Common delegate serves for forwarding the lifecycle[LifecycleEvent] directly into the [PresentationModel][PresentationModel].
@@ -32,14 +33,19 @@ import me.dmdev.premo.PmLifecycle.State.*
  *
  *  @see PmActivityDelegat
  */
-class CommonDelegate<PM : PresentationModel>(
+class PmDelegate<PM : PresentationModel>(
     val pmTag: String,
-    val pmProvider: () -> PM
+    pmArgs: PresentationModel.Args,
+    pmFactory: PmFactory
 ) {
 
-    @Suppress("UNCHECKED_CAST")
-    val presentationModel: PM = PmStore.getPm(pmTag) as? PM ?: pmProvider().also { pm ->
-        PmStore.putPm(pmTag, pm)
+    val presentationModel: PM
+
+    init {
+        pmArgs.factory = pmFactory
+        @Suppress("UNCHECKED_CAST")
+        presentationModel = (PmStore.getPm(pmTag) ?: pmFactory.createPm(pmArgs)) as PM
+        PmStore.putPm(pmTag, presentationModel)
     }
 
     fun onCreate() {

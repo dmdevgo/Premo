@@ -24,32 +24,23 @@
 
 package me.dmdev.premo.sample
 
-import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
 
 object Stubs {
 
     private val mainPmFactory = MainPmFactory()
 
-    val samplesPm = createPm<SamplesPm>(SamplesPm.Description)
-    val counterPm = createPm<CounterPm>(CounterPm.Description(10))
-    val counterUdfPm = createPm<CounterUdfPm>(CounterUdfPm.Description(10))
-    val countdownPm = createPm<CountdownPm>(CountdownPm.Description)
-    val dialogPm = createPm<DialogPm>(DialogPm.Description)
-    val bottomBarPm = createPm<BottomBarPm>(BottomBarPm.Description)
-    val tabPm = createPm<TabPm>(TabPm.Description("Tab #"))
-    val tabItemPm = createPm<TabItemPm>(TabItemPm.Description("Screen #", "Tab #"))
+    val samplesPm = createPm<SamplesPm>(SamplesPm.Args())
+    val counterPm = createPm<CounterPm>(CounterPm.Args(10))
+    val counterUdfPm = createPm<CounterUdfPm>(CounterUdfPm.Args(10))
+    val countdownPm = createPm<CountdownPm>(CountdownPm.Args())
+    val dialogPm = createPm<DialogPm>(DialogPm.Args())
+    val bottomBarPm = createPm<BottomBarPm>(BottomBarPm.Args())
+    val tabPm = createPm<TabPm>(TabPm.Args("Tab #"))
+    val tabItemPm = createPm<TabItemPm>(TabItemPm.Args("Screen #", "Tab #"))
 
-    private fun <PM : PresentationModel> createPm(description: Saveable): PM {
-        val config = PmConfig(
-            tag = "",
-            parent = null,
-            state = null,
-            factory = mainPmFactory,
-            description = description
-        )
+    private fun <PM : PresentationModel> createPm(args: PresentationModel.Args): PM {
         @Suppress("UNCHECKED_CAST")
-        return mainPmFactory.createPm(config) as PM
+        return mainPmFactory.createPm(args) as PM
     }
 }

@@ -24,9 +24,8 @@
 
 package me.dmdev.premo.navigation
 
-import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
 
 interface PmFactory {
-    fun createPm(config: PmConfig): PresentationModel
+    fun createPm(args: PresentationModel.Args): PresentationModel
 }

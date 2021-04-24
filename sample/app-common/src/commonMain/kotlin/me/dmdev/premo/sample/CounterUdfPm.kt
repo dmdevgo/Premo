@@ -28,15 +28,15 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.*
+import me.dmdev.premo.Action
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.Saveable
+import me.dmdev.premo.State
 
-class CounterUdfPm(
-    private val maxCount: Int,
-    config: PmConfig
-) : PresentationModel(config) {
+class CounterUdfPm(val args: Args) : PresentationModel(args) {
 
     @Serializable
-    class Description(val maxCount: Int) : Saveable
+    class Args(val maxCount: Int) : PresentationModel.Args()
 
     private sealed class ActionType {
         object Minus : ActionType()
@@ -55,12 +55,12 @@ class CounterUdfPm(
     private val action: Action<ActionType> = Action()
 
     val state = UDF(
-        initialValue = CounterState(maxCount = maxCount),
+        initialValue = CounterState(maxCount = args.maxCount),
         action = action
     ) { state, action ->
         when (action) {
             ActionType.Plus -> {
-                if (state.count < maxCount) {
+                if (state.count < args.maxCount) {
                     state.copy(count = state.count + 1)
                 } else {
                     state
