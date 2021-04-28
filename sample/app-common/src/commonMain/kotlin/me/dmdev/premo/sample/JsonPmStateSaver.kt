@@ -29,6 +29,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import me.dmdev.premo.*
+import me.dmdev.premo.PresentationModel.Description
 
 class JsonPmStateSaver: PmStateSaver {
 
@@ -44,16 +45,16 @@ class JsonPmStateSaver: PmStateSaver {
             polymorphic(Saveable::class, SaveableChar::class, SaveableChar.serializer())
             polymorphic(Saveable::class, SaveableString::class, SaveableString.serializer())
 
-            polymorphic(Saveable::class, MainPm.Description::class, MainPm.Description.serializer())
-            polymorphic(Saveable::class, SamplesPm.Description::class, SamplesPm.Description.serializer())
-            polymorphic(Saveable::class, CounterPm.Description::class, CounterPm.Description.serializer())
-            polymorphic(Saveable::class, CounterUdfPm.Description::class, CounterUdfPm.Description.serializer())
-            polymorphic(Saveable::class, CounterUdfPm.CounterState::class, CounterUdfPm.CounterState.serializer())
-            polymorphic(Saveable::class, CountdownPm.Description::class, CountdownPm.Description.serializer())
-            polymorphic(Saveable::class, DialogPm.Description::class, DialogPm.Description.serializer())
-            polymorphic(Saveable::class, BottomBarPm.Description::class, BottomBarPm.Description.serializer())
-            polymorphic(Saveable::class, TabPm.Description::class, TabPm.Description.serializer())
-            polymorphic(Saveable::class, TabItemPm.Description::class, TabItemPm.Description.serializer())
+            polymorphic(Description::class, MainPm.Description::class, MainPm.Description.serializer())
+            polymorphic(Description::class, SamplesPm.Description::class, SamplesPm.Description.serializer())
+            polymorphic(Description::class, CounterPm.Description::class, CounterPm.Description.serializer())
+            polymorphic(Description::class, CounterUdfPm.Description::class, CounterUdfPm.Description.serializer())
+            polymorphic(Description::class, CounterUdfPm.CounterState::class, CounterUdfPm.CounterState.serializer())
+            polymorphic(Description::class, CountdownPm.Description::class, CountdownPm.Description.serializer())
+            polymorphic(Description::class, DialogPm.Description::class, DialogPm.Description.serializer())
+            polymorphic(Description::class, BottomBarPm.Description::class, BottomBarPm.Description.serializer())
+            polymorphic(Description::class, TabPm.Description::class, TabPm.Description.serializer())
+            polymorphic(Description::class, TabItemPm.Description::class, TabItemPm.Description.serializer())
         }
     }
 

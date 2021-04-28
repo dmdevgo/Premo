@@ -25,7 +25,6 @@
 import me.dmdev.premo.LifecycleState
 import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
 import me.dmdev.premo.navigation.PmFactory
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -77,6 +76,6 @@ class TestPm: PresentationModel(
                 TODO("Not yet implemented")
             }
         },
-        description = object : Saveable {}
+        description = object : PresentationModel.Description {}
     )
 )

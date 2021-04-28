@@ -26,7 +26,10 @@ package me.dmdev.premo.sample
 
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.*
+import me.dmdev.premo.Action
+import me.dmdev.premo.PmConfig
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.State
 
 class CounterPm(
     private val maxCount: Int,
@@ -34,7 +37,7 @@ class CounterPm(
 ) : PresentationModel(config) {
 
     @Serializable
-    class Description(val maxCount: Int): Saveable
+    class Description(val maxCount: Int): PresentationModel.Description
 
     val count = SaveableState(0, "count")
 

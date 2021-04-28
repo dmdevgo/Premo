@@ -31,5 +31,5 @@ class PmConfig(
     val parent: PresentationModel?,
     val state: PmState?,
     val factory: PmFactory,
-    val description: Saveable
+    val description: PresentationModel.Description
 )
