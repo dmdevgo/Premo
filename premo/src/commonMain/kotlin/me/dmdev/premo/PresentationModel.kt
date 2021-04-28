@@ -30,31 +30,17 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.serialization.Transient
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
 
-abstract class PresentationModel(private val args: Args) {
+abstract class PresentationModel(config: PmConfig) {
 
-    abstract class Args: Saveable {
-        @Transient
-        internal var tag: String = ""
-
-        @Transient
-        internal var parent: PresentationModel? = null
-
-        @Transient
-        internal var state: PmState? = null
-
-        @Transient
-        internal lateinit var factory: PmFactory
-    }
-
-    private val pmState: PmState? = args.state
-    private val pmFactory: PmFactory = args.factory
-    val tag: String = args.tag
-    val parentPm: PresentationModel? = args.parent
+    private val pmState: PmState? = config.state
+    private val pmFactory: PmFactory = config.factory
+    private val pmDescription: Saveable = config.description
+    val tag: String = pmState?.tag ?: config.tag
+    val parentPm: PresentationModel? = config.parent
 
     val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     var pmInForegroundScope: CoroutineScope? = null
@@ -95,17 +81,19 @@ abstract class PresentationModel(private val args: Args) {
     }
 
     @Suppress("FunctionName")
-    protected fun Router(initialArgs: Args): PmRouter {
+    protected fun Router(initialDescription: Saveable): PmRouter {
 
         val restoredPmBackStack = pmState?.routerState?.map { pmState ->
 
-            val args = pmState.args
-            args.tag = pmState.tag
-            args.parent = this
-            args.state = pmState
-            args.factory = pmFactory
+            val config = PmConfig(
+                tag = pmState.tag,
+                parent = this,
+                state = pmState,
+                factory = pmFactory,
+                description = pmState.description
+            )
 
-            pmFactory.createPm(args)
+            pmFactory.createPm(config)
         }
 
         return routerOrNull ?: PmRouter(
@@ -117,34 +105,35 @@ abstract class PresentationModel(private val args: Args) {
             }
 
             if (router.pmStack.value.isEmpty()) {
-                router.push(Child(initialArgs))
+                router.push(Child(initialDescription))
             }
-
             routerOrNull = router
         }
     }
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
     fun <PM : PresentationModel> Child(
-        args: Args,
+        description: Saveable,
         tag: String = randomUUID()
     ): PM {
+        val config = PmConfig(
+            tag = tag,
+            parent = this,
+            state = pmState?.childrenStates?.get(tag),
+            factory = pmFactory,
+            description = description
+        )
 
-        args.tag = tag
-        args.parent = this
-        args.state = pmState?.childrenStates?.get(tag)
-        args.factory = pmFactory
-
-        return pmFactory.createPm(args) as PM
+        return pmFactory.createPm(config) as PM
     }
 
     @Suppress("FunctionName")
     fun <PM : PresentationModel> AttachedChild(
-        args: Args,
+        description: Saveable,
         tag: String
     ): PM {
 
-        val pm = Child<PM>(args, tag)
+        val pm = Child<PM>(description, tag)
         pm.lifecycle.moveTo(lifecycle.state)
         children[tag] = pm
         return pm
@@ -259,7 +248,7 @@ abstract class PresentationModel(private val args: Args) {
             routerState = routerState,
             childrenStates = children.mapValues { entry -> entry.value.saveState() },
             states = saveableStates.mapValues { entry -> entry.value.saveableValue },
-            args = args
+            description = pmDescription
         )
     }
 }

@@ -47,7 +47,7 @@ abstract class PmActivity<PM : PresentationModel>(
             pmActivity = this,
             pmStateSaver = providePmStateSaver(),
             pmFactory = providePmFactory(),
-            pmArgs = providePmArgs(),
+            pmDescription = providePmDescription(),
         )
     }
 
@@ -56,7 +56,7 @@ abstract class PmActivity<PM : PresentationModel>(
             ?: throw IllegalStateException("Presentation Model has not been initialized yet, call this method after onCreate.")
     }
 
-    abstract fun providePmArgs(): PresentationModel.Args
+    abstract fun providePmDescription(): Saveable
     abstract fun providePmFactory(): PmFactory
     abstract fun providePmStateSaver(): PmStateSaver
 

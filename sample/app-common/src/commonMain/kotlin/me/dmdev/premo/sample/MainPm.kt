@@ -27,17 +27,19 @@ package me.dmdev.premo.sample
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
+import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.Saveable
 import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmStackChange
 
-class MainPm(args: Args) : PresentationModel(args) {
+class MainPm(config: PmConfig) : PresentationModel(config) {
 
     @Serializable
-    class Args : PresentationModel.Args()
+    object Description : Saveable
 
-    private val router = Router(SamplesPm.Args())
+    private val router = Router(SamplesPm.Description)
 
     val currentPm = State(null) {
         router.pmStack.flow().map { it.lastOrNull() }
@@ -47,12 +49,12 @@ class MainPm(args: Args) : PresentationModel(args) {
 
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
-            CounterSampleMessage -> router.push(Child(CounterPm.Args(10)))
-            CounterUdfSampleMessage -> router.push(Child(CounterUdfPm.Args(10)))
-            CountdownSampleMessage -> router.push(Child(CountdownPm.Args()))
-            DialogSampleMessage -> router.push(Child(DialogPm.Args()))
-            ControlsSampleMessage -> router.push(Child(ControlsPm.Args()))
-            MultistackSampleMessage -> router.push(Child(BottomBarPm.Args()))
+            CounterSampleMessage -> router.push(Child(CounterPm.Description(10)))
+            CounterUdfSampleMessage -> router.push(Child(CounterUdfPm.Description(10)))
+            CountdownSampleMessage -> router.push(Child(CountdownPm.Description))
+            DialogSampleMessage -> router.push(Child(DialogPm.Description))
+            ControlsSampleMessage -> router.push(Child(ControlsPm.Description))
+            MultistackSampleMessage -> router.push(Child(BottomBarPm.Description))
             else -> super.handleNavigationMessage(message)
         }
     }

@@ -36,9 +36,9 @@ struct TabItemView: View {
     
     var body: some View {
         VStack {
-            Text(pm.args.screenTitle)
+            Text(pm.screenTitle)
                 .padding()
-            Text(pm.args.tabTitle)
+            Text(pm.tabTitle)
                 .padding()
             Button("Next", action: {
                 pm.nextClick.invoke()

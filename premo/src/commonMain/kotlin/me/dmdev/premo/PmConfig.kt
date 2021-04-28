@@ -24,14 +24,12 @@
 
 package me.dmdev.premo
 
-import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.Serializable
+import me.dmdev.premo.navigation.PmFactory
 
-@Serializable
-class PmState(
+class PmConfig(
     val tag: String,
-    @Polymorphic val description: Saveable,
-    val routerState: List<PmState>,
-    val childrenStates: Map<String, PmState>,
-    val states: Map<String, @Polymorphic Saveable?>
+    val parent: PresentationModel?,
+    val state: PmState?,
+    val factory: PmFactory,
+    val description: Saveable
 )

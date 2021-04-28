@@ -29,10 +29,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
 
-class DialogPm(args: Args) : PresentationModel(args) {
+class DialogPm(config: PmConfig) : PresentationModel(config) {
 
     @Serializable
-    class Args : PresentationModel.Args()
+    object Description : Saveable
 
     val alert = Alert(this)
     val alertResult = State("")

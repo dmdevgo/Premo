@@ -25,14 +25,12 @@
 package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.Action
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.State
+import me.dmdev.premo.*
 
-class ControlsPm(args: Args) : PresentationModel(args) {
+class ControlsPm(config: PmConfig) : PresentationModel(config) {
 
     @Serializable
-    class Args : PresentationModel.Args()
+    object Description : Saveable
 
     val input = Input(
         initialText = "",

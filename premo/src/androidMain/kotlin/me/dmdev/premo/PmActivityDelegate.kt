@@ -43,7 +43,7 @@ class PmActivityDelegate<PM : PresentationModel>(
     private val pmActivity: Activity,
     private val pmStateSaver: PmStateSaver,
     private val pmFactory: PmFactory,
-    private val pmArgs: PresentationModel.Args,
+    private val pmDescription: Saveable,
 ) {
 
     companion object {
@@ -51,33 +51,38 @@ class PmActivityDelegate<PM : PresentationModel>(
         private const val SAVED_PM_STATE_KEY = "premo_presentation_model_state"
     }
 
-    private var pmDelegate: PmDelegate<PM>? = null
+    private var commonDelegate: CommonDelegate<PM>? = null
 
-    val presentationModel: PM? get() = pmDelegate?.presentationModel
+    val presentationModel: PM? get() = commonDelegate?.presentationModel
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
 
-        pmArgs.tag = getPmTag(savedInstanceState)
-        pmArgs.parent = null
-        pmArgs.state = restorePmState(savedInstanceState)
-        pmArgs.factory = pmFactory
-
-        pmDelegate = PmDelegate(
-            pmTag = pmArgs.tag,
-            pmArgs = pmArgs,
-            pmFactory = pmFactory
+        val config = PmConfig(
+            tag = getPmTag(savedInstanceState),
+            parent = null,
+            state = restorePmState(savedInstanceState),
+            factory = pmFactory,
+            description = pmDescription
         )
-        pmDelegate?.onCreate()
+
+        commonDelegate = CommonDelegate(
+            pmTag = config.tag,
+            pmProvider = {
+                @Suppress("UNCHECKED_CAST")
+                pmFactory.createPm(config) as PM
+            }
+        )
+        commonDelegate?.onCreate()
     }
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onStart() {
-        pmDelegate?.onForeground()
+        commonDelegate?.onForeground()
     }
 
     /**
@@ -105,7 +110,7 @@ class PmActivityDelegate<PM : PresentationModel>(
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onStop() {
-        pmDelegate?.onBackground()
+        commonDelegate?.onBackground()
     }
 
     /**
@@ -113,7 +118,7 @@ class PmActivityDelegate<PM : PresentationModel>(
      */
     fun onDestroy() {
         if (pmActivity.isFinishing) {
-            pmDelegate?.onDestroy()
+            commonDelegate?.onDestroy()
         }
     }
 
@@ -129,7 +134,7 @@ class PmActivityDelegate<PM : PresentationModel>(
     }
 
     private fun savePmState(outState: Bundle) {
-        outState.putString(SAVED_PM_TAG_KEY, pmDelegate?.pmTag)
+        outState.putString(SAVED_PM_TAG_KEY, commonDelegate?.pmTag)
         presentationModel?.let { pm ->
             val pmState = pm.saveState()
             outState.putByteArray(SAVED_PM_STATE_KEY, pmStateSaver.save(pmState))

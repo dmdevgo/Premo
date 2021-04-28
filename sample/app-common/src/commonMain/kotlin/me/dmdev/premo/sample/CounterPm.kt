@@ -26,19 +26,20 @@ package me.dmdev.premo.sample
 
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.Action
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.State
+import me.dmdev.premo.*
 
-class CounterPm(val args: Args) : PresentationModel(args) {
+class CounterPm(
+    private val maxCount: Int,
+    config: PmConfig
+) : PresentationModel(config) {
 
     @Serializable
-    class Args(val maxCount: Int): PresentationModel.Args()
+    class Description(val maxCount: Int): Saveable
 
     val count = SaveableState(0, "count")
 
     val plusButtonEnabled = State(false) {
-        count.flow().map { it < args.maxCount }
+        count.flow().map { it < maxCount }
     }
 
     val minusButtonEnabled = State(false) {
@@ -46,7 +47,7 @@ class CounterPm(val args: Args) : PresentationModel(args) {
     }
 
     val plus = this.Action<Unit> {
-        if (count.value < args.maxCount) {
+        if (count.value < maxCount) {
             count.value = count.value + 1
         }
     }
