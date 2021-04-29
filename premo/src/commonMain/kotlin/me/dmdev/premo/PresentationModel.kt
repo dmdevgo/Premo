@@ -36,9 +36,11 @@ import me.dmdev.premo.navigation.PmRouter
 
 abstract class PresentationModel(config: PmConfig) {
 
+    interface Description : Saveable
+
     private val pmState: PmState? = config.state
     private val pmFactory: PmFactory = config.factory
-    private val pmDescription: Saveable = config.description
+    private val pmDescription: Description = config.description
     val tag: String = pmState?.tag ?: config.tag
     val parentPm: PresentationModel? = config.parent
 
@@ -81,7 +83,7 @@ abstract class PresentationModel(config: PmConfig) {
     }
 
     @Suppress("FunctionName")
-    protected fun Router(initialDescription: Saveable): PmRouter {
+    protected fun Router(initialDescription: Description): PmRouter {
 
         val restoredPmBackStack = pmState?.routerState?.map { pmState ->
 
@@ -113,7 +115,7 @@ abstract class PresentationModel(config: PmConfig) {
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
     fun <PM : PresentationModel> Child(
-        description: Saveable,
+        description: Description,
         tag: String = randomUUID()
     ): PM {
         val config = PmConfig(
@@ -129,7 +131,7 @@ abstract class PresentationModel(config: PmConfig) {
 
     @Suppress("FunctionName")
     fun <PM : PresentationModel> AttachedChild(
-        description: Saveable,
+        description: Description,
         tag: String
     ): PM {
 

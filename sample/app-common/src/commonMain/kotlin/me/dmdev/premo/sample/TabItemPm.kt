@@ -28,7 +28,6 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.Action
 import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
 
 class TabItemPm(
     val screenTitle: String,
@@ -40,7 +39,7 @@ class TabItemPm(
     class Description(
         val screenTitle: String,
         val tabTitle: String
-    ) : Saveable
+    ) : PresentationModel.Description
 
     val nextClick = Action<Unit> {
         handleNavigationMessage(NextClickMessage)

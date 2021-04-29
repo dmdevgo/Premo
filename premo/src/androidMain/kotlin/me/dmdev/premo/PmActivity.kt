@@ -56,7 +56,7 @@ abstract class PmActivity<PM : PresentationModel>(
             ?: throw IllegalStateException("Presentation Model has not been initialized yet, call this method after onCreate.")
     }
 
-    abstract fun providePmDescription(): Saveable
+    abstract fun providePmDescription(): PresentationModel.Description
     abstract fun providePmFactory(): PmFactory
     abstract fun providePmStateSaver(): PmStateSaver
 

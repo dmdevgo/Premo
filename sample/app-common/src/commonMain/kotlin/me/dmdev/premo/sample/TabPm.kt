@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
 import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmStackChange
@@ -42,7 +41,7 @@ class TabPm(
     @Serializable
     class Description(
         val tabTitle: String
-    ) : Saveable
+    ) : PresentationModel.Description
 
     private var number: Int = 1
 

@@ -36,7 +36,7 @@ class CounterUdfPm(
 ) : PresentationModel(config) {
 
     @Serializable
-    class Description(val maxCount: Int) : Saveable
+    class Description(val maxCount: Int) : PresentationModel.Description
 
     private sealed class ActionType {
         object Minus : ActionType()

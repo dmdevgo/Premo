@@ -22,7 +22,9 @@
  * SOFTWARE.
  */
 
-import me.dmdev.premo.*
+import me.dmdev.premo.PmConfig
+import me.dmdev.premo.PmLifecycle
+import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.PmFactory
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -74,6 +76,6 @@ class TestPm: PresentationModel(
                 TODO("Not yet implemented")
             }
         },
-        description = object : Saveable {}
+        description = object : PresentationModel.Description {}
     )
 )

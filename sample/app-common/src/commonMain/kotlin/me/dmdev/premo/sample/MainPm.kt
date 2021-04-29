@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
 import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmStackChange
@@ -37,7 +36,7 @@ import me.dmdev.premo.navigation.PmStackChange
 class MainPm(config: PmConfig) : PresentationModel(config) {
 
     @Serializable
-    object Description : Saveable
+    object Description : PresentationModel.Description
 
     private val router = Router(SamplesPm.Description)
 
