@@ -45,11 +45,12 @@ class JsonPmStateSaver: PmStateSaver {
             polymorphic(Saveable::class, SaveableChar::class, SaveableChar.serializer())
             polymorphic(Saveable::class, SaveableString::class, SaveableString.serializer())
 
+            polymorphic(Saveable::class, CounterUdfPm.CounterState::class, CounterUdfPm.CounterState.serializer())
+
             polymorphic(Description::class, MainPm.Description::class, MainPm.Description.serializer())
             polymorphic(Description::class, SamplesPm.Description::class, SamplesPm.Description.serializer())
             polymorphic(Description::class, CounterPm.Description::class, CounterPm.Description.serializer())
             polymorphic(Description::class, CounterUdfPm.Description::class, CounterUdfPm.Description.serializer())
-            polymorphic(Description::class, CounterUdfPm.CounterState::class, CounterUdfPm.CounterState.serializer())
             polymorphic(Description::class, CountdownPm.Description::class, CountdownPm.Description.serializer())
             polymorphic(Description::class, DialogPm.Description::class, DialogPm.Description.serializer())
             polymorphic(Description::class, BottomBarPm.Description::class, BottomBarPm.Description.serializer())
