@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-import me.dmdev.premo.LifecycleState
 import me.dmdev.premo.PmConfig
+import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.PmFactory
 import kotlin.test.BeforeTest
@@ -41,28 +41,28 @@ class PresentationModelLifecycleStateTest {
 
     @Test
     fun `When create PM lifecycle - state should be INITIALIZED`() {
-        assertEquals(LifecycleState.INITIALIZED, pm.lifecycleState.value)
+        assertEquals(PmLifecycle.State.INITIALIZED, pm.lifecycle.state)
     }
 
     @Test
     fun `When move lifecycle of initialized PM to CREATED - lifecycle state should be CREATED`() {
-        pm.moveLifecycleTo(LifecycleState.CREATED)
+        pm.lifecycle.moveTo(PmLifecycle.State.CREATED)
 
-        assertEquals(LifecycleState.CREATED, pm.lifecycleState.value)
+        assertEquals(PmLifecycle.State.CREATED, pm.lifecycle.state)
     }
 
     @Test
     fun `When move lifecycle of initialized PM to IN_FOREGROUND - lifecycle state should be IN_FOREGROUND`() {
-        pm.moveLifecycleTo(LifecycleState.IN_FOREGROUND)
+        pm.lifecycle.moveTo(PmLifecycle.State.IN_FOREGROUND)
 
-        assertEquals(LifecycleState.IN_FOREGROUND, pm.lifecycleState.value)
+        assertEquals(PmLifecycle.State.IN_FOREGROUND, pm.lifecycle.state)
     }
 
     @Test
     fun `When move lifecycle of initialized PM to DESTROYED - lifecycle state should be DESTROYED`() {
-        pm.moveLifecycleTo(LifecycleState.DESTROYED)
+        pm.lifecycle.moveTo(PmLifecycle.State.DESTROYED)
 
-        assertEquals(LifecycleState.DESTROYED, pm.lifecycleState.value)
+        assertEquals(PmLifecycle.State.DESTROYED, pm.lifecycle.state)
     }
 }
 
