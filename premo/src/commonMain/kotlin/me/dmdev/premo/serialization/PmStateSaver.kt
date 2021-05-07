@@ -22,7 +22,9 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.serialization
+
+import me.dmdev.premo.PmState
 
 interface PmStateSaver {
     fun save(state: PmState): ByteArray

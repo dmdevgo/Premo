@@ -33,10 +33,11 @@ import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
+import me.dmdev.premo.serialization.SaveableValue
 
 abstract class PresentationModel(config: PmConfig) {
 
-    interface Description : Saveable
+    interface Description
 
     private val pmState: PmState? = config.state
     private val pmFactory: PmFactory = config.factory
@@ -49,7 +50,7 @@ abstract class PresentationModel(config: PmConfig) {
         private set
 
     private var routerOrNull: PmRouter? = null
-    private val saveableStates = mutableMapOf<String, SaveableState<*, *>>()
+    private val saveableStates = mutableMapOf<String, State<*>>()
     private val children = mutableMapOf<String, PresentationModel>()
     val lifecycle: PmLifecycle = PmLifecycle()
 
@@ -142,48 +143,17 @@ abstract class PresentationModel(config: PmConfig) {
     }
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
-    inline fun <reified T> SaveableState(
+    fun <T> SaveableState(
         initialValue: T,
         key: String
     ): State<T> {
-        val saver = when {
-            T::class == Boolean::class -> BooleanSaver
-            T::class == Byte::class -> ByteSaver
-            T::class == Short::class -> ShortSaver
-            T::class == Int::class -> IntSaver
-            T::class == Long::class -> LongSaver
-            T::class == Float::class -> FloatSaver
-            T::class == Double::class -> DoubleSaver
-            T::class == Char::class -> CharSaver
-            T::class == String::class -> StringSaver
-            else -> SaveableSaver
-        }
-
-        return SaveableState(initialValue, key, saver as Saver<T, Saveable>)
-    }
-
-    @Suppress("UNCHECKED_CAST", "FunctionName")
-    fun <T, S : Saveable> SaveableState(
-        initialValue: T,
-        key: String,
-        saver: Saver<T, S>
-    ): State<T> {
         val state: State<T> = if (pmState != null && pmState.states.containsKey(key)) {
-            State(saver.restore(pmState.states[key] as S))
+            State(pmState.states[key]?.data as T)
         } else {
             State(initialValue)
         }
-        saveableStates[key] = SaveableState(state, saver)
+        saveableStates[key] = state
         return state
-    }
-
-    private class SaveableState<T, S : Saveable>(
-        val state: State<T>,
-        val saver: Saver<T, S>
-    ) {
-        @Suppress("UNCHECKED_CAST")
-        val saveableValue: Saveable
-            get() = saver.save(state.value)
     }
 
     var <T> State<T>.value: T
@@ -249,7 +219,10 @@ abstract class PresentationModel(config: PmConfig) {
             tag = tag,
             routerState = routerState,
             childrenStates = children.mapValues { entry -> entry.value.saveState() },
-            states = saveableStates.mapValues { entry -> entry.value.saveableValue },
+            states = saveableStates.mapValues { entry ->
+                SaveableValue(entry.value.value!!::class.qualifiedName ?: "",
+                    entry.value.value!!)
+                                              },
             description = pmDescription
         )
     }

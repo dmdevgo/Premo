@@ -22,35 +22,10 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.serialization
 
 import kotlinx.serialization.Serializable
 
-interface Saveable
+@Serializable(with = SaveableValueSerializer::class)
+data class SaveableValue(val type: String, val data: Any?)
 
-@Serializable
-class SaveableBoolean(val value: Boolean?) : Saveable
-
-@Serializable
-class SaveableByte(val value: Byte?) : Saveable
-
-@Serializable
-class SaveableShort(val value: Short?) : Saveable
-
-@Serializable
-class SaveableInt(val value: Int?) : Saveable
-
-@Serializable
-class SaveableLong(val value: Long?) : Saveable
-
-@Serializable
-class SaveableFloat(val value: Float?) : Saveable
-
-@Serializable
-class SaveableDouble(val value: Double?) : Saveable
-
-@Serializable
-class SaveableChar(val value: Char?) : Saveable
-
-@Serializable
-class SaveableString(val value: String?) : Saveable

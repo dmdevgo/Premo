@@ -26,6 +26,7 @@ package me.dmdev.premo
 
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
+import me.dmdev.premo.serialization.SaveableValue
 
 @Serializable
 class PmState(
@@ -33,5 +34,5 @@ class PmState(
     @Polymorphic val description: PresentationModel.Description,
     val routerState: List<PmState>,
     val childrenStates: Map<String, PmState>,
-    val states: Map<String, @Polymorphic Saveable?>
+    val states: Map<String, SaveableValue>
 )
