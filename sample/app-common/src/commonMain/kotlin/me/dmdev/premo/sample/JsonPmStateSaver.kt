@@ -28,25 +28,14 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
-import me.dmdev.premo.*
+import me.dmdev.premo.PmState
 import me.dmdev.premo.PresentationModel.Description
+import me.dmdev.premo.serialization.PmStateSaver
 
 class JsonPmStateSaver: PmStateSaver {
 
     private val json = Json {
         serializersModule = SerializersModule {
-            polymorphic(Saveable::class, SaveableBoolean::class, SaveableBoolean.serializer())
-            polymorphic(Saveable::class, SaveableByte::class, SaveableByte.serializer())
-            polymorphic(Saveable::class, SaveableShort::class, SaveableShort.serializer())
-            polymorphic(Saveable::class, SaveableInt::class, SaveableInt.serializer())
-            polymorphic(Saveable::class, SaveableLong::class, SaveableLong.serializer())
-            polymorphic(Saveable::class, SaveableFloat::class, SaveableFloat.serializer())
-            polymorphic(Saveable::class, SaveableDouble::class, SaveableDouble.serializer())
-            polymorphic(Saveable::class, SaveableChar::class, SaveableChar.serializer())
-            polymorphic(Saveable::class, SaveableString::class, SaveableString.serializer())
-
-            polymorphic(Saveable::class, CounterUdfPm.CounterState::class, CounterUdfPm.CounterState.serializer())
-
             polymorphic(Description::class, MainPm.Description::class, MainPm.Description.serializer())
             polymorphic(Description::class, SamplesPm.Description::class, SamplesPm.Description.serializer())
             polymorphic(Description::class, CounterPm.Description::class, CounterPm.Description.serializer())

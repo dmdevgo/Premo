@@ -28,7 +28,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.*
+import me.dmdev.premo.Action
+import me.dmdev.premo.PmConfig
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.State
 
 class CounterUdfPm(
     private val maxCount: Int,
@@ -47,7 +50,7 @@ class CounterUdfPm(
     data class CounterState(
         val count: Int = 0,
         val maxCount: Int
-    ) : Saveable {
+    ) {
         val plusEnabled get() = count < maxCount
         val minusEnabled get() = count > 0
     }
