@@ -28,7 +28,6 @@ import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import me.dmdev.premo.navigation.PmFactory
-import me.dmdev.premo.serialization.PmStateSaver
 
 /**
  * Predefined [Activity][AppCompatActivity] implementing the [PmView][PmView].
@@ -47,6 +46,7 @@ abstract class PmActivity<PM : PresentationModel>(
         PmActivityDelegate<PM>(
             pmActivity = this,
             pmStateSaver = providePmStateSaver(),
+            stateSaver = provideStateSaver(),
             pmFactory = providePmFactory(),
             pmDescription = providePmDescription(),
         )
@@ -60,6 +60,7 @@ abstract class PmActivity<PM : PresentationModel>(
     abstract fun providePmDescription(): PresentationModel.Description
     abstract fun providePmFactory(): PmFactory
     abstract fun providePmStateSaver(): PmStateSaver
+    abstract fun provideStateSaver(): StateSaver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -22,10 +22,11 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.serialization
+package me.dmdev.premo
 
-import kotlinx.serialization.Serializable
+import kotlin.reflect.KType
 
-@Serializable(with = SaveableValueSerializer::class)
-data class SaveableValue(val type: String, val data: Any?)
-
+interface StateSaver {
+    fun <T> saveState(kType: KType, value: T): String
+    fun <T> restoreState(kType: KType, json: String): T
+}

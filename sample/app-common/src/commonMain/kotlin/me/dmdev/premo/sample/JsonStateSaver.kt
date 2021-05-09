@@ -22,11 +22,22 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.serialization
+package me.dmdev.premo.sample
 
-import me.dmdev.premo.PmState
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
+import me.dmdev.premo.StateSaver
+import kotlin.reflect.KType
 
-interface PmStateSaver {
-    fun save(state: PmState): ByteArray
-    fun restore(bytes: ByteArray): PmState
+class JsonStateSaver(private val json: Json) : StateSaver {
+
+    override fun <T> saveState(kType: KType, value: T): String {
+        return json.encodeToString(serializer(kType), value)
+    }
+
+    override fun <T> restoreState(kType: KType, string: String): T {
+        @Suppress("UNCHECKED_CAST")
+        return json.decodeFromString<T>(serializer(kType) as KSerializer<T>, string)
+    }
 }

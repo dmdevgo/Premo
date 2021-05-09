@@ -29,8 +29,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import me.dmdev.premo.PmState
+import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.PresentationModel.Description
-import me.dmdev.premo.serialization.PmStateSaver
 
 class JsonPmStateSaver: PmStateSaver {
 

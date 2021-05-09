@@ -24,13 +24,7 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.navigation.PmFactory
-
-class PmConfig(
-    val tag: String,
-    val parent: PresentationModel?,
-    val state: PmState?,
-    val factory: PmFactory,
-    val description: PresentationModel.Description,
-    val stateSaver: StateSaver
-)
+interface PmStateSaver {
+    fun save(state: PmState): ByteArray
+    fun restore(bytes: ByteArray): PmState
+}
