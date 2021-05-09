@@ -33,7 +33,8 @@ import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.navigation.NavigationMessage
 import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.navigation.PmRouter
-import me.dmdev.premo.serialization.SaveableValue
+import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 
 abstract class PresentationModel(config: PmConfig) {
 
@@ -41,6 +42,7 @@ abstract class PresentationModel(config: PmConfig) {
 
     private val pmState: PmState? = config.state
     private val pmFactory: PmFactory = config.factory
+    private val stateSaver: StateSaver = config.stateSaver
     private val pmDescription: Description = config.description
     val tag: String = pmState?.tag ?: config.tag
     val parentPm: PresentationModel? = config.parent
@@ -50,7 +52,13 @@ abstract class PresentationModel(config: PmConfig) {
         private set
 
     private var routerOrNull: PmRouter? = null
-    private val saveableStates = mutableMapOf<String, State<*>>()
+    private val saveableStates = mutableMapOf<String, SaveableState<*>>()
+
+    private class SaveableState<T>(
+        val state: State<T>,
+        val kType: KType
+    )
+
     private val children = mutableMapOf<String, PresentationModel>()
     val lifecycle: PmLifecycle = PmLifecycle()
 
@@ -93,7 +101,8 @@ abstract class PresentationModel(config: PmConfig) {
                 parent = this,
                 state = pmState,
                 factory = pmFactory,
-                description = pmState.description
+                description = pmState.description,
+                stateSaver = stateSaver
             )
 
             pmFactory.createPm(config)
@@ -124,7 +133,8 @@ abstract class PresentationModel(config: PmConfig) {
             parent = this,
             state = pmState?.childrenStates?.get(tag),
             factory = pmFactory,
-            description = description
+            description = description,
+            stateSaver = stateSaver
         )
 
         return pmFactory.createPm(config) as PM
@@ -142,17 +152,28 @@ abstract class PresentationModel(config: PmConfig) {
         return pm
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     @Suppress("UNCHECKED_CAST", "FunctionName")
-    fun <T> SaveableState(
+    inline fun <reified T> SaveableState(
         initialValue: T,
         key: String
     ): State<T> {
-        val state: State<T> = if (pmState != null && pmState.states.containsKey(key)) {
-            State(pmState.states[key]?.data as T)
+        return SaveableState(initialValue, typeOf<T>(), key)
+    }
+
+    @Suppress("UNCHECKED_CAST", "FunctionName")
+    fun <T> SaveableState(
+        initialValue: T,
+        kType: KType,
+        key: String
+    ): State<T> {
+        val savedState = pmState?.states?.get(key)
+        val state: State<T> = if (savedState != null) {
+            State(stateSaver.restoreState(kType, savedState))
         } else {
             State(initialValue)
         }
-        saveableStates[key] = state
+        saveableStates[key] = SaveableState(state, kType)
         return state
     }
 
@@ -220,9 +241,8 @@ abstract class PresentationModel(config: PmConfig) {
             routerState = routerState,
             childrenStates = children.mapValues { entry -> entry.value.saveState() },
             states = saveableStates.mapValues { entry ->
-                SaveableValue(entry.value.value!!::class.qualifiedName ?: "",
-                    entry.value.value!!)
-                                              },
+                stateSaver.saveState(entry.value.kType, entry.value.state.value)
+            },
             description = pmDescription
         )
     }

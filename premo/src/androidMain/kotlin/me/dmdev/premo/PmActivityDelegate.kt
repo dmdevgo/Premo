@@ -28,7 +28,6 @@ import android.app.Activity
 import android.os.Bundle
 import kotlinx.serialization.*
 import me.dmdev.premo.navigation.PmFactory
-import me.dmdev.premo.serialization.PmStateSaver
 import java.util.*
 
 /**
@@ -43,6 +42,7 @@ import java.util.*
 class PmActivityDelegate<PM : PresentationModel>(
     private val pmActivity: Activity,
     private val pmStateSaver: PmStateSaver,
+    private val stateSaver: StateSaver,
     private val pmFactory: PmFactory,
     private val pmDescription: PresentationModel.Description,
 ) {
@@ -66,7 +66,8 @@ class PmActivityDelegate<PM : PresentationModel>(
             parent = null,
             state = restorePmState(savedInstanceState),
             factory = pmFactory,
-            description = pmDescription
+            description = pmDescription,
+            stateSaver = stateSaver
         )
 
         commonDelegate = CommonDelegate(
