@@ -24,14 +24,11 @@
 
 package me.dmdev.premo
 
-import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.Serializable
 
-@Serializable
-class PmState(
-    val tag: String,
-    @Polymorphic val description: PresentationModel.Description,
-    val routerState: List<PmState>,
-    val childrenStates: Map<String, PmState>,
+interface PmState {
+    val tag: String
+    val description: PresentationModel.Description
+    val backstack: List<PmState>
+    val children: Map<String, PmState>
     val states: Map<String, String>
-)
+}

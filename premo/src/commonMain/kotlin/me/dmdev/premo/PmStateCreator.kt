@@ -22,55 +22,14 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("com.android.library")
-}
+package me.dmdev.premo
 
-kotlin {
-
-    android()
-    ios()
-
-    sourceSets {
-
-        val commonMain by getting {
-            dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2-native-mt")
-            }
-        }
-
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-            }
-        }
-
-        // Fix test run: https://youtrack.jetbrains.com/issue/KT-40571
-        val androidTest  by getting {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
-            }
-        }
-
-        val androidMain by getting {
-            dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
-                compileOnly("androidx.appcompat:appcompat:1.3.0-beta01")
-            }
-        }
-    }
-}
-
-android {
-
-    compileSdkVersion(30)
-
-    defaultConfig {
-        minSdkVersion(21)
-        targetSdkVersion(30)
-    }
+interface PmStateCreator {
+    fun createPmState(
+        tag: String,
+        description: PresentationModel.Description,
+        backstack: List<PmState>,
+        children: Map<String, PmState>,
+        states: Map<String, String>
+    ): PmState
 }

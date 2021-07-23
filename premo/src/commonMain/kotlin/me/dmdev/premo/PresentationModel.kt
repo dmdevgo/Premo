@@ -94,7 +94,7 @@ abstract class PresentationModel(config: PmConfig) {
     @Suppress("FunctionName")
     protected fun Router(initialDescription: Description): PmRouter {
 
-        val restoredPmBackStack = pmState?.routerState?.map { pmState ->
+        val restoredPmBackStack = pmState?.backstack?.map { pmState ->
 
             val config = PmConfig(
                 tag = pmState.tag,
@@ -131,7 +131,7 @@ abstract class PresentationModel(config: PmConfig) {
         val config = PmConfig(
             tag = tag,
             parent = this,
-            state = pmState?.childrenStates?.get(tag),
+            state = pmState?.children?.get(tag),
             factory = pmFactory,
             description = description,
             stateSaver = stateSaver
@@ -231,15 +231,16 @@ abstract class PresentationModel(config: PmConfig) {
         }
     }
 
-    internal fun saveState(): PmState {
+    internal fun saveState(pmStateCreator: PmStateCreator): PmState {
 
         val router = routerOrNull
-        val routerState = router?.pmStack?.value?.map { pm -> pm.saveState() } ?: listOf()
+        val routerState =
+            router?.pmStack?.value?.map { pm -> pm.saveState(pmStateCreator) } ?: listOf()
 
-        return PmState(
+        return pmStateCreator.createPmState(
             tag = tag,
-            routerState = routerState,
-            childrenStates = children.mapValues { entry -> entry.value.saveState() },
+            backstack = routerState,
+            children = children.mapValues { entry -> entry.value.saveState(pmStateCreator) },
             states = saveableStates.mapValues { entry ->
                 stateSaver.saveState(entry.value.kType, entry.value.state.value)
             },

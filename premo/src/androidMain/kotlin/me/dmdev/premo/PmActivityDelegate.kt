@@ -26,7 +26,6 @@ package me.dmdev.premo
 
 import android.app.Activity
 import android.os.Bundle
-import kotlinx.serialization.*
 import me.dmdev.premo.navigation.PmFactory
 import java.util.*
 
@@ -138,7 +137,7 @@ class PmActivityDelegate<PM : PresentationModel>(
     private fun savePmState(outState: Bundle) {
         outState.putString(SAVED_PM_TAG_KEY, commonDelegate?.pmTag)
         presentationModel?.let { pm ->
-            val pmState = pm.saveState()
+            val pmState = pm.saveState(pmStateSaver)
             outState.putByteArray(SAVED_PM_STATE_KEY, pmStateSaver.save(pmState))
         }
     }
