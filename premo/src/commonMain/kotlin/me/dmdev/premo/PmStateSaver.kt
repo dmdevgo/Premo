@@ -24,7 +24,7 @@
 
 package me.dmdev.premo
 
-interface PmStateSaver {
+interface PmStateSaver : PmStateCreator {
     fun save(state: PmState): ByteArray
     fun restore(bytes: ByteArray): PmState
 }

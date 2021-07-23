@@ -24,6 +24,8 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -32,19 +34,60 @@ import me.dmdev.premo.PmState
 import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.PresentationModel.Description
 
-class JsonPmStateSaver: PmStateSaver {
+class JsonPmStateSaver : PmStateSaver {
 
     private val json = Json {
         serializersModule = SerializersModule {
-            polymorphic(Description::class, MainPm.Description::class, MainPm.Description.serializer())
-            polymorphic(Description::class, SamplesPm.Description::class, SamplesPm.Description.serializer())
-            polymorphic(Description::class, CounterPm.Description::class, CounterPm.Description.serializer())
-            polymorphic(Description::class, CounterUdfPm.Description::class, CounterUdfPm.Description.serializer())
-            polymorphic(Description::class, CountdownPm.Description::class, CountdownPm.Description.serializer())
-            polymorphic(Description::class, DialogPm.Description::class, DialogPm.Description.serializer())
-            polymorphic(Description::class, BottomBarPm.Description::class, BottomBarPm.Description.serializer())
-            polymorphic(Description::class, TabPm.Description::class, TabPm.Description.serializer())
-            polymorphic(Description::class, TabItemPm.Description::class, TabItemPm.Description.serializer())
+            polymorphic(
+                PmState::class,
+                SerializablePmState::class,
+                SerializablePmState.serializer()
+            )
+            polymorphic(
+                Description::class,
+                MainPm.Description::class,
+                MainPm.Description.serializer()
+            )
+            polymorphic(
+                Description::class,
+                SamplesPm.Description::class,
+                SamplesPm.Description.serializer()
+            )
+            polymorphic(
+                Description::class,
+                CounterPm.Description::class,
+                CounterPm.Description.serializer()
+            )
+            polymorphic(
+                Description::class,
+                CounterUdfPm.Description::class,
+                CounterUdfPm.Description.serializer()
+            )
+            polymorphic(
+                Description::class,
+                CountdownPm.Description::class,
+                CountdownPm.Description.serializer()
+            )
+            polymorphic(
+                Description::class,
+                DialogPm.Description::class,
+                DialogPm.Description.serializer()
+            )
+            polymorphic(
+                Description::class,
+                BottomBarPm.Description::class,
+                BottomBarPm.Description.serializer()
+            )
+            polymorphic(
+                Description::class,
+                TabPm.Description::class,
+                TabPm.Description.serializer()
+            )
+            polymorphic(
+                Description::class,
+                TabItemPm.Description::class,
+                TabItemPm.Description.serializer()
+            )
         }
     }
 
@@ -55,4 +98,29 @@ class JsonPmStateSaver: PmStateSaver {
     override fun restore(bytes: ByteArray): PmState {
         return json.decodeFromString(bytes.decodeToString())
     }
+
+    override fun createPmState(
+        tag: String,
+        description: Description,
+        backstack: List<PmState>,
+        children: Map<String, PmState>,
+        states: Map<String, String>
+    ): PmState {
+        return SerializablePmState(
+            tag = tag,
+            description = description,
+            backstack = backstack,
+            children = children,
+            states = states
+        )
+    }
 }
+
+@Serializable
+class SerializablePmState(
+    override val tag: String,
+    @Polymorphic override val description: Description,
+    override val backstack: List<PmState>,
+    override val children: Map<String, PmState>,
+    override val states: Map<String, String>
+) : PmState
