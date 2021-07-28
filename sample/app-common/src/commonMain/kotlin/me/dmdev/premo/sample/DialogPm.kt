@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
 
-class DialogPm(config: PmConfig) : PresentationModel(config) {
+class DialogPm(params: PmParams) : PresentationModel(params) {
 
     @Serializable
     object Description : PresentationModel.Description

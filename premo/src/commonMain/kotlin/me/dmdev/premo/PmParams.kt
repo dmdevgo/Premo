@@ -28,7 +28,7 @@ import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.StateSaver
 
-class PmConfig(
+class PmParams(
     val tag: String,
     val parent: PresentationModel?,
     val state: PmState?,

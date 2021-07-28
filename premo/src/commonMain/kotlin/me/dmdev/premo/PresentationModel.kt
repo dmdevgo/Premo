@@ -40,16 +40,16 @@ import me.dmdev.premo.save.StateSaver
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
-abstract class PresentationModel(config: PmConfig) {
+abstract class PresentationModel(params: PmParams) {
 
     interface Description
 
-    private val pmState: PmState? = config.state
-    private val pmFactory: PmFactory = config.factory
-    private val stateSaver: StateSaver = config.stateSaver
-    private val pmDescription: Description = config.description
-    val tag: String = pmState?.tag ?: config.tag
-    val parentPm: PresentationModel? = config.parent
+    private val pmState: PmState? = params.state
+    private val pmFactory: PmFactory = params.factory
+    private val stateSaver: StateSaver = params.stateSaver
+    private val pmDescription: Description = params.description
+    val tag: String = pmState?.tag ?: params.tag
+    val parentPm: PresentationModel? = params.parent
 
     val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     var pmInForegroundScope: CoroutineScope? = null
@@ -100,7 +100,7 @@ abstract class PresentationModel(config: PmConfig) {
 
         val restoredPmBackStack = pmState?.backstack?.map { pmState ->
 
-            val config = PmConfig(
+            val config = PmParams(
                 tag = pmState.tag,
                 parent = this,
                 state = pmState,
@@ -132,7 +132,7 @@ abstract class PresentationModel(config: PmConfig) {
         description: Description,
         tag: String = randomUUID()
     ): PM {
-        val config = PmConfig(
+        val config = PmParams(
             tag = tag,
             parent = this,
             state = pmState?.children?.get(tag),

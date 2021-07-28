@@ -27,7 +27,7 @@ package me.dmdev.premo.sample
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmConfig
+import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import me.dmdev.premo.navigation.NavigationMessage
@@ -35,8 +35,8 @@ import me.dmdev.premo.navigation.PmStackChange
 
 class TabPm(
     val tabTitle: String,
-    config: PmConfig
-) : PresentationModel(config) {
+    params: PmParams
+) : PresentationModel(params) {
 
     @Serializable
     class Description(

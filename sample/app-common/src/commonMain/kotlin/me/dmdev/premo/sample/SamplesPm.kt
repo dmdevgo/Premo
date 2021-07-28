@@ -26,10 +26,10 @@ package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.Action
-import me.dmdev.premo.PmConfig
+import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 
-class SamplesPm(config: PmConfig) : PresentationModel(config) {
+class SamplesPm(params: PmParams) : PresentationModel(params) {
 
     @Serializable
     object Description: PresentationModel.Description

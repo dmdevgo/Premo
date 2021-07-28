@@ -63,7 +63,7 @@ class PmActivityDelegate<PM : PresentationModel>(
      */
     fun onCreate(savedInstanceState: Bundle?) {
 
-        val config = PmConfig(
+        val config = PmParams(
             tag = getPmTag(savedInstanceState),
             parent = null,
             state = restorePmState(savedInstanceState),

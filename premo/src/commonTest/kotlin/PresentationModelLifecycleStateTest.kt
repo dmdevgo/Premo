@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-import me.dmdev.premo.PmConfig
 import me.dmdev.premo.PmLifecycle
+import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.PmFactory
 import kotlin.test.BeforeTest
@@ -67,12 +67,12 @@ class PresentationModelLifecycleStateTest {
 }
 
 class TestPm: PresentationModel(
-    PmConfig(
+    PmParams(
         tag = "",
         parent = null,
         state = null,
         factory = object : PmFactory {
-            override fun createPm(config: PmConfig): PresentationModel {
+            override fun createPm(params: PmParams): PresentationModel {
                 TODO("Not yet implemented")
             }
         },

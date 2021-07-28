@@ -27,14 +27,14 @@ package me.dmdev.premo.sample
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.Action
-import me.dmdev.premo.PmConfig
+import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 
 class CounterPm(
     private val maxCount: Int,
-    config: PmConfig
-) : PresentationModel(config) {
+    params: PmParams
+) : PresentationModel(params) {
 
     @Serializable
     class Description(val maxCount: Int): PresentationModel.Description
