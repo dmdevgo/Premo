@@ -22,11 +22,15 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.save
 
-import kotlin.reflect.KType
+import me.dmdev.premo.PresentationModel
 
-interface StateSaver {
-    fun <T> saveState(kType: KType, value: T): String
-    fun <T> restoreState(kType: KType, json: String): T
+
+interface PmState {
+    val tag: String
+    val description: PresentationModel.Description
+    val backstack: List<PmState>
+    val children: Map<String, PmState>
+    val states: Map<String, String>
 }

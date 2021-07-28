@@ -22,9 +22,16 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.save
 
-interface PmStateSaver : PmStateCreator {
-    fun save(state: PmState): ByteArray
-    fun restore(bytes: ByteArray): PmState
+import me.dmdev.premo.PresentationModel
+
+interface PmStateCreator {
+    fun createPmState(
+        tag: String,
+        description: PresentationModel.Description,
+        backstack: List<PmState>,
+        children: Map<String, PmState>,
+        states: Map<String, String>
+    ): PmState
 }

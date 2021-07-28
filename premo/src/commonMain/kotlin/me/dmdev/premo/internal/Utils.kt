@@ -22,14 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.internal
 
-interface PmStateCreator {
-    fun createPmState(
-        tag: String,
-        description: PresentationModel.Description,
-        backstack: List<PmState>,
-        children: Map<String, PmState>,
-        states: Map<String, String>
-    ): PmState
-}
+
+internal expect fun randomUUID(): String

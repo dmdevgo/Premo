@@ -22,13 +22,25 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.internal
 
+import me.dmdev.premo.PresentationModel
+import kotlin.native.concurrent.ThreadLocal
 
-interface PmState {
-    val tag: String
-    val description: PresentationModel.Description
-    val backstack: List<PmState>
-    val children: Map<String, PmState>
-    val states: Map<String, String>
+@ThreadLocal
+internal object PmStore {
+
+    private val pmMap = mutableMapOf<String, PresentationModel>()
+
+    fun getPm(key: String): PresentationModel? {
+        return pmMap[key]
+    }
+
+    fun putPm(key: String, pm: PresentationModel) {
+        pmMap[key] = pm
+    }
+
+    fun removePm(key: String): PresentationModel? {
+        return pmMap.remove(key)
+    }
 }

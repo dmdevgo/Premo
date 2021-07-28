@@ -28,6 +28,8 @@ import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import me.dmdev.premo.navigation.PmFactory
+import me.dmdev.premo.save.PmStateSaver
+import me.dmdev.premo.save.StateSaver
 
 /**
  * Predefined [Activity][AppCompatActivity] implementing the [PmView][PmView].

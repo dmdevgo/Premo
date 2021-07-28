@@ -22,24 +22,11 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.save
 
-import kotlin.native.concurrent.ThreadLocal
+import kotlin.reflect.KType
 
-@ThreadLocal
-internal object PmStore {
-
-    private val pmMap = mutableMapOf<String, PresentationModel>()
-
-    fun getPm(key: String): PresentationModel? {
-        return pmMap[key]
-    }
-
-    fun putPm(key: String, pm: PresentationModel) {
-        pmMap[key] = pm
-    }
-
-    fun removePm(key: String): PresentationModel? {
-        return pmMap.remove(key)
-    }
+interface StateSaver {
+    fun <T> saveState(kType: KType, value: T): String
+    fun <T> restoreState(kType: KType, json: String): T
 }

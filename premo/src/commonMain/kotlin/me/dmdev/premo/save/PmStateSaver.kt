@@ -22,10 +22,9 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.save
 
-import platform.Foundation.NSUUID
-
-internal actual fun randomUUID(): String {
-    return NSUUID().UUIDString
+interface PmStateSaver : PmStateCreator {
+    fun save(state: PmState): ByteArray
+    fun restore(bytes: ByteArray): PmState
 }

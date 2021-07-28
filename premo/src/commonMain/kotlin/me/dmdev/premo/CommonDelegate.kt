@@ -25,6 +25,7 @@
 package me.dmdev.premo
 
 import me.dmdev.premo.PmLifecycle.State.*
+import me.dmdev.premo.internal.PmStore
 
 /**
  *  Common delegate serves for forwarding the lifecycle[LifecycleEvent] directly into the [PresentationModel][PresentationModel].

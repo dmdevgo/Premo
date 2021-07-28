@@ -27,7 +27,7 @@ package me.dmdev.premo.sample
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
-import me.dmdev.premo.StateSaver
+import me.dmdev.premo.save.StateSaver
 import kotlin.reflect.KType
 
 class JsonStateSaver(private val json: Json) : StateSaver {
