@@ -24,9 +24,9 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.serialization.json.Json
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.Saveable
 
 object Stubs {
 
@@ -36,18 +36,20 @@ object Stubs {
     val counterPm = createPm<CounterPm>(CounterPm.Description(10))
     val counterUdfPm = createPm<CounterUdfPm>(CounterUdfPm.Description(10))
     val countdownPm = createPm<CountdownPm>(CountdownPm.Description)
+    val controlsPm = createPm<ControlsPm>(ControlsPm.Description)
     val dialogPm = createPm<DialogPm>(DialogPm.Description)
     val bottomBarPm = createPm<BottomBarPm>(BottomBarPm.Description)
     val tabPm = createPm<TabPm>(TabPm.Description("Tab #"))
     val tabItemPm = createPm<TabItemPm>(TabItemPm.Description("Screen #", "Tab #"))
 
-    private fun <PM : PresentationModel> createPm(description: Saveable): PM {
+    private fun <PM : PresentationModel> createPm(description: PresentationModel.Description): PM {
         val config = PmParams(
             tag = "",
             parent = null,
             state = null,
             factory = mainPmFactory,
-            description = description
+            description = description,
+            stateSaver = JsonStateSaver(Json.Default)
         )
         @Suppress("UNCHECKED_CAST")
         return mainPmFactory.createPm(config) as PM

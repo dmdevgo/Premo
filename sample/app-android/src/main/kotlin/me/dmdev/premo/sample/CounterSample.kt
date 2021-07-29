@@ -30,11 +30,16 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.dmdev.premo.invoke
 
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
 @Composable
-fun counterScreen(pm: CounterPm) {
+fun CounterScreen(pm: CounterPm = Stubs.counterPm) {
     Row(
         modifier = Modifier.fillMaxSize(),
         horizontalArrangement = Arrangement.Center,

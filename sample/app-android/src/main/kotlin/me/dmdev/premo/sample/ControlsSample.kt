@@ -31,10 +31,15 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
 @Composable
-fun controlsScreen(pm: ControlsPm) {
+fun ControlsScreen(pm: ControlsPm = Stubs.controlsPm) {
     Column (
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

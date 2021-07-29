@@ -31,13 +31,18 @@ import androidx.compose.material.icons.filled.Android
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.dmdev.premo.invoke
 import me.dmdev.premo.navigation.PmStackChange
 
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
 @Composable
-fun bottomBarScreen(pm: BottomBarPm) {
+fun BottomBarScreen(pm: BottomBarPm = Stubs.bottomBarPm) {
 
     val currentTabPm = pm.currentTabPm.bind()
 
@@ -62,15 +67,19 @@ fun bottomBarScreen(pm: BottomBarPm) {
     ) {
         navigation(currentTabPm.pmStackChanges.bind(PmStackChange.Empty)) { pm ->
             when (pm) {
-                is TabItemPm -> itemScreen(pm)
-                else -> emptyScreen()
+                is TabItemPm -> ItemScreen(pm)
+                else -> EmptyScreen()
             }
         }
     }
 }
 
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
 @Composable
-fun itemScreen(pmTab: TabItemPm) {
+fun ItemScreen(pmTab: TabItemPm = Stubs.tabItemPm) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

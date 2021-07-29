@@ -26,7 +26,6 @@ package me.dmdev.premo.sample
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import kotlinx.serialization.json.Json
 import me.dmdev.premo.PmActivity
@@ -41,22 +40,22 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            mainScreen(getPresentationModel())
+            MainScreen(getPresentationModel())
         }
     }
 
     @Composable
-    fun mainScreen(mainPm: MainPm) {
+    fun MainScreen(mainPm: MainPm) {
         navigation(mainPm.pmStackChanges.bind(PmStackChange.Empty)) { pm ->
             when (pm) {
-                is SamplesPm -> samplesScreen(pm)
-                is CounterPm -> counterScreen(pm)
-                is CounterUdfPm -> counterUdfScreen(pm)
-                is CountdownPm -> countdownScreen(pm)
-                is DialogPm -> dialogScreen(pm)
-                is ControlsPm -> controlsScreen(pm)
-                is BottomBarPm -> bottomBarScreen(pm)
-                else -> emptyScreen()
+                is SamplesPm -> SamplesScreen(pm)
+                is CounterPm -> CounterScreen(pm)
+                is CounterUdfPm -> CounterUdfScreen(pm)
+                is CountdownPm -> CountdownScreen(pm)
+                is DialogPm -> DialogScreen(pm)
+                is ControlsPm -> ControlsScreen(pm)
+                is BottomBarPm -> BottomBarScreen(pm)
+                else -> EmptyScreen()
             }
         }
     }

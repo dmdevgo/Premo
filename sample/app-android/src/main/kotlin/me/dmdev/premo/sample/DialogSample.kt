@@ -29,12 +29,17 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.dmdev.premo.invoke
 import me.dmdev.premo.value
 
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
 @Composable
-fun dialogScreen(pm: DialogPm) {
+fun DialogScreen(pm: DialogPm = Stubs.dialogPm) {
     MaterialTheme {
         Scaffold(
             snackbarHost = {
@@ -66,15 +71,16 @@ fun dialogScreen(pm: DialogPm) {
                 }
 
                 if (pm.alert.isShown.bind()) {
-                    alert(pm.alert)
+                    Alert(pm.alert)
                 }
             }
         }
     }
 }
 
+
 @Composable
-fun alert(alert: Alert) {
+fun Alert(alert: Alert) {
     AlertDialog(
         onDismissRequest = { alert.dismiss() },
         text = { Text(alert.message.value) },
