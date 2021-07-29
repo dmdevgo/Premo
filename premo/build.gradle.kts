@@ -24,7 +24,6 @@
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization")
     id("com.android.library")
 }
 
@@ -37,7 +36,7 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2-native-mt")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
             }
         }
 
@@ -58,8 +57,8 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
-                compileOnly("androidx.appcompat:appcompat:1.3.0-beta01")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0")
+                compileOnly("androidx.appcompat:appcompat:1.4.0-alpha03")
             }
         }
     }
