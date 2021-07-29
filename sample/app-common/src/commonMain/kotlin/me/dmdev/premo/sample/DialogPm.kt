@@ -94,7 +94,7 @@ class Alert(
         }
     }
 
-    suspend fun showForResult(message: String): Alert.Result {
+    suspend fun showForResult(message: String): Result {
         show(message)
         return result.flow().first().also {
             with(pm) {

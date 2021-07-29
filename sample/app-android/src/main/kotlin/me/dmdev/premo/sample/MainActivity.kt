@@ -46,7 +46,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
     @Composable
     fun MainScreen(mainPm: MainPm) {
-        navigation(mainPm.pmStackChanges.bind(PmStackChange.Empty)) { pm ->
+        Navigation(mainPm.pmStackChanges.bind(PmStackChange.Empty)) { pm ->
             when (pm) {
                 is SamplesPm -> SamplesScreen(pm)
                 is CounterPm -> CounterScreen(pm)

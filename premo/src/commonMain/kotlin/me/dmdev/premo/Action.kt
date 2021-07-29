@@ -41,7 +41,7 @@ class Action<T> {
     fun flow(): Flow<T> = channel.receiveAsFlow()
 
     operator fun invoke(value: T) {
-        channel.offer(value)
+        channel.trySend(value)
     }
 }
 

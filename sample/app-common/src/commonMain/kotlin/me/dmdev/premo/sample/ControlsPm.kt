@@ -37,7 +37,7 @@ class ControlsPm(params: PmParams) : PresentationModel(params) {
 
     val input = Input(
         initialText = "",
-        formatter = { it.toUpperCase() }
+        formatter = { it.uppercase() }
     )
 
     val check = Check(

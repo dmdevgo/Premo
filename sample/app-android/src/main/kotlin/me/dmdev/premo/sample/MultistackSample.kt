@@ -65,7 +65,7 @@ fun BottomBarScreen(pm: BottomBarPm = Stubs.bottomBarPm) {
             }
         }
     ) {
-        navigation(currentTabPm.pmStackChanges.bind(PmStackChange.Empty)) { pm ->
+        Navigation(currentTabPm.pmStackChanges.bind(PmStackChange.Empty)) { pm ->
             when (pm) {
                 is TabItemPm -> ItemScreen(pm)
                 else -> EmptyScreen()

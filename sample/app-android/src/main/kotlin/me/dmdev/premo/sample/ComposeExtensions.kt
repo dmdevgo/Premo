@@ -50,7 +50,7 @@ fun <T> Flow<T>.bind(initialValue: T): T {
 }
 
 @Composable
-fun navigation(
+fun Navigation(
     pmStackChange: PmStackChange,
     modifier: Modifier = Modifier,
     content: @Composable (PresentationModel?) -> Unit

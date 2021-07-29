@@ -57,7 +57,7 @@ class CounterUdfPm(
 
     private val action: Action<ActionType> = Action()
 
-    val state = UDF(
+    val state = udf(
         initialValue = CounterState(maxCount = maxCount),
         action = action
     ) { state, action ->
@@ -87,7 +87,7 @@ class CounterUdfPm(
         action.invoke(ActionType.Plus)
     }
 
-    private inline fun <reified T, A> UDF(initialValue: T, action: Action<A>, crossinline reducer: (state: T, action: A) -> T): State<T> {
+    private inline fun <reified T, A> udf(initialValue: T, action: Action<A>, crossinline reducer: (state: T, action: A) -> T): State<T> {
         val state = SaveableState(initialValue, "udf_state")
         action.flow()
             .map { act -> reducer(state.value, act) }

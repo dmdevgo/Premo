@@ -38,6 +38,6 @@ class JsonStateSaver(private val json: Json) : StateSaver {
 
     override fun <T> restoreState(kType: KType, string: String): T {
         @Suppress("UNCHECKED_CAST")
-        return json.decodeFromString<T>(serializer(kType) as KSerializer<T>, string)
+        return json.decodeFromString(serializer(kType) as KSerializer<T>, string)
     }
 }
