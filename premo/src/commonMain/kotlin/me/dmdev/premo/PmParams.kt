@@ -24,7 +24,6 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.StateSaver
 

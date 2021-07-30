@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
+import me.dmdev.premo.PmFactory
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.PmFactory
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

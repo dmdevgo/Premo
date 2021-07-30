@@ -26,7 +26,6 @@ package me.dmdev.premo
 
 import android.app.Activity
 import android.os.Bundle
-import me.dmdev.premo.navigation.PmFactory
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.PmStateSaver
 import me.dmdev.premo.save.StateSaver

@@ -24,9 +24,9 @@
 
 package me.dmdev.premo.sample
 
+import me.dmdev.premo.PmFactory
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.PmFactory
 
 class MainPmFactory : PmFactory {
     override fun createPm(params: PmParams): PresentationModel {

@@ -22,10 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
-
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.PresentationModel
+package me.dmdev.premo
 
 interface PmFactory {
     fun createPm(params: PmParams): PresentationModel
