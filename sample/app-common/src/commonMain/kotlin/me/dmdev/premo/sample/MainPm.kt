@@ -38,22 +38,22 @@ class MainPm(params: PmParams) : PresentationModel(params) {
     @Serializable
     object Description : PresentationModel.Description
 
-    private val router = Router(SamplesPm.Description)
+    private val navigator = Navigator(SamplesPm.Description)
 
     val currentPm = State(null) {
-        router.pmStack.flow().map { it.lastOrNull() }
+        navigator.pmStack.flow().map { it.lastOrNull() }
     }
 
-    val pmStackChanges: Flow<PmStackChange> get() = router.pmStackChanges
+    val pmStackChanges: Flow<PmStackChange> get() = navigator.pmStackChanges
 
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
-            CounterSampleMessage -> router.push(Child(CounterPm.Description(10)))
-            CounterUdfSampleMessage -> router.push(Child(CounterUdfPm.Description(10)))
-            CountdownSampleMessage -> router.push(Child(CountdownPm.Description))
-            DialogSampleMessage -> router.push(Child(DialogPm.Description))
-            ControlsSampleMessage -> router.push(Child(ControlsPm.Description))
-            MultistackSampleMessage -> router.push(Child(BottomBarPm.Description))
+            CounterSampleMessage -> navigator.push(Child(CounterPm.Description(10)))
+            CounterUdfSampleMessage -> navigator.push(Child(CounterUdfPm.Description(10)))
+            CountdownSampleMessage -> navigator.push(Child(CountdownPm.Description))
+            DialogSampleMessage -> navigator.push(Child(DialogPm.Description))
+            ControlsSampleMessage -> navigator.push(Child(ControlsPm.Description))
+            MultistackSampleMessage -> navigator.push(Child(BottomBarPm.Description))
             else -> super.handleNavigationMessage(message)
         }
     }

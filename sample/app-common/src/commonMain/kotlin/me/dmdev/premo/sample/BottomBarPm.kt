@@ -43,7 +43,7 @@ class BottomBarPm(params: PmParams) : PresentationModel(params) {
 
     val currentTabPm = State(tabPmList.first())
 
-    val onRouterTabClick = Action<TabPm> { tabPm ->
+    val onTabClick = Action<TabPm> { tabPm ->
         currentTabPm.value = tabPm
     }
 

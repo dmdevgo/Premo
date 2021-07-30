@@ -52,7 +52,7 @@ fun BottomBarScreen(pm: BottomBarPm = Stubs.bottomBarPm) {
                 pm.tabPmList.forEach { tabPm ->
                     BottomNavigationItem(
                         selected = tabPm == currentTabPm,
-                        onClick = { pm.onRouterTabClick(tabPm) },
+                        onClick = { pm.onTabClick(tabPm) },
                         label = { Text(tabPm.tabTitle) },
                         icon = {
                             Icon(

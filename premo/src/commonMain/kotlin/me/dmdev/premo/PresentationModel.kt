@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.internal.randomUUID
 import me.dmdev.premo.navigation.NavigationMessage
-import me.dmdev.premo.navigation.PmRouter
+import me.dmdev.premo.navigation.Navigator
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.PmStateCreator
 import me.dmdev.premo.save.StateSaver
@@ -54,7 +54,7 @@ abstract class PresentationModel(params: PmParams) {
     var pmInForegroundScope: CoroutineScope? = null
         private set
 
-    private var routerOrNull: PmRouter? = null
+    private var navigatorOrNull: Navigator? = null
     private val saveableStates = mutableMapOf<String, SaveableState<*>>()
 
     private class SaveableState<T>(
@@ -95,7 +95,7 @@ abstract class PresentationModel(params: PmParams) {
     }
 
     @Suppress("FunctionName")
-    protected fun Router(initialDescription: Description): PmRouter {
+    protected fun Navigator(initialDescription: Description): Navigator {
 
         val restoredPmBackStack = pmState?.backstack?.map { pmState ->
 
@@ -111,18 +111,18 @@ abstract class PresentationModel(params: PmParams) {
             pmFactory.createPm(config)
         }
 
-        return routerOrNull ?: PmRouter(
+        return navigatorOrNull ?: Navigator(
             hostPm = this,
-        ).also { router ->
+        ).also { navigator ->
 
             if (restoredPmBackStack != null) {
-                router.setBackStack(restoredPmBackStack)
+                navigator.setBackStack(restoredPmBackStack)
             }
 
-            if (router.pmStack.value.isEmpty()) {
-                router.push(Child(initialDescription))
+            if (navigator.pmStack.value.isEmpty()) {
+                navigator.push(Child(initialDescription))
             }
-            routerOrNull = router
+            navigatorOrNull = navigator
         }
     }
 
@@ -207,22 +207,22 @@ abstract class PresentationModel(params: PmParams) {
     }
 
     open fun back() {
-        val router = routerOrNull
-        if (router != null && router.pmStack.value.size > 1) {
-            router.pop()
+        val navigator = navigatorOrNull
+        if (navigator != null && navigator.pmStack.value.size > 1) {
+            navigator.pop()
         } else {
             parentPm?.back()
         }
     }
 
     open fun handleSystemBack(): Boolean {
-        val router = routerOrNull
-        if (router != null) {
+        val navigator = navigatorOrNull
+        if (navigator != null) {
             val handledByNestedPm =
-                router.pmStack.value.lastOrNull()?.handleSystemBack() ?: false
+                navigator.pmStack.value.lastOrNull()?.handleSystemBack() ?: false
             if (handledByNestedPm.not()) {
-                if (router.pmStack.value.size > 1) {
-                    router.pop()
+                if (navigator.pmStack.value.size > 1) {
+                    navigator.pop()
                     return true
                 }
             } else {
@@ -236,13 +236,13 @@ abstract class PresentationModel(params: PmParams) {
 
     internal fun saveState(pmStateCreator: PmStateCreator): PmState {
 
-        val router = routerOrNull
-        val routerState =
-            router?.pmStack?.value?.map { pm -> pm.saveState(pmStateCreator) } ?: listOf()
+        val backstack = navigatorOrNull?.pmStack?.value?.map { pm ->
+            pm.saveState(pmStateCreator)
+        } ?: listOf()
 
         return pmStateCreator.createPmState(
             tag = tag,
-            backstack = routerState,
+            backstack = backstack,
             children = children.mapValues { entry -> entry.value.saveState(pmStateCreator) },
             states = saveableStates.mapValues { entry ->
                 stateSaver.saveState(entry.value.kType, entry.value.state.value)

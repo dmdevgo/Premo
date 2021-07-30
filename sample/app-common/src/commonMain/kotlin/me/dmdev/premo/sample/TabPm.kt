@@ -45,13 +45,13 @@ class TabPm(
 
     private var number: Int = 1
 
-    private val router = Router(TabItemPm.Description(nextScreenTitle(), tabTitle))
+    private val navigator = Navigator(TabItemPm.Description(nextScreenTitle(), tabTitle))
 
     val currentPm = State(null) {
-        router.pmStack.flow().map { it.lastOrNull() }
+        navigator.pmStack.flow().map { it.lastOrNull() }
     }
 
-    val pmStackChanges: Flow<PmStackChange> get() = router.pmStackChanges
+    val pmStackChanges: Flow<PmStackChange> get() = navigator.pmStackChanges
 
     private fun nextScreenTitle(): String {
         return "Screen #${number++}"
@@ -60,7 +60,7 @@ class TabPm(
     override fun handleNavigationMessage(message: NavigationMessage) {
         when (message) {
             NextClickMessage -> {
-                router.push(
+                navigator.push(
                     Child(
                         TabItemPm.Description(
                             screenTitle = nextScreenTitle(),

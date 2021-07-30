@@ -30,7 +30,7 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import me.dmdev.premo.value
 
-class PmRouter internal constructor(
+class Navigator internal constructor(
     private val hostPm: PresentationModel,
 ) {
 
