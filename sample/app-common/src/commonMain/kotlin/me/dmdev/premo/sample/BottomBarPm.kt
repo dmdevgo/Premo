@@ -47,7 +47,7 @@ class BottomBarPm(params: PmParams) : PresentationModel(params) {
         currentTabPm.value = tabPm
     }
 
-    override fun handleBack(): Boolean {
-        return currentTabPm.value.handleBack()
+    override fun handleSystemBack(): Boolean {
+        return currentTabPm.value.handleSystemBack()
     }
 }

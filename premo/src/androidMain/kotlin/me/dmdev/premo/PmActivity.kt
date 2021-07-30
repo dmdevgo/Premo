@@ -27,42 +27,13 @@ package me.dmdev.premo
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import me.dmdev.premo.navigation.PmFactory
-import me.dmdev.premo.save.PmStateSaver
-import me.dmdev.premo.save.StateSaver
 
-/**
- * Predefined [Activity][AppCompatActivity] implementing the [PmView][PmView].
- *
- * Just override the [providePresentationModel] and [onBindPresentationModel] methods and you are good to go.
- *
- * If extending is not possible you can implement [PmView],
- * create a [PmActivityDelegate] and pass the lifecycle callbacks to it.
- * See this class's source code for the example.
- */
+
 abstract class PmActivity<PM : PresentationModel>(
     @LayoutRes contentLayoutId: Int
 ) : AppCompatActivity(contentLayoutId) {
 
-    private val delegate by lazy(LazyThreadSafetyMode.NONE) {
-        PmActivityDelegate<PM>(
-            pmActivity = this,
-            pmStateSaver = providePmStateSaver(),
-            stateSaver = provideStateSaver(),
-            pmFactory = providePmFactory(),
-            pmDescription = providePmDescription(),
-        )
-    }
-
-    fun getPresentationModel(): PM {
-        return delegate.presentationModel
-            ?: throw IllegalStateException("Presentation Model has not been initialized yet, call this method after onCreate.")
-    }
-
-    abstract fun providePmDescription(): PresentationModel.Description
-    abstract fun providePmFactory(): PmFactory
-    abstract fun providePmStateSaver(): PmStateSaver
-    abstract fun provideStateSaver(): StateSaver
+    protected abstract val delegate : PmActivityDelegate<PM>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,7 +71,7 @@ abstract class PmActivity<PM : PresentationModel>(
     }
 
     override fun onBackPressed() {
-        if (delegate.handleBack().not()) {
+        if (delegate.handleSystemBack().not()) {
             super.onBackPressed()
         }
     }

@@ -26,21 +26,20 @@ package me.dmdev.premo
 
 import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.internal.PmStore
+import me.dmdev.premo.save.PmState
+import me.dmdev.premo.save.PmStateCreator
 
-/**
- *  Common delegate serves for forwarding the lifecycle[LifecycleEvent] directly into the [PresentationModel][PresentationModel].
- *  Can be used to implement your delegate.
- *
- *  @see PmActivityDelegat
- */
-class CommonDelegate<PM : PresentationModel>(
-    val pmTag: String,
-    val pmProvider: () -> PM
+
+class PmDelegate<PM : PresentationModel>(
+    val pmParams: PmParams
 ) {
 
     @Suppress("UNCHECKED_CAST")
-    val presentationModel: PM = PmStore.getPm(pmTag) as? PM ?: pmProvider().also { pm ->
-        PmStore.putPm(pmTag, pm)
+    val presentationModel: PM = PmStore.getPm(pmParams.tag) as? PM
+        ?: pmParams.factory.createPm(pmParams) as PM
+
+    init {
+        PmStore.putPm(pmParams.tag, presentationModel)
     }
 
     fun onCreate() {
@@ -57,6 +56,14 @@ class CommonDelegate<PM : PresentationModel>(
 
     fun onDestroy() {
         presentationModel.lifecycle.moveTo(DESTROYED)
-        PmStore.removePm(pmTag)
+        PmStore.removePm(pmParams.tag)
+    }
+
+    fun savePm(pmStateCreator: PmStateCreator): PmState {
+        return presentationModel.saveState(pmStateCreator)
+    }
+
+    fun handleSystemBack(): Boolean {
+        return presentationModel.handleSystemBack()
     }
 }

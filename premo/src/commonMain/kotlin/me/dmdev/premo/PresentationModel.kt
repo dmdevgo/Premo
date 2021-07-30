@@ -216,11 +216,11 @@ abstract class PresentationModel(params: PmParams) {
         }
     }
 
-    open fun handleBack(): Boolean {
+    open fun handleSystemBack(): Boolean {
         val router = routerOrNull
         if (router != null) {
             val handledByNestedPm =
-                router.pmStack.value.lastOrNull()?.handleBack() ?: false
+                router.pmStack.value.lastOrNull()?.handleSystemBack() ?: false
             if (handledByNestedPm.not()) {
                 if (router.pmStack.value.size > 1) {
                     router.pop()

@@ -29,18 +29,25 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import kotlinx.serialization.json.Json
 import me.dmdev.premo.PmActivity
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.PmFactory
+import me.dmdev.premo.PmActivityDelegate
 import me.dmdev.premo.navigation.PmStackChange
-import me.dmdev.premo.save.PmStateSaver
-import me.dmdev.premo.save.StateSaver
 
 class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
+
+    override val delegate: PmActivityDelegate<MainPm> by lazy {
+        PmActivityDelegate(
+            pmActivity = this,
+            pmDescription = MainPm.Description,
+            pmStateSaver = JsonPmStateSaver(),
+            pmFactory = MainPmFactory(),
+            stateSaver = JsonStateSaver(Json.Default),
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainScreen(getPresentationModel())
+            MainScreen(delegate.presentationModel)
         }
     }
 
@@ -58,21 +65,5 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
                 else -> EmptyScreen()
             }
         }
-    }
-
-    override fun providePmDescription(): PresentationModel.Description {
-        return MainPm.Description
-    }
-
-    override fun providePmFactory(): PmFactory {
-        return MainPmFactory()
-    }
-
-    override fun providePmStateSaver(): PmStateSaver {
-        return JsonPmStateSaver()
-    }
-
-    override fun provideStateSaver(): StateSaver {
-        return JsonStateSaver(Json.Default)
     }
 }
