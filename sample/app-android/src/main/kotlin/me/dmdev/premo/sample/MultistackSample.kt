@@ -35,7 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.dmdev.premo.invoke
-import me.dmdev.premo.navigation.PmStackChange
 
 @Preview(
     showBackground = true,
@@ -65,7 +64,7 @@ fun BottomBarScreen(pm: BottomBarPm = Stubs.bottomBarPm) {
             }
         }
     ) {
-        Navigation(currentTabPm.pmStackChanges.bind(PmStackChange.Empty)) { pm ->
+        NavigationBox(currentTabPm.navigation) { pm ->
             when (pm) {
                 is TabItemPm -> ItemScreen(pm)
                 else -> EmptyScreen()

@@ -24,14 +24,11 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.State
+import me.dmdev.premo.navigation.Navigation
 import me.dmdev.premo.navigation.NavigationMessage
-import me.dmdev.premo.navigation.PmStackChange
 
 class TabPm(
     val tabTitle: String,
@@ -47,11 +44,7 @@ class TabPm(
 
     private val navigator = Navigator(TabItemPm.Description(nextScreenTitle(), tabTitle))
 
-    val currentPm = State(null) {
-        navigator.pmStack.flow().map { it.lastOrNull() }
-    }
-
-    val pmStackChanges: Flow<PmStackChange> get() = navigator.pmStackChanges
+    val navigation = Navigation(navigator)
 
     private fun nextScreenTitle(): String {
         return "Screen #${number++}"

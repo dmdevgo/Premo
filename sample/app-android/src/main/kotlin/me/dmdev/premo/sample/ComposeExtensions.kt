@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.Flow
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
+import me.dmdev.premo.navigation.Navigation
 import me.dmdev.premo.navigation.PmStackChange
 
 @Composable
@@ -50,15 +51,15 @@ fun <T> Flow<T>.bind(initialValue: T): T {
 }
 
 @Composable
-fun Navigation(
-    pmStackChange: PmStackChange,
+fun NavigationBox(
+    navigation: Navigation,
     modifier: Modifier = Modifier,
     content: @Composable (PresentationModel?) -> Unit
 ) {
 
     val stateHolder = rememberSaveableStateHolder()
 
-    val pm = when (pmStackChange) {
+    val pm = when (val pmStackChange = navigation.pmStackChanges.bind(PmStackChange.Empty)) {
         is PmStackChange.Push -> {
             stateHolder.removeState(pmStackChange.enterPm.tag)
             pmStackChange.enterPm

@@ -30,19 +30,19 @@ struct PremoSampleApp: App {
     
     @Environment(\.scenePhase) var scenePhase
     
-    private let delegate: CommonDelegate<MainPm>
+    private let delegate: PmDelegate<MainPm>
     
     init() {
-        delegate = CommonDelegate(pmTag: "MainPm") {
-            let config = PmConfig(
+        delegate = PmDelegate(
+            pmParams: PmParams(
                 tag: "MainPm",
                 parent: nil,
                 state: nil,
                 factory: MainPmFactory(),
-                description: MainPm.Description()
+                description: MainPm.Description(),
+                stateSaver: JsonStateSaver()
             )
-            return MainPm(config: config)
-        }
+        )
         delegate.onCreate()
     }
     

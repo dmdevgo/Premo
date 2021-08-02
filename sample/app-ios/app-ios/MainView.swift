@@ -34,14 +34,14 @@ struct MainView: View {
     
     init(pm: MainPm) {
         self.pm = pm
-        currentPm = ObservableState(pm.currentPm)
+        currentPm = ObservableState(pm.navigation.currentPm)
     }
     
     var body: some View {
         VStack {
             HStack {
                 Button(action: {
-                    pm.handleBack()
+                    pm.handleSystemBack()
                 }) { Text("Back") }
                 .padding()
                 Spacer()

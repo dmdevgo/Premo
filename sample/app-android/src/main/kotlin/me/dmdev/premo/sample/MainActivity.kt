@@ -27,10 +27,8 @@ package me.dmdev.premo.sample
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import kotlinx.serialization.json.Json
 import me.dmdev.premo.PmActivity
 import me.dmdev.premo.PmActivityDelegate
-import me.dmdev.premo.navigation.PmStackChange
 
 class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
@@ -40,7 +38,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
             pmDescription = MainPm.Description,
             pmStateSaver = JsonPmStateSaver(),
             pmFactory = MainPmFactory(),
-            stateSaver = JsonStateSaver(Json.Default),
+            stateSaver = JsonStateSaver(),
         )
     }
 
@@ -53,7 +51,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
 
     @Composable
     fun MainScreen(mainPm: MainPm) {
-        Navigation(mainPm.pmStackChanges.bind(PmStackChange.Empty)) { pm ->
+        NavigationBox(mainPm.navigation) { pm ->
             when (pm) {
                 is SamplesPm -> SamplesScreen(pm)
                 is CounterPm -> CounterScreen(pm)

@@ -30,7 +30,9 @@ import kotlinx.serialization.serializer
 import me.dmdev.premo.save.StateSaver
 import kotlin.reflect.KType
 
-class JsonStateSaver(private val json: Json) : StateSaver {
+class JsonStateSaver : StateSaver {
+
+    private val json: Json = Json.Default
 
     override fun <T> saveState(kType: KType, value: T): String {
         return json.encodeToString(serializer(kType), value)

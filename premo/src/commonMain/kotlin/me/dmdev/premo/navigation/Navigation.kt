@@ -24,47 +24,49 @@
 
 package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import me.dmdev.premo.PmLifecycle.State.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import me.dmdev.premo.value
 
-class Navigator internal constructor(
-    val hostPm: PresentationModel,
+class Navigation(
+    private val navigator: Navigator
 ) {
 
-    init {
-        hostPm.lifecycle.stateFlow.onEach { state ->
-            pmStack.value.lastOrNull()?.lifecycle?.moveTo(state)
-        }.launchIn(hostPm.pmScope)
+    val currentPm = navigator.hostPm.State(null) {
+        navigator.pmStack.flow().map { it.lastOrNull() }
     }
 
-    val pmStack: State<List<PresentationModel>> = State(listOf())
+    val pmStackChanges: Flow<PmStackChange> get() = flow {
+        var oldPmStack: List<PresentationModel> = navigator.pmStack.value
+        navigator.pmStack.flow().collect { newPmStack ->
 
-    fun push(pm: PresentationModel) {
-        pmStack.value.lastOrNull()?.lifecycle?.moveTo(CREATED)
-        pm.lifecycle.moveTo(hostPm.lifecycle.state)
-        pmStack.value = pmStack.value.plus(pm)
-    }
+            val oldTopPm = oldPmStack.lastOrNull()
+            val newTopPm = newPmStack.lastOrNull()
 
-    fun pop(): Boolean {
-        return if (pmStack.value.isNotEmpty()) {
-            pmStack.value.lastOrNull()?.lifecycle?.moveTo(DESTROYED)
-            if (pmStack.value.isNotEmpty()) pmStack.value = pmStack.value.dropLast(1)
-            pmStack.value.lastOrNull()?.lifecycle?.moveTo(hostPm.lifecycle.state)
-            true
-        } else {
-            false
+            val pmStackChange = if (newTopPm != null && oldTopPm != null) {
+                when {
+                    oldTopPm === newTopPm -> {
+                        PmStackChange.Set(newTopPm)
+                    }
+                    oldPmStack.any { it === newTopPm } -> {
+                        PmStackChange.Pop(newTopPm, oldTopPm)
+                    }
+                    else -> {
+                        PmStackChange.Push(newTopPm, oldTopPm)
+                    }
+                }
+            } else if (newTopPm != null) {
+                PmStackChange.Set(newTopPm)
+            } else {
+                PmStackChange.Empty
+            }
+
+            emit(pmStackChange)
+            oldPmStack = newPmStack
         }
-    }
-
-    fun setBackStack(pmList: List<PresentationModel>) {
-        pmStack.value = pmList
-        pmList.forEach { pm ->
-            pm.lifecycle.moveTo(INITIALIZED)
-        }
-        pmList.lastOrNull()?.lifecycle?.moveTo(hostPm.lifecycle.state)
     }
 }

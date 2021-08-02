@@ -34,7 +34,7 @@ struct TabContainerView: View {
     
     init(pm: TabPm) {
         self.pm = pm
-        currentPm = ObservableState(pm.currentPm)
+        currentPm = ObservableState(pm.navigation.currentPm)
     }
     
     var body: some View {

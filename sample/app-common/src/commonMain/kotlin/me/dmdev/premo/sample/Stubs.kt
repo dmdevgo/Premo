@@ -24,7 +24,6 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.serialization.json.Json
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 
@@ -49,7 +48,7 @@ object Stubs {
             state = null,
             factory = mainPmFactory,
             description = description,
-            stateSaver = JsonStateSaver(Json.Default)
+            stateSaver = JsonStateSaver()
         )
         @Suppress("UNCHECKED_CAST")
         return mainPmFactory.createPm(config) as PM
