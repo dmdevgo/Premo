@@ -65,7 +65,10 @@ class PmActivityDelegate<PM : PresentationModel>(
             stateSaver = stateSaver
         )
 
-        pmDelegate = PmDelegate(pmParams = pmParams)
+        pmDelegate = PmDelegate(
+            pmParams = pmParams,
+            exitHandler = { pmActivity.finish() }
+        )
         pmDelegate?.onCreate()
     }
 
@@ -110,8 +113,8 @@ class PmActivityDelegate<PM : PresentationModel>(
     fun onDestroy() {
         if (pmActivity.isFinishing) {
             pmDelegate?.onDestroy()
-            pmDelegate = null
         }
+        pmDelegate = null
     }
 
     /**

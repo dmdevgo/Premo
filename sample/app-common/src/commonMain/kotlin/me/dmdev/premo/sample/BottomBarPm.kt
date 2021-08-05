@@ -29,6 +29,7 @@ import me.dmdev.premo.Action
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
+import me.dmdev.premo.navigation.onSystemBack
 
 class BottomBarPm(params: PmParams) : PresentationModel(params) {
 
@@ -47,7 +48,9 @@ class BottomBarPm(params: PmParams) : PresentationModel(params) {
         currentTabPm.value = tabPm
     }
 
-    override fun handleSystemBack(): Boolean {
-        return currentTabPm.value.handleSystemBack()
+    init {
+        navigator.onSystemBack {
+            currentTabPm.value.navigator.handleSystemBack()
+        }
     }
 }

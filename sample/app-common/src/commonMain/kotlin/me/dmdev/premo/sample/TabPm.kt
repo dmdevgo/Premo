@@ -27,8 +27,8 @@ package me.dmdev.premo.sample
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.Navigation
-import me.dmdev.premo.navigation.NavigationMessage
+import me.dmdev.premo.navigation.onMessage
+import me.dmdev.premo.navigation.onStart
 
 class TabPm(
     val tabTitle: String,
@@ -42,31 +42,31 @@ class TabPm(
 
     private var number: Int = 1
 
-    private val navigator = Navigator(TabItemPm.Description(nextScreenTitle(), tabTitle))
-
-    val navigation = Navigation(navigator)
+    val navigation = Navigation {
+        onStart {
+            push(Child(TabItemPm.Description(nextScreenTitle(), tabTitle)))
+        }
+        onMessage<NextClickMessage> {
+            push(
+                Child(
+                    TabItemPm.Description(
+                        screenTitle = nextScreenTitle(),
+                        tabTitle = tabTitle
+                    )
+                )
+            )
+        }
+        onMessage<PreviousClickMessage> {
+            if (navigator.pmStack.value.size > 1) {
+                navigator.pop()
+                number--
+            } else {
+                navigator.handleBack()
+            }
+        }
+    }
 
     private fun nextScreenTitle(): String {
         return "Screen #${number++}"
-    }
-
-    override fun handleNavigationMessage(message: NavigationMessage) {
-        when (message) {
-            NextClickMessage -> {
-                navigator.push(
-                    Child(
-                        TabItemPm.Description(
-                            screenTitle = nextScreenTitle(),
-                            tabTitle = tabTitle
-                        )
-                    )
-                )
-            }
-            PreviousClickMessage -> {
-                back()
-                number--
-            }
-            else -> super.handleNavigationMessage(message)
-        }
     }
 }

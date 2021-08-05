@@ -30,18 +30,44 @@ import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import me.dmdev.premo.value
+import kotlin.reflect.KClass
 
 class Navigator internal constructor(
     val hostPm: PresentationModel,
 ) {
+
+    private val handlers = mutableListOf<(message: NavigationMessage) -> Boolean>()
+
+    val pmStack: State<List<PresentationModel>> = State(listOf())
+
+    internal var exitHandler: (() -> Unit)? = null
+    var startHandler: (() -> Unit)? = null
+    var backHandler: (() -> Boolean)? = {
+        if (pmStack.value.size > 1) {
+            pop()
+            true
+        } else {
+            hostPm.parentPm?.navigator?.handleBack() ?: false
+        }
+    }
+    var systemBackHandler: (() -> Boolean) = {
+        if (pmStack.value.lastOrNull()?.navigator?.systemBackHandler?.invoke() == true) {
+            true
+        } else {
+            if (pmStack.value.size > 1) {
+                pop()
+                true
+            } else {
+                false
+            }
+        }
+    }
 
     init {
         hostPm.lifecycle.stateFlow.onEach { state ->
             pmStack.value.lastOrNull()?.lifecycle?.moveTo(state)
         }.launchIn(hostPm.pmScope)
     }
-
-    val pmStack: State<List<PresentationModel>> = State(listOf())
 
     fun push(pm: PresentationModel) {
         pmStack.value.lastOrNull()?.lifecycle?.moveTo(CREATED)
@@ -67,4 +93,54 @@ class Navigator internal constructor(
         }
         pmList.lastOrNull()?.lifecycle?.moveTo(hostPm.lifecycle.state)
     }
+
+    fun <M : NavigationMessage> addMessageHandler(
+        kClass: KClass<M>,
+        handler: (message: M) -> Unit
+    ) {
+        handlers.add {
+            if (kClass.isInstance(it)) {
+                handler(it as M)
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    fun handleStart() {
+        startHandler?.invoke()
+    }
+
+    fun handleBack(): Boolean {
+        return backHandler?.invoke() ?: false
+    }
+
+    fun handleSystemBack(): Boolean {
+        return systemBackHandler.invoke()
+    }
+
+    fun sendMessage(message: NavigationMessage) {
+        if (!handlers.any { it.invoke(message) }) {
+            hostPm.parentPm?.navigator?.sendMessage(message)
+        }
+    }
+}
+
+fun Navigator.onStart(handler: () -> Unit) {
+    startHandler = handler
+}
+
+fun Navigator.onBack(handler: () -> Boolean) {
+    backHandler = handler
+}
+
+fun Navigator.onSystemBack(handler: () -> Boolean) {
+    systemBackHandler = handler
+}
+
+inline fun <reified M : NavigationMessage> Navigator.onMessage(
+    noinline handler: (message: M) -> Unit
+) {
+    addMessageHandler(M::class, handler)
 }

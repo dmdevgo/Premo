@@ -42,11 +42,10 @@ class TabItemPm(
     ) : PresentationModel.Description
 
     val nextClick = Action<Unit> {
-        handleNavigationMessage(NextClickMessage)
+        navigator.sendMessage(NextClickMessage)
     }
 
     val previousClick = Action<Unit> {
-        handleNavigationMessage(PreviousClickMessage)
+        navigator.sendMessage(PreviousClickMessage)
     }
-
 }

@@ -27,13 +27,15 @@ import Common
 
 struct MainView: View {
     
+    private let delegate: PmDelegate<MainPm>
     private let pm: MainPm
     
     @ObservedObject
     private var currentPm: ObservableState<PresentationModel>
     
-    init(pm: MainPm) {
-        self.pm = pm
+    init(delegate: PmDelegate<MainPm>) {
+        self.delegate = delegate
+        self.pm = delegate.presentationModel
         currentPm = ObservableState(pm.navigation.currentPm)
     }
     
@@ -41,7 +43,7 @@ struct MainView: View {
         VStack {
             HStack {
                 Button(action: {
-                    pm.handleSystemBack()
+                    delegate.handleSystemBack()
                 }) { Text("Back") }
                 .padding()
                 Spacer()

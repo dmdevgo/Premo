@@ -26,6 +26,8 @@ import me.dmdev.premo.PmFactory
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.save.StateSaver
+import kotlin.reflect.KType
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -76,6 +78,16 @@ class TestPm: PresentationModel(
                 TODO("Not yet implemented")
             }
         },
-        description = object : PresentationModel.Description {}
+        description = object : PresentationModel.Description {},
+        stateSaver = object : StateSaver {
+            override fun <T> saveState(kType: KType, value: T): String {
+                TODO("Not yet implemented")
+            }
+
+            override fun <T> restoreState(kType: KType, json: String): T {
+                TODO("Not yet implemented")
+            }
+
+        }
     )
 )

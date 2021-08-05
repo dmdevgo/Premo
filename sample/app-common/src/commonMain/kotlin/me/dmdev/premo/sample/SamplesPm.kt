@@ -35,27 +35,27 @@ class SamplesPm(params: PmParams) : PresentationModel(params) {
     object Description: PresentationModel.Description
 
     val counterClick = Action<Unit> {
-        handleNavigationMessage(CounterSampleMessage)
+        navigator.sendMessage(CounterSampleMessage)
     }
 
     val counterUdfClick = Action<Unit> {
-        handleNavigationMessage(CounterUdfSampleMessage)
+        navigator.sendMessage(CounterUdfSampleMessage)
     }
 
     val countdownClick = Action<Unit> {
-        handleNavigationMessage(CountdownSampleMessage)
+        navigator.sendMessage(CountdownSampleMessage)
     }
 
     val dialogClick = Action<Unit> {
-        handleNavigationMessage(DialogSampleMessage)
+        navigator.sendMessage(DialogSampleMessage)
     }
 
     val controlsClick = Action<Unit> {
-        handleNavigationMessage(ControlsSampleMessage)
+        navigator.sendMessage(ControlsSampleMessage)
     }
 
     val multistackClick = Action<Unit> {
-        handleNavigationMessage(MultistackSampleMessage)
+        navigator.sendMessage(MultistackSampleMessage)
     }
 
 }

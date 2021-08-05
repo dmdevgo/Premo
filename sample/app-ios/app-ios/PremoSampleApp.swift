@@ -41,14 +41,16 @@ struct PremoSampleApp: App {
                 factory: MainPmFactory(),
                 description: MainPm.Description(),
                 stateSaver: JsonStateSaver()
-            )
+            ),
+            exitHandler: {}
         )
+    
         delegate.onCreate()
     }
     
     var body: some Scene {
         WindowGroup {
-            MainView(pm: delegate.presentationModel as MainPm)
+            MainView(delegate: delegate)
         }
         .onChange(of: scenePhase) { newScenePhase in
               switch newScenePhase {

@@ -31,7 +31,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.internal.randomUUID
-import me.dmdev.premo.navigation.NavigationMessage
+import me.dmdev.premo.navigation.Navigation
 import me.dmdev.premo.navigation.Navigator
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.PmStateCreator
@@ -54,8 +54,29 @@ abstract class PresentationModel(params: PmParams) {
     var pmInForegroundScope: CoroutineScope? = null
         private set
 
-    private var navigatorOrNull: Navigator? = null
     private val saveableStates = mutableMapOf<String, SaveableState<*>>()
+
+    val navigator: Navigator by lazy {
+        val restoredPmBackStack = pmState?.backstack?.map { pmState ->
+
+            val config = PmParams(
+                tag = pmState.tag,
+                parent = this,
+                state = pmState,
+                factory = pmFactory,
+                description = pmState.description,
+                stateSaver = stateSaver
+            )
+
+            pmFactory.createPm(config)
+        }
+
+        if (restoredPmBackStack != null) {
+            navigator.setBackStack(restoredPmBackStack)
+        }
+
+        Navigator(this)
+    }
 
     private class SaveableState<T>(
         val state: State<T>,
@@ -92,38 +113,6 @@ abstract class PresentationModel(params: PmParams) {
                 }
             }
         }.launchIn(pmScope)
-    }
-
-    @Suppress("FunctionName")
-    protected fun Navigator(initialDescription: Description): Navigator {
-
-        val restoredPmBackStack = pmState?.backstack?.map { pmState ->
-
-            val config = PmParams(
-                tag = pmState.tag,
-                parent = this,
-                state = pmState,
-                factory = pmFactory,
-                description = pmState.description,
-                stateSaver = stateSaver
-            )
-
-            pmFactory.createPm(config)
-        }
-
-        return navigatorOrNull ?: Navigator(
-            hostPm = this,
-        ).also { navigator ->
-
-            if (restoredPmBackStack != null) {
-                navigator.setBackStack(restoredPmBackStack)
-            }
-
-            if (navigator.pmStack.value.isEmpty()) {
-                navigator.push(Child(initialDescription))
-            }
-            navigatorOrNull = navigator
-        }
     }
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
@@ -186,6 +175,19 @@ abstract class PresentationModel(params: PmParams) {
             mutableStateFlow.value = value
         }
 
+    fun Navigation(
+        initHandlers: Navigator.() -> Unit
+    ): Navigation {
+
+        navigator.initHandlers()
+
+        if (navigator.pmStack.value.isEmpty()) {
+            navigator.handleStart()
+        }
+
+        return Navigation(navigator)
+    }
+
     @Suppress("MemberVisibilityCanBePrivate")
     protected open fun onCreate() {
     }
@@ -202,43 +204,11 @@ abstract class PresentationModel(params: PmParams) {
     protected open fun onDestroy() {
     }
 
-    protected open fun handleNavigationMessage(message: NavigationMessage) {
-        parentPm?.handleNavigationMessage(message)
-    }
-
-    open fun back() {
-        val navigator = navigatorOrNull
-        if (navigator != null && navigator.pmStack.value.size > 1) {
-            navigator.pop()
-        } else {
-            parentPm?.back()
-        }
-    }
-
-    open fun handleSystemBack(): Boolean {
-        val navigator = navigatorOrNull
-        if (navigator != null) {
-            val handledByNestedPm =
-                navigator.pmStack.value.lastOrNull()?.handleSystemBack() ?: false
-            if (handledByNestedPm.not()) {
-                if (navigator.pmStack.value.size > 1) {
-                    navigator.pop()
-                    return true
-                }
-            } else {
-                return true
-            }
-            return false
-        } else {
-            return false
-        }
-    }
-
     internal fun saveState(pmStateCreator: PmStateCreator): PmState {
 
-        val backstack = navigatorOrNull?.pmStack?.value?.map { pm ->
+        val backstack = navigator.pmStack.value.map { pm ->
             pm.saveState(pmStateCreator)
-        } ?: listOf()
+        }
 
         return pmStateCreator.createPmState(
             tag = tag,

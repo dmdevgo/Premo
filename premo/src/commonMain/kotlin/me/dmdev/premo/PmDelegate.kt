@@ -31,7 +31,8 @@ import me.dmdev.premo.save.PmStateCreator
 
 
 class PmDelegate<PM : PresentationModel>(
-    val pmParams: PmParams
+    val pmParams: PmParams,
+    val exitHandler: () -> Unit
 ) {
 
     @Suppress("UNCHECKED_CAST")
@@ -47,11 +48,13 @@ class PmDelegate<PM : PresentationModel>(
     }
 
     fun onForeground() {
+        presentationModel.navigator.exitHandler = { exitHandler() }
         presentationModel.lifecycle.moveTo(IN_FOREGROUND)
     }
 
     fun onBackground() {
         presentationModel.lifecycle.moveTo(CREATED)
+        presentationModel.navigator.exitHandler = null
     }
 
     fun onDestroy() {
@@ -64,6 +67,6 @@ class PmDelegate<PM : PresentationModel>(
     }
 
     fun handleSystemBack(): Boolean {
-        return presentationModel.handleSystemBack()
+        return presentationModel.navigator.handleSystemBack()
     }
 }
