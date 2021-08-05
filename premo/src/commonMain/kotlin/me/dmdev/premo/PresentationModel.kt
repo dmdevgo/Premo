@@ -97,18 +97,15 @@ abstract class PresentationModel(params: PmParams) {
         lifecycle.eventFlow.onEach { event ->
             when (event) {
                 PmLifecycle.Event.ON_CREATE -> {
-                    onCreate()
                 }
                 PmLifecycle.Event.ON_FOREGROUND -> {
                     pmInForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-                    onForeground()
                 }
                 PmLifecycle.Event.ON_BACKGROUND -> {
-                    onBackground()
                     pmInForegroundScope?.cancel()
+                    pmInForegroundScope = null
                 }
                 PmLifecycle.Event.ON_DESTROY -> {
-                    onDestroy()
                     pmScope.cancel()
                 }
             }
@@ -186,22 +183,6 @@ abstract class PresentationModel(params: PmParams) {
         }
 
         return Navigation(navigator)
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected open fun onCreate() {
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected open fun onForeground() {
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected open fun onBackground() {
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected open fun onDestroy() {
     }
 
     internal fun saveState(pmStateCreator: PmStateCreator): PmState {
