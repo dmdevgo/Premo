@@ -36,7 +36,7 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-native-mt")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1-native-mt")
             }
         }
 
@@ -57,7 +57,7 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
                 compileOnly("androidx.appcompat:appcompat:1.4.0-alpha03")
             }
         }
