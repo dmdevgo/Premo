@@ -76,32 +76,26 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.1"
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
     }
 }
 
 dependencies {
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.21")
-    implementation("androidx.appcompat:appcompat:1.4.0-alpha03")
-    implementation("androidx.core:core-ktx:1.6.0")
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.appcompat.appcompat)
 
-    implementation("androidx.compose.ui:ui:1.0.1")
-    // Tooling support (Previews, etc.)
-    implementation("androidx.compose.ui:ui-tooling:1.0.1")
-    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation("androidx.compose.foundation:foundation:1.0.1")
-    // Material Design
-    implementation("androidx.compose.material:material:1.0.1")
-    // Material design icons
-    implementation("androidx.compose.material:material-icons-core:1.0.1")
-    implementation("androidx.compose.material:material-icons-extended:1.0.1")
-    // Integration with activities
-    implementation("androidx.activity:activity-compose:1.3.1")
+    implementation(libs.compose.ui.ui)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material.material)
+    implementation(libs.compose.material.icons.core)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.compose.activity)
 
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation(libs.android.test.ext.junit)
+    androidTestImplementation(libs.android.test.espresso.core)
 
     implementation(project(":sample:app-common"))
 }
