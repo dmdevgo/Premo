@@ -25,6 +25,7 @@
 package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
+import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.onMessage
@@ -33,7 +34,7 @@ import me.dmdev.premo.navigation.onStart
 class MainPm(params: PmParams) : PresentationModel(params) {
 
     @Serializable
-    object Description : PresentationModel.Description
+    object Description : PmDescription
 
     val navigation = Navigation {
         onStart { push(Child(SamplesPm.Description)) }

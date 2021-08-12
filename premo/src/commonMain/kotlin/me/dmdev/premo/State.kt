@@ -56,7 +56,7 @@ fun <T> PresentationModel.State(
     stateSource
         .invoke()
         .onEach { state.value = it }
-        .launchIn(pmScope)
+        .launchIn(scope)
 
     return state
 }

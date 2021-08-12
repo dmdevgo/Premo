@@ -32,6 +32,6 @@ class PmParams(
     val parent: PresentationModel?,
     val state: PmState?,
     val factory: PmFactory,
-    val description: PresentationModel.Description,
+    val description: PmDescription,
     val stateSaver: StateSaver
 )

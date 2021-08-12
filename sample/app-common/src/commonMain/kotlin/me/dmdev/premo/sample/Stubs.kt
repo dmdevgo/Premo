@@ -24,6 +24,7 @@
 
 package me.dmdev.premo.sample
 
+import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 
@@ -41,7 +42,7 @@ object Stubs {
     val tabPm = createPm<TabPm>(TabPm.Description("Tab #"))
     val tabItemPm = createPm<TabItemPm>(TabItemPm.Description("Screen #", "Tab #"))
 
-    private fun <PM : PresentationModel> createPm(description: PresentationModel.Description): PM {
+    private fun <PM : PresentationModel> createPm(description: PmDescription): PM {
         val config = PmParams(
             tag = "",
             parent = null,

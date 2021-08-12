@@ -30,7 +30,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
-import me.dmdev.premo.PresentationModel.Description
+import me.dmdev.premo.PmDescription
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.PmStateSaver
 
@@ -44,47 +44,47 @@ class JsonPmStateSaver : PmStateSaver {
                 SerializablePmState.serializer()
             )
             polymorphic(
-                Description::class,
+                PmDescription::class,
                 MainPm.Description::class,
                 MainPm.Description.serializer()
             )
             polymorphic(
-                Description::class,
+                PmDescription::class,
                 SamplesPm.Description::class,
                 SamplesPm.Description.serializer()
             )
             polymorphic(
-                Description::class,
+                PmDescription::class,
                 CounterPm.Description::class,
                 CounterPm.Description.serializer()
             )
             polymorphic(
-                Description::class,
+                PmDescription::class,
                 CounterUdfPm.Description::class,
                 CounterUdfPm.Description.serializer()
             )
             polymorphic(
-                Description::class,
+                PmDescription::class,
                 CountdownPm.Description::class,
                 CountdownPm.Description.serializer()
             )
             polymorphic(
-                Description::class,
+                PmDescription::class,
                 DialogPm.Description::class,
                 DialogPm.Description.serializer()
             )
             polymorphic(
-                Description::class,
+                PmDescription::class,
                 BottomBarPm.Description::class,
                 BottomBarPm.Description.serializer()
             )
             polymorphic(
-                Description::class,
+                PmDescription::class,
                 TabPm.Description::class,
                 TabPm.Description.serializer()
             )
             polymorphic(
-                Description::class,
+                PmDescription::class,
                 TabItemPm.Description::class,
                 TabItemPm.Description.serializer()
             )
@@ -101,7 +101,7 @@ class JsonPmStateSaver : PmStateSaver {
 
     override fun createPmState(
         tag: String,
-        description: Description,
+        description: PmDescription,
         backstack: List<PmState>,
         children: Map<String, PmState>,
         states: Map<String, String>
@@ -119,7 +119,7 @@ class JsonPmStateSaver : PmStateSaver {
 @Serializable
 class SerializablePmState(
     override val tag: String,
-    @Polymorphic override val description: Description,
+    @Polymorphic override val description: PmDescription,
     override val backstack: List<PmState>,
     override val children: Map<String, PmState>,
     override val states: Map<String, String>

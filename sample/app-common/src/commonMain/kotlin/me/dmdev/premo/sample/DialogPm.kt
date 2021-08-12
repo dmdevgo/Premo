@@ -32,7 +32,7 @@ import me.dmdev.premo.*
 class DialogPm(params: PmParams) : PresentationModel(params) {
 
     @Serializable
-    object Description : PresentationModel.Description
+    object Description : PmDescription
 
     val alert = Alert(this)
     val alertResult = State("")

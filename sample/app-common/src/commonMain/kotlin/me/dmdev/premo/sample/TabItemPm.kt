@@ -26,6 +26,7 @@ package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.Action
+import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 
@@ -39,7 +40,7 @@ class TabItemPm(
     class Description(
         val screenTitle: String,
         val tabTitle: String
-    ) : PresentationModel.Description
+    ) : PmDescription
 
     val nextClick = Action<Unit> {
         navigator.sendMessage(NextClickMessage)

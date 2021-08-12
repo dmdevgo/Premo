@@ -58,7 +58,7 @@ fun <T> PresentationModel.ActionChain(
 
     actionChain
         .invoke(action.flow())
-        .launchIn(pmScope)
+        .launchIn(scope)
 
     return action
 }
@@ -72,7 +72,7 @@ fun <T> PresentationModel.Action(
 
     action.flow()
         .onEach { doAction(it) }
-        .launchIn(pmScope)
+        .launchIn(scope)
 
     return action
 }

@@ -41,17 +41,15 @@ import kotlin.reflect.typeOf
 
 abstract class PresentationModel(params: PmParams) {
 
-    interface Description
-
     private val pmState: PmState? = params.state
     private val pmFactory: PmFactory = params.factory
     private val stateSaver: StateSaver = params.stateSaver
-    private val pmDescription: Description = params.description
-    val tag: String = pmState?.tag ?: params.tag
-    val parentPm: PresentationModel? = params.parent
+    private val pmDescription: PmDescription = params.description
 
-    val pmScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-    var pmInForegroundScope: CoroutineScope? = null
+    val tag: String = pmState?.tag ?: params.tag
+    val parent: PresentationModel? = params.parent
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    var innForegroundScope: CoroutineScope? = null
         private set
 
     private val saveableStates = mutableMapOf<String, SaveableState<*>>()
@@ -73,9 +71,9 @@ abstract class PresentationModel(params: PmParams) {
         }
 
         Navigator(
-            parentNavigator = parentPm?.navigator,
+            parentNavigator = parent?.navigator,
             lifecycle = lifecycle,
-            scope = pmScope
+            scope = scope
         ).apply {
             if (restoredPmBackStack != null) {
                 setBackStack(restoredPmBackStack)
@@ -100,29 +98,29 @@ abstract class PresentationModel(params: PmParams) {
             children.forEach { entry ->
                 entry.value.lifecycle.moveTo(state)
             }
-        }.launchIn(pmScope)
+        }.launchIn(scope)
 
         lifecycle.eventFlow.onEach { event ->
             when (event) {
                 PmLifecycle.Event.ON_CREATE -> {
                 }
                 PmLifecycle.Event.ON_FOREGROUND -> {
-                    pmInForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+                    innForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
                 }
                 PmLifecycle.Event.ON_BACKGROUND -> {
-                    pmInForegroundScope?.cancel()
-                    pmInForegroundScope = null
+                    innForegroundScope?.cancel()
+                    innForegroundScope = null
                 }
                 PmLifecycle.Event.ON_DESTROY -> {
-                    pmScope.cancel()
+                    scope.cancel()
                 }
             }
-        }.launchIn(pmScope)
+        }.launchIn(scope)
     }
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
     fun <PM : PresentationModel> Child(
-        description: Description,
+        description: PmDescription,
         tag: String = randomUUID()
     ): PM {
         val config = PmParams(
@@ -139,7 +137,7 @@ abstract class PresentationModel(params: PmParams) {
 
     @Suppress("FunctionName")
     fun <PM : PresentationModel> AttachedChild(
-        description: Description,
+        description: PmDescription,
         tag: String
     ): PM {
 

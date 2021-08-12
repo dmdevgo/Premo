@@ -22,10 +22,7 @@
  * SOFTWARE.
  */
 
-import me.dmdev.premo.PmFactory
-import me.dmdev.premo.PmLifecycle
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.*
 import me.dmdev.premo.save.StateSaver
 import kotlin.reflect.KType
 import kotlin.test.BeforeTest
@@ -78,7 +75,7 @@ class TestPm: PresentationModel(
                 TODO("Not yet implemented")
             }
         },
-        description = object : PresentationModel.Description {},
+        description = object : PmDescription {},
         stateSaver = object : StateSaver {
             override fun <T> saveState(kType: KType, value: T): String {
                 TODO("Not yet implemented")

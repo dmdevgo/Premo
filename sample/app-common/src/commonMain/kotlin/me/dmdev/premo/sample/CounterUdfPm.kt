@@ -28,10 +28,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.Action
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.State
+import me.dmdev.premo.*
 
 class CounterUdfPm(
     private val maxCount: Int,
@@ -39,7 +36,7 @@ class CounterUdfPm(
 ) : PresentationModel(params) {
 
     @Serializable
-    class Description(val maxCount: Int) : PresentationModel.Description
+    class Description(val maxCount: Int) : PmDescription
 
     private sealed class ActionType {
         object Minus : ActionType()
@@ -92,7 +89,7 @@ class CounterUdfPm(
         action.flow()
             .map { act -> reducer(state.value, act) }
             .onEach { state.value = it }
-            .launchIn(pmScope)
+            .launchIn(scope)
         return state
     }
 }

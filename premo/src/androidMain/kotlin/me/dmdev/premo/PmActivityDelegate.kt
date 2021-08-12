@@ -37,7 +37,7 @@ class PmActivityDelegate<PM : PresentationModel>(
     private val pmStateSaver: PmStateSaver,
     private val stateSaver: StateSaver,
     private val pmFactory: PmFactory,
-    private val pmDescription: PresentationModel.Description,
+    private val pmDescription: PmDescription,
 ) {
 
     companion object {

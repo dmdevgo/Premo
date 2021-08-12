@@ -26,15 +26,12 @@ package me.dmdev.premo.sample
 
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.Action
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.State
+import me.dmdev.premo.*
 
 class CountdownPm(params: PmParams) : PresentationModel(params) {
 
     @Serializable
-    object Description : PresentationModel.Description
+    object Description : PmDescription
 
     companion object {
         private const val CLICK_TO_START_TEXT = "Click to start"

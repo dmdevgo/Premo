@@ -22,48 +22,6 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo
 
-import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.onMessage
-import me.dmdev.premo.navigation.onStart
-
-class TabPm(
-    val tabTitle: String,
-    params: PmParams
-) : PresentationModel(params) {
-
-    @Serializable
-    class Description(
-        val tabTitle: String
-    ) : PmDescription
-
-    private var number: Int = 1
-
-    val navigation = Navigation {
-        onStart {
-            push(Child(TabItemPm.Description(nextScreenTitle(), tabTitle)))
-        }
-        onMessage<NextClickMessage> {
-            push(
-                Child(
-                    TabItemPm.Description(
-                        screenTitle = nextScreenTitle(),
-                        tabTitle = tabTitle
-                    )
-                )
-            )
-        }
-        onMessage<PreviousClickMessage> {
-            number--
-            navigator.handleBack()
-        }
-    }
-
-    private fun nextScreenTitle(): String {
-        return "Screen #${number++}"
-    }
-}
+interface PmDescription

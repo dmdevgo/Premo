@@ -24,12 +24,12 @@
 
 package me.dmdev.premo.save
 
-import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.PmDescription
 
 interface PmStateCreator {
     fun createPmState(
         tag: String,
-        description: PresentationModel.Description,
+        description: PmDescription,
         backstack: List<PmState>,
         children: Map<String, PmState>,
         states: Map<String, String>
