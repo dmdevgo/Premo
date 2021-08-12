@@ -56,7 +56,8 @@ abstract class PresentationModel(params: PmParams) {
 
     private val saveableStates = mutableMapOf<String, SaveableState<*>>()
 
-    val navigator: Navigator by lazy {
+    internal val navigator: Navigator by lazy {
+
         val restoredPmBackStack = pmState?.backstack?.map { pmState ->
 
             val config = PmParams(
@@ -71,12 +72,19 @@ abstract class PresentationModel(params: PmParams) {
             pmFactory.createPm(config)
         }
 
-        if (restoredPmBackStack != null) {
-            navigator.setBackStack(restoredPmBackStack)
+        Navigator(
+            parentNavigator = parentPm?.navigator,
+            lifecycle = lifecycle,
+            scope = pmScope
+        ).apply {
+            if (restoredPmBackStack != null) {
+                setBackStack(restoredPmBackStack)
+            }
         }
-
-        Navigator(this)
     }
+
+    @Suppress("unused")
+    val PresentationModel.navigator get() = navigator
 
     private class SaveableState<T>(
         val state: State<T>,
@@ -178,16 +186,16 @@ abstract class PresentationModel(params: PmParams) {
 
         navigator.initHandlers()
 
-        if (navigator.pmStack.value.isEmpty()) {
+        if (navigator.backstack.isEmpty()) {
             navigator.handleStart()
         }
 
-        return Navigation(navigator)
+        return navigator
     }
 
     internal fun saveState(pmStateCreator: PmStateCreator): PmState {
 
-        val backstack = navigator.pmStack.value.map { pm ->
+        val backstack = navigator.backstack.map { pm ->
             pm.saveState(pmStateCreator)
         }
 

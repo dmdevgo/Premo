@@ -42,7 +42,7 @@ struct PremoSampleApp: App {
                 description: MainPm.Description(),
                 stateSaver: JsonStateSaver()
             ),
-            exitHandler: {}
+            exitHandler: { true }
         )
     
         delegate.onCreate()

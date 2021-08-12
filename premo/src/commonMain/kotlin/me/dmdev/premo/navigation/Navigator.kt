@@ -24,8 +24,9 @@
 
 package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.*
+import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
@@ -33,53 +34,73 @@ import me.dmdev.premo.value
 import kotlin.reflect.KClass
 
 class Navigator internal constructor(
-    val hostPm: PresentationModel,
-) {
+    private val parentNavigator: Navigator?,
+    private val lifecycle: PmLifecycle,
+    private val scope: CoroutineScope,
+) : Navigation {
 
     private val handlers = mutableListOf<(message: NavigationMessage) -> Boolean>()
+    private val backstackState: State<List<PresentationModel>> = State(listOf())
 
-    val pmStack: State<List<PresentationModel>> = State(listOf())
+    var backstack: List<PresentationModel>
+        get() = backstackState.value
+        private set(value) {
+            backstackState.value = value
+        }
 
-    internal var exitHandler: (() -> Unit)? = null
+    internal var exitHandler: (() -> Boolean)? = null
     var startHandler: (() -> Unit)? = null
-    var backHandler: (() -> Boolean)? = {
-        if (pmStack.value.size > 1) {
-            pop()
-            true
-        } else {
-            hostPm.parentPm?.navigator?.handleBack() ?: false
-        }
-    }
-    var systemBackHandler: (() -> Boolean) = {
-        if (pmStack.value.lastOrNull()?.navigator?.systemBackHandler?.invoke() == true) {
-            true
-        } else {
-            if (pmStack.value.size > 1) {
-                pop()
-                true
-            } else {
-                false
-            }
-        }
-    }
+    var backHandler: (() -> Boolean)? = null
+    var systemBackHandler: (() -> Boolean)? = null
 
     init {
-        hostPm.lifecycle.stateFlow.onEach { state ->
-            pmStack.value.lastOrNull()?.lifecycle?.moveTo(state)
-        }.launchIn(hostPm.pmScope)
+        lifecycle.stateFlow.onEach { state ->
+            backstack.lastOrNull()?.lifecycle?.moveTo(state)
+        }.launchIn(scope)
     }
 
+    override val backstackChanges: Flow<BackstackChange>
+        get() = flow {
+            var oldPmStack: List<PresentationModel> = backstackState.value
+            backstackState.flow().collect { newPmStack ->
+
+                val oldTopPm = oldPmStack.lastOrNull()
+                val newTopPm = newPmStack.lastOrNull()
+
+                val pmStackChange = if (newTopPm != null && oldTopPm != null) {
+                    when {
+                        oldTopPm === newTopPm -> {
+                            BackstackChange.Set(newTopPm)
+                        }
+                        oldPmStack.any { it === newTopPm } -> {
+                            BackstackChange.Pop(newTopPm, oldTopPm)
+                        }
+                        else -> {
+                            BackstackChange.Push(newTopPm, oldTopPm)
+                        }
+                    }
+                } else if (newTopPm != null) {
+                    BackstackChange.Set(newTopPm)
+                } else {
+                    BackstackChange.Empty
+                }
+
+                emit(pmStackChange)
+                oldPmStack = newPmStack
+            }
+        }
+
     fun push(pm: PresentationModel) {
-        pmStack.value.lastOrNull()?.lifecycle?.moveTo(CREATED)
-        pm.lifecycle.moveTo(hostPm.lifecycle.state)
-        pmStack.value = pmStack.value.plus(pm)
+        backstack.lastOrNull()?.lifecycle?.moveTo(CREATED)
+        pm.lifecycle.moveTo(lifecycle.state)
+        backstack = backstack.plus(pm)
     }
 
     fun pop(): Boolean {
-        return if (pmStack.value.isNotEmpty()) {
-            pmStack.value.lastOrNull()?.lifecycle?.moveTo(DESTROYED)
-            if (pmStack.value.isNotEmpty()) pmStack.value = pmStack.value.dropLast(1)
-            pmStack.value.lastOrNull()?.lifecycle?.moveTo(hostPm.lifecycle.state)
+        return if (backstack.isNotEmpty()) {
+            backstack.lastOrNull()?.lifecycle?.moveTo(DESTROYED)
+            if (backstack.isNotEmpty()) backstack = backstack.dropLast(1)
+            backstack.lastOrNull()?.lifecycle?.moveTo(lifecycle.state)
             true
         } else {
             false
@@ -87,11 +108,11 @@ class Navigator internal constructor(
     }
 
     fun setBackStack(pmList: List<PresentationModel>) {
-        pmStack.value = pmList
+        backstack = pmList
         pmList.forEach { pm ->
             pm.lifecycle.moveTo(INITIALIZED)
         }
-        pmList.lastOrNull()?.lifecycle?.moveTo(hostPm.lifecycle.state)
+        pmList.lastOrNull()?.lifecycle?.moveTo(lifecycle.state)
     }
 
     fun <M : NavigationMessage> addMessageHandler(
@@ -113,16 +134,34 @@ class Navigator internal constructor(
     }
 
     fun handleBack(): Boolean {
-        return backHandler?.invoke() ?: false
+        return backHandler?.invoke()
+            ?: if (backstack.size > 1) {
+                pop()
+            } else {
+                parentNavigator?.handleBack()
+                    ?: exitHandler?.invoke()
+                    ?: false
+            }
     }
 
     fun handleSystemBack(): Boolean {
-        return systemBackHandler.invoke()
+        val handled = systemBackHandler?.invoke() ?: false
+        return if (!handled) {
+            val handledByChild = backstack.lastOrNull()?.navigator?.systemBackHandler?.invoke()
+                ?: false
+            if (!handledByChild) {
+                if (backstack.size > 1) pop() else false
+            } else {
+                true
+            }
+        } else {
+            true
+        }
     }
 
     fun sendMessage(message: NavigationMessage) {
         if (!handlers.any { it.invoke(message) }) {
-            hostPm.parentPm?.navigator?.sendMessage(message)
+            parentNavigator?.sendMessage(message)
         }
     }
 }

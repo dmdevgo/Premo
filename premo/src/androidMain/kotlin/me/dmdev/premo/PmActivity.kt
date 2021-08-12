@@ -71,8 +71,6 @@ abstract class PmActivity<PM : PresentationModel>(
     }
 
     override fun onBackPressed() {
-        if (delegate.handleSystemBack().not()) {
-            super.onBackPressed()
-        }
+        delegate.onBackPressed()
     }
 }

@@ -43,7 +43,7 @@ struct MainView: View {
         VStack {
             HStack {
                 Button(action: {
-                    delegate.handleSystemBack()
+                    delegate.onSystemBack()
                 }) { Text("Back") }
                 .padding()
                 Spacer()

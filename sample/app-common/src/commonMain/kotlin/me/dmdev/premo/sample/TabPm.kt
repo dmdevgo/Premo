@@ -57,12 +57,8 @@ class TabPm(
             )
         }
         onMessage<PreviousClickMessage> {
-            if (navigator.pmStack.value.size > 1) {
-                navigator.pop()
-                number--
-            } else {
-                navigator.handleBack()
-            }
+            number--
+            navigator.handleBack()
         }
     }
 
