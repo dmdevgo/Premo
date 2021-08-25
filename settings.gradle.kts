@@ -26,7 +26,7 @@ dependencyResolutionManagement {
             alias("compose-material-icons-core").to("androidx.compose.material", "material-icons-core").versionRef(compose)
             alias("compose-material-icons-extended").to("androidx.compose.material", "material-icons-extended").versionRef(compose)
             alias("compose-activity").to("androidx.activity:activity-compose:1.3.1")
-
+            alias("accompanist-navigation-animation").to("com.google.accompanist:accompanist-navigation-animation:0.17.0")
             alias("appcompat-appcompat").to("androidx.appcompat:appcompat:1.4.0-alpha03")
 
             alias("android-test-ext-junit").to("androidx.test.ext:junit:1.1.3")

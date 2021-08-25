@@ -24,6 +24,7 @@
 
 package me.dmdev.premo.sample
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.dmdev.premo.invoke
 
+@ExperimentalAnimationApi
 @Preview(
     showBackground = true,
     showSystemUi = true
@@ -64,7 +66,9 @@ fun BottomBarScreen(pm: BottomBarPm = Stubs.bottomBarPm) {
             }
         }
     ) {
-        NavigationBox(currentTabPm.navigation) { pm ->
+        AnimatedNavigationBox(
+            navigation = currentTabPm.navigation
+        ) { pm ->
             when (pm) {
                 is TabItemPm -> ItemScreen(pm)
                 else -> EmptyScreen()

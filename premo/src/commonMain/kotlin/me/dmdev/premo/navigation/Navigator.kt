@@ -59,36 +59,35 @@ class Navigator internal constructor(
         }.launchIn(scope)
     }
 
-    override val backstackChanges: Flow<BackstackChange>
-        get() = flow {
-            var oldPmStack: List<PresentationModel> = backstackState.value
-            backstackState.flow().collect { newPmStack ->
+    override val backstackChanges: Flow<BackstackChange> = flow {
+        var oldPmStack: List<PresentationModel> = backstackState.value
+        backstackState.flow().collect { newPmStack ->
 
-                val oldTopPm = oldPmStack.lastOrNull()
-                val newTopPm = newPmStack.lastOrNull()
+            val oldTopPm = oldPmStack.lastOrNull()
+            val newTopPm = newPmStack.lastOrNull()
 
-                val pmStackChange = if (newTopPm != null && oldTopPm != null) {
-                    when {
-                        oldTopPm === newTopPm -> {
-                            BackstackChange.Set(newTopPm)
-                        }
-                        oldPmStack.any { it === newTopPm } -> {
-                            BackstackChange.Pop(newTopPm, oldTopPm)
-                        }
-                        else -> {
-                            BackstackChange.Push(newTopPm, oldTopPm)
-                        }
+            val pmStackChange = if (newTopPm != null && oldTopPm != null) {
+                when {
+                    oldTopPm === newTopPm -> {
+                        BackstackChange.Set(newTopPm)
                     }
-                } else if (newTopPm != null) {
-                    BackstackChange.Set(newTopPm)
-                } else {
-                    BackstackChange.Empty
+                    oldPmStack.any { it === newTopPm } -> {
+                        BackstackChange.Pop(newTopPm, oldTopPm)
+                    }
+                    else -> {
+                        BackstackChange.Push(newTopPm, oldTopPm)
+                    }
                 }
-
-                emit(pmStackChange)
-                oldPmStack = newPmStack
+            } else if (newTopPm != null) {
+                BackstackChange.Set(newTopPm)
+            } else {
+                BackstackChange.Empty
             }
+
+            emit(pmStackChange)
+            oldPmStack = newPmStack
         }
+    }
 
     fun push(pm: PresentationModel) {
         backstack.lastOrNull()?.lifecycle?.moveTo(CREATED)

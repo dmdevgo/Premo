@@ -24,6 +24,7 @@
 
 package me.dmdev.premo.sample
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -56,20 +57,33 @@ fun NavigationBox(
     modifier: Modifier = Modifier,
     content: @Composable (PresentationModel?) -> Unit
 ) {
+    NavigationBox(
+        backstackChange = navigation.backstackChanges.bind(BackstackChange.Empty),
+        modifier = modifier,
+        content = content,
+    )
+}
+
+@Composable
+fun NavigationBox(
+    backstackChange: BackstackChange,
+    modifier: Modifier = Modifier,
+    content: @Composable (PresentationModel?) -> Unit
+) {
 
     val stateHolder = rememberSaveableStateHolder()
 
-    val pm = when (val pmStackChange = navigation.backstackChanges.bind(BackstackChange.Empty)) {
+    val pm = when (backstackChange) {
         is BackstackChange.Push -> {
-            stateHolder.removeState(pmStackChange.enterPm.tag)
-            pmStackChange.enterPm
+            stateHolder.removeState(backstackChange.enterPm.tag)
+            backstackChange.enterPm
         }
         is BackstackChange.Pop -> {
-            stateHolder.removeState(pmStackChange.exitPm.tag)
-            pmStackChange.enterPm
+            stateHolder.removeState(backstackChange.exitPm.tag)
+            backstackChange.enterPm
         }
         is BackstackChange.Set -> {
-            pmStackChange.pm
+            backstackChange.pm
         }
         is BackstackChange.Empty -> null
     }
@@ -78,5 +92,48 @@ fun NavigationBox(
         stateHolder.SaveableStateProvider(pm?.tag ?: "") {
             content(pm)
         }
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
+fun AnimatedNavigationBox(
+    navigation: Navigation,
+    modifier: Modifier = Modifier,
+    enterTransition: ((initialPm: PresentationModel, targetPm: PresentationModel) -> EnterTransition) =
+        { _, _ -> fadeIn() },
+    exitTransition: ((initialPm: PresentationModel, targetPm: PresentationModel) -> ExitTransition) =
+        { _, _ -> fadeOut() },
+    popEnterTransition: ((initialPm: PresentationModel, targetPm: PresentationModel) -> EnterTransition) =
+        { _, _ -> fadeIn() },
+    popExitTransition: ((initialPm: PresentationModel, targetPm: PresentationModel) -> ExitTransition) =
+        { _, _ -> fadeOut() },
+    content: @Composable (PresentationModel?) -> Unit
+) {
+    val backStackChange = navigation.backstackChanges.bind(BackstackChange.Empty)
+
+    AnimatedContent(
+        targetState = backStackChange,
+        transitionSpec = {
+            when (backStackChange) {
+                is BackstackChange.Push -> {
+                    enterTransition(backStackChange.exitPm, backStackChange.enterPm) with
+                            exitTransition(backStackChange.exitPm, backStackChange.enterPm)
+                }
+                is BackstackChange.Pop -> {
+                    popEnterTransition(backStackChange.exitPm, backStackChange.enterPm) with
+                            popExitTransition(backStackChange.exitPm, backStackChange.enterPm)
+                }
+                else -> {
+                    fadeIn() with fadeOut()
+                }
+            }
+        }
+    ) { backstackChange: BackstackChange ->
+        NavigationBox(
+            backstackChange = backstackChange,
+            modifier = modifier,
+            content = content,
+        )
     }
 }

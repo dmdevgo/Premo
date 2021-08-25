@@ -27,8 +27,8 @@ package me.dmdev.premo.navigation
 import me.dmdev.premo.PresentationModel
 
 sealed class BackstackChange {
-    class Push(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackstackChange()
-    class Pop(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackstackChange()
-    class Set(val pm: PresentationModel) : BackstackChange()
+    data class Push(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackstackChange()
+    data class Pop(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackstackChange()
+    data class Set(val pm: PresentationModel) : BackstackChange()
     object Empty : BackstackChange()
 }

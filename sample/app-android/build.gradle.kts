@@ -30,7 +30,7 @@ plugins {
 
 android {
 
-    compileSdk = 30
+    compileSdk = 31
 
     defaultConfig {
         applicationId = "me.dmdev.sample.premo"
@@ -96,6 +96,8 @@ dependencies {
 
     androidTestImplementation(libs.android.test.ext.junit)
     androidTestImplementation(libs.android.test.espresso.core)
+
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.17.0")
 
     implementation(project(":sample:app-common"))
 }

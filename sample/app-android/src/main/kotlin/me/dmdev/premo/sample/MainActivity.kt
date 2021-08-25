@@ -26,6 +26,9 @@ package me.dmdev.premo.sample
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import me.dmdev.premo.PmActivity
 import me.dmdev.premo.PmActivityDelegate
@@ -42,6 +45,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
         )
     }
 
+    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -49,9 +53,16 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
         }
     }
 
+    @ExperimentalAnimationApi
     @Composable
     fun MainScreen(mainPm: MainPm) {
-        NavigationBox(mainPm.navigation) { pm ->
+        AnimatedNavigationBox(
+            navigation = mainPm.navigation,
+            enterTransition = { _, _ -> slideInHorizontally({ height -> height }) },
+            exitTransition = { _, _ -> slideOutHorizontally({ height -> -height }) },
+            popEnterTransition = { _, _ -> slideInHorizontally({ height -> -height }) },
+            popExitTransition = { _, _ -> slideOutHorizontally({ height -> height }) },
+        ) { pm ->
             when (pm) {
                 is SamplesPm -> SamplesScreen(pm)
                 is CounterPm -> CounterScreen(pm)
