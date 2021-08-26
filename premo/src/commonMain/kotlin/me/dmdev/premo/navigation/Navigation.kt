@@ -25,7 +25,42 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.value
 
-interface Navigation {
-    val backstackChanges: Flow<BackstackChange>
+class Navigation internal constructor(
+    private val navigator: Navigator
+) {
+
+    val backstackChanges: Flow<BackstackChange> = flow {
+        var oldPmStack: List<PresentationModel> = navigator.backstackState.value
+        navigator.backstackState.flow().collect { newPmStack ->
+
+            val oldTopPm = oldPmStack.lastOrNull()
+            val newTopPm = newPmStack.lastOrNull()
+
+            val pmStackChange = if (newTopPm != null && oldTopPm != null) {
+                when {
+                    oldTopPm === newTopPm -> {
+                        BackstackChange.Set(newTopPm)
+                    }
+                    oldPmStack.any { it === newTopPm } -> {
+                        BackstackChange.Pop(newTopPm, oldTopPm)
+                    }
+                    else -> {
+                        BackstackChange.Push(newTopPm, oldTopPm)
+                    }
+                }
+            } else if (newTopPm != null) {
+                BackstackChange.Set(newTopPm)
+            } else {
+                BackstackChange.Empty
+            }
+
+            emit(pmStackChange)
+            oldPmStack = newPmStack
+        }
+    }
 }

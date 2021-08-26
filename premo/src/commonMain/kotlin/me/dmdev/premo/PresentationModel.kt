@@ -188,7 +188,7 @@ abstract class PresentationModel(params: PmParams) {
             navigator.handleStart()
         }
 
-        return navigator
+        return Navigation(navigator)
     }
 
     internal fun saveState(pmStateCreator: PmStateCreator): PmState {
