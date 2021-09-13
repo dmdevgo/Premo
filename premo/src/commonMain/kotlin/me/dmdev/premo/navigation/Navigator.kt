@@ -32,15 +32,12 @@ import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import me.dmdev.premo.value
-import kotlin.reflect.KClass
 
 class Navigator internal constructor(
-    private val parentNavigator: Navigator?,
     private val lifecycle: PmLifecycle,
     scope: CoroutineScope,
 ) {
 
-    private val handlers = mutableListOf<(message: NavigationMessage) -> Boolean>()
     internal val backstackState: State<List<PresentationModel>> = State(listOf())
 
     var backstack: List<PresentationModel>
@@ -48,11 +45,6 @@ class Navigator internal constructor(
         private set(value) {
             backstackState.value = value
         }
-
-    internal var exitHandler: (() -> Boolean)? = null
-    var startHandler: (() -> Unit)? = null
-    var backHandler: (() -> Boolean)? = null
-    var systemBackHandler: (() -> Boolean)? = null
 
     init {
         lifecycle.stateFlow.onEach { state ->
@@ -85,71 +77,12 @@ class Navigator internal constructor(
         pmList.lastOrNull()?.lifecycle?.moveTo(lifecycle.state)
     }
 
-    fun <M : NavigationMessage> addMessageHandler(
-        kClass: KClass<M>,
-        handler: (message: M) -> Unit
-    ) {
-        handlers.add {
-            if (kClass.isInstance(it)) {
-                handler(it as M)
-                true
-            } else {
-                false
-            }
-        }
-    }
-
-    fun handleStart() {
-        startHandler?.invoke()
-    }
-
     fun handleBack(): Boolean {
-        return backHandler?.invoke()
-            ?: if (backstack.size > 1) {
-                pop()
-            } else {
-                parentNavigator?.handleBack()
-                    ?: exitHandler?.invoke()
-                    ?: false
-            }
-    }
-
-    fun handleSystemBack(): Boolean {
-        val handled = systemBackHandler?.invoke() ?: false
-        return if (!handled) {
-            val handledByChild = backstack.lastOrNull()?.navigator?.systemBackHandler?.invoke()
-                ?: false
-            if (!handledByChild) {
-                if (backstack.size > 1) pop() else false
-            } else {
-                true
-            }
-        } else {
+        return if (backstack.size > 1) {
+            pop()
             true
+        } else {
+            false
         }
     }
-
-    fun sendMessage(message: NavigationMessage) {
-        if (!handlers.any { it.invoke(message) }) {
-            parentNavigator?.sendMessage(message)
-        }
-    }
-}
-
-fun Navigator.onStart(handler: () -> Unit) {
-    startHandler = handler
-}
-
-fun Navigator.onBack(handler: () -> Boolean) {
-    backHandler = handler
-}
-
-fun Navigator.onSystemBack(handler: () -> Boolean) {
-    systemBackHandler = handler
-}
-
-inline fun <reified M : NavigationMessage> Navigator.onMessage(
-    noinline handler: (message: M) -> Unit
-) {
-    addMessageHandler(M::class, handler)
 }

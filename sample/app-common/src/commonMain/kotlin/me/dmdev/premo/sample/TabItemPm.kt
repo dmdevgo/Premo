@@ -43,10 +43,10 @@ class TabItemPm(
     ) : PmDescription
 
     val nextClick = Action<Unit> {
-        navigator.sendMessage(NextClickMessage)
+        messageHandler.send(NextClickMessage)
     }
 
     val previousClick = Action<Unit> {
-        navigator.sendMessage(PreviousClickMessage)
+        messageHandler.send(PreviousClickMessage)
     }
 }

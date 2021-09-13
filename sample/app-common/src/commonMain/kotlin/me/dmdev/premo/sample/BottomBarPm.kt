@@ -26,7 +26,7 @@ package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
-import me.dmdev.premo.navigation.onSystemBack
+import me.dmdev.premo.navigation.SystemBackMessage
 
 class BottomBarPm(params: PmParams) : PresentationModel(params) {
 
@@ -46,8 +46,8 @@ class BottomBarPm(params: PmParams) : PresentationModel(params) {
     }
 
     init {
-        navigator.onSystemBack {
-            currentTabPm.value.navigator.handleSystemBack()
+        messageHandler.handleMessage<SystemBackMessage> {
+            currentTabPm.value.messageHandler.handle(it)
         }
     }
 }

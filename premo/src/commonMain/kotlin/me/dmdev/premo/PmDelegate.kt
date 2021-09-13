@@ -26,6 +26,7 @@ package me.dmdev.premo
 
 import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.internal.PmStore
+import me.dmdev.premo.navigation.SystemBackMessage
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.PmStateCreator
 
@@ -45,7 +46,6 @@ class PmDelegate<PM : PresentationModel>(
 
     fun onCreate() {
         presentationModel.lifecycle.moveTo(CREATED)
-        presentationModel.navigator.exitHandler = exitHandler
     }
 
     fun onForeground() {
@@ -57,7 +57,6 @@ class PmDelegate<PM : PresentationModel>(
     }
 
     fun onDestroy() {
-        presentationModel.navigator.exitHandler = null
         presentationModel.lifecycle.moveTo(DESTROYED)
         PmStore.removePm(pmParams.tag)
     }
@@ -67,7 +66,7 @@ class PmDelegate<PM : PresentationModel>(
     }
 
     fun onSystemBack() {
-        if (presentationModel.navigator.handleSystemBack().not()) {
+        if (presentationModel.messageHandler.handle(SystemBackMessage).not()) {
             exitHandler.invoke()
         }
     }

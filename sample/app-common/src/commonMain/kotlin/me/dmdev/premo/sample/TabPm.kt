@@ -28,8 +28,7 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.onMessage
-import me.dmdev.premo.navigation.onStart
+import me.dmdev.premo.navigation.SystemBackMessage
 
 class TabPm(
     val tabTitle: String,
@@ -43,12 +42,11 @@ class TabPm(
 
     private var number: Int = 1
 
-    val navigation = Navigation {
-        onStart {
-            push(Child(TabItemPm.Description(nextScreenTitle(), tabTitle)))
-        }
+    val navigation = Navigation(
+        initialDescription = TabItemPm.Description(nextScreenTitle(), tabTitle)
+    ) { navigator ->
         onMessage<NextClickMessage> {
-            push(
+            navigator.push(
                 Child(
                     TabItemPm.Description(
                         screenTitle = nextScreenTitle(),
@@ -58,9 +56,16 @@ class TabPm(
             )
         }
         onMessage<PreviousClickMessage> {
-            number--
+            handleBack()
+        }
+        handleMessage<SystemBackMessage> {
             navigator.handleBack()
         }
+    }
+
+    private fun handleBack(): Boolean {
+        number--
+        return navigator.handleBack()
     }
 
     private fun nextScreenTitle(): String {

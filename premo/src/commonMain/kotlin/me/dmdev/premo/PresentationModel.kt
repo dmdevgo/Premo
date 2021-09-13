@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.internal.randomUUID
 import me.dmdev.premo.navigation.Navigation
+import me.dmdev.premo.navigation.NavigationMessageHandler
 import me.dmdev.premo.navigation.Navigator
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.PmStateCreator
@@ -54,7 +55,9 @@ abstract class PresentationModel(params: PmParams) {
 
     private val saveableStates = mutableMapOf<String, SaveableState<*>>()
 
-    internal val navigator: Navigator by lazy {
+    val messageHandler: NavigationMessageHandler = NavigationMessageHandler(parent?.messageHandler)
+
+    private val navigator: Navigator by lazy {
 
         val restoredPmBackStack = pmState?.backstack?.map { pmState ->
 
@@ -71,7 +74,6 @@ abstract class PresentationModel(params: PmParams) {
         }
 
         Navigator(
-            parentNavigator = parent?.navigator,
             lifecycle = lifecycle,
             scope = scope
         ).apply {
@@ -179,13 +181,14 @@ abstract class PresentationModel(params: PmParams) {
         }
 
     fun Navigation(
-        initHandlers: Navigator.() -> Unit
+        initialDescription: PmDescription,
+        initHandlers: NavigationMessageHandler.(navigator: Navigator) -> Unit
     ): Navigation {
 
-        navigator.initHandlers()
+        messageHandler.initHandlers(navigator)
 
         if (navigator.backstack.isEmpty()) {
-            navigator.handleStart()
+            navigator.push(Child(initialDescription))
         }
 
         return Navigation(navigator)

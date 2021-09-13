@@ -25,3 +25,5 @@
 package me.dmdev.premo.navigation
 
 interface NavigationMessage
+
+object SystemBackMessage: NavigationMessage

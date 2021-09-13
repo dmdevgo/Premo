@@ -28,21 +28,22 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.onMessage
-import me.dmdev.premo.navigation.onStart
+import me.dmdev.premo.navigation.SystemBackMessage
 
 class MainPm(params: PmParams) : PresentationModel(params) {
 
     @Serializable
     object Description : PmDescription
 
-    val navigation = Navigation {
-        onStart { push(Child(SamplesPm.Description)) }
-        onMessage<CounterSampleMessage> { push(Child(CounterPm.Description(10))) }
-        onMessage<CounterUdfSampleMessage> { push(Child(CounterUdfPm.Description(10))) }
-        onMessage<CountdownSampleMessage> { push(Child(CountdownPm.Description)) }
-        onMessage<DialogSampleMessage> { push(Child(DialogPm.Description)) }
-        onMessage<ControlsSampleMessage> { push(Child(ControlsPm.Description)) }
-        onMessage<MultistackSampleMessage> { push(Child(BottomBarPm.Description)) }
+    val navigation = Navigation(
+        initialDescription = SamplesPm.Description
+    ) { navigator ->
+        onMessage<CounterSampleMessage> { navigator.push(Child(CounterPm.Description(10))) }
+        onMessage<CounterUdfSampleMessage> { navigator.push(Child(CounterUdfPm.Description(10))) }
+        onMessage<CountdownSampleMessage> { navigator.push(Child(CountdownPm.Description)) }
+        onMessage<DialogSampleMessage> { navigator.push(Child(DialogPm.Description)) }
+        onMessage<ControlsSampleMessage> { navigator.push(Child(ControlsPm.Description)) }
+        onMessage<MultistackSampleMessage> { navigator.push(Child(BottomBarPm.Description)) }
+        handleMessage<SystemBackMessage> { navigator.handleBack() }
     }
 }
