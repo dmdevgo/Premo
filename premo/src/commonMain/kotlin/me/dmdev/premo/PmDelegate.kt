@@ -24,8 +24,8 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.internal.PmStore
+import me.dmdev.premo.lifecycle.LifecycleState.*
 import me.dmdev.premo.navigation.SystemBackMessage
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.PmStateCreator

@@ -22,108 +22,103 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.lifecycle
 
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import me.dmdev.premo.lifecycle.LifecycleEvent.*
+import me.dmdev.premo.lifecycle.LifecycleState.*
 
-class PmLifecycle {
+class Lifecycle {
 
-    enum class Event {
-        ON_CREATE,
-        ON_FOREGROUND,
-        ON_BACKGROUND,
-        ON_DESTROY
+    private val observers: MutableList<LifecycleObserver> = mutableListOf()
+
+    var state: LifecycleState = INITIALIZED
+        private set
+
+    fun addObserver(observer: LifecycleObserver) {
+        observers.add(observer)
     }
 
-    enum class State {
-        INITIALIZED,
-        CREATED,
-        IN_FOREGROUND,
-        DESTROYED
+    fun removeObserver(observer: LifecycleObserver) {
+        observers.remove(observer)
     }
 
-    private val _stateFlow = MutableStateFlow(State.INITIALIZED)
-    val stateFlow: StateFlow<PmLifecycle.State> = _stateFlow
-    val state: PmLifecycle.State get() = _stateFlow.value
+    fun moveTo(targetState: LifecycleState) {
 
-    private val _eventFlow = MutableSharedFlow<Event>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
-
-    val eventFlow: SharedFlow<PmLifecycle.Event> = _eventFlow
-
-    internal fun moveTo(targetState: PmLifecycle.State) {
+        if (targetState == state) return
 
         fun notifyOnCreate() {
-            _stateFlow.value = State.CREATED
-            _eventFlow.tryEmit(Event.ON_CREATE)
+            notifyChange(CREATED, ON_CREATE)
         }
 
         fun notifyOnForeground() {
-            _stateFlow.value = State.IN_FOREGROUND
-            _eventFlow.tryEmit(Event.ON_FOREGROUND)
+            notifyChange(IN_FOREGROUND, ON_FOREGROUND)
         }
 
         fun notifyOnBackground() {
-            _stateFlow.value = State.CREATED
-            _eventFlow.tryEmit(Event.ON_BACKGROUND)
+            notifyChange(CREATED, ON_BACKGROUND)
         }
 
         fun notifyOnDestroy() {
-            _stateFlow.value = State.DESTROYED
-            _eventFlow.tryEmit(Event.ON_DESTROY)
+            notifyChange(DESTROYED, ON_DESTROY)
         }
-        
+
         when (targetState) {
-            State.INITIALIZED -> {
+            INITIALIZED -> {
                 // do nothing, initial lifecycle state is INITIALIZED
             }
-            State.CREATED -> {
-                when (stateFlow.value) {
-                    State.INITIALIZED -> {
+            CREATED -> {
+                when (state) {
+                    INITIALIZED -> {
                         notifyOnCreate()
                     }
-                    State.IN_FOREGROUND -> {
+                    IN_FOREGROUND -> {
                         notifyOnBackground()
                     }
                     else -> { /*do nothing */
                     }
                 }
             }
-            State.IN_FOREGROUND -> {
-                when (stateFlow.value) {
-                    State.INITIALIZED -> {
+            IN_FOREGROUND -> {
+                when (state) {
+                    INITIALIZED -> {
                         notifyOnCreate()
                         notifyOnForeground()
                     }
-                    State.CREATED -> {
+                    CREATED -> {
                         notifyOnForeground()
                     }
                     else -> { /*do nothing */
                     }
                 }
             }
-            State.DESTROYED -> {
-                when (stateFlow.value) {
-                    State.INITIALIZED -> {
+            DESTROYED -> {
+                when (state) {
+                    INITIALIZED -> {
                         notifyOnDestroy()
                     }
-                    State.CREATED -> {
+                    CREATED -> {
                         notifyOnDestroy()
                     }
-                    State.IN_FOREGROUND -> {
+                    IN_FOREGROUND -> {
                         notifyOnBackground()
                         notifyOnDestroy()
                     }
-                    State.DESTROYED -> { /*do nothing */
+                    DESTROYED -> { /*do nothing */
                     }
                 }
             }
+        }
+    }
+
+    private fun notifyChange(state: LifecycleState, event: LifecycleEvent) {
+        this.state = state
+
+        observers.forEach { observer ->
+            observer.onLifecycleChange(this, event)
+        }
+
+        if (event == ON_DESTROY) {
+            observers.clear()
         }
     }
 }

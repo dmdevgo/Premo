@@ -24,18 +24,16 @@
 
 package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import me.dmdev.premo.PmLifecycle
-import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
+import me.dmdev.premo.lifecycle.Lifecycle
+import me.dmdev.premo.lifecycle.LifecycleEvent
+import me.dmdev.premo.lifecycle.LifecycleObserver
+import me.dmdev.premo.lifecycle.LifecycleState.*
 import me.dmdev.premo.value
 
 class Navigator internal constructor(
-    private val lifecycle: PmLifecycle,
-    scope: CoroutineScope,
+    private val lifecycle: Lifecycle
 ) {
 
     internal val backstackState: State<List<PresentationModel>> = State(listOf())
@@ -47,9 +45,7 @@ class Navigator internal constructor(
         }
 
     init {
-        lifecycle.stateFlow.onEach { state ->
-            backstack.lastOrNull()?.lifecycle?.moveTo(state)
-        }.launchIn(scope)
+        subscribeToLifecycle()
     }
 
     fun push(pm: PresentationModel) {
@@ -84,5 +80,25 @@ class Navigator internal constructor(
         } else {
             false
         }
+    }
+
+    private fun subscribeToLifecycle() {
+        lifecycle.addObserver(object : LifecycleObserver{
+            override fun onLifecycleChange(lifecycle: Lifecycle, event: LifecycleEvent) {
+                when(lifecycle.state) {
+                    INITIALIZED,
+                    CREATED,
+                    DESTROYED -> {
+                        backstack.forEach { pm ->
+                            pm.lifecycle.moveTo(lifecycle.state)
+                        }
+                    }
+
+                    IN_FOREGROUND -> {
+                        backstack.lastOrNull()?.lifecycle?.moveTo(lifecycle.state)
+                    }
+                }
+            }
+        })
     }
 }

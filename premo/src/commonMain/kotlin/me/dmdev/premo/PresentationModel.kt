@@ -28,9 +28,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.internal.randomUUID
+import me.dmdev.premo.lifecycle.Lifecycle
+import me.dmdev.premo.lifecycle.LifecycleEvent
+import me.dmdev.premo.lifecycle.LifecycleObserver
 import me.dmdev.premo.navigation.Navigation
 import me.dmdev.premo.navigation.NavigationMessageHandler
 import me.dmdev.premo.navigation.Navigator
@@ -74,8 +75,7 @@ abstract class PresentationModel(params: PmParams) {
         }
 
         Navigator(
-            lifecycle = lifecycle,
-            scope = scope
+            lifecycle = lifecycle
         ).apply {
             if (restoredPmBackStack != null) {
                 setBackStack(restoredPmBackStack)
@@ -92,32 +92,10 @@ abstract class PresentationModel(params: PmParams) {
     )
 
     private val children = mutableMapOf<String, PresentationModel>()
-    val lifecycle: PmLifecycle = PmLifecycle()
+    val lifecycle: Lifecycle = Lifecycle()
 
     init {
-
-        lifecycle.stateFlow.onEach { state ->
-            children.forEach { entry ->
-                entry.value.lifecycle.moveTo(state)
-            }
-        }.launchIn(scope)
-
-        lifecycle.eventFlow.onEach { event ->
-            when (event) {
-                PmLifecycle.Event.ON_CREATE -> {
-                }
-                PmLifecycle.Event.ON_FOREGROUND -> {
-                    innForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-                }
-                PmLifecycle.Event.ON_BACKGROUND -> {
-                    innForegroundScope?.cancel()
-                    innForegroundScope = null
-                }
-                PmLifecycle.Event.ON_DESTROY -> {
-                    scope.cancel()
-                }
-            }
-        }.launchIn(scope)
+        subscribeToLifecycle()
     }
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
@@ -209,5 +187,31 @@ abstract class PresentationModel(params: PmParams) {
             },
             description = pmDescription
         )
+    }
+
+    private fun subscribeToLifecycle() {
+        lifecycle.addObserver(object : LifecycleObserver {
+            override fun onLifecycleChange(lifecycle: Lifecycle, event: LifecycleEvent) {
+
+                children.forEach { entry ->
+                    entry.value.lifecycle.moveTo(lifecycle.state)
+                }
+
+                when (event) {
+                    LifecycleEvent.ON_CREATE -> {
+                    }
+                    LifecycleEvent.ON_FOREGROUND -> {
+                        innForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+                    }
+                    LifecycleEvent.ON_BACKGROUND -> {
+                        innForegroundScope?.cancel()
+                        innForegroundScope = null
+                    }
+                    LifecycleEvent.ON_DESTROY -> {
+                        scope.cancel()
+                    }
+                }
+            }
+        })
     }
 }
