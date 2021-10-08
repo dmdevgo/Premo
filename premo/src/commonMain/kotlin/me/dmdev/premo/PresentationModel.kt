@@ -37,6 +37,7 @@ import me.dmdev.premo.navigation.NavigationMessageHandler
 import me.dmdev.premo.navigation.Navigator
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.PmStateCreator
+import me.dmdev.premo.save.PmStateHandler
 import me.dmdev.premo.save.StateSaver
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
@@ -48,13 +49,14 @@ abstract class PresentationModel(params: PmParams) {
     private val stateSaver: StateSaver = params.stateSaver
     private val pmDescription: PmDescription = params.description
 
+    private val pmStateHandler: PmStateHandler =
+        PmStateHandler(stateSaver, pmState?.states ?: mapOf())
+
     val tag: String = pmState?.tag ?: params.tag
     val parent: PresentationModel? = params.parent
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     var innForegroundScope: CoroutineScope? = null
         private set
-
-    private val saveableStates = mutableMapOf<String, SaveableState<*>>()
 
     val messageHandler: NavigationMessageHandler = NavigationMessageHandler(parent?.messageHandler)
 
@@ -84,12 +86,8 @@ abstract class PresentationModel(params: PmParams) {
     }
 
     @Suppress("unused")
-    val PresentationModel.navigator get() = navigator
-
-    private class SaveableState<T>(
-        val state: State<T>,
-        val kType: KType
-    )
+    val PresentationModel.navigator
+        get() = navigator
 
     private val children = mutableMapOf<String, PresentationModel>()
     val lifecycle: Lifecycle = Lifecycle()
@@ -142,13 +140,13 @@ abstract class PresentationModel(params: PmParams) {
         kType: KType,
         key: String
     ): State<T> {
-        val savedState = pmState?.states?.get(key)
+        val savedState = pmStateHandler.getSaved<T>(kType, key)
         val state: State<T> = if (savedState != null) {
-            State(stateSaver.restoreState(kType, savedState))
+            State(savedState)
         } else {
             State(initialValue)
         }
-        saveableStates[key] = SaveableState(state, kType)
+        pmStateHandler.setSaver(kType, key) { state.value }
         return state
     }
 
@@ -182,9 +180,7 @@ abstract class PresentationModel(params: PmParams) {
             tag = tag,
             backstack = backstack,
             children = children.mapValues { entry -> entry.value.saveState(pmStateCreator) },
-            states = saveableStates.mapValues { entry ->
-                stateSaver.saveState(entry.value.kType, entry.value.state.value)
-            },
+            states = pmStateHandler.saveState(),
             description = pmDescription
         )
     }
