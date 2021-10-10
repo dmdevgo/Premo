@@ -32,7 +32,6 @@ import me.dmdev.premo.internal.randomUUID
 import me.dmdev.premo.lifecycle.Lifecycle
 import me.dmdev.premo.lifecycle.LifecycleEvent
 import me.dmdev.premo.lifecycle.LifecycleObserver
-import me.dmdev.premo.navigation.NavigationMessageHandler
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.PmStateCreator
 import me.dmdev.premo.save.PmStateHandler
@@ -53,7 +52,7 @@ abstract class PresentationModel(params: PmParams) {
     var inForegroundScope: CoroutineScope? = null
         private set
 
-    val messageHandler: NavigationMessageHandler = NavigationMessageHandler(parent?.messageHandler)
+    val messageHandler: PmMessageHandler = PmMessageHandler(parent?.messageHandler)
     val pmStateHandler: PmStateHandler = PmStateHandler(stateSaver, pmState?.states ?: mapOf())
 
     private val children = mutableMapOf<String, PresentationModel>()

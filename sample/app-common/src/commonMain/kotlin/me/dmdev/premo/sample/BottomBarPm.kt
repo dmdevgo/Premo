@@ -26,7 +26,6 @@ package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
-import me.dmdev.premo.navigation.SystemBackMessage
 
 class BottomBarPm(params: PmParams) : PresentationModel(params) {
 

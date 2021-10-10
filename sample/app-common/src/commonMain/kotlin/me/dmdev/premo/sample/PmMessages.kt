@@ -24,13 +24,13 @@
 
 package me.dmdev.premo.sample
 
-import me.dmdev.premo.navigation.NavigationMessage
+import me.dmdev.premo.PmMessage
 
-object CounterSampleMessage: NavigationMessage
-object CounterUdfSampleMessage: NavigationMessage
-object CountdownSampleMessage: NavigationMessage
-object DialogSampleMessage: NavigationMessage
-object ControlsSampleMessage: NavigationMessage
-object MultistackSampleMessage: NavigationMessage
-object NextClickMessage: NavigationMessage
-object PreviousClickMessage: NavigationMessage
+object CounterSampleMessage: PmMessage
+object CounterUdfSampleMessage: PmMessage
+object CountdownSampleMessage: PmMessage
+object DialogSampleMessage: PmMessage
+object ControlsSampleMessage: PmMessage
+object MultistackSampleMessage: PmMessage
+object NextClickMessage: PmMessage
+object PreviousClickMessage: PmMessage

@@ -22,37 +22,37 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo
 
-class NavigationMessageHandler(
-    private val parentNavigationMessageHandler: NavigationMessageHandler?
+class PmMessageHandler(
+    private val parentPmMessageHandler: PmMessageHandler?
 ) {
 
-    private val handlers = mutableListOf<(message: NavigationMessage) -> Boolean>()
+    private val handlers = mutableListOf<(message: PmMessage) -> Boolean>()
 
-    fun addHandler(handler: (message: NavigationMessage) -> Boolean) {
+    fun addHandler(handler: (message: PmMessage) -> Boolean) {
         handlers.add(handler)
     }
 
     fun removeHandler(
-        handler: (message: NavigationMessage) -> Boolean
+        handler: (message: PmMessage) -> Boolean
     ) {
         handlers.remove(handler)
     }
 
-    fun handle(message: NavigationMessage): Boolean {
+    fun handle(message: PmMessage): Boolean {
         return handlers.any {
             it.invoke(message)
         }
     }
 
-    fun send(message: NavigationMessage) {
+    fun send(message: PmMessage) {
         if (!handlers.any { it.invoke(message) }) {
-            parentNavigationMessageHandler?.send(message)
+            parentPmMessageHandler?.send(message)
         }
     }
 
-    inline fun <reified M : NavigationMessage> onMessage(
+    inline fun <reified M : PmMessage> onMessage(
         noinline handler: (message: M) -> Unit
     ) {
         addHandler {
@@ -65,7 +65,7 @@ class NavigationMessageHandler(
         }
     }
 
-    inline fun <reified M : NavigationMessage> handleMessage(
+    inline fun <reified M : PmMessage> handleMessage(
         noinline handler: (message: M) -> Boolean
     ) {
         addHandler {

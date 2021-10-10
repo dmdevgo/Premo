@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo
 
-interface NavigationMessage
+interface PmMessage
 
-object SystemBackMessage: NavigationMessage
+object SystemBackMessage: PmMessage
