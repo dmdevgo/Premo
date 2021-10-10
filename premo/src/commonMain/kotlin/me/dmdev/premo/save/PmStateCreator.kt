@@ -30,7 +30,6 @@ interface PmStateCreator {
     fun createPmState(
         tag: String,
         description: PmDescription,
-        backstack: List<PmState>,
         children: Map<String, PmState>,
         states: Map<String, String>
     ): PmState

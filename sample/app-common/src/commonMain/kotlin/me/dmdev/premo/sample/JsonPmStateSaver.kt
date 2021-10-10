@@ -102,14 +102,12 @@ class JsonPmStateSaver : PmStateSaver {
     override fun createPmState(
         tag: String,
         description: PmDescription,
-        backstack: List<PmState>,
         children: Map<String, PmState>,
         states: Map<String, String>
     ): PmState {
         return SerializablePmState(
             tag = tag,
             description = description,
-            backstack = backstack,
             children = children,
             states = states
         )
@@ -117,10 +115,9 @@ class JsonPmStateSaver : PmStateSaver {
 }
 
 @Serializable
-class SerializablePmState(
+data class SerializablePmState(
     override val tag: String,
     @Polymorphic override val description: PmDescription,
-    override val backstack: List<PmState>,
     override val children: Map<String, PmState>,
     override val states: Map<String, String>
 ) : PmState

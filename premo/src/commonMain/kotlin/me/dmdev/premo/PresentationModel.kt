@@ -32,9 +32,7 @@ import me.dmdev.premo.internal.randomUUID
 import me.dmdev.premo.lifecycle.Lifecycle
 import me.dmdev.premo.lifecycle.LifecycleEvent
 import me.dmdev.premo.lifecycle.LifecycleObserver
-import me.dmdev.premo.navigation.Navigation
 import me.dmdev.premo.navigation.NavigationMessageHandler
-import me.dmdev.premo.navigation.Navigator
 import me.dmdev.premo.save.PmState
 import me.dmdev.premo.save.PmStateCreator
 import me.dmdev.premo.save.PmStateHandler
@@ -49,47 +47,18 @@ abstract class PresentationModel(params: PmParams) {
     private val stateSaver: StateSaver = params.stateSaver
     private val pmDescription: PmDescription = params.description
 
-    private val pmStateHandler: PmStateHandler =
-        PmStateHandler(stateSaver, pmState?.states ?: mapOf())
-
     val tag: String = pmState?.tag ?: params.tag
     val parent: PresentationModel? = params.parent
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-    var innForegroundScope: CoroutineScope? = null
+    var inForegroundScope: CoroutineScope? = null
         private set
 
     val messageHandler: NavigationMessageHandler = NavigationMessageHandler(parent?.messageHandler)
-
-    private val navigator: Navigator by lazy {
-
-        val restoredPmBackStack = pmState?.backstack?.map { pmState ->
-
-            val config = PmParams(
-                tag = pmState.tag,
-                parent = this,
-                state = pmState,
-                factory = pmFactory,
-                description = pmState.description,
-                stateSaver = stateSaver
-            )
-
-            pmFactory.createPm(config)
-        }
-
-        Navigator(
-            lifecycle = lifecycle
-        ).apply {
-            if (restoredPmBackStack != null) {
-                setBackStack(restoredPmBackStack)
-            }
-        }
-    }
-
-    @Suppress("unused")
-    val PresentationModel.navigator
-        get() = navigator
+    val pmStateHandler: PmStateHandler = PmStateHandler(stateSaver, pmState?.states ?: mapOf())
 
     private val children = mutableMapOf<String, PresentationModel>()
+    private val attachedChildren = mutableMapOf<String, PresentationModel>()
+
     val lifecycle: Lifecycle = Lifecycle()
 
     init {
@@ -110,7 +79,16 @@ abstract class PresentationModel(params: PmParams) {
             stateSaver = stateSaver
         )
 
-        return pmFactory.createPm(config) as PM
+        val child = pmFactory.createPm(config) as PM
+        children[tag] = child
+        return child
+    }
+
+    @Suppress("FunctionName")
+    fun <PM : PresentationModel> SavedChild(tag: String): PM? {
+        return pmState?.children?.get(tag)?.let { childState ->
+            Child(childState.description, childState.tag)
+        }
     }
 
     @Suppress("FunctionName")
@@ -121,7 +99,7 @@ abstract class PresentationModel(params: PmParams) {
 
         val pm = Child<PM>(description, tag)
         pm.lifecycle.moveTo(lifecycle.state)
-        children[tag] = pm
+        attachedChildren[tag] = pm
         return pm
     }
 
@@ -156,29 +134,10 @@ abstract class PresentationModel(params: PmParams) {
             mutableStateFlow.value = value
         }
 
-    fun Navigation(
-        initialDescription: PmDescription,
-        initHandlers: NavigationMessageHandler.(navigator: Navigator) -> Unit
-    ): Navigation {
-
-        messageHandler.initHandlers(navigator)
-
-        if (navigator.backstack.isEmpty()) {
-            navigator.push(Child(initialDescription))
-        }
-
-        return Navigation(navigator)
-    }
-
     internal fun saveState(pmStateCreator: PmStateCreator): PmState {
-
-        val backstack = navigator.backstack.map { pm ->
-            pm.saveState(pmStateCreator)
-        }
 
         return pmStateCreator.createPmState(
             tag = tag,
-            backstack = backstack,
             children = children.mapValues { entry -> entry.value.saveState(pmStateCreator) },
             states = pmStateHandler.saveState(),
             description = pmDescription
@@ -189,7 +148,7 @@ abstract class PresentationModel(params: PmParams) {
         lifecycle.addObserver(object : LifecycleObserver {
             override fun onLifecycleChange(lifecycle: Lifecycle, event: LifecycleEvent) {
 
-                children.forEach { entry ->
+                attachedChildren.forEach { entry ->
                     entry.value.lifecycle.moveTo(lifecycle.state)
                 }
 
@@ -197,11 +156,11 @@ abstract class PresentationModel(params: PmParams) {
                     LifecycleEvent.ON_CREATE -> {
                     }
                     LifecycleEvent.ON_FOREGROUND -> {
-                        innForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+                        inForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
                     }
                     LifecycleEvent.ON_BACKGROUND -> {
-                        innForegroundScope?.cancel()
-                        innForegroundScope = null
+                        inForegroundScope?.cancel()
+                        inForegroundScope = null
                     }
                     LifecycleEvent.ON_DESTROY -> {
                         scope.cancel()

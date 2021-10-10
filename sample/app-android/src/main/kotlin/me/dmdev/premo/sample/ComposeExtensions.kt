@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.Flow
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.State
 import me.dmdev.premo.navigation.BackstackChange
-import me.dmdev.premo.navigation.Navigation
+import me.dmdev.premo.navigation.StackNavigation
 
 @Composable
 fun <T> State<T>.bind(): T {
@@ -53,7 +53,7 @@ fun <T> Flow<T>.bind(initialValue: T): T {
 
 @Composable
 fun NavigationBox(
-    navigation: Navigation,
+    navigation: StackNavigation,
     modifier: Modifier = Modifier,
     content: @Composable (PresentationModel?) -> Unit
 ) {
@@ -98,7 +98,7 @@ fun NavigationBox(
 @ExperimentalAnimationApi
 @Composable
 fun AnimatedNavigationBox(
-    navigation: Navigation,
+    navigation: StackNavigation,
     modifier: Modifier = Modifier,
     enterTransition: ((initialPm: PresentationModel, targetPm: PresentationModel) -> EnterTransition) =
         { _, _ -> fadeIn() },

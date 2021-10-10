@@ -26,11 +26,9 @@ package me.dmdev.premo.save
 
 import me.dmdev.premo.PmDescription
 
-
 interface PmState {
     val tag: String
     val description: PmDescription
-    val backstack: List<PmState>
     val children: Map<String, PmState>
     val states: Map<String, String>
 }

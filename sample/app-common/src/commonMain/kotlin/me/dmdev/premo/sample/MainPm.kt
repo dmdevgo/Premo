@@ -28,6 +28,7 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.SystemBackMessage
 
 class MainPm(params: PmParams) : PresentationModel(params) {
@@ -35,7 +36,7 @@ class MainPm(params: PmParams) : PresentationModel(params) {
     @Serializable
     object Description : PmDescription
 
-    val navigation = Navigation(
+    val navigation = StackNavigation(
         initialDescription = SamplesPm.Description
     ) { navigator ->
         onMessage<CounterSampleMessage> { navigator.push(Child(CounterPm.Description(10))) }
