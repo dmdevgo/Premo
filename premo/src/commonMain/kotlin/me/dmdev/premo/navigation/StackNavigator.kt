@@ -123,7 +123,7 @@ internal class StackNavigatorImpl(
     override fun setBackStack(pmList: List<PresentationModel>) {
         backstack = pmList
         pmList.forEach { pm ->
-            pm.lifecycle.moveTo(INITIALIZED)
+            pm.lifecycle.moveTo(CREATED)
         }
         pmList.lastOrNull()?.lifecycle?.moveTo(lifecycle.state)
     }
