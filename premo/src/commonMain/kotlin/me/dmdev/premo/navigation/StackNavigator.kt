@@ -45,10 +45,13 @@ fun PresentationModel.StackNavigator(
 ): StackNavigator {
     val navigator = StackNavigatorImpl(lifecycle)
     pmStateHandler.setSaver(key) {
-        navigator.backstack.map { it.tag }
+        navigator.backstack.map { pm -> Pair(pm.description, pm.tag) }
     }
-    val savedBackStack = pmStateHandler.getSaved<List<String>>(key)?.mapNotNull { SavedChild(it) }
-    if (savedBackStack != null) {
+    val savedBackStack: List<PresentationModel> =
+        pmStateHandler.getSaved<List<Pair<PmDescription, String>>>(key)
+            ?.map { (description, tag) -> Child(description, tag) }
+            ?: listOf()
+    if (savedBackStack.isNotEmpty()) {
         navigator.setBackStack(savedBackStack)
     } else {
         navigator.push(Child(initialDescription))

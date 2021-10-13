@@ -26,9 +26,6 @@ package me.dmdev.premo
 
 import me.dmdev.premo.internal.PmStore
 import me.dmdev.premo.lifecycle.LifecycleState.*
-import me.dmdev.premo.save.PmState
-import me.dmdev.premo.save.PmStateCreator
-
 
 class PmDelegate<PM : PresentationModel>(
     val pmParams: PmParams,
@@ -60,8 +57,8 @@ class PmDelegate<PM : PresentationModel>(
         PmStore.removePm(pmParams.tag)
     }
 
-    fun savePm(pmStateCreator: PmStateCreator): PmState {
-        return presentationModel.saveState(pmStateCreator)
+    fun savePm(): Map<String, String> {
+        return presentationModel.pmStateHandler.saveState()
     }
 
     fun onSystemBack() {

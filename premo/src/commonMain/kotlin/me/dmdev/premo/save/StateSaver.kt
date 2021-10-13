@@ -25,8 +25,19 @@
 package me.dmdev.premo.save
 
 import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 
 interface StateSaver {
     fun <T> saveState(kType: KType, value: T): String
     fun <T> restoreState(kType: KType, json: String): T
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+inline fun <reified T> StateSaver.saveState(value: T): String {
+    return saveState(typeOf<T>(), value)
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+inline fun <reified T> StateSaver.restoreState(json: String): T {
+    return restoreState(typeOf<T>(), json)
 }

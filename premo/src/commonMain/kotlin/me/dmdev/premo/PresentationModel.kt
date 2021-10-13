@@ -32,8 +32,6 @@ import me.dmdev.premo.internal.randomUUID
 import me.dmdev.premo.lifecycle.Lifecycle
 import me.dmdev.premo.lifecycle.LifecycleEvent
 import me.dmdev.premo.lifecycle.LifecycleObserver
-import me.dmdev.premo.save.PmState
-import me.dmdev.premo.save.PmStateCreator
 import me.dmdev.premo.save.PmStateHandler
 import me.dmdev.premo.save.StateSaver
 import kotlin.reflect.KType
@@ -41,26 +39,25 @@ import kotlin.reflect.typeOf
 
 abstract class PresentationModel(params: PmParams) {
 
-    private val pmState: PmState? = params.state
     private val pmFactory: PmFactory = params.factory
     private val stateSaver: StateSaver = params.stateSaver
-    private val pmDescription: PmDescription = params.description
 
-    val tag: String = pmState?.tag ?: params.tag
+    val tag: String = params.tag
+    val description: PmDescription = params.description
     val parent: PresentationModel? = params.parent
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     var inForegroundScope: CoroutineScope? = null
         private set
 
     val messageHandler: PmMessageHandler = PmMessageHandler(parent?.messageHandler)
-    val pmStateHandler: PmStateHandler = PmStateHandler(stateSaver, pmState?.states ?: mapOf())
+    val pmStateHandler: PmStateHandler = PmStateHandler(stateSaver, params.state)
 
-    private val children = mutableMapOf<String, PresentationModel>()
     private val attachedChildren = mutableMapOf<String, PresentationModel>()
 
     val lifecycle: Lifecycle = Lifecycle()
 
     init {
+        initSaver()
         subscribeToLifecycle()
     }
 
@@ -72,22 +69,13 @@ abstract class PresentationModel(params: PmParams) {
         val config = PmParams(
             tag = tag,
             parent = this,
-            state = pmState?.children?.get(tag),
+            state = pmStateHandler.getSaved(tag) ?: mapOf(),
             factory = pmFactory,
             description = description,
             stateSaver = stateSaver
         )
 
-        val child = pmFactory.createPm(config) as PM
-        children[tag] = child
-        return child
-    }
-
-    @Suppress("FunctionName")
-    fun <PM : PresentationModel> SavedChild(tag: String): PM? {
-        return pmState?.children?.get(tag)?.let { childState ->
-            Child(childState.description, childState.tag)
-        }
+        return pmFactory.createPm(config) as PM
     }
 
     @Suppress("FunctionName")
@@ -133,14 +121,10 @@ abstract class PresentationModel(params: PmParams) {
             mutableStateFlow.value = value
         }
 
-    internal fun saveState(pmStateCreator: PmStateCreator): PmState {
-
-        return pmStateCreator.createPmState(
-            tag = tag,
-            children = children.mapValues { entry -> entry.value.saveState(pmStateCreator) },
-            states = pmStateHandler.saveState(),
-            description = pmDescription
-        )
+    private fun initSaver() {
+        parent?.pmStateHandler?.setSaver(tag) {
+            pmStateHandler.saveState()
+        }
     }
 
     private fun subscribeToLifecycle() {
@@ -163,6 +147,7 @@ abstract class PresentationModel(params: PmParams) {
                     }
                     LifecycleEvent.ON_DESTROY -> {
                         scope.cancel()
+                        parent?.pmStateHandler?.removeSaver(tag)
                     }
                 }
             }

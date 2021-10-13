@@ -26,15 +26,14 @@ package me.dmdev.premo
 
 import android.app.Activity
 import android.os.Bundle
-import me.dmdev.premo.save.PmState
-import me.dmdev.premo.save.PmStateSaver
 import me.dmdev.premo.save.StateSaver
+import me.dmdev.premo.save.restoreState
+import me.dmdev.premo.save.saveState
 import java.util.*
 
 
 class PmActivityDelegate<PM : PresentationModel>(
     private val pmActivity: Activity,
-    private val pmStateSaver: PmStateSaver,
     private val stateSaver: StateSaver,
     private val pmFactory: PmFactory,
     private val pmDescription: PmDescription,
@@ -131,20 +130,22 @@ class PmActivityDelegate<PM : PresentationModel>(
         return savedInstanceState?.getString(SAVED_PM_TAG_KEY) ?: UUID.randomUUID().toString()
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     private fun savePmState(outState: Bundle) {
         outState.putString(SAVED_PM_TAG_KEY, pmDelegate?.presentationModel?.tag)
-        val pmState = pmDelegate?.savePm(pmStateSaver)
+        val pmState = pmDelegate?.savePm()
         if (pmState != null) {
-            outState.putByteArray(SAVED_PM_STATE_KEY, pmStateSaver.save(pmState))
+            outState.putString(SAVED_PM_STATE_KEY, stateSaver.saveState(pmState))
         }
     }
 
-    private fun restorePmState(savedInstanceState: Bundle?): PmState? {
-        val pmStateAsByteArray = savedInstanceState?.getByteArray(SAVED_PM_STATE_KEY)
-        return if (pmStateAsByteArray != null) {
-            pmStateSaver.restore(pmStateAsByteArray)
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun restorePmState(savedInstanceState: Bundle?): Map<String, String> {
+        val pmStateString = savedInstanceState?.getString(SAVED_PM_STATE_KEY)
+        return if (pmStateString != null) {
+            stateSaver.restoreState(pmStateString)
         } else {
-            null
+            mapOf()
         }
     }
 }

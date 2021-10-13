@@ -46,7 +46,7 @@ object Stubs {
         val config = PmParams(
             tag = "",
             parent = null,
-            state = null,
+            state = mapOf(),
             factory = mainPmFactory,
             description = description,
             stateSaver = JsonStateSaver()

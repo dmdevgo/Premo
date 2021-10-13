@@ -26,13 +26,63 @@ package me.dmdev.premo.sample
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
+import me.dmdev.premo.PmDescription
 import me.dmdev.premo.save.StateSaver
 import kotlin.reflect.KType
 
 class JsonStateSaver : StateSaver {
 
-    private val json: Json = Json.Default
+    private val json = Json {
+        serializersModule = SerializersModule {
+            polymorphic(
+                PmDescription::class,
+                MainPm.Description::class,
+                MainPm.Description.serializer()
+            )
+            polymorphic(
+                PmDescription::class,
+                SamplesPm.Description::class,
+                SamplesPm.Description.serializer()
+            )
+            polymorphic(
+                PmDescription::class,
+                CounterPm.Description::class,
+                CounterPm.Description.serializer()
+            )
+            polymorphic(
+                PmDescription::class,
+                CounterUdfPm.Description::class,
+                CounterUdfPm.Description.serializer()
+            )
+            polymorphic(
+                PmDescription::class,
+                CountdownPm.Description::class,
+                CountdownPm.Description.serializer()
+            )
+            polymorphic(
+                PmDescription::class,
+                DialogPm.Description::class,
+                DialogPm.Description.serializer()
+            )
+            polymorphic(
+                PmDescription::class,
+                BottomBarPm.Description::class,
+                BottomBarPm.Description.serializer()
+            )
+            polymorphic(
+                PmDescription::class,
+                TabPm.Description::class,
+                TabPm.Description.serializer()
+            )
+            polymorphic(
+                PmDescription::class,
+                TabItemPm.Description::class,
+                TabItemPm.Description.serializer()
+            )
+        }
+    }
 
     override fun <T> saveState(kType: KType, value: T): String {
         return json.encodeToString(serializer(kType), value)
