@@ -32,10 +32,9 @@ import me.dmdev.premo.internal.randomUUID
 import me.dmdev.premo.lifecycle.Lifecycle
 import me.dmdev.premo.lifecycle.LifecycleEvent
 import me.dmdev.premo.lifecycle.LifecycleObserver
+import me.dmdev.premo.lifecycle.LifecycleState
 import me.dmdev.premo.save.PmStateHandler
 import me.dmdev.premo.save.StateSaver
-import kotlin.reflect.KType
-import kotlin.reflect.typeOf
 
 abstract class PresentationModel(params: PmParams) {
 
@@ -52,13 +51,29 @@ abstract class PresentationModel(params: PmParams) {
     val messageHandler: PmMessageHandler = PmMessageHandler(parent?.messageHandler)
     val pmStateHandler: PmStateHandler = PmStateHandler(stateSaver, params.state)
 
-    private val attachedChildren = mutableMapOf<String, PresentationModel>()
+    private val attachedChildren = mutableListOf<PresentationModel>()
 
     val lifecycle: Lifecycle = Lifecycle()
 
     init {
         initSaver()
         subscribeToLifecycle()
+    }
+
+    var <T> State<T>.value: T
+        get() = mutableStateFlow.value
+        set(value) {
+            mutableStateFlow.value = value
+        }
+
+    fun attachChild(pm: PresentationModel) {
+        pm.lifecycle.moveTo(lifecycle.state)
+        attachedChildren.add(pm)
+    }
+
+    fun detachChild(pm: PresentationModel) {
+        pm.lifecycle.moveTo(LifecycleState.DESTROYED)
+        attachedChildren.remove(pm)
     }
 
     @Suppress("UNCHECKED_CAST", "FunctionName")
@@ -83,43 +98,10 @@ abstract class PresentationModel(params: PmParams) {
         description: PmDescription,
         tag: String
     ): PM {
-
-        val pm = Child<PM>(description, tag)
-        pm.lifecycle.moveTo(lifecycle.state)
-        attachedChildren[tag] = pm
-        return pm
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    @Suppress("UNCHECKED_CAST", "FunctionName")
-    inline fun <reified T> SaveableState(
-        initialValue: T,
-        key: String
-    ): State<T> {
-        return SaveableState(initialValue, typeOf<T>(), key)
-    }
-
-    @Suppress("UNCHECKED_CAST", "FunctionName")
-    fun <T> SaveableState(
-        initialValue: T,
-        kType: KType,
-        key: String
-    ): State<T> {
-        val savedState = pmStateHandler.getSaved<T>(kType, key)
-        val state: State<T> = if (savedState != null) {
-            State(savedState)
-        } else {
-            State(initialValue)
+        return Child<PM>(description, tag).apply {
+            attachChild(this)
         }
-        pmStateHandler.setSaver(kType, key) { state.value }
-        return state
     }
-
-    var <T> State<T>.value: T
-        get() = mutableStateFlow.value
-        set(value) {
-            mutableStateFlow.value = value
-        }
 
     private fun initSaver() {
         parent?.pmStateHandler?.setSaver(tag) {
@@ -131,8 +113,8 @@ abstract class PresentationModel(params: PmParams) {
         lifecycle.addObserver(object : LifecycleObserver {
             override fun onLifecycleChange(lifecycle: Lifecycle, event: LifecycleEvent) {
 
-                attachedChildren.forEach { entry ->
-                    entry.value.lifecycle.moveTo(lifecycle.state)
+                attachedChildren.forEach { pm ->
+                    pm.lifecycle.moveTo(lifecycle.state)
                 }
 
                 when (event) {

@@ -28,6 +28,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 
 class State<T>(
     initialValue: T
@@ -58,6 +60,31 @@ fun <T> PresentationModel.State(
         .onEach { state.value = it }
         .launchIn(scope)
 
+    return state
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+@Suppress("UNCHECKED_CAST", "FunctionName")
+inline fun <reified T> PresentationModel.SaveableState(
+    initialValue: T,
+    key: String
+): State<T> {
+    return SaveableState(initialValue, typeOf<T>(), key)
+}
+
+@Suppress("UNCHECKED_CAST", "FunctionName")
+fun <T> PresentationModel.SaveableState(
+    initialValue: T,
+    kType: KType,
+    key: String
+): State<T> {
+    val savedState = pmStateHandler.getSaved<T>(kType, key)
+    val state: State<T> = if (savedState != null) {
+        State(savedState)
+    } else {
+        State(initialValue)
+    }
+    pmStateHandler.setSaver(kType, key) { state.value }
     return state
 }
 
