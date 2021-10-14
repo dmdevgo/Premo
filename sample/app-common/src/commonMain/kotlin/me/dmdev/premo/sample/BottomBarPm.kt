@@ -24,8 +24,13 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.*
+import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmParams
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.SystemBackMessage
 
 class BottomBarPm(params: PmParams) : PresentationModel(params) {
 
@@ -38,10 +43,11 @@ class BottomBarPm(params: PmParams) : PresentationModel(params) {
         AttachedChild(TabPm.Description("Tab #3"), "Tab #3"),
     )
 
-    val currentTabPm = State(tabPmList.first())
+    private val _currentTabPm = MutableStateFlow(tabPmList.first())
+    val currentTabPm =_currentTabPm.asStateFlow()
 
     fun onTabClick(tabPm: TabPm) {
-        currentTabPm.value = tabPm
+        _currentTabPm.value = tabPm
     }
 
     init {

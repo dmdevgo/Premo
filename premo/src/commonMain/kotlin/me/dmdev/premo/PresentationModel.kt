@@ -60,12 +60,6 @@ abstract class PresentationModel(params: PmParams) {
         subscribeToLifecycle()
     }
 
-    var <T> State<T>.value: T
-        get() = mutableStateFlow.value
-        set(value) {
-            mutableStateFlow.value = value
-        }
-
     fun attachChild(pm: PresentationModel) {
         pm.lifecycle.moveTo(lifecycle.state)
         attachedChildren.add(pm)

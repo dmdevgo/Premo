@@ -31,14 +31,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.State
 import me.dmdev.premo.navigation.BackstackChange
 import me.dmdev.premo.navigation.StackNavigation
 
 @Composable
-fun <T> State<T>.bind(): T {
-    return flow().collectAsState().value
+fun <T> StateFlow<T>.bind(): T {
+    return collectAsState().value
 }
 
 @Composable

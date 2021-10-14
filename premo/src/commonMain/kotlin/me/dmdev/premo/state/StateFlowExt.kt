@@ -22,45 +22,29 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.state
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import me.dmdev.premo.PresentationModel
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
-
-class State<T>(
-    initialValue: T
-) {
-    internal val mutableStateFlow = MutableStateFlow(initialValue)
-
-    fun flow(): StateFlow<T> = mutableStateFlow
-}
-
-var <T> State<T>.value: T
-    get() {
-        return mutableStateFlow.value
-    }
-    internal set(value) {
-        mutableStateFlow.value = value
-    }
 
 @Suppress("FunctionName")
 fun <T> PresentationModel.State(
     initialValue: T,
     stateSource: (() -> Flow<T>)
-): State<T> {
+): StateFlow<T> {
 
-    val state = State(initialValue = initialValue)
-
-    stateSource
+    return stateSource
         .invoke()
-        .onEach { state.value = it }
-        .launchIn(scope)
-
-    return state
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = initialValue
+        )
 }
 
 @OptIn(ExperimentalStdlibApi::class)
@@ -68,7 +52,7 @@ fun <T> PresentationModel.State(
 inline fun <reified T> PresentationModel.SaveableState(
     initialValue: T,
     key: String
-): State<T> {
+): MutableStateFlow<T> {
     return SaveableState(initialValue, typeOf<T>(), key)
 }
 
@@ -77,24 +61,22 @@ fun <T> PresentationModel.SaveableState(
     initialValue: T,
     kType: KType,
     key: String
-): State<T> {
+): MutableStateFlow<T> {
     val savedState = stateHandler.getSaved<T>(kType, key)
-    val state: State<T> = if (savedState != null) {
-        State(savedState)
+    val state: MutableStateFlow<T> = if (savedState != null) {
+        MutableStateFlow(savedState)
     } else {
-        State(initialValue)
+        MutableStateFlow(initialValue)
     }
     stateHandler.setSaver(kType, key) { state.value }
     return state
 }
 
-infix fun <T> State<T>.bind(consumer: (T) -> Unit): Job {
+infix fun <T> MutableStateFlow<T>.bind(consumer: (T) -> Unit): Job {
 
     val job = Job()
 
-    mutableStateFlow
-        .onEach { consumer(it) }
-        .launchIn(CoroutineScope(Dispatchers.Main + job))
+    onEach { consumer(it) }.launchIn(CoroutineScope(Dispatchers.Main + job))
 
     return job
 }
