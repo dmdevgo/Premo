@@ -32,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import me.dmdev.premo.invoke
 
 @Preview(
     showBackground = true,
@@ -46,7 +45,7 @@ fun CounterScreen(pm: CounterPm = Stubs.counterPm) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Button(
-            onClick = { pm.minus.invoke() },
+            onClick = { pm.minus() },
             enabled = pm.minusButtonEnabled.bind()
         ) {
             Text(" - ")
@@ -55,7 +54,7 @@ fun CounterScreen(pm: CounterPm = Stubs.counterPm) {
         Text("Count: ${pm.count.bind()}")
         Spacer(modifier = Modifier.width(12.dp))
         Button(
-            onClick = { pm.plus.invoke() },
+            onClick = { pm.plus() },
             enabled = pm.plusButtonEnabled.bind()
         ) {
             Text(" + ")

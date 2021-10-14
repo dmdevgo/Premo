@@ -25,7 +25,6 @@
 package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.Action
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
@@ -42,11 +41,11 @@ class TabItemPm(
         val tabTitle: String
     ) : PmDescription
 
-    val nextClick = Action<Unit> {
+    fun nextClick() {
         messageHandler.send(NextClickMessage)
     }
 
-    val previousClick = Action<Unit> {
+    fun previousClick() {
         messageHandler.send(PreviousClickMessage)
     }
 }

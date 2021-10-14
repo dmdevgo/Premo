@@ -49,7 +49,7 @@ struct CounterView: View {
         HStack {
             
             Button("Minus", action: {
-                pm.minus.invoke()
+                pm.minus()
             })
             .disabled(minusButtonEnabled.value == false)
             .padding()
@@ -58,7 +58,7 @@ struct CounterView: View {
                 .padding()
             
             Button("Plus", action: {
-                pm.plus.invoke()
+                pm.plus()
             })
             .disabled(plusButtonEnabled.value == false)
             .padding()

@@ -25,7 +25,6 @@
 package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.Action
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
@@ -35,11 +34,11 @@ class SamplesPm(params: PmParams) : PresentationModel(params) {
     @Serializable
     object Description: PmDescription
 
-    val counterClick = Action<Unit> {
+    fun counterClick() {
         messageHandler.send(CounterSampleMessage)
     }
 
-    val multistackClick = Action<Unit> {
+    fun multistackClick() {
         messageHandler.send(MultistackSampleMessage)
     }
 

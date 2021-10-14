@@ -41,10 +41,10 @@ struct TabItemView: View {
             Text(pm.tabTitle)
                 .padding()
             Button("Next", action: {
-                pm.nextClick.invoke()
+                pm.nextClick()
             }).padding()
             Button("Previous", action: {
-                pm.previousClick.invoke()
+                pm.previousClick()
             }).padding()
         }
     }
