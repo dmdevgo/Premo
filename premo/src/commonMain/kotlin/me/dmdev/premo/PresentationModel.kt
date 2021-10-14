@@ -33,8 +33,8 @@ import me.dmdev.premo.lifecycle.Lifecycle
 import me.dmdev.premo.lifecycle.LifecycleEvent
 import me.dmdev.premo.lifecycle.LifecycleObserver
 import me.dmdev.premo.lifecycle.LifecycleState
-import me.dmdev.premo.save.PmStateHandler
-import me.dmdev.premo.save.StateSaver
+import me.dmdev.premo.state.StateHandler
+import me.dmdev.premo.state.StateSaver
 
 abstract class PresentationModel(params: PmParams) {
 
@@ -49,7 +49,7 @@ abstract class PresentationModel(params: PmParams) {
         private set
 
     val messageHandler: PmMessageHandler = PmMessageHandler(parent?.messageHandler)
-    val pmStateHandler: PmStateHandler = PmStateHandler(stateSaver, params.state)
+    val stateHandler: StateHandler = StateHandler(stateSaver, params.state)
 
     private val attachedChildren = mutableListOf<PresentationModel>()
 
@@ -84,7 +84,7 @@ abstract class PresentationModel(params: PmParams) {
         val config = PmParams(
             tag = tag,
             parent = this,
-            state = pmStateHandler.getSaved(tag) ?: mapOf(),
+            state = stateHandler.getSaved(tag) ?: mapOf(),
             factory = pmFactory,
             description = description,
             stateSaver = stateSaver
@@ -104,8 +104,8 @@ abstract class PresentationModel(params: PmParams) {
     }
 
     private fun initSaver() {
-        parent?.pmStateHandler?.setSaver(tag) {
-            pmStateHandler.saveState()
+        parent?.stateHandler?.setSaver(tag) {
+            stateHandler.saveState()
         }
     }
 
@@ -129,7 +129,7 @@ abstract class PresentationModel(params: PmParams) {
                     }
                     LifecycleEvent.ON_DESTROY -> {
                         scope.cancel()
-                        parent?.pmStateHandler?.removeSaver(tag)
+                        parent?.stateHandler?.removeSaver(tag)
                     }
                 }
             }

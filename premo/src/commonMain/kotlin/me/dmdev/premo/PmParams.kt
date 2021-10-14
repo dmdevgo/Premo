@@ -24,7 +24,7 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.save.StateSaver
+import me.dmdev.premo.state.StateSaver
 
 class PmParams(
     val tag: String,

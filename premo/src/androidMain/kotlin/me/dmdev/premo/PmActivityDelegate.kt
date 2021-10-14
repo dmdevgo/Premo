@@ -26,9 +26,9 @@ package me.dmdev.premo
 
 import android.app.Activity
 import android.os.Bundle
-import me.dmdev.premo.save.StateSaver
-import me.dmdev.premo.save.restoreState
-import me.dmdev.premo.save.saveState
+import me.dmdev.premo.state.StateSaver
+import me.dmdev.premo.state.restoreState
+import me.dmdev.premo.state.saveState
 import java.util.*
 
 

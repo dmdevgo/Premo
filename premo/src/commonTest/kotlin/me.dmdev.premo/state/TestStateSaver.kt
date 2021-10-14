@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.save
+package me.dmdev.premo.state
 
 import kotlin.reflect.KType
 

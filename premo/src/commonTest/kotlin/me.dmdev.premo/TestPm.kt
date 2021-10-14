@@ -24,7 +24,7 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.save.TestStateSaver
+import me.dmdev.premo.state.TestStateSaver
 
 class TestPm(
     pmParams: PmParams = PmParams(

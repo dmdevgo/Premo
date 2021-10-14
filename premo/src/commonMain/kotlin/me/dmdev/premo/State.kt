@@ -78,13 +78,13 @@ fun <T> PresentationModel.SaveableState(
     kType: KType,
     key: String
 ): State<T> {
-    val savedState = pmStateHandler.getSaved<T>(kType, key)
+    val savedState = stateHandler.getSaved<T>(kType, key)
     val state: State<T> = if (savedState != null) {
         State(savedState)
     } else {
         State(initialValue)
     }
-    pmStateHandler.setSaver(kType, key) { state.value }
+    stateHandler.setSaver(kType, key) { state.value }
     return state
 }
 

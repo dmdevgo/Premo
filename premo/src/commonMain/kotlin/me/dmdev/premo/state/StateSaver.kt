@@ -22,48 +22,22 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.save
+package me.dmdev.premo.state
 
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
-class PmStateHandler(
-    private val stateSaver: StateSaver,
-    private val states: Map<String, String>
-) {
+interface StateSaver {
+    fun <T> saveState(kType: KType, value: T): String
+    fun <T> restoreState(kType: KType, json: String): T
+}
 
-    class Saver<T>(
-        val kType: KType,
-        val saveValue: () -> T
-    )
+@OptIn(ExperimentalStdlibApi::class)
+inline fun <reified T> StateSaver.saveState(value: T): String {
+    return saveState(typeOf<T>(), value)
+}
 
-    private val savers = mutableMapOf<String, Saver<*>>()
-
-    fun <T> getSaved(kType: KType, key: String): T? {
-        return states[key]?.let { stateSaver.restoreState(kType, it) }
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    inline fun <reified T> getSaved(key: String): T? {
-        return getSaved(typeOf<T>(), key)
-    }
-
-    fun <T> setSaver(kType: KType, key: String, saveValue: () -> T) {
-        savers[key] = Saver(kType, saveValue)
-    }
-
-    fun removeSaver(key: String) {
-        savers.remove(key)
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    inline fun <reified T> setSaver(key: String, noinline saveValue: () -> T) {
-        setSaver(typeOf<T>(), key, saveValue)
-    }
-
-    fun saveState(): Map<String, String> {
-        return savers.mapValues { entry ->
-            stateSaver.saveState(entry.value.kType, entry.value.saveValue())
-        }
-    }
+@OptIn(ExperimentalStdlibApi::class)
+inline fun <reified T> StateSaver.restoreState(json: String): T {
+    return restoreState(typeOf<T>(), json)
 }

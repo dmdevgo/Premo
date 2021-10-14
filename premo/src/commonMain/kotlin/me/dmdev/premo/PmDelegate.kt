@@ -58,7 +58,7 @@ class PmDelegate<PM : PresentationModel>(
     }
 
     fun savePm(): Map<String, String> {
-        return presentationModel.pmStateHandler.saveState()
+        return presentationModel.stateHandler.saveState()
     }
 
     fun onSystemBack() {
