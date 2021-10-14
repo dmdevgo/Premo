@@ -27,10 +27,6 @@ package me.dmdev.premo.sample
 import me.dmdev.premo.PmMessage
 
 object CounterSampleMessage: PmMessage
-object CounterUdfSampleMessage: PmMessage
-object CountdownSampleMessage: PmMessage
-object DialogSampleMessage: PmMessage
-object ControlsSampleMessage: PmMessage
 object MultistackSampleMessage: PmMessage
 object NextClickMessage: PmMessage
 object PreviousClickMessage: PmMessage

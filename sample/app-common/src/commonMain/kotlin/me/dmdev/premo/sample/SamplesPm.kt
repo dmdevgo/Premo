@@ -39,22 +39,6 @@ class SamplesPm(params: PmParams) : PresentationModel(params) {
         messageHandler.send(CounterSampleMessage)
     }
 
-    val counterUdfClick = Action<Unit> {
-        messageHandler.send(CounterUdfSampleMessage)
-    }
-
-    val countdownClick = Action<Unit> {
-        messageHandler.send(CountdownSampleMessage)
-    }
-
-    val dialogClick = Action<Unit> {
-        messageHandler.send(DialogSampleMessage)
-    }
-
-    val controlsClick = Action<Unit> {
-        messageHandler.send(ControlsSampleMessage)
-    }
-
     val multistackClick = Action<Unit> {
         messageHandler.send(MultistackSampleMessage)
     }

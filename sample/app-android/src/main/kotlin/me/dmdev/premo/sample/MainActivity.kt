@@ -65,10 +65,6 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
             when (pm) {
                 is SamplesPm -> SamplesScreen(pm)
                 is CounterPm -> CounterScreen(pm)
-                is CounterUdfPm -> CounterUdfScreen(pm)
-                is CountdownPm -> CountdownScreen(pm)
-                is DialogPm -> DialogScreen(pm)
-                is ControlsPm -> ControlsScreen(pm)
                 is BottomBarPm -> BottomBarScreen(pm)
                 else -> EmptyScreen()
             }

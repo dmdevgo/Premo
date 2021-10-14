@@ -54,9 +54,6 @@ struct MainView: View {
             switch currentPm.value {
             case let pm as SamplesPm: SamplesView(pm: pm)
             case let pm as CounterPm: CounterView(pm: pm)
-            case let pm as CounterUdfPm: CounterUdfView(pm: pm)
-            case let pm as CountdownPm: CountdownView(pm: pm)
-            case let pm as DialogPm: DialogView(pm: pm)
             case let pm as BottomBarPm: MultistackView(pm: pm)
             default: EmptyView()
             }

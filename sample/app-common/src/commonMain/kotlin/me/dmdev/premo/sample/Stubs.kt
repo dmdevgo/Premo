@@ -34,10 +34,6 @@ object Stubs {
 
     val samplesPm = createPm<SamplesPm>(SamplesPm.Description)
     val counterPm = createPm<CounterPm>(CounterPm.Description(10))
-    val counterUdfPm = createPm<CounterUdfPm>(CounterUdfPm.Description(10))
-    val countdownPm = createPm<CountdownPm>(CountdownPm.Description)
-    val controlsPm = createPm<ControlsPm>(ControlsPm.Description)
-    val dialogPm = createPm<DialogPm>(DialogPm.Description)
     val bottomBarPm = createPm<BottomBarPm>(BottomBarPm.Description)
     val tabPm = createPm<TabPm>(TabPm.Description("Tab #"))
     val tabItemPm = createPm<TabItemPm>(TabItemPm.Description("Screen #", "Tab #"))

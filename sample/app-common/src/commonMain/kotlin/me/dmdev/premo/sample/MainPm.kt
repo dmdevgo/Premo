@@ -40,10 +40,6 @@ class MainPm(params: PmParams) : PresentationModel(params) {
         initialDescription = SamplesPm.Description
     ) { navigator ->
         onMessage<CounterSampleMessage> { navigator.push(Child(CounterPm.Description(10))) }
-        onMessage<CounterUdfSampleMessage> { navigator.push(Child(CounterUdfPm.Description(10))) }
-        onMessage<CountdownSampleMessage> { navigator.push(Child(CountdownPm.Description)) }
-        onMessage<DialogSampleMessage> { navigator.push(Child(DialogPm.Description)) }
-        onMessage<ControlsSampleMessage> { navigator.push(Child(ControlsPm.Description)) }
         onMessage<MultistackSampleMessage> { navigator.push(Child(BottomBarPm.Description)) }
         handleMessage<SystemBackMessage> { navigator.handleBack() }
     }

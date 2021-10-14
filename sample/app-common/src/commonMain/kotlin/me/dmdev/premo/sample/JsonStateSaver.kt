@@ -53,21 +53,6 @@ class JsonStateSaver : StateSaver {
             )
             polymorphic(
                 PmDescription::class,
-                CounterUdfPm.Description::class,
-                CounterUdfPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
-                CountdownPm.Description::class,
-                CountdownPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
-                DialogPm.Description::class,
-                DialogPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
                 BottomBarPm.Description::class,
                 BottomBarPm.Description.serializer()
             )

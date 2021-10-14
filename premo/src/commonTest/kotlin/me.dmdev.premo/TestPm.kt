@@ -30,7 +30,7 @@ class TestPm(
     pmParams: PmParams = PmParams(
         tag = "test_pm",
         parent = null,
-        state = null,
+        state = mapOf(),
         factory = TestPmFactory(),
         stateSaver = TestStateSaver(),
         description = Description

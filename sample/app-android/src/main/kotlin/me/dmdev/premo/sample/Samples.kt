@@ -49,22 +49,6 @@ fun SamplesScreen(pm: SamplesPm = Stubs.samplesPm) {
             Text("Counter")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { pm.counterUdfClick() }) {
-            Text("Counter UDF")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { pm.countdownClick() }) {
-            Text("Countdown")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { pm.dialogClick() }) {
-            Text("Dialog")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { pm.controlsClick() }) {
-            Text("Controls")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { pm.multistackClick() }) {
             Text("Multistack")
         }
