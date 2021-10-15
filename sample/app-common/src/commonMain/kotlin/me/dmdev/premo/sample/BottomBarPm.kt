@@ -30,6 +30,7 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.onMessage
 
 class BottomBarPm(params: PmParams) : PresentationModel(params) {
 
@@ -50,7 +51,7 @@ class BottomBarPm(params: PmParams) : PresentationModel(params) {
     }
 
     init {
-        messageHandler.handleMessage<SystemBackMessage> {
+        messageHandler.onMessage<SystemBackMessage> {
             currentTabPm.value.messageHandler.handle(it)
         }
     }

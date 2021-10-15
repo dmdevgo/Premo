@@ -51,29 +51,17 @@ class PmMessageHandler(
             parentPmMessageHandler?.send(message)
         }
     }
+}
 
-    inline fun <reified M : PmMessage> onMessage(
-        noinline handler: (message: M) -> Unit
-    ) {
-        addHandler {
-            if (it is M) {
-                handler(it)
-                true
-            } else {
-                false
-            }
-        }
-    }
-
-    inline fun <reified M : PmMessage> handleMessage(
-        noinline handler: (message: M) -> Boolean
-    ) {
-        addHandler {
-            if (it is M) {
-                handler(it)
-            } else {
-                false
-            }
+inline fun <reified M : PmMessage> PmMessageHandler.onMessage(
+    noinline handler: (message: M) -> Unit
+) {
+    addHandler {
+        if (it is M) {
+            handler(it)
+            true
+        } else {
+            false
         }
     }
 }

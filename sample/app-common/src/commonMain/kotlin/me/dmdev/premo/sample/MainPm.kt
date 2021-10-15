@@ -29,6 +29,7 @@ import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.StackNavigation
+import me.dmdev.premo.onMessage
 
 class MainPm(params: PmParams) : PresentationModel(params) {
 
@@ -40,6 +41,6 @@ class MainPm(params: PmParams) : PresentationModel(params) {
     ) { navigator ->
         onMessage<CounterSampleMessage> { navigator.push(Child(CounterPm.Description(10))) }
         onMessage<MultistackSampleMessage> { navigator.push(Child(BottomBarPm.Description)) }
-        handleMessage<SystemBackMessage> { navigator.handleBack() }
+        onMessage<SystemBackMessage> { navigator.handleBack() }
     }
 }

@@ -30,6 +30,7 @@ import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.StackNavigator
+import me.dmdev.premo.onMessage
 
 class TabPm(
     val tabTitle: String,
@@ -59,7 +60,7 @@ class TabPm(
         onMessage<PreviousClickMessage> {
             handleBack(navigator)
         }
-        handleMessage<SystemBackMessage> {
+        onMessage<SystemBackMessage> {
             handleBack(navigator)
         }
     }
