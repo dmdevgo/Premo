@@ -112,8 +112,6 @@ abstract class PresentationModel(params: PmParams) {
                 }
 
                 when (event) {
-                    LifecycleEvent.ON_CREATE -> {
-                    }
                     LifecycleEvent.ON_FOREGROUND -> {
                         inForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
                     }

@@ -25,7 +25,6 @@
 package me.dmdev.premo.lifecycle
 
 enum class LifecycleEvent {
-    ON_CREATE,
     ON_FOREGROUND,
     ON_BACKGROUND,
     ON_DESTROY

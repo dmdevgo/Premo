@@ -147,7 +147,6 @@ internal class StackNavigatorImpl(
         lifecycle.addObserver(object : LifecycleObserver {
             override fun onLifecycleChange(lifecycle: Lifecycle, event: LifecycleEvent) {
                 when (lifecycle.state) {
-                    INITIALIZED,
                     CREATED,
                     DESTROYED -> {
                         backstack.forEach { pm ->

@@ -31,7 +31,7 @@ class Lifecycle {
 
     private val observers: MutableList<LifecycleObserver> = mutableListOf()
 
-    var state: LifecycleState = INITIALIZED
+    var state: LifecycleState = CREATED
         private set
 
     fun addObserver(observer: LifecycleObserver) {
@@ -46,10 +46,6 @@ class Lifecycle {
 
         if (targetState == state) return
 
-        fun notifyOnCreate() {
-            notifyChange(CREATED, ON_CREATE)
-        }
-
         fun notifyOnForeground() {
             notifyChange(IN_FOREGROUND, ON_FOREGROUND)
         }
@@ -63,14 +59,8 @@ class Lifecycle {
         }
 
         when (targetState) {
-            INITIALIZED -> {
-                // do nothing, initial lifecycle state is INITIALIZED
-            }
             CREATED -> {
                 when (state) {
-                    INITIALIZED -> {
-                        notifyOnCreate()
-                    }
                     IN_FOREGROUND -> {
                         notifyOnBackground()
                     }
@@ -80,10 +70,6 @@ class Lifecycle {
             }
             IN_FOREGROUND -> {
                 when (state) {
-                    INITIALIZED -> {
-                        notifyOnCreate()
-                        notifyOnForeground()
-                    }
                     CREATED -> {
                         notifyOnForeground()
                     }
@@ -93,9 +79,6 @@ class Lifecycle {
             }
             DESTROYED -> {
                 when (state) {
-                    INITIALIZED -> {
-                        notifyOnDestroy()
-                    }
                     CREATED -> {
                         notifyOnDestroy()
                     }

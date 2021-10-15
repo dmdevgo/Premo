@@ -25,7 +25,6 @@
 package me.dmdev.premo.lifecycle
 
 enum class LifecycleState {
-    INITIALIZED,
     CREATED,
     IN_FOREGROUND,
     DESTROYED
