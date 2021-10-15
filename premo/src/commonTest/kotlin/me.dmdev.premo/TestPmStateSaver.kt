@@ -22,9 +22,8 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.state
+package me.dmdev.premo
 
-import me.dmdev.premo.PmStateSaver
 import kotlin.reflect.KType
 
 class TestPmStateSaver : PmStateSaver {

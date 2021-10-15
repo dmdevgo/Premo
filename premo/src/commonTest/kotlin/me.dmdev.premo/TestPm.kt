@@ -24,15 +24,13 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.state.TestPmStateSaver
-
 class TestPm(
     pmParams: PmParams = PmParams(
         tag = "test_pm",
         parent = null,
         state = mapOf(),
         factory = TestPmFactory(),
-        pmStateSaver = TestPmStateSaver(),
+        stateSaver = TestPmStateSaver(),
         description = Description
     )
 ) : PresentationModel(pmParams) {
