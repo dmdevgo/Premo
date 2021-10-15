@@ -28,11 +28,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.internal.randomUUID
-import me.dmdev.premo.lifecycle.Lifecycle
-import me.dmdev.premo.lifecycle.LifecycleEvent
-import me.dmdev.premo.lifecycle.LifecycleObserver
-import me.dmdev.premo.lifecycle.LifecycleState
 import me.dmdev.premo.state.StateHandler
 import me.dmdev.premo.state.StateSaver
 
@@ -53,7 +50,7 @@ abstract class PresentationModel(params: PmParams) {
 
     private val attachedChildren = mutableListOf<PresentationModel>()
 
-    val lifecycle: Lifecycle = Lifecycle()
+    val lifecycle: PmLifecycle = PmLifecycle()
 
     init {
         initSaver()
@@ -66,7 +63,7 @@ abstract class PresentationModel(params: PmParams) {
     }
 
     fun detachChild(pm: PresentationModel) {
-        pm.lifecycle.moveTo(LifecycleState.DESTROYED)
+        pm.lifecycle.moveTo(DESTROYED)
         attachedChildren.remove(pm)
     }
 
@@ -104,22 +101,22 @@ abstract class PresentationModel(params: PmParams) {
     }
 
     private fun subscribeToLifecycle() {
-        lifecycle.addObserver(object : LifecycleObserver {
-            override fun onLifecycleChange(lifecycle: Lifecycle, event: LifecycleEvent) {
+        lifecycle.addObserver(object : PmLifecycle.Observer {
+            override fun onLifecycleChange(lifecycle: PmLifecycle, event: PmLifecycle.Event) {
 
                 attachedChildren.forEach { pm ->
                     pm.lifecycle.moveTo(lifecycle.state)
                 }
 
                 when (event) {
-                    LifecycleEvent.ON_FOREGROUND -> {
+                    PmLifecycle.Event.ON_FOREGROUND -> {
                         inForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
                     }
-                    LifecycleEvent.ON_BACKGROUND -> {
+                    PmLifecycle.Event.ON_BACKGROUND -> {
                         inForegroundScope?.cancel()
                         inForegroundScope = null
                     }
-                    LifecycleEvent.ON_DESTROY -> {
+                    PmLifecycle.Event.ON_DESTROY -> {
                         scope.cancel()
                         parent?.stateHandler?.removeSaver(tag)
                     }

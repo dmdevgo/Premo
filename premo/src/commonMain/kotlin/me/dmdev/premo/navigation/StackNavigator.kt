@@ -26,11 +26,9 @@ package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.flow.*
 import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmLifecycle
+import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.lifecycle.Lifecycle
-import me.dmdev.premo.lifecycle.LifecycleEvent
-import me.dmdev.premo.lifecycle.LifecycleObserver
-import me.dmdev.premo.lifecycle.LifecycleState.*
 
 interface StackNavigator : StackNavigation {
     fun push(pm: PresentationModel)
@@ -60,7 +58,7 @@ fun PresentationModel.StackNavigator(
 }
 
 internal class StackNavigatorImpl(
-    private val lifecycle: Lifecycle
+    private val lifecycle: PmLifecycle
 ) : StackNavigator {
 
     private val _backstackState = MutableStateFlow<List<PresentationModel>>(listOf())
@@ -144,8 +142,8 @@ internal class StackNavigatorImpl(
         get() = backstack.lastOrNull()
 
     private fun subscribeToLifecycle() {
-        lifecycle.addObserver(object : LifecycleObserver {
-            override fun onLifecycleChange(lifecycle: Lifecycle, event: LifecycleEvent) {
+        lifecycle.addObserver(object : PmLifecycle.Observer {
+            override fun onLifecycleChange(lifecycle: PmLifecycle, event: PmLifecycle.Event) {
                 when (lifecycle.state) {
                     CREATED,
                     DESTROYED -> {

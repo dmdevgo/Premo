@@ -22,47 +22,35 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.lifecycle
+package me.dmdev.premo
 
-import me.dmdev.premo.lifecycle.LifecycleEvent.*
-import me.dmdev.premo.lifecycle.LifecycleState.*
+import me.dmdev.premo.PmLifecycle.Event.*
+import me.dmdev.premo.PmLifecycle.State.*
 
-class Lifecycle {
+class PmLifecycle {
 
-    private val observers: MutableList<LifecycleObserver> = mutableListOf()
+    private val observers: MutableList<Observer> = mutableListOf()
 
-    var state: LifecycleState = CREATED
+    var state: State = CREATED
         private set
 
-    fun addObserver(observer: LifecycleObserver) {
+    fun addObserver(observer: Observer) {
         observers.add(observer)
     }
 
-    fun removeObserver(observer: LifecycleObserver) {
+    fun removeObserver(observer: Observer) {
         observers.remove(observer)
     }
 
-    fun moveTo(targetState: LifecycleState) {
+    fun moveTo(targetState: State) {
 
         if (targetState == state) return
-
-        fun notifyOnForeground() {
-            notifyChange(IN_FOREGROUND, ON_FOREGROUND)
-        }
-
-        fun notifyOnBackground() {
-            notifyChange(CREATED, ON_BACKGROUND)
-        }
-
-        fun notifyOnDestroy() {
-            notifyChange(DESTROYED, ON_DESTROY)
-        }
 
         when (targetState) {
             CREATED -> {
                 when (state) {
                     IN_FOREGROUND -> {
-                        notifyOnBackground()
+                        notifyChange(CREATED, ON_BACKGROUND)
                     }
                     else -> { /*do nothing */
                     }
@@ -71,7 +59,7 @@ class Lifecycle {
             IN_FOREGROUND -> {
                 when (state) {
                     CREATED -> {
-                        notifyOnForeground()
+                        notifyChange(IN_FOREGROUND, ON_FOREGROUND)
                     }
                     else -> { /*do nothing */
                     }
@@ -80,11 +68,11 @@ class Lifecycle {
             DESTROYED -> {
                 when (state) {
                     CREATED -> {
-                        notifyOnDestroy()
+                        notifyChange(DESTROYED, ON_DESTROY)
                     }
                     IN_FOREGROUND -> {
-                        notifyOnBackground()
-                        notifyOnDestroy()
+                        notifyChange(CREATED, ON_BACKGROUND)
+                        notifyChange(DESTROYED, ON_DESTROY)
                     }
                     DESTROYED -> { /*do nothing */
                     }
@@ -93,7 +81,23 @@ class Lifecycle {
         }
     }
 
-    private fun notifyChange(state: LifecycleState, event: LifecycleEvent) {
+    enum class State {
+        CREATED,
+        IN_FOREGROUND,
+        DESTROYED
+    }
+
+    enum class Event {
+        ON_FOREGROUND,
+        ON_BACKGROUND,
+        ON_DESTROY
+    }
+
+    interface Observer {
+        fun onLifecycleChange(lifecycle: PmLifecycle, event: Event)
+    }
+
+    private fun notifyChange(state: State, event: Event) {
         this.state = state
 
         observers.forEach { observer ->

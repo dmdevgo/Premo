@@ -24,8 +24,8 @@
 
 package me.dmdev.premo
 
+import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.internal.PmStore
-import me.dmdev.premo.lifecycle.LifecycleState.*
 
 class PmDelegate<PM : PresentationModel>(
     private val pmParams: PmParams

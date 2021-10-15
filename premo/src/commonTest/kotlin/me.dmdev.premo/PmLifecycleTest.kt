@@ -22,23 +22,23 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.lifecycle
+package me.dmdev.premo
 
-import me.dmdev.premo.lifecycle.LifecycleEvent.*
-import me.dmdev.premo.lifecycle.LifecycleState.*
+import me.dmdev.premo.PmLifecycle.Event.*
+import me.dmdev.premo.PmLifecycle.State.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class LifecycleTest {
+class PmLifecycleTest {
 
-    private lateinit var lifecycle: Lifecycle
-    private lateinit var observer: LifecycleTestObserver
+    private lateinit var lifecycle: PmLifecycle
+    private lateinit var observer: PmLifecycleTestObserver
 
     @BeforeTest
     fun setUp() {
-        lifecycle = Lifecycle()
-        observer = LifecycleTestObserver()
+        lifecycle = PmLifecycle()
+        observer = PmLifecycleTestObserver()
         lifecycle.addObserver(observer)
     }
 
@@ -86,8 +86,8 @@ class LifecycleTest {
 
     @Test
     fun testMultipleSubscribers() {
-        val observer1 = LifecycleTestObserver()
-        val observer2 = LifecycleTestObserver()
+        val observer1 = PmLifecycleTestObserver()
+        val observer2 = PmLifecycleTestObserver()
         lifecycle.addObserver(observer1)
         lifecycle.addObserver(observer2)
         lifecycle.moveTo(IN_FOREGROUND)

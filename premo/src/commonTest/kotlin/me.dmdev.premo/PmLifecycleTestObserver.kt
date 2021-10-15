@@ -22,10 +22,15 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.lifecycle
+package me.dmdev.premo
 
-enum class LifecycleState {
-    CREATED,
-    IN_FOREGROUND,
-    DESTROYED
+class PmLifecycleTestObserver : PmLifecycle.Observer {
+
+    val states = mutableListOf<PmLifecycle.State>()
+    val events = mutableListOf<PmLifecycle.Event>()
+
+    override fun onLifecycleChange(lifecycle: PmLifecycle, event: PmLifecycle.Event) {
+        states.add(lifecycle.state)
+        events.add(event)
+    }
 }

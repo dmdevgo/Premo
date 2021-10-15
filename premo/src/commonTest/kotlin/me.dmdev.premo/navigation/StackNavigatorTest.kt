@@ -24,14 +24,14 @@
 
 package me.dmdev.premo.navigation
 
+import me.dmdev.premo.PmLifecycle
+import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.TestPm
-import me.dmdev.premo.lifecycle.Lifecycle
-import me.dmdev.premo.lifecycle.LifecycleState.*
 import kotlin.test.*
 
 class StackNavigatorTest {
 
-    private lateinit var lifecycle: Lifecycle
+    private lateinit var lifecycle: PmLifecycle
     private lateinit var navigator: StackNavigator
     private lateinit var pm1: TestPm
     private lateinit var pm2: TestPm
@@ -39,7 +39,7 @@ class StackNavigatorTest {
 
     @BeforeTest
     fun setUp() {
-        lifecycle = Lifecycle()
+        lifecycle = PmLifecycle()
         lifecycle.moveTo(IN_FOREGROUND)
         pm1 = TestPm()
         pm2 = TestPm()
