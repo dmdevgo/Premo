@@ -22,15 +22,14 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.state
+package me.dmdev.premo
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import me.dmdev.premo.PresentationModel
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
-class StateHandler(
-    private val stateSaver: StateSaver,
+class PmStateHandler(
+    private val pmStateSaver: PmStateSaver,
     private val states: Map<String, String>
 ) {
 
@@ -42,7 +41,7 @@ class StateHandler(
     private val savers = mutableMapOf<String, Saver<*>>()
 
     fun <T> getSaved(kType: KType, key: String): T? {
-        return states[key]?.let { stateSaver.restoreState(kType, it) }
+        return states[key]?.let { pmStateSaver.restoreState(kType, it) }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
@@ -65,7 +64,7 @@ class StateHandler(
 
     fun saveState(): Map<String, String> {
         return savers.mapValues { entry ->
-            stateSaver.saveState(entry.value.kType, entry.value.saveValue())
+            pmStateSaver.saveState(entry.value.kType, entry.value.saveValue())
         }
     }
 }
@@ -81,7 +80,7 @@ inline fun <reified T> PresentationModel.SaveableFlow(
 
 @OptIn(ExperimentalStdlibApi::class)
 @Suppress("FunctionName")
-inline fun <reified T> StateHandler.SaveableFlow(
+inline fun <reified T> PmStateHandler.SaveableFlow(
     key: String,
     initialValue: T
 ): MutableStateFlow<T> {
@@ -89,7 +88,7 @@ inline fun <reified T> StateHandler.SaveableFlow(
 }
 
 @Suppress("FunctionName")
-fun <T> StateHandler.SaveableFlow(
+fun <T> PmStateHandler.SaveableFlow(
     key: String,
     initialValue: T,
     kType: KType

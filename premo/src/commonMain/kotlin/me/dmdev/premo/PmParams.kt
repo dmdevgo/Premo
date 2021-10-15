@@ -24,13 +24,11 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.state.StateSaver
-
 class PmParams(
     val tag: String,
     val parent: PresentationModel?,
     val state: Map<String, String>,
     val factory: PmFactory,
     val description: PmDescription,
-    val stateSaver: StateSaver
+    val stateSaver: PmStateSaver
 )

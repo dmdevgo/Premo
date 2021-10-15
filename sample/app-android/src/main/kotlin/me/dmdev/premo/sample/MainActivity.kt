@@ -40,7 +40,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
             pmActivity = this,
             pmDescription = MainPm.Description,
             pmFactory = MainPmFactory(),
-            stateSaver = JsonStateSaver(),
+            pmStateSaver = JsonPmStateSaver(),
         )
     }
 

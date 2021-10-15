@@ -45,7 +45,7 @@ object Stubs {
             state = mapOf(),
             factory = mainPmFactory,
             description = description,
-            stateSaver = JsonStateSaver()
+            stateSaver = JsonPmStateSaver()
         )
         @Suppress("UNCHECKED_CAST")
         return mainPmFactory.createPm(config) as PM

@@ -29,7 +29,7 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.state.SaveableFlow
+import me.dmdev.premo.SaveableFlow
 
 class CounterPm(
     private val maxCount: Int,

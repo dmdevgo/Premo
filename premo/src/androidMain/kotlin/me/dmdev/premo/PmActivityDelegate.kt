@@ -26,15 +26,12 @@ package me.dmdev.premo
 
 import android.app.Activity
 import android.os.Bundle
-import me.dmdev.premo.state.StateSaver
-import me.dmdev.premo.state.restoreState
-import me.dmdev.premo.state.saveState
 import java.util.*
 
 
 class PmActivityDelegate<PM : PresentationModel>(
     private val pmActivity: Activity,
-    private val stateSaver: StateSaver,
+    private val pmStateSaver: PmStateSaver,
     private val pmFactory: PmFactory,
     private val pmDescription: PmDescription,
 ) {
@@ -61,7 +58,7 @@ class PmActivityDelegate<PM : PresentationModel>(
             state = restorePmState(savedInstanceState),
             factory = pmFactory,
             description = pmDescription,
-            stateSaver = stateSaver
+            stateSaver = pmStateSaver
         )
 
         pmDelegate = PmDelegate(pmParams)
@@ -122,7 +119,7 @@ class PmActivityDelegate<PM : PresentationModel>(
         outState.putString(SAVED_PM_TAG_KEY, pmDelegate?.presentationModel?.tag)
         val pmState = pmDelegate?.savePm()
         if (pmState != null) {
-            outState.putString(SAVED_PM_STATE_KEY, stateSaver.saveState(pmState))
+            outState.putString(SAVED_PM_STATE_KEY, pmStateSaver.saveState(pmState))
         }
     }
 
@@ -130,7 +127,7 @@ class PmActivityDelegate<PM : PresentationModel>(
     private fun restorePmState(savedInstanceState: Bundle?): Map<String, String> {
         val pmStateString = savedInstanceState?.getString(SAVED_PM_STATE_KEY)
         return if (pmStateString != null) {
-            stateSaver.restoreState(pmStateString)
+            pmStateSaver.restoreState(pmStateString)
         } else {
             mapOf()
         }

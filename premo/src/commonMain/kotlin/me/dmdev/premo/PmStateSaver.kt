@@ -22,16 +22,22 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.state
+package me.dmdev.premo
 
 import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 
-class TestStateSaver : StateSaver {
-    override fun <T> saveState(kType: KType, value: T): String {
-        TODO("Not yet implemented")
-    }
+interface PmStateSaver {
+    fun <T> saveState(kType: KType, value: T): String
+    fun <T> restoreState(kType: KType, json: String): T
+}
 
-    override fun <T> restoreState(kType: KType, json: String): T {
-        TODO("Not yet implemented")
-    }
+@OptIn(ExperimentalStdlibApi::class)
+inline fun <reified T> PmStateSaver.saveState(value: T): String {
+    return saveState(typeOf<T>(), value)
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+inline fun <reified T> PmStateSaver.restoreState(json: String): T {
+    return restoreState(typeOf<T>(), json)
 }

@@ -30,13 +30,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.internal.randomUUID
-import me.dmdev.premo.state.StateHandler
-import me.dmdev.premo.state.StateSaver
 
 abstract class PresentationModel(params: PmParams) {
 
     private val pmFactory: PmFactory = params.factory
-    private val stateSaver: StateSaver = params.stateSaver
+    private val pmStateSaver: PmStateSaver = params.stateSaver
 
     val tag: String = params.tag
     val description: PmDescription = params.description
@@ -46,7 +44,7 @@ abstract class PresentationModel(params: PmParams) {
         private set
 
     val messageHandler: PmMessageHandler = PmMessageHandler(parent?.messageHandler)
-    val stateHandler: StateHandler = StateHandler(stateSaver, params.state)
+    val stateHandler: PmStateHandler = PmStateHandler(pmStateSaver, params.state)
 
     private val attachedChildren = mutableListOf<PresentationModel>()
 
@@ -78,7 +76,7 @@ abstract class PresentationModel(params: PmParams) {
             state = stateHandler.getSaved(tag) ?: mapOf(),
             factory = pmFactory,
             description = description,
-            stateSaver = stateSaver
+            stateSaver = pmStateSaver
         )
 
         return pmFactory.createPm(config) as PM
