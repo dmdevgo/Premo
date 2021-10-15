@@ -24,6 +24,8 @@
 
 package me.dmdev.premo.state
 
+import kotlinx.coroutines.flow.MutableStateFlow
+import me.dmdev.premo.PresentationModel
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
@@ -66,4 +68,38 @@ class StateHandler(
             stateSaver.saveState(entry.value.kType, entry.value.saveValue())
         }
     }
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+@Suppress("FunctionName")
+inline fun <reified T> PresentationModel.SaveableFlow(
+    key: String,
+    initialValue: T
+): MutableStateFlow<T> {
+    return stateHandler.SaveableFlow(key, initialValue, typeOf<T>())
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+@Suppress("FunctionName")
+inline fun <reified T> StateHandler.SaveableFlow(
+    key: String,
+    initialValue: T
+): MutableStateFlow<T> {
+    return SaveableFlow(key, initialValue, typeOf<T>())
+}
+
+@Suppress("FunctionName")
+fun <T> StateHandler.SaveableFlow(
+    key: String,
+    initialValue: T,
+    kType: KType
+): MutableStateFlow<T> {
+    val savedState = getSaved<T>(kType, key)
+    val state: MutableStateFlow<T> = if (savedState != null) {
+        MutableStateFlow(savedState)
+    } else {
+        MutableStateFlow(initialValue)
+    }
+    setSaver(kType, key) { state.value }
+    return state
 }
