@@ -28,8 +28,7 @@ import me.dmdev.premo.internal.PmStore
 import me.dmdev.premo.lifecycle.LifecycleState.*
 
 class PmDelegate<PM : PresentationModel>(
-    val pmParams: PmParams,
-    val exitHandler: () -> Boolean
+    private val pmParams: PmParams
 ) {
 
     @Suppress("UNCHECKED_CAST")
@@ -59,11 +58,5 @@ class PmDelegate<PM : PresentationModel>(
 
     fun savePm(): Map<String, String> {
         return presentationModel.stateHandler.saveState()
-    }
-
-    fun onSystemBack() {
-        if (presentationModel.messageHandler.handle(SystemBackMessage).not()) {
-            exitHandler.invoke()
-        }
     }
 }

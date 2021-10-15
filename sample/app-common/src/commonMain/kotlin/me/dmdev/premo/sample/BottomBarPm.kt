@@ -30,7 +30,6 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.SystemBackMessage
 
 class BottomBarPm(params: PmParams) : PresentationModel(params) {
 

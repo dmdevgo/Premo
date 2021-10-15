@@ -44,7 +44,7 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
         )
     }
 
-    @ExperimentalAnimationApi
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -52,7 +52,13 @@ class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
         }
     }
 
-    @ExperimentalAnimationApi
+    override fun onBackPressed() {
+        if (delegate.presentationModel.messageHandler.handle(SystemBackMessage).not()) {
+            super.onBackPressed()
+        }
+    }
+
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun MainScreen(mainPm: MainPm) {
         AnimatedNavigationBox(

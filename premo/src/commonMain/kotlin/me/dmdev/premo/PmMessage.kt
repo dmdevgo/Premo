@@ -25,5 +25,3 @@
 package me.dmdev.premo
 
 interface PmMessage
-
-object SystemBackMessage: PmMessage

@@ -69,8 +69,4 @@ abstract class PmActivity<PM : PresentationModel>(
         delegate.onDestroy()
         super.onDestroy()
     }
-
-    override fun onBackPressed() {
-        delegate.onBackPressed()
-    }
 }

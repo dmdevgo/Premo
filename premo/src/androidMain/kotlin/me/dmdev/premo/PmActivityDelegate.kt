@@ -64,13 +64,7 @@ class PmActivityDelegate<PM : PresentationModel>(
             stateSaver = stateSaver
         )
 
-        pmDelegate = PmDelegate(
-            pmParams = pmParams,
-            exitHandler = {
-                pmActivity.finish()
-                true
-            }
-        )
+        pmDelegate = PmDelegate(pmParams)
         pmDelegate?.onCreate()
     }
 
@@ -117,13 +111,6 @@ class PmActivityDelegate<PM : PresentationModel>(
             pmDelegate?.onDestroy()
         }
         pmDelegate = null
-    }
-
-    /**
-     * You must call this method from the containing [Activity]'s corresponding method.
-     */
-    fun onBackPressed() {
-        pmDelegate?.onSystemBack()
     }
 
     private fun getPmTag(savedInstanceState: Bundle?): String {
