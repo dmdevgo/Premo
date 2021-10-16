@@ -26,7 +26,7 @@ package me.dmdev.premo
 
 class TestPm(
     pmParams: PmParams = PmParams(
-        tag = "test_pm",
+        tag = TAG,
         parent = null,
         state = mapOf(),
         factory = TestPmFactory(),
@@ -34,5 +34,10 @@ class TestPm(
         description = Description
     )
 ) : PresentationModel(pmParams) {
+
     object Description: PmDescription
+
+    companion object {
+        const val TAG = "test_pm"
+    }
 }

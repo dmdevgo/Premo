@@ -26,6 +26,9 @@ package me.dmdev.premo
 
 class TestPmFactory : PmFactory {
     override fun createPm(params: PmParams): PresentationModel {
-        TODO("Not yet implemented")
+        return when (params.description) {
+            TestPm.Description -> TestPm(params)
+            else -> throw IllegalArgumentException("")
+        }
     }
 }
