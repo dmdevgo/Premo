@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.internal
+package me.dmdev.premo
 
-import platform.Foundation.NSUUID
-
-internal actual fun randomUUID(): String {
-    return NSUUID().UUIDString
-}
+internal expect fun randomUUID(): String

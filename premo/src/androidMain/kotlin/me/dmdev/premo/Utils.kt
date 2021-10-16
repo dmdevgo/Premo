@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.internal
+package me.dmdev.premo
 
 import java.util.*
 

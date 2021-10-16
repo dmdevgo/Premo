@@ -29,7 +29,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
-import me.dmdev.premo.internal.randomUUID
 
 abstract class PresentationModel(params: PmParams) {
 

@@ -22,25 +22,10 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.internal
+package me.dmdev.premo
 
-import me.dmdev.premo.PresentationModel
-import kotlin.native.concurrent.ThreadLocal
+import platform.Foundation.NSUUID
 
-@ThreadLocal
-internal object PmStore {
-
-    private val pmMap = mutableMapOf<String, PresentationModel>()
-
-    fun getPm(key: String): PresentationModel? {
-        return pmMap[key]
-    }
-
-    fun putPm(key: String, pm: PresentationModel) {
-        pmMap[key] = pm
-    }
-
-    fun removePm(key: String): PresentationModel? {
-        return pmMap.remove(key)
-    }
+internal actual fun randomUUID(): String {
+    return NSUUID().UUIDString
 }
