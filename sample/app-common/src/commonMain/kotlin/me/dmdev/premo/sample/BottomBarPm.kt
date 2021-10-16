@@ -24,12 +24,11 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.navigation.SetNavigator
 import me.dmdev.premo.onMessage
 
 class BottomBarPm(params: PmParams) : PresentationModel(params) {
@@ -37,22 +36,15 @@ class BottomBarPm(params: PmParams) : PresentationModel(params) {
     @Serializable
     object Description : PmDescription
 
-    val tabPmList = listOf<TabPm>(
-        AttachedChild(TabPm.Description("Tab #1"), "Tab #1"),
-        AttachedChild(TabPm.Description("Tab #2"), "Tab #2"),
-        AttachedChild(TabPm.Description("Tab #3"), "Tab #3"),
+    val navigator = SetNavigator(
+        Child(TabPm.Description("Tab #1"), "Tab #1"),
+        Child(TabPm.Description("Tab #2"), "Tab #2"),
+        Child(TabPm.Description("Tab #3"), "Tab #3"),
     )
-
-    private val _currentTabPm = MutableStateFlow(tabPmList.first())
-    val currentTabPm =_currentTabPm.asStateFlow()
-
-    fun onTabClick(tabPm: TabPm) {
-        _currentTabPm.value = tabPm
-    }
 
     init {
         messageHandler.onMessage<SystemBackMessage> {
-            currentTabPm.value.messageHandler.handle(it)
+            navigator.current.value.messageHandler.handle(it)
         }
     }
 }

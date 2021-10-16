@@ -25,6 +25,8 @@
 package me.dmdev.premo.sample
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -44,16 +46,17 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun BottomBarScreen(pm: BottomBarPm = Stubs.bottomBarPm) {
 
-    val currentTabPm = pm.currentTabPm.bind()
+    val currentTabPm = pm.navigator.current.bind()
 
     Scaffold(
         bottomBar = {
             BottomNavigation {
-                pm.tabPmList.forEach { tabPm ->
+                pm.navigator.values.forEach { tabPm ->
+                    val title = (tabPm as? TabPm)?.tabTitle ?: ""
                     BottomNavigationItem(
                         selected = tabPm == currentTabPm,
-                        onClick = { pm.onTabClick(tabPm) },
-                        label = { Text(tabPm.tabTitle) },
+                        onClick = { pm.navigator.setCurrent(tabPm) },
+                        label = { Text(title) },
                         icon = {
                             Icon(
                                 imageVector = Icons.Filled.Android,
@@ -65,12 +68,18 @@ fun BottomBarScreen(pm: BottomBarPm = Stubs.bottomBarPm) {
             }
         }
     ) {
-        AnimatedNavigationBox(
-            navigation = currentTabPm.navigation
-        ) { pm ->
-            when (pm) {
-                is TabItemPm -> ItemScreen(pm)
-                else -> EmptyScreen()
+        if (currentTabPm is TabPm) {
+            AnimatedNavigationBox(
+                navigation = currentTabPm.navigation,
+                enterTransition = { _, _ -> slideInHorizontally({ height -> height }) },
+                exitTransition = { _, _ -> slideOutHorizontally({ height -> -height }) },
+                popEnterTransition = { _, _ -> slideInHorizontally({ height -> -height }) },
+                popExitTransition = { _, _ -> slideOutHorizontally({ height -> height }) },
+            ) { pm ->
+                when (pm) {
+                    is TabItemPm -> ItemScreen(pm)
+                    else -> EmptyScreen()
+                }
             }
         }
     }
