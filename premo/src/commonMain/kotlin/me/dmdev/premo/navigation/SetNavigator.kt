@@ -25,17 +25,12 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.PresentationModel
-
-interface SetNavigation {
-    val values: List<PresentationModel>
-    val current: PresentationModel
-    val currentState: StateFlow<PresentationModel>
-}
+import me.dmdev.premo.getSaved
+import me.dmdev.premo.setSaver
 
 interface SetNavigator : SetNavigation {
     fun setCurrent(pm: PresentationModel)

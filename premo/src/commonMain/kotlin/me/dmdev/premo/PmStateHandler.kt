@@ -29,7 +29,7 @@ import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
 class PmStateHandler(
-    private val pmStateSaver: PmStateSaver,
+    private val stateSaver: PmStateSaver,
     private val states: Map<String, String>
 ) {
 
@@ -41,12 +41,7 @@ class PmStateHandler(
     private val savers = mutableMapOf<String, Saver<*>>()
 
     fun <T> getSaved(key: String, kType: KType): T? {
-        return states[key]?.let { pmStateSaver.restoreState(kType, it) }
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    inline fun <reified T> getSaved(key: String): T? {
-        return getSaved(key, typeOf<T>())
+        return states[key]?.let { stateSaver.restoreState(kType, it) }
     }
 
     fun <T> setSaver(key: String, kType: KType, saveValue: () -> T) {
@@ -57,16 +52,21 @@ class PmStateHandler(
         savers.remove(key)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    inline fun <reified T> setSaver(key: String, noinline saveValue: () -> T) {
-        setSaver(key, typeOf<T>(), saveValue)
-    }
-
     fun saveState(): Map<String, String> {
         return savers.mapValues { entry ->
-            pmStateSaver.saveState(entry.value.kType, entry.value.saveValue())
+            stateSaver.saveState(entry.value.kType, entry.value.saveValue())
         }
     }
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+inline fun <reified T> PmStateHandler.getSaved(key: String): T? {
+    return getSaved(key, typeOf<T>())
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+inline fun <reified T> PmStateHandler.setSaver(key: String, noinline saveValue: () -> T) {
+    setSaver(key, typeOf<T>(), saveValue)
 }
 
 @OptIn(ExperimentalStdlibApi::class)

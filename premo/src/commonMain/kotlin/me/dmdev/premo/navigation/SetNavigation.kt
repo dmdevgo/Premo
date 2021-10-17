@@ -22,16 +22,13 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.navigation
 
-import kotlin.reflect.KType
+import kotlinx.coroutines.flow.StateFlow
+import me.dmdev.premo.PresentationModel
 
-class TestPmStateSaver : PmStateSaver {
-    override fun <T> saveState(kType: KType, value: T): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun <T> restoreState(kType: KType, jsonString: String): T {
-        TODO("Not yet implemented")
-    }
+interface SetNavigation {
+    val values: List<PresentationModel>
+    val current: PresentationModel
+    val currentState: StateFlow<PresentationModel>
 }

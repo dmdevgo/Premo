@@ -73,8 +73,8 @@ class JsonPmStateSaver : PmStateSaver {
         return json.encodeToString(serializer(kType), value)
     }
 
-    override fun <T> restoreState(kType: KType, string: String): T {
+    override fun <T> restoreState(kType: KType, jsonString: String): T {
         @Suppress("UNCHECKED_CAST")
-        return json.decodeFromString(serializer(kType) as KSerializer<T>, string)
+        return json.decodeFromString(serializer(kType) as KSerializer<T>, jsonString)
     }
 }

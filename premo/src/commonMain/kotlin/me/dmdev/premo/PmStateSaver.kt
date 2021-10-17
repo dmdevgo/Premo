@@ -29,7 +29,7 @@ import kotlin.reflect.typeOf
 
 interface PmStateSaver {
     fun <T> saveState(kType: KType, value: T): String
-    fun <T> restoreState(kType: KType, json: String): T
+    fun <T> restoreState(kType: KType, jsonString: String): T
 }
 
 @OptIn(ExperimentalStdlibApi::class)
