@@ -27,7 +27,6 @@ package me.dmdev.premo.navigation
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
-import me.dmdev.premo.TestPm
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

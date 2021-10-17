@@ -24,10 +24,12 @@
 
 package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmLifecycle.State.*
-import me.dmdev.premo.TestPm
 import kotlin.test.*
 
 class StackNavigatorTest {
@@ -38,6 +40,7 @@ class StackNavigatorTest {
     private lateinit var pm2: TestPm
     private lateinit var pm3: TestPm
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeTest
     fun setUp() {
         lifecycle = PmLifecycle()
@@ -45,7 +48,10 @@ class StackNavigatorTest {
         pm1 = TestPm()
         pm2 = TestPm()
         pm3 = TestPm()
-        navigator = StackNavigatorImpl(lifecycle, scope = MainScope())
+        navigator = StackNavigatorImpl(
+            lifecycle = lifecycle,
+            scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        )
     }
 
     @Test

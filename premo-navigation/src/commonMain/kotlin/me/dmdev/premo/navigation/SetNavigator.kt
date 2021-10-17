@@ -60,7 +60,7 @@ class SetNavigatorImpl(
 
     private val _currentState = MutableStateFlow(values.first())
     override val currentState = _currentState.asStateFlow()
-    override val current = currentState.value
+    override val current get() = currentState.value
 
     init {
         subscribeToLifecycle()

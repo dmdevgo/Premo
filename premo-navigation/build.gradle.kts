@@ -41,6 +41,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(libs.coroutines.core)
+                compileOnly(project(":premo"))
             }
         }
 
@@ -48,10 +49,10 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+                implementation(project(":premo"))
             }
         }
 
-        // Fix test run: https://youtrack.jetbrains.com/issue/KT-40571
         val androidTest  by getting {
             dependencies {
                 implementation(kotlin("test"))
@@ -59,19 +60,12 @@ kotlin {
             }
         }
 
-        val androidMain by getting {
-            dependencies {
-                api(libs.coroutines.android)
-                compileOnly(libs.appcompat.appcompat)
-            }
-        }
-
         val iosMain by getting {}
+        val androidMain by getting {}
 
         iosMain.dependsOn(commonMain)
         androidMain.dependsOn(commonMain)
         androidTest.dependsOn(commonTest)
-
     }
 }
 

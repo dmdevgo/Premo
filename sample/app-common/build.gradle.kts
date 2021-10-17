@@ -37,6 +37,7 @@ kotlin {
             framework {
                 baseName = "Common"
                 export(project(":premo"))
+                export(project(":premo-navigation"))
                 export(libs.coroutines.core)
             }
         }
@@ -48,12 +49,11 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":premo"))
+                api(project(":premo-navigation"))
                 api(libs.coroutines.core)
                 api(libs.kotlinx.serialization.json)
             }
         }
-
-        val iosMain by getting {}
     }
 }
 
