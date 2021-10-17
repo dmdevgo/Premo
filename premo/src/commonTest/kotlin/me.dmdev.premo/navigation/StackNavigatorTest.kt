@@ -24,6 +24,7 @@
 
 package me.dmdev.premo.navigation
 
+import kotlinx.coroutines.MainScope
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmLifecycle.State.*
 import me.dmdev.premo.TestPm
@@ -44,7 +45,7 @@ class StackNavigatorTest {
         pm1 = TestPm()
         pm2 = TestPm()
         pm3 = TestPm()
-        navigator = StackNavigatorImpl(lifecycle)
+        navigator = StackNavigatorImpl(lifecycle, scope = MainScope())
     }
 
     @Test

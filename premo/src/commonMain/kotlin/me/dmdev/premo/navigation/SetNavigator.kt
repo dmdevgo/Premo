@@ -33,7 +33,8 @@ import me.dmdev.premo.PresentationModel
 
 interface SetNavigation {
     val values: List<PresentationModel>
-    val current: StateFlow<PresentationModel>
+    val current: PresentationModel
+    val currentState: StateFlow<PresentationModel>
 }
 
 interface SetNavigator : SetNavigation {
@@ -52,7 +53,7 @@ fun PresentationModel.SetNavigator(
         navigator.setCurrent(navigator.values[savedIndex])
     }
     stateHandler.setSaver(indexKey) {
-        navigator.values.indexOf(navigator.current.value)
+        navigator.values.indexOf(navigator.current)
     }
     return navigator
 }
@@ -62,21 +63,22 @@ class SetNavigatorImpl(
     override val values: List<PresentationModel>,
 ) : SetNavigator {
 
-    private val _current = MutableStateFlow(values.first())
-    override val current = _current.asStateFlow()
+    private val _currentState = MutableStateFlow(values.first())
+    override val currentState = _currentState.asStateFlow()
+    override val current = currentState.value
 
     init {
         subscribeToLifecycle()
     }
 
     override fun setCurrent(pm: PresentationModel) {
-        _current.value.lifecycle.moveTo(CREATED)
+        _currentState.value.lifecycle.moveTo(CREATED)
         pm.lifecycle.moveTo(lifecycle.state)
-        _current.value = pm
+        _currentState.value = pm
     }
 
     private fun subscribeToLifecycle() {
-        current.value.lifecycle.moveTo(lifecycle.state)
+        current.lifecycle.moveTo(lifecycle.state)
         lifecycle.addObserver(object : PmLifecycle.Observer {
             override fun onLifecycleChange(lifecycle: PmLifecycle, event: PmLifecycle.Event) {
                 when (lifecycle.state) {
@@ -87,7 +89,7 @@ class SetNavigatorImpl(
                         }
                     }
                     IN_FOREGROUND -> {
-                        current.value.lifecycle.moveTo(lifecycle.state)
+                        current.lifecycle.moveTo(lifecycle.state)
                     }
                 }
             }

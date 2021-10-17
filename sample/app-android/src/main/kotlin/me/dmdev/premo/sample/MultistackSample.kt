@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 @Preview(
     showBackground = true,
     showSystemUi = true
@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun BottomBarScreen(pm: BottomBarPm = Stubs.bottomBarPm) {
 
-    val currentTabPm = pm.navigator.current.bind()
+    val currentTabPm = pm.navigator.currentState.bind()
 
     Scaffold(
         bottomBar = {

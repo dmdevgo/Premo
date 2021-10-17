@@ -33,23 +33,23 @@ class PmStateHandler(
     private val states: Map<String, String>
 ) {
 
-    class Saver<T>(
+    private class Saver<T>(
         val kType: KType,
         val saveValue: () -> T
     )
 
     private val savers = mutableMapOf<String, Saver<*>>()
 
-    fun <T> getSaved(kType: KType, key: String): T? {
+    fun <T> getSaved(key: String, kType: KType): T? {
         return states[key]?.let { pmStateSaver.restoreState(kType, it) }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
     inline fun <reified T> getSaved(key: String): T? {
-        return getSaved(typeOf<T>(), key)
+        return getSaved(key, typeOf<T>())
     }
 
-    fun <T> setSaver(kType: KType, key: String, saveValue: () -> T) {
+    fun <T> setSaver(key: String, kType: KType, saveValue: () -> T) {
         savers[key] = Saver(kType, saveValue)
     }
 
@@ -59,7 +59,7 @@ class PmStateHandler(
 
     @OptIn(ExperimentalStdlibApi::class)
     inline fun <reified T> setSaver(key: String, noinline saveValue: () -> T) {
-        setSaver(typeOf<T>(), key, saveValue)
+        setSaver(key, typeOf<T>(), saveValue)
     }
 
     fun saveState(): Map<String, String> {
@@ -93,12 +93,12 @@ fun <T> PmStateHandler.SaveableFlow(
     initialValue: T,
     kType: KType
 ): MutableStateFlow<T> {
-    val savedState = getSaved<T>(kType, key)
+    val savedState = getSaved<T>(key, kType)
     val state: MutableStateFlow<T> = if (savedState != null) {
         MutableStateFlow(savedState)
     } else {
         MutableStateFlow(initialValue)
     }
-    setSaver(kType, key) { state.value }
+    setSaver(key, kType) { state.value }
     return state
 }

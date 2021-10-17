@@ -34,6 +34,10 @@ kotlin {
 
     sourceSets {
 
+        all {
+            languageSettings.optIn("kotlin.RequiresOptIn")
+        }
+
         val commonMain by getting {
             dependencies {
                 api(libs.coroutines.core)

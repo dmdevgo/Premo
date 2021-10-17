@@ -95,7 +95,7 @@ fun NavigationBox(
     }
 }
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AnimatedNavigationBox(
     navigation: StackNavigation,

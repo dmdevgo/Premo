@@ -37,7 +37,7 @@ class MainPmFactory : PmFactory {
             is BottomBarPm.Description -> BottomBarPm(params)
             is TabPm.Description -> TabPm(description.tabTitle, params)
             is TabItemPm.Description -> TabItemPm(description.screenTitle, description.tabTitle, params)
-            else -> throw IllegalStateException("Not handled instance creation for pm description $description")
+            else -> throw IllegalArgumentException("Not handled instance creation for pm description $description")
         }
     }
 }

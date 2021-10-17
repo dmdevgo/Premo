@@ -32,6 +32,7 @@ import me.dmdev.premo.PresentationModel
 
 interface StackNavigation {
     val currentTop: PresentationModel?
+    val currentTopState: StateFlow<PresentationModel?>
     val backstack: List<PresentationModel>
     val backstackState: StateFlow<List<PresentationModel>>
     val backstackChanges: Flow<BackstackChange>

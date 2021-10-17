@@ -25,8 +25,7 @@
 package me.dmdev.premo
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 
@@ -38,16 +37,14 @@ abstract class PresentationModel(params: PmParams) {
     val tag: String = params.tag
     val description: PmDescription = params.description
     val parent: PresentationModel? = params.parent
-    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    val lifecycle: PmLifecycle = PmLifecycle()
+    val scope = MainScope()
     var inForegroundScope: CoroutineScope? = null
         private set
-
     val messageHandler: PmMessageHandler = PmMessageHandler(parent?.messageHandler)
     val stateHandler: PmStateHandler = PmStateHandler(pmStateSaver, params.state)
 
     private val attachedChildren = mutableListOf<PresentationModel>()
-
-    val lifecycle: PmLifecycle = PmLifecycle()
 
     init {
         initSaver()
@@ -64,11 +61,11 @@ abstract class PresentationModel(params: PmParams) {
         attachedChildren.remove(pm)
     }
 
-    @Suppress("UNCHECKED_CAST", "FunctionName")
-    fun <PM : PresentationModel> Child(
+    @Suppress("FunctionName")
+    fun Child(
         description: PmDescription,
         tag: String = randomUUID()
-    ): PM {
+    ): PresentationModel {
         val config = PmParams(
             tag = tag,
             parent = this,
@@ -78,15 +75,15 @@ abstract class PresentationModel(params: PmParams) {
             stateSaver = pmStateSaver
         )
 
-        return pmFactory.createPm(config) as PM
+        return pmFactory.createPm(config)
     }
 
     @Suppress("FunctionName")
-    fun <PM : PresentationModel> AttachedChild(
+    fun AttachedChild(
         description: PmDescription,
         tag: String
-    ): PM {
-        return Child<PM>(description, tag).apply {
+    ): PresentationModel {
+        return Child(description, tag).apply {
             attachChild(this)
         }
     }
@@ -107,7 +104,7 @@ abstract class PresentationModel(params: PmParams) {
 
                 when (event) {
                     PmLifecycle.Event.ON_FOREGROUND -> {
-                        inForegroundScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+                        inForegroundScope = MainScope()
                     }
                     PmLifecycle.Event.ON_BACKGROUND -> {
                         inForegroundScope?.cancel()

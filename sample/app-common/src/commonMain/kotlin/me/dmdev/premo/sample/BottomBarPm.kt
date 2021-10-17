@@ -44,7 +44,7 @@ class BottomBarPm(params: PmParams) : PresentationModel(params) {
 
     init {
         messageHandler.onMessage<SystemBackMessage> {
-            navigator.current.value.messageHandler.handle(it)
+            navigator.current.messageHandler.handle(it)
         }
     }
 }

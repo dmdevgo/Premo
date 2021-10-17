@@ -33,11 +33,11 @@ interface PmStateSaver {
 }
 
 @OptIn(ExperimentalStdlibApi::class)
-inline fun <reified T> PmStateSaver.saveState(value: T): String {
+internal inline fun <reified T> PmStateSaver.saveState(value: T): String {
     return saveState(typeOf<T>(), value)
 }
 
 @OptIn(ExperimentalStdlibApi::class)
-inline fun <reified T> PmStateSaver.restoreState(json: String): T {
+internal inline fun <reified T> PmStateSaver.restoreState(json: String): T {
     return restoreState(typeOf<T>(), json)
 }

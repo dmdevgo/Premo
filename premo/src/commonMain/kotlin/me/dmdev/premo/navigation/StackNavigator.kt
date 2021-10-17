@@ -24,6 +24,7 @@
 
 package me.dmdev.premo.navigation
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmLifecycle
@@ -41,7 +42,7 @@ fun PresentationModel.StackNavigator(
     initialDescription: PmDescription,
     key: String = "stack_navigator"
 ): StackNavigator {
-    val navigator = StackNavigatorImpl(lifecycle)
+    val navigator = StackNavigatorImpl(lifecycle, scope)
     stateHandler.setSaver(key) {
         navigator.backstack.map { pm -> Pair(pm.description, pm.tag) }
     }
@@ -58,7 +59,8 @@ fun PresentationModel.StackNavigator(
 }
 
 internal class StackNavigatorImpl(
-    private val lifecycle: PmLifecycle
+    private val lifecycle: PmLifecycle,
+    private val scope: CoroutineScope
 ) : StackNavigator {
 
     private val _backstackState = MutableStateFlow<List<PresentationModel>>(listOf())
@@ -69,6 +71,16 @@ internal class StackNavigatorImpl(
         private set(value) {
             _backstackState.value = value
         }
+
+    override val currentTop: PresentationModel?
+        get() = backstack.lastOrNull()
+
+    override val currentTopState: StateFlow<PresentationModel?> =
+        backstackState.map { it.lastOrNull() }.stateIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null
+        )
 
     init {
         subscribeToLifecycle()
@@ -137,9 +149,6 @@ internal class StackNavigatorImpl(
             false
         }
     }
-
-    override val currentTop: PresentationModel?
-        get() = backstack.lastOrNull()
 
     private fun subscribeToLifecycle() {
         lifecycle.addObserver(object : PmLifecycle.Observer {

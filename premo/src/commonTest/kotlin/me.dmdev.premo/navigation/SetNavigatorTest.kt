@@ -53,7 +53,7 @@ class SetNavigatorTest {
     @Test
     fun testInitialState() {
         assertEquals(navigator.values, listOf(pm1, pm2, pm3))
-        assertEquals(pm1, navigator.current.value)
+        assertEquals(pm1, navigator.current)
         assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
         assertEquals(pm2.lifecycle.state, CREATED)
         assertEquals(pm3.lifecycle.state, CREATED)
@@ -63,7 +63,7 @@ class SetNavigatorTest {
     fun testSetCurrent() {
         navigator.setCurrent(pm2)
 
-        assertEquals(pm2, navigator.current.value)
+        assertEquals(pm2, navigator.current)
         assertEquals(pm1.lifecycle.state, CREATED)
         assertEquals(pm2.lifecycle.state, IN_FOREGROUND)
         assertEquals(pm3.lifecycle.state, CREATED)

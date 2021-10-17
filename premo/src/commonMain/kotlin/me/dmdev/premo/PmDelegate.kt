@@ -31,11 +31,11 @@ class PmDelegate<PM : PresentationModel>(
 ) {
 
     @Suppress("UNCHECKED_CAST")
-    val presentationModel: PM = PmStore.getPm(pmParams.tag) as? PM
+    val presentationModel: PM = PmStore.get(pmParams.tag) as? PM
         ?: pmParams.factory.createPm(pmParams) as PM
 
     init {
-        PmStore.putPm(pmParams.tag, presentationModel)
+        PmStore.put(pmParams.tag, presentationModel)
     }
 
     fun onCreate() {
@@ -52,7 +52,7 @@ class PmDelegate<PM : PresentationModel>(
 
     fun onDestroy() {
         presentationModel.lifecycle.moveTo(DESTROYED)
-        PmStore.removePm(pmParams.tag)
+        PmStore.remove(pmParams.tag)
     }
 
     fun savePm(): Map<String, String> {
