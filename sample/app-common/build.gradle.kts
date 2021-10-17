@@ -37,6 +37,7 @@ kotlin {
             framework {
                 baseName = "Common"
                 export(project(":premo"))
+                export(libs.coroutines.core)
             }
         }
     }
@@ -47,6 +48,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":premo"))
+                api(libs.coroutines.core)
                 api(libs.kotlinx.serialization.json)
             }
         }

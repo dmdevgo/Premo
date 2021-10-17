@@ -36,14 +36,14 @@ struct MainView: View {
     init(delegate: PmDelegate<MainPm>) {
         self.delegate = delegate
         self.pm = delegate.presentationModel
-        currentPm = ObservableState(pm.navigation.currentPm)
+        currentPm = ObservableState(pm.navigation.currentTopState)
     }
     
     var body: some View {
         VStack {
             HStack {
                 Button(action: {
-                    delegate.onSystemBack()
+                    delegate.presentationModel.messageHandler.handle(message: SystemBackMessage())
                 }) { Text("Back") }
                 .padding()
                 Spacer()

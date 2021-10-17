@@ -33,18 +33,18 @@ public class ObservableBoolean : ObservableObject {
     @Published
     var value: Bool
     
-    private var job: Kotlinx_coroutines_coreJob? = nil
+    private var cancelable: Cancelable? = nil
     
-    init(_ value: State<KotlinBoolean>) {
-        self.observableState = value
-        self.value = (observableState.value as? KotlinBoolean)?.boolValue ?? false
+    init(_ value: StateFlow) {
+        self.observableState = State<KotlinBoolean>(stateFlow: value)
+        self.value = observableState.value?.boolValue ?? false
         
-        job = observableState.bind(consumer: { value in
-            self.value = (value as? KotlinBoolean)?.boolValue ?? false
+        cancelable = observableState.bind(consumer: { value in
+            self.value = value?.boolValue ?? false
         })
     }
     
     deinit {
-        self.job?.cancel(cause: nil)
+        self.cancelable?.cancel()
     }
 }

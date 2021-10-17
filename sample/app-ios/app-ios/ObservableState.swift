@@ -33,18 +33,19 @@ public class ObservableState<T : AnyObject> : ObservableObject {
     @Published
     var value: T?
     
-    private var job: Kotlinx_coroutines_coreJob? = nil
+    private var cancelable: Cancelable? = nil
     
-    init(_ value: State<T>) {
-        self.observableState = value
-        self.value = observableState.value as? T
+    init(_ value: StateFlow) {
+        self.observableState = State<T>(stateFlow: value)
+        self.value = observableState.value
         
-        job = observableState.bind(consumer: { value in
-            self.value = value as? T
+        cancelable = observableState.bind(consumer: { value in
+            self.value = value
         })
     }
+
     
     deinit {
-        self.job?.cancel(cause: nil)
+        self.cancelable?.cancel()
     }
 }

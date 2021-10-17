@@ -33,18 +33,18 @@ public class ObservableInt : ObservableObject {
     @Published
     var value: Int
     
-    private var job: Kotlinx_coroutines_coreJob? = nil
+    private var cancelable: Cancelable? = nil
     
-    init(_ value: State<KotlinInt>) {
-        self.observableState = value
-        self.value = (observableState.value as? KotlinInt)?.intValue ?? 0
+    init(_ value: StateFlow) {
+        self.observableState = State<KotlinInt>(stateFlow: value)
+        self.value = observableState.value?.intValue ?? 0
         
-        job = observableState.bind(consumer: { value in
-            self.value = (value as? KotlinInt)?.intValue ?? 0
+        cancelable = observableState.bind(consumer: { value in
+            self.value = value?.intValue ?? 0
         })
     }
     
     deinit {
-        self.job?.cancel(cause: nil)
+        self.cancelable?.cancel()
     }
 }

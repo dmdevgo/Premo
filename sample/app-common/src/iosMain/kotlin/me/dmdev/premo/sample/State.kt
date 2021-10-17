@@ -22,29 +22,30 @@
  * SOFTWARE.
  */
 
+package me.dmdev.premo.sample
 
-import Foundation
-import Common
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
-public class ObservableString : ObservableObject {
-    
-    private let observableState: State<NSString>
+interface Cancelable {
+    fun cancel()
+}
 
-    @Published
-    var value: String
-    
-    private var cancelable: Cancelable? = nil
-    
-    init(_ value: StateFlow) {
-        self.observableState = State<NSString>(stateFlow: value)
-        self.value = observableState.value as? String ?? ""
-        
-        cancelable = observableState.bind(consumer: { value in
-            self.value = value as? String ?? ""
-        })
-    }
-    
-    deinit {
-        self.cancelable?.cancel()
+class State<T>(
+    private val stateFlow: StateFlow<T>
+) : StateFlow<T> by stateFlow {
+
+    fun bind(consumer: (T) -> Unit): Cancelable {
+        val job = Job()
+        onEach { consumer(it) }.launchIn(CoroutineScope(Dispatchers.Main + job))
+        return object : Cancelable {
+            override fun cancel() {
+                job.cancel()
+            }
+        }
     }
 }

@@ -37,12 +37,11 @@ struct PremoSampleApp: App {
             pmParams: PmParams(
                 tag: "MainPm",
                 parent: nil,
-                state: nil,
+                state: [String: String](),
                 factory: MainPmFactory(),
                 description: MainPm.Description(),
-                stateSaver: JsonStateSaver()
-            ),
-            exitHandler: { true }
+                stateSaver: JsonPmStateSaver()
+            )
         )
     
         delegate.onCreate()

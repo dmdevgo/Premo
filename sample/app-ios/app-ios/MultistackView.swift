@@ -35,12 +35,15 @@ struct MultistackView: View {
     
     var body: some View {
         TabView {
-            ForEach(pm.tabPmList, id: \.self) { tabPm in
-                TabContainerView(pm: tabPm)
-                    .tabItem {
-                        Image(systemName: "star.fill")
-                        Text(tabPm.tabTitle)
-                    }
+            ForEach(pm.navigator.values, id: \.self) { pm in
+                if (pm is TabPm) {
+                    let tabPm = pm as! TabPm
+                    TabContainerView(pm: tabPm)
+                        .tabItem {
+                            Image(systemName: "star.fill")
+                            Text(tabPm.tabTitle)
+                        }
+                }
             }
         }
     }
