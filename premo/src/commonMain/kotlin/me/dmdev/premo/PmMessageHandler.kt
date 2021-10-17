@@ -65,3 +65,15 @@ inline fun <reified M : PmMessage> PmMessageHandler.onMessage(
         }
     }
 }
+
+inline fun <reified M : PmMessage> PmMessageHandler.handle(
+    noinline handler: (message: M) -> Boolean
+) {
+    addHandler {
+        if (it is M) {
+            handler(it)
+        } else {
+            false
+        }
+    }
+}

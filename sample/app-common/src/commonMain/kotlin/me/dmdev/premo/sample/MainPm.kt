@@ -25,11 +25,8 @@
 package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.*
 import me.dmdev.premo.navigation.StackNavigation
-import me.dmdev.premo.onMessage
 
 class MainPm(params: PmParams) : PresentationModel(params) {
 
@@ -41,6 +38,12 @@ class MainPm(params: PmParams) : PresentationModel(params) {
     ) { navigator ->
         onMessage<CounterSampleMessage> { navigator.push(Child(CounterPm.Description(10))) }
         onMessage<MultistackSampleMessage> { navigator.push(Child(BottomBarPm.Description)) }
-        onMessage<SystemBackMessage> { navigator.handleBack() }
+        handle<SystemBackMessage> {
+            if (navigator.currentTop?.messageHandler?.handle(it) == true) {
+                true
+            } else {
+                navigator.handleBack()
+            }
+        }
     }
 }

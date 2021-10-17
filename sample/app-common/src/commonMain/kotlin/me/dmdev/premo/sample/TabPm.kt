@@ -25,12 +25,9 @@
 package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.*
 import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.StackNavigator
-import me.dmdev.premo.onMessage
 
 class TabPm(
     val tabTitle: String,
@@ -60,7 +57,7 @@ class TabPm(
         onMessage<PreviousClickMessage> {
             handleBack(navigator)
         }
-        onMessage<SystemBackMessage> {
+        handle<SystemBackMessage> {
             handleBack(navigator)
         }
     }
