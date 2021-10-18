@@ -48,11 +48,10 @@ class MainPm(params: PmParams) : PresentationModel(params) {
             navigator.push(Child(BottomNavigationPm.Description))
         }
         handle<SystemBackMessage> {
-            if (navigator.currentTop?.messageHandler?.handle(it) == true) {
-                true
-            } else {
-                navigator.handleBack()
-            }
+            navigator.currentTop?.messageHandler?.handle(it) ?: false
+        }
+        handle<SystemBackMessage> {
+            navigator.handleBack()
         }
     }
 }
