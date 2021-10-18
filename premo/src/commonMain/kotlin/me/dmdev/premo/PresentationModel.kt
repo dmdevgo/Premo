@@ -83,8 +83,8 @@ abstract class PresentationModel(params: PmParams) {
         description: PmDescription,
         tag: String
     ): PresentationModel {
-        return Child(description, tag).apply {
-            attachChild(this)
+        return Child(description, tag).also {
+            attachChild(it)
         }
     }
 
