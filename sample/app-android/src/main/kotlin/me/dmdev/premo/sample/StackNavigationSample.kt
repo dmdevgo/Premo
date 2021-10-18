@@ -77,7 +77,7 @@ fun StackNavigationScreen(pm: StackNavigationPm = Stubs.stackNavigationPm) {
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { pm.setBackstackClick() }) {
-            Text("Set Backstack")
+            Text("Set back stack")
         }
     }
 }

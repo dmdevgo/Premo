@@ -35,13 +35,19 @@ struct SamplesView: View {
     
     var body: some View {
         VStack {
+            
             Button("Counter", action: {
-                pm.counterClick()
+                pm.counterSample()
             })
             .padding()
             
-            Button("Multistack", action: {
-                pm.multistackClick()
+            Button("Stack Navigation", action: {
+                pm.stackNavigationSample()
+            })
+            .padding()
+            
+            Button("Bottom Navigation", action: {
+                pm.bottomNavigationSample()
             })
             .padding()
         }

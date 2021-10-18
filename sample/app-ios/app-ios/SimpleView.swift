@@ -26,36 +26,21 @@ import SwiftUI
 import Common
 
 
-struct TabItemView: View {
+struct SimpleView: View {
     
-    private let pm: TabItemPm
+    private let pm: SimpleScreenPm
     
-    init(pm: TabItemPm) {
+    init(pm: SimpleScreenPm) {
         self.pm = pm
     }
     
     var body: some View {
-        VStack {
-            
-            Text(pm.screenTitle)
-                .padding()
-            
-            Text(pm.tabTitle)
-                .padding()
-            
-            Button("Next", action: {
-                pm.nextClick()
-            }).padding()
-            
-            Button("Previous", action: {
-                pm.previousClick()
-            }).padding()
-        }
+        Text("#\(pm.numberText)")
     }
 }
 
-struct TabItemView_Previews: PreviewProvider {
+struct SimpleView_Previews: PreviewProvider {
     static var previews: some View {
-        TabItemView(pm: Stubs.init().tabItemPm)
+        SimpleView(pm: Stubs.init().simplePm)
     }
 }

@@ -25,37 +25,59 @@
 import SwiftUI
 import Common
 
-
-struct TabItemView: View {
+struct StackNavigationView: View {
     
-    private let pm: TabItemPm
+    private let pm: StackNavigationPm
     
-    init(pm: TabItemPm) {
+    @ObservedObject
+    private var backstack: ObservableString
+    
+    @ObservedObject
+    private var currentPm: ObservableState<PresentationModel>
+    
+    init(pm: StackNavigationPm) {
         self.pm = pm
+        backstack = ObservableString(pm.backstackAsStringState)
+        currentPm = ObservableState(pm.navigation.currentTopState)
     }
     
     var body: some View {
+        
         VStack {
             
-            Text(pm.screenTitle)
+            Spacer()
+            
+            switch currentPm.value {
+            case let pm as SimpleScreenPm: SimpleView(pm: pm)
+            default: EmptyView()
+            }
+            
+            Spacer()
+            
+            Text("Stack: \(backstack.value)")
                 .padding()
             
-            Text(pm.tabTitle)
-                .padding()
+            Spacer()
             
-            Button("Next", action: {
-                pm.nextClick()
+            Button("Push", action: {
+                pm.pushClick()
             }).padding()
             
-            Button("Previous", action: {
-                pm.previousClick()
+            Button("Pop", action: {
+                pm.popClick()
             }).padding()
+            
+            Button("Set back stack", action: {
+                pm.setBackstackClick()
+            }).padding()
+            
+            Spacer()
         }
     }
 }
 
-struct TabItemView_Previews: PreviewProvider {
+struct StackNavigationView_Previews: PreviewProvider {
     static var previews: some View {
-        TabItemView(pm: Stubs.init().tabItemPm)
+        StackNavigationView(pm: Stubs.init().stackNavigationPm)
     }
 }

@@ -25,11 +25,11 @@
 import SwiftUI
 import Common
 
-struct MultistackView: View {
+struct BottomNavigationView: View {
     
-    private let pm: BottomBarPm
+    private let pm: BottomNavigationPm
     
-    init(pm: BottomBarPm) {
+    init(pm: BottomNavigationPm) {
         self.pm = pm
     }
     
@@ -49,8 +49,8 @@ struct MultistackView: View {
     }
 }
 
-struct MultistackView_Previews: PreviewProvider {
+struct BottomNavigationView_Previews: PreviewProvider {
     static var previews: some View {
-        MultistackView(pm: Stubs.init().bottomBarPm)
+        BottomNavigationView(pm: Stubs.init().bottomBarPm)
     }
 }

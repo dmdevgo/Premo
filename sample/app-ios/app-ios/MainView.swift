@@ -41,6 +41,7 @@ struct MainView: View {
     
     var body: some View {
         VStack {
+            
             HStack {
                 Button(action: {
                     delegate.presentationModel.messageHandler.handle(message: SystemBackMessage())
@@ -54,7 +55,8 @@ struct MainView: View {
             switch currentPm.value {
             case let pm as SamplesPm: SamplesView(pm: pm)
             case let pm as CounterPm: CounterView(pm: pm)
-            case let pm as BottomBarPm: MultistackView(pm: pm)
+            case let pm as StackNavigationPm: StackNavigationView(pm: pm)
+            case let pm as BottomNavigationPm: BottomNavigationView(pm: pm)
             default: EmptyView()
             }
             
