@@ -26,6 +26,7 @@ package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
@@ -35,6 +36,7 @@ interface StackNavigation {
     val currentTopState: StateFlow<PresentationModel?>
     val backstack: List<PresentationModel>
     val backstackState: StateFlow<List<PresentationModel>>
+    @ExperimentalPremoApi
     val backstackChanges: Flow<BackstackChange>
 }
 

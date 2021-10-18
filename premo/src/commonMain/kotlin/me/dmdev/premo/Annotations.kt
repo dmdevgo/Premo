@@ -22,15 +22,21 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo
 
-import me.dmdev.premo.ExperimentalPremoApi
-import me.dmdev.premo.PresentationModel
-
-@ExperimentalPremoApi
-sealed class BackstackChange {
-    data class Push(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackstackChange()
-    data class Pop(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackstackChange()
-    data class Set(val pm: PresentationModel) : BackstackChange()
-    object Empty : BackstackChange()
-}
+@RequiresOptIn(level = RequiresOptIn.Level.ERROR)
+@Retention(AnnotationRetention.BINARY)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.ANNOTATION_CLASS,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.LOCAL_VARIABLE,
+    AnnotationTarget.VALUE_PARAMETER,
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER,
+    AnnotationTarget.TYPEALIAS
+)
+annotation class ExperimentalPremoApi

@@ -84,6 +84,7 @@ internal class StackNavigatorImpl(
         subscribeToLifecycle()
     }
 
+    @ExperimentalPremoApi
     override val backstackChanges: Flow<BackstackChange> = flow {
         var oldPmStack: List<PresentationModel> = backstackState.value
         _backstackState.collect { newPmStack ->

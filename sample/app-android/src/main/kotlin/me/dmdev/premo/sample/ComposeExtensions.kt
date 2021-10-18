@@ -32,6 +32,7 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.BackstackChange
 import me.dmdev.premo.navigation.StackNavigation
@@ -51,6 +52,7 @@ fun <T> Flow<T>.bind(initialValue: T): T {
     return collectAsState(initialValue).value
 }
 
+@OptIn(ExperimentalPremoApi::class)
 @Composable
 fun NavigationBox(
     navigation: StackNavigation,
@@ -64,6 +66,7 @@ fun NavigationBox(
     )
 }
 
+@OptIn(ExperimentalPremoApi::class)
 @Composable
 fun NavigationBox(
     backstackChange: BackstackChange,
@@ -95,7 +98,7 @@ fun NavigationBox(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalPremoApi::class)
 @Composable
 fun AnimatedNavigationBox(
     navigation: StackNavigation,
