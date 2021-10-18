@@ -24,27 +24,22 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.handle
-import me.dmdev.premo.navigation.SetNavigator
 
-class BottomBarPm(params: PmParams) : PresentationModel(params) {
-
-    @Serializable
-    object Description : PmDescription
-
-    val navigator = SetNavigator(
-        Child(TabPm.Description("Tab #1"), "Tab #1"),
-        Child(TabPm.Description("Tab #2"), "Tab #2"),
-        Child(TabPm.Description("Tab #3"), "Tab #3"),
-    )
-
-    init {
-        messageHandler.handle<SystemBackMessage> {
-            navigator.current.messageHandler.handle(it)
-        }
-    }
+@Suppress("FunctionName")
+fun <T> PresentationModel.StateFlow(
+    initialValue: T,
+    stateSource: (() -> Flow<T>)
+): StateFlow<T> {
+    return stateSource
+        .invoke()
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = initialValue
+        )
 }

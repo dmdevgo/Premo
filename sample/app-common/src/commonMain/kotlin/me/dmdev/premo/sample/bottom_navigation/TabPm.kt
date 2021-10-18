@@ -22,37 +22,59 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.bottom_navigation
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
 import me.dmdev.premo.navigation.StackNavigation
-import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
-import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
+import me.dmdev.premo.navigation.StackNavigator
+import me.dmdev.premo.sample.NextClickMessage
+import me.dmdev.premo.sample.PreviousClickMessage
+import me.dmdev.premo.sample.SystemBackMessage
 
-class MainPm(params: PmParams) : PresentationModel(params) {
+class TabPm(
+    val tabTitle: String,
+    params: PmParams
+) : PresentationModel(params) {
 
     @Serializable
-    object Description : PmDescription
+    class Description(
+        val tabTitle: String
+    ) : PmDescription
+
+    private var number: Int = 1
 
     val navigation = StackNavigation(
-        initialDescription = SamplesPm.Description
+        initialDescription = TabItemPm.Description(nextScreenTitle(), tabTitle)
     ) { navigator ->
-        onMessage<CounterSampleMessage> {
-            navigator.push(Child(CounterPm.Description(10)))
+        onMessage<NextClickMessage> {
+            navigator.push(
+                Child(
+                    TabItemPm.Description(
+                        screenTitle = nextScreenTitle(),
+                        tabTitle = tabTitle
+                    )
+                )
+            )
         }
-        onMessage<StackNavigationSampleMessage> {
-            navigator.push(Child(StackNavigationPm.Description))
-        }
-        onMessage<BottomNavigationSampleMessage> {
-            navigator.push(Child(BottomNavigationPm.Description))
+        onMessage<PreviousClickMessage> {
+            handleBack(navigator)
         }
         handle<SystemBackMessage> {
-            if (navigator.currentTop?.messageHandler?.handle(it) == true) {
-                true
-            } else {
-                navigator.handleBack()
-            }
+            handleBack(navigator)
         }
+    }
+
+    private fun handleBack(navigator: StackNavigator): Boolean {
+        return if (navigator.handleBack()) {
+            number--
+            true
+        } else {
+            false
+        }
+    }
+
+    private fun nextScreenTitle(): String {
+        return "Screen #${number++}"
     }
 }

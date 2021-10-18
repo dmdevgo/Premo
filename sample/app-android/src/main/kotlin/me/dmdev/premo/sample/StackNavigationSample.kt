@@ -24,59 +24,78 @@
 
 package me.dmdev.premo.sample
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import me.dmdev.premo.PmActivity
-import me.dmdev.premo.PmActivityDelegate
-import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
-class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
+@OptIn(ExperimentalAnimationApi::class)
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun StackNavigationScreen(pm: StackNavigationPm = Stubs.stackNavigationPm) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-    override val delegate: PmActivityDelegate<MainPm> by lazy {
-        PmActivityDelegate(
-            pmActivity = this,
-            pmDescription = MainPm.Description,
-            pmFactory = MainPmFactory(),
-            pmStateSaver = JsonPmStateSaver(),
-        )
-    }
-
-    @OptIn(ExperimentalAnimationApi::class)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MainScreen(delegate.presentationModel)
-        }
-    }
-
-    override fun onBackPressed() {
-        if (delegate.presentationModel.messageHandler.handle(SystemBackMessage).not()) {
-            super.onBackPressed()
-        }
-    }
-
-    @OptIn(ExperimentalAnimationApi::class)
-    @Composable
-    fun MainScreen(mainPm: MainPm) {
         AnimatedNavigationBox(
-            navigation = mainPm.navigation,
+            navigation = pm.navigation,
+            modifier = Modifier.requiredSize(100.dp),
             enterTransition = { _, _ -> slideInHorizontally({ height -> height }) },
             exitTransition = { _, _ -> slideOutHorizontally({ height -> -height }) },
             popEnterTransition = { _, _ -> slideInHorizontally({ height -> -height }) },
             popExitTransition = { _, _ -> slideOutHorizontally({ height -> height }) },
         ) { pm ->
             when (pm) {
-                is SamplesPm -> SamplesScreen(pm)
-                is CounterPm -> CounterScreen(pm)
-                is StackNavigationPm -> StackNavigationScreen(pm)
-                is BottomNavigationPm -> BottomNavigationScreen(pm)
+                is SimpleScreenPm -> SimpleScreen(pm)
                 else -> EmptyScreen()
             }
         }
+        Spacer(modifier = Modifier.height(64.dp))
+        Text("Stack: ${pm.backstackAsStringState.bind()}")
+        Spacer(modifier = Modifier.height(64.dp))
+        Button(onClick = { pm.pushClick() }) {
+            Text("Push")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { pm.popClick() }) {
+            Text("Pop")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { pm.setBackstackClick() }) {
+            Text("Set Backstack")
+        }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun SimpleScreen(pm: SimpleScreenPm = Stubs.simplePm) {
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "#${pm.numberText}",
+            fontSize = 24.sp
+        )
     }
 }

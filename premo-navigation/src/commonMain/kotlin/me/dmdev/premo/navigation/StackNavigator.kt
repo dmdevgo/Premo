@@ -37,7 +37,7 @@ interface StackNavigator : StackNavigation {
 }
 
 fun PresentationModel.StackNavigator(
-    initialDescription: PmDescription,
+    initialDescription: PmDescription? = null,
     key: String = "stack_navigator"
 ): StackNavigator {
     val navigator = StackNavigatorImpl(lifecycle, scope)
@@ -50,7 +50,7 @@ fun PresentationModel.StackNavigator(
             ?: listOf()
     if (savedBackStack.isNotEmpty()) {
         navigator.setBackStack(savedBackStack)
-    } else {
+    } else if (initialDescription != null) {
         navigator.push(Child(initialDescription))
     }
     return navigator

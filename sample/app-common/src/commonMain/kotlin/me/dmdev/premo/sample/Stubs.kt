@@ -27,6 +27,11 @@ package me.dmdev.premo.sample
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
+import me.dmdev.premo.sample.bottom_navigation.TabItemPm
+import me.dmdev.premo.sample.bottom_navigation.TabPm
+import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
+import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
 object Stubs {
 
@@ -34,7 +39,9 @@ object Stubs {
 
     val samplesPm = createPm<SamplesPm>(SamplesPm.Description)
     val counterPm = createPm<CounterPm>(CounterPm.Description(10))
-    val bottomBarPm = createPm<BottomBarPm>(BottomBarPm.Description)
+    val stackNavigationPm = createPm<StackNavigationPm>(StackNavigationPm.Description)
+    val simplePm = createPm<SimpleScreenPm>(SimpleScreenPm.Description(1))
+    val bottomBarPm = createPm<BottomNavigationPm>(BottomNavigationPm.Description)
     val tabPm = createPm<TabPm>(TabPm.Description("Tab #"))
     val tabItemPm = createPm<TabItemPm>(TabItemPm.Description("Screen #", "Tab #"))
 

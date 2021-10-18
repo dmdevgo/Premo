@@ -34,12 +34,15 @@ class SamplesPm(params: PmParams) : PresentationModel(params) {
     @Serializable
     object Description: PmDescription
 
-    fun counterClick() {
+    fun counterSample() {
         messageHandler.send(CounterSampleMessage)
     }
 
-    fun multistackClick() {
-        messageHandler.send(MultistackSampleMessage)
+    fun stackNavigationSample() {
+        messageHandler.send(StackNavigationSampleMessage)
     }
 
+    fun bottomNavigationSample() {
+        messageHandler.send(BottomNavigationSampleMessage)
+    }
 }

@@ -44,12 +44,16 @@ fun SamplesScreen(pm: SamplesPm = Stubs.samplesPm) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { pm.counterClick() }) {
+        Button(onClick = { pm.counterSample() }) {
             Text("Counter")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { pm.multistackClick() }) {
-            Text("Multistack")
+        Button(onClick = { pm.stackNavigationSample() }) {
+            Text("Stack Navigation")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { pm.bottomNavigationSample() }) {
+            Text("Bottom Navigation")
         }
     }
 }

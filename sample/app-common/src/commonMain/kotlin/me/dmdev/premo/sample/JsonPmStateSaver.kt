@@ -30,6 +30,11 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
+import me.dmdev.premo.sample.bottom_navigation.TabItemPm
+import me.dmdev.premo.sample.bottom_navigation.TabPm
+import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
+import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 import kotlin.reflect.KType
 
 class JsonPmStateSaver : PmStateSaver {
@@ -53,8 +58,18 @@ class JsonPmStateSaver : PmStateSaver {
             )
             polymorphic(
                 PmDescription::class,
-                BottomBarPm.Description::class,
-                BottomBarPm.Description.serializer()
+                StackNavigationPm.Description::class,
+                StackNavigationPm.Description.serializer()
+            )
+            polymorphic(
+                PmDescription::class,
+                SimpleScreenPm.Description::class,
+                SimpleScreenPm.Description.serializer()
+            )
+            polymorphic(
+                PmDescription::class,
+                BottomNavigationPm.Description::class,
+                BottomNavigationPm.Description.serializer()
             )
             polymorphic(
                 PmDescription::class,

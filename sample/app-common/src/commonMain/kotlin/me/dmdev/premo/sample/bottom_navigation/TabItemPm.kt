@@ -22,37 +22,32 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.bottom_navigation
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.*
-import me.dmdev.premo.navigation.StackNavigation
-import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
-import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
+import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmParams
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.sample.NextClickMessage
+import me.dmdev.premo.sample.PreviousClickMessage
 
-class MainPm(params: PmParams) : PresentationModel(params) {
+class TabItemPm(
+    val screenTitle: String,
+    val tabTitle: String,
+    params: PmParams
+) : PresentationModel(params) {
 
     @Serializable
-    object Description : PmDescription
+    class Description(
+        val screenTitle: String,
+        val tabTitle: String
+    ) : PmDescription
 
-    val navigation = StackNavigation(
-        initialDescription = SamplesPm.Description
-    ) { navigator ->
-        onMessage<CounterSampleMessage> {
-            navigator.push(Child(CounterPm.Description(10)))
-        }
-        onMessage<StackNavigationSampleMessage> {
-            navigator.push(Child(StackNavigationPm.Description))
-        }
-        onMessage<BottomNavigationSampleMessage> {
-            navigator.push(Child(BottomNavigationPm.Description))
-        }
-        handle<SystemBackMessage> {
-            if (navigator.currentTop?.messageHandler?.handle(it) == true) {
-                true
-            } else {
-                navigator.handleBack()
-            }
-        }
+    fun nextClick() {
+        messageHandler.send(NextClickMessage)
+    }
+
+    fun previousClick() {
+        messageHandler.send(PreviousClickMessage)
     }
 }

@@ -28,6 +28,7 @@ import me.dmdev.premo.PmMessage
 
 object SystemBackMessage: PmMessage
 object CounterSampleMessage: PmMessage
-object MultistackSampleMessage: PmMessage
+object StackNavigationSampleMessage: PmMessage
+object BottomNavigationSampleMessage: PmMessage
 object NextClickMessage: PmMessage
 object PreviousClickMessage: PmMessage

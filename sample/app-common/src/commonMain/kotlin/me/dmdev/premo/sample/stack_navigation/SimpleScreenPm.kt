@@ -22,56 +22,20 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.stack_navigation
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.*
-import me.dmdev.premo.navigation.StackNavigation
-import me.dmdev.premo.navigation.StackNavigator
+import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmParams
+import me.dmdev.premo.PresentationModel
 
-class TabPm(
-    val tabTitle: String,
+class SimpleScreenPm(
+    number: Int,
     params: PmParams
 ) : PresentationModel(params) {
 
     @Serializable
-    class Description(
-        val tabTitle: String
-    ) : PmDescription
+    class Description(val number: Int) : PmDescription
 
-    private var number: Int = 1
-
-    val navigation = StackNavigation(
-        initialDescription = TabItemPm.Description(nextScreenTitle(), tabTitle)
-    ) { navigator ->
-        onMessage<NextClickMessage> {
-            navigator.push(
-                Child(
-                    TabItemPm.Description(
-                        screenTitle = nextScreenTitle(),
-                        tabTitle = tabTitle
-                    )
-                )
-            )
-        }
-        onMessage<PreviousClickMessage> {
-            handleBack(navigator)
-        }
-        handle<SystemBackMessage> {
-            handleBack(navigator)
-        }
-    }
-
-    private fun handleBack(navigator: StackNavigator): Boolean {
-        return if (navigator.handleBack()) {
-            number--
-            true
-        } else {
-            false
-        }
-    }
-
-    private fun nextScreenTitle(): String {
-        return "Screen #${number++}"
-    }
+    val numberText = number.toString()
 }

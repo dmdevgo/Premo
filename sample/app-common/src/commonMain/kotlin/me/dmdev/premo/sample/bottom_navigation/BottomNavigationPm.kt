@@ -22,30 +22,30 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.bottom_navigation
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.handle
+import me.dmdev.premo.navigation.SetNavigator
+import me.dmdev.premo.sample.SystemBackMessage
 
-class TabItemPm(
-    val screenTitle: String,
-    val tabTitle: String,
-    params: PmParams
-) : PresentationModel(params) {
+class BottomNavigationPm(params: PmParams) : PresentationModel(params) {
 
     @Serializable
-    class Description(
-        val screenTitle: String,
-        val tabTitle: String
-    ) : PmDescription
+    object Description : PmDescription
 
-    fun nextClick() {
-        messageHandler.send(NextClickMessage)
-    }
+    val navigator = SetNavigator(
+        Child(TabPm.Description("Tab #1"), "Tab #1"),
+        Child(TabPm.Description("Tab #2"), "Tab #2"),
+        Child(TabPm.Description("Tab #3"), "Tab #3"),
+    )
 
-    fun previousClick() {
-        messageHandler.send(PreviousClickMessage)
+    init {
+        messageHandler.handle<SystemBackMessage> {
+            navigator.current.messageHandler.handle(it)
+        }
     }
 }

@@ -27,6 +27,11 @@ package me.dmdev.premo.sample
 import me.dmdev.premo.PmFactory
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
+import me.dmdev.premo.sample.bottom_navigation.TabItemPm
+import me.dmdev.premo.sample.bottom_navigation.TabPm
+import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
+import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
 class MainPmFactory : PmFactory {
     override fun createPm(params: PmParams): PresentationModel {
@@ -34,7 +39,9 @@ class MainPmFactory : PmFactory {
             is MainPm.Description -> MainPm(params)
             is SamplesPm.Description -> SamplesPm(params)
             is CounterPm.Description -> CounterPm(description.maxCount, params)
-            is BottomBarPm.Description -> BottomBarPm(params)
+            is StackNavigationPm.Description -> StackNavigationPm(params)
+            is SimpleScreenPm.Description -> SimpleScreenPm(description.number, params)
+            is BottomNavigationPm.Description -> BottomNavigationPm(params)
             is TabPm.Description -> TabPm(description.tabTitle, params)
             is TabItemPm.Description -> TabItemPm(description.screenTitle, description.tabTitle, params)
             else -> throw IllegalArgumentException("Not handled instance creation for pm description $description")

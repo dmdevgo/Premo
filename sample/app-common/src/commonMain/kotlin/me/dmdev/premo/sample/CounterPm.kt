@@ -24,7 +24,8 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
@@ -60,19 +61,5 @@ class CounterPm(
         if (count.value > 0 ) {
             _count.value = count.value - 1
         }
-    }
-
-    @Suppress("FunctionName")
-    private fun <T> PresentationModel.StateFlow(
-        initialValue: T,
-        stateSource: (() -> Flow<T>)
-    ): StateFlow<T> {
-        return stateSource
-            .invoke()
-            .stateIn(
-                scope = scope,
-                started = SharingStarted.WhileSubscribed(),
-                initialValue = initialValue
-            )
     }
 }

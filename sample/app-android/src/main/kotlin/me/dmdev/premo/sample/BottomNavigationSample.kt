@@ -37,6 +37,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
+import me.dmdev.premo.sample.bottom_navigation.TabItemPm
+import me.dmdev.premo.sample.bottom_navigation.TabPm
 
 @OptIn(ExperimentalAnimationApi::class)
 @Preview(
@@ -44,7 +47,7 @@ import androidx.compose.ui.unit.sp
     showSystemUi = true
 )
 @Composable
-fun BottomBarScreen(pm: BottomBarPm = Stubs.bottomBarPm) {
+fun BottomNavigationScreen(pm: BottomNavigationPm = Stubs.bottomBarPm) {
 
     val currentTabPm = pm.navigator.currentState.bind()
 
