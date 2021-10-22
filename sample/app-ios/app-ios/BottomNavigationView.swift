@@ -29,19 +29,28 @@ struct BottomNavigationView: View {
     
     private let pm: BottomNavigationPm
     
+    @ObservedObject
+    private var currentPm: ObservableState<PresentationModel> // TODO bind tab selection
+    
     init(pm: BottomNavigationPm) {
         self.pm = pm
+        self.currentPm = ObservableState(pm.navigator.currentState)
+        
     }
     
     var body: some View {
         TabView {
-            ForEach(pm.navigator.values, id: \.self) { pm in
-                if (pm is TabPm) {
-                    let tabPm = pm as! TabPm
+            ForEach(pm.navigator.values, id: \.self) { itemPm in
+                if (itemPm is TabPm) {
+                    let tabPm = itemPm as! TabPm
                     TabContainerView(pm: tabPm)
                         .tabItem {
                             Image(systemName: "star.fill")
                             Text(tabPm.tabTitle)
+                        }
+                        .tag(tabPm.tag)
+                        .onAppear {
+                            pm.navigator.setCurrent(pm: tabPm)
                         }
                 }
             }
