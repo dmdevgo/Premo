@@ -35,7 +35,7 @@ import me.dmdev.premo.PmActivityDelegate
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
-class MainActivity : PmActivity<MainPm>(R.layout.activity_main) {
+class MainActivity : PmActivity<MainPm>() {
 
     override val delegate: PmActivityDelegate<MainPm> by lazy {
         PmActivityDelegate(

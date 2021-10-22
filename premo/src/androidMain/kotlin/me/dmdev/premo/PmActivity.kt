@@ -25,13 +25,10 @@
 package me.dmdev.premo
 
 import android.os.Bundle
-import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 
 
-abstract class PmActivity<PM : PresentationModel>(
-    @LayoutRes contentLayoutId: Int
-) : AppCompatActivity(contentLayoutId) {
+abstract class PmActivity<PM : PresentationModel> : AppCompatActivity() {
 
     protected abstract val delegate : PmActivityDelegate<PM>
 
