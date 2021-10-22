@@ -28,9 +28,10 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
 import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.StackNavigator
+import me.dmdev.premo.navigation.SystemBackMessage
+import me.dmdev.premo.navigation.handleSystemBack
 import me.dmdev.premo.sample.NextClickMessage
 import me.dmdev.premo.sample.PreviousClickMessage
-import me.dmdev.premo.sample.SystemBackMessage
 
 class TabPm(
     val tabTitle: String,
@@ -66,7 +67,7 @@ class TabPm(
     }
 
     private fun handleBack(navigator: StackNavigator): Boolean {
-        return if (navigator.handleBack()) {
+        return if (navigator.handleSystemBack()) {
             number--
             true
         } else {

@@ -19,48 +19,35 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+ * SOFTWARE.
  */
 
-import SwiftUI
-import Common
+package me.dmdev.premo.navigation
 
-struct MainView: View {
-    
-    private let delegate: PmDelegate<MainPm>
-    private let pm: MainPm
-    
-    @ObservedObject
-    private var currentPm: ObservableState<PresentationModel>
-    
-    init(delegate: PmDelegate<MainPm>) {
-        self.delegate = delegate
-        self.pm = delegate.presentationModel
-        currentPm = ObservableState(pm.navigation.currentTopState)
-    }
-    
-    var body: some View {
-        VStack {
-            
-            HStack {
-                Button(action: {
-                    delegate.presentationModel.handleSystemBack()
-                }) { Text("Back") }
-                .padding()
-                Spacer()
-            }
-            
-            Spacer()
-            
-            switch currentPm.value {
-            case let pm as SamplesPm: SamplesView(pm: pm)
-            case let pm as CounterPm: CounterView(pm: pm)
-            case let pm as StackNavigationPm: StackNavigationView(pm: pm)
-            case let pm as BottomNavigationPm: BottomNavigationView(pm: pm)
-            default: EmptyView()
-            }
-            
-            Spacer()
+import me.dmdev.premo.PmMessage
+import me.dmdev.premo.PresentationModel
+
+object SystemBackMessage : PmMessage
+
+fun PresentationModel.handleSystemBack(): Boolean {
+    return messageHandler.handle(SystemBackMessage)
+}
+
+fun StackNavigator.handleSystemBack(): Boolean {
+    return when {
+        currentTop?.handleSystemBack() == true -> {
+            true
+        }
+        backstack.size > 1 -> {
+            pop()
+            true
+        }
+        else -> {
+            false
         }
     }
+}
+
+fun SetNavigator.handleSystemBack(): Boolean {
+    return current.handleSystemBack()
 }

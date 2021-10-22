@@ -32,6 +32,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import me.dmdev.premo.PmActivity
 import me.dmdev.premo.PmActivityDelegate
+import me.dmdev.premo.navigation.handleSystemBack
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
@@ -55,7 +56,7 @@ class MainActivity : PmActivity<MainPm>() {
     }
 
     override fun onBackPressed() {
-        if (delegate.presentationModel.messageHandler.handle(SystemBackMessage).not()) {
+        if (delegate.presentationModel.handleSystemBack().not()) {
             super.onBackPressed()
         }
     }

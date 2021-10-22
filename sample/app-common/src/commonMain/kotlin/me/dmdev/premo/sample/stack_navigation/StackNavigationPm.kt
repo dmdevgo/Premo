@@ -32,8 +32,8 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.handle
 import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.StackNavigator
+import me.dmdev.premo.navigation.SystemBackMessage
 import me.dmdev.premo.sample.StateFlow
-import me.dmdev.premo.sample.SystemBackMessage
 
 class StackNavigationPm(params: PmParams) : PresentationModel(params) {
 

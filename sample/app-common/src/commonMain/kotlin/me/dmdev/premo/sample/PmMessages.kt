@@ -26,7 +26,6 @@ package me.dmdev.premo.sample
 
 import me.dmdev.premo.PmMessage
 
-object SystemBackMessage: PmMessage
 object CounterSampleMessage: PmMessage
 object StackNavigationSampleMessage: PmMessage
 object BottomNavigationSampleMessage: PmMessage

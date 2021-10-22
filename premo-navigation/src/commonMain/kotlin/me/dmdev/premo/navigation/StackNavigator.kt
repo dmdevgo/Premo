@@ -33,7 +33,6 @@ interface StackNavigator : StackNavigation {
     fun push(pm: PresentationModel)
     fun pop(): Boolean
     fun setBackStack(pmList: List<PresentationModel>)
-    fun handleBack(): Boolean
 }
 
 fun PresentationModel.StackNavigator(
@@ -138,15 +137,6 @@ internal class StackNavigatorImpl(
             pm.lifecycle.moveTo(CREATED)
         }
         pmList.lastOrNull()?.lifecycle?.moveTo(lifecycle.state)
-    }
-
-    override fun handleBack(): Boolean {
-        return if (backstack.size > 1) {
-            pop()
-            true
-        } else {
-            false
-        }
     }
 
     private fun subscribeToLifecycle() {

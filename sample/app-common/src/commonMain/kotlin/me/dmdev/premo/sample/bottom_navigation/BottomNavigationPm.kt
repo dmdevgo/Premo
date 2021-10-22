@@ -30,7 +30,8 @@ import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.handle
 import me.dmdev.premo.navigation.SetNavigator
-import me.dmdev.premo.sample.SystemBackMessage
+import me.dmdev.premo.navigation.SystemBackMessage
+import me.dmdev.premo.navigation.handleSystemBack
 
 class BottomNavigationPm(params: PmParams) : PresentationModel(params) {
 
@@ -45,7 +46,7 @@ class BottomNavigationPm(params: PmParams) : PresentationModel(params) {
 
     init {
         messageHandler.handle<SystemBackMessage> {
-            navigator.current.messageHandler.handle(it)
+            navigator.handleSystemBack()
         }
     }
 }
