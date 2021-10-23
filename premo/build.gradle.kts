@@ -25,12 +25,15 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    `publish-library`
 }
 
 kotlin {
 
-    android()
     ios()
+    android {
+        publishLibraryVariants("release", "debug")
+    }
 
     sourceSets {
 
@@ -76,10 +79,10 @@ kotlin {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = Premo.AndroidSdk.compile
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = 21
-        targetSdk = 31
+        minSdk = Premo.AndroidSdk.min
+        targetSdk = Premo.AndroidSdk.target
     }
 }

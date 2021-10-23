@@ -22,34 +22,39 @@
  * SOFTWARE.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+object Premo {
 
-buildscript {
+    const val groupId = "me.dmdev.premo"
+    const val version = "1.0.0-alpha.01"
+    const val description = "Premo helps you implement the presentation layer and share it on iOS and Android."
+    const val url = "https://github.com/dmdevgo/Premo"
 
-    val kotlinVersion = "1.5.31"
-
-    repositories {
-        google()
-        mavenCentral()
+    object License {
+        const val name = "MIT"
+        const val url = "https://github.com/dmdevgo/Premo/blob/master/LICENSE"
     }
-    dependencies {
-        classpath("com.android.tools.build:gradle:7.0.3")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion")
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+    object Scm {
+        const val url = "https://github.com/dmdevgo/Premo"
     }
-}
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        mavenLocal()
+    class Developer(
+        val id: String,
+        val name: String,
+        val email: String,
+    )
+
+    object AndroidSdk {
+        const val compile = 31
+        const val min = 21
+        const val target = 31
     }
-}
 
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    val developers = listOf(
+        Developer(
+            id = "dmdevgo",
+            name = "Dmitriy Gorbunov",
+            email = "dmitriy.goto@gmail.com"
+        )
+    )
 }

@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 rootProject.name = "Premo"
 include(":sample:app-android")
 include(":sample:app-common")
