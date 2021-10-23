@@ -11,6 +11,19 @@ At the same time, the library provides freedom of choice:
 - **Architecture** — MVVM, PM, MVI or other.
 - **UI** — Jetpack Compose for Android and SwiftUI for iOS.
 
+## Main Idea
+
+The library is based on the ideas of the [Presentation Model](https://martinfowler.com/eaaDev/PresentationModel.html) pattern described by Martin Fowler.
+The Presentation Model stores the state for presentation and coordinates with the domain model layer.
+
+In practice, you will have not one Presentation Model, but a composition of child Presentation Models.
+At the base, there will be a root Presentation Model, from which a tree of children will grow.
+Children can be pushed into the Stack Navigator, thus organizing the navigation stack.
+
+Such a tree composition is well suited for a hierarchical view as well as for a composition of functions from declarative UI frameworks.
+
+<img src="/docs/images/premo_diagram.png">
+
 ## Sample
 
 [Sample](https://github.com/dmdevgo/Premo/tree/master/sample) demonstrates:
