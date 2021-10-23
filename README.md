@@ -22,7 +22,7 @@ Children can be pushed into the Stack Navigator, thus organizing the navigation 
 
 Such a tree composition is well suited for a hierarchical view as well as for a composition of functions from declarative UI frameworks.
 
-<img src="/docs/images/premo_diagram.png">
+<img src="/docs/images/premo_diagram.png" width="600px">
 
 ## Sample
 
