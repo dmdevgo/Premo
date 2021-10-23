@@ -49,9 +49,9 @@ object Stubs {
         val config = PmParams(
             tag = "",
             parent = null,
+            description = description,
             state = mapOf(),
             factory = mainPmFactory,
-            description = description,
             stateSaver = JsonPmStateSaver()
         )
         @Suppress("UNCHECKED_CAST")

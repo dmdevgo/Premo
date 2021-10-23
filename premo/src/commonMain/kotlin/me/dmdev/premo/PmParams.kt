@@ -27,8 +27,8 @@ package me.dmdev.premo
 class PmParams(
     val tag: String,
     val parent: PresentationModel?,
+    val description: PmDescription,
     val state: Map<String, String>,
     val factory: PmFactory,
-    val description: PmDescription,
     val stateSaver: PmStateSaver
 )

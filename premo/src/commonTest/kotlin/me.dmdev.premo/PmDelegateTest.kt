@@ -39,10 +39,10 @@ class PmDelegateTest {
             PmParams(
                 tag = TestPm.TAG,
                 parent = null,
+                description = TestPm.Description,
                 state = mapOf(),
                 factory = pmFactory,
                 stateSaver = TestPmStateSaver(),
-                description = TestPm.Description
             )
         )
     }

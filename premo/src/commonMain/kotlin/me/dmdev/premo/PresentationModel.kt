@@ -27,6 +27,7 @@ package me.dmdev.premo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import me.dmdev.premo.PmLifecycle.Event.*
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 
 abstract class PresentationModel(params: PmParams) {
@@ -38,7 +39,7 @@ abstract class PresentationModel(params: PmParams) {
     val description: PmDescription = params.description
     val parent: PresentationModel? = params.parent
     val lifecycle: PmLifecycle = PmLifecycle()
-    val scope = MainScope()
+    val scope: CoroutineScope = MainScope()
     var inForegroundScope: CoroutineScope? = null
         private set
     val messageHandler: PmMessageHandler = PmMessageHandler(parent?.messageHandler)
@@ -69,9 +70,9 @@ abstract class PresentationModel(params: PmParams) {
         val config = PmParams(
             tag = tag,
             parent = this,
+            description = description,
             state = stateHandler.getSaved(tag) ?: mapOf(),
             factory = pmFactory,
-            description = description,
             stateSaver = pmStateSaver
         )
 
@@ -103,14 +104,14 @@ abstract class PresentationModel(params: PmParams) {
                 }
 
                 when (event) {
-                    PmLifecycle.Event.ON_FOREGROUND -> {
+                    ON_FOREGROUND -> {
                         inForegroundScope = MainScope()
                     }
-                    PmLifecycle.Event.ON_BACKGROUND -> {
+                    ON_BACKGROUND -> {
                         inForegroundScope?.cancel()
                         inForegroundScope = null
                     }
-                    PmLifecycle.Event.ON_DESTROY -> {
+                    ON_DESTROY -> {
                         scope.cancel()
                         parent?.stateHandler?.removeSaver(tag)
                     }

@@ -28,10 +28,10 @@ class TestPm(
     pmParams: PmParams = PmParams(
         tag = TAG,
         parent = null,
+        description = Description,
         state = mapOf(),
         factory = TestPmFactory(),
         stateSaver = TestPmStateSaver(),
-        description = Description
     )
 ) : PresentationModel(pmParams) {
 

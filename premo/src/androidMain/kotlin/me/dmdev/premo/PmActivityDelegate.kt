@@ -52,12 +52,13 @@ class PmActivityDelegate<PM : PresentationModel>(
      */
     fun onCreate(savedInstanceState: Bundle?) {
 
+        val pmTag = getPmTag(savedInstanceState) ?: UUID.randomUUID().toString()
         val pmParams = PmParams(
-            tag = getPmTag(savedInstanceState),
+            tag = pmTag,
             parent = null,
+            description = pmDescription,
             state = restorePmState(savedInstanceState),
             factory = pmFactory,
-            description = pmDescription,
             stateSaver = pmStateSaver
         )
 
@@ -110,8 +111,8 @@ class PmActivityDelegate<PM : PresentationModel>(
         pmDelegate = null
     }
 
-    private fun getPmTag(savedInstanceState: Bundle?): String {
-        return savedInstanceState?.getString(SAVED_PM_TAG_KEY) ?: UUID.randomUUID().toString()
+    private fun getPmTag(savedInstanceState: Bundle?): String? {
+        return savedInstanceState?.getString(SAVED_PM_TAG_KEY)
     }
 
     @OptIn(ExperimentalStdlibApi::class)

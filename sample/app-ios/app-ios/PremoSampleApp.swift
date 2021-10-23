@@ -37,9 +37,9 @@ struct PremoSampleApp: App {
             pmParams: PmParams(
                 tag: "MainPm",
                 parent: nil,
+                description: MainPm.Description(),
                 state: [String: String](),
                 factory: MainPmFactory(),
-                description: MainPm.Description(),
                 stateSaver: JsonPmStateSaver()
             )
         )

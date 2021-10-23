@@ -25,7 +25,7 @@
 package me.dmdev.premo
 
 class PmMessageHandler(
-    private val parentPmMessageHandler: PmMessageHandler?
+    private val parentHandler: PmMessageHandler?
 ) {
 
     private val handlers = mutableListOf<(message: PmMessage) -> Boolean>()
@@ -34,9 +34,7 @@ class PmMessageHandler(
         handlers.add(handler)
     }
 
-    fun removeHandler(
-        handler: (message: PmMessage) -> Boolean
-    ) {
+    fun removeHandler(handler: (message: PmMessage) -> Boolean) {
         handlers.remove(handler)
     }
 
@@ -48,7 +46,7 @@ class PmMessageHandler(
 
     fun send(message: PmMessage) {
         if (!handlers.any { it.invoke(message) }) {
-            parentPmMessageHandler?.send(message)
+            parentHandler?.send(message)
         }
     }
 }
