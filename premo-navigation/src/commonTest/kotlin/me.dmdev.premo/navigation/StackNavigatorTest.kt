@@ -128,7 +128,7 @@ class StackNavigatorTest {
         navigator.push(pm1)
         navigator.push(pm2)
 
-        assertTrue(navigator.handleBack())
+        assertTrue(navigator.handleSystemBack())
         assertEquals(pm1, navigator.currentTop)
         assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
         assertEquals(pm2.lifecycle.state, DESTROYED)
@@ -138,7 +138,7 @@ class StackNavigatorTest {
     fun testHandleBackWhenOnePmInBackstack() {
         navigator.push(pm1)
 
-        assertFalse(navigator.handleBack())
+        assertFalse(navigator.handleSystemBack())
         assertEquals(pm1, navigator.currentTop)
         assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
 
@@ -146,7 +146,7 @@ class StackNavigatorTest {
 
     @Test
     fun testHandleBackWhenBackstackIsEmpty() {
-        assertFalse(navigator.handleBack())
+        assertFalse(navigator.handleSystemBack())
     }
 
     @Test
