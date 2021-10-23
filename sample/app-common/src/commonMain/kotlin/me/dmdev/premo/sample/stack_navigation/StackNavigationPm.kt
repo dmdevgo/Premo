@@ -26,10 +26,7 @@ package me.dmdev.premo.sample.stack_navigation
 
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.handle
+import me.dmdev.premo.*
 import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.StackNavigator
 import me.dmdev.premo.navigation.SystemBackMessage
@@ -58,6 +55,9 @@ class StackNavigationPm(params: PmParams) : PresentationModel(params) {
         messageHandler.handle<SystemBackMessage> {
             navigator.pop()
         }
+        stateHandler.setSaver(KEY_SCREEN_NUMBER) {
+            screenNumber
+        }
     }
 
     fun pushClick() {
@@ -78,12 +78,16 @@ class StackNavigationPm(params: PmParams) : PresentationModel(params) {
         )
     }
 
-    private var screenNumber: Int = 0
+    private var screenNumber: Int = stateHandler.getSaved(KEY_SCREEN_NUMBER) ?: 0
     private fun nextChild(): PresentationModel {
         val number = screenNumber++
         return Child(
             description = SimpleScreenPm.Description(number),
             tag = number.toString()
         )
+    }
+
+    companion object {
+        private const val KEY_SCREEN_NUMBER = "screen_number"
     }
 }
