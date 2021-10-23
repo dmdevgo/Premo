@@ -43,7 +43,6 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                api(libs.coroutines.core)
                 compileOnly(project(":premo"))
             }
         }

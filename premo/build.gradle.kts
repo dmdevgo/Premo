@@ -64,7 +64,6 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                api(libs.coroutines.android)
                 compileOnly(libs.appcompat.appcompat)
             }
         }
