@@ -1,7 +1,7 @@
 # Premo
 
-![Maven Central](https://img.shields.io/maven-central/v/me.dmdev.premo/premo)
-![GitHub](https://img.shields.io/github/license/dmdevgo/premo?color=yellow)
+[![Maven Central](https://img.shields.io/maven-central/v/me.dmdev.premo/premo)](https://repo1.maven.org/maven2/me/dmdev/premo/premo/1.0.0-alpha.01)
+[![License: MIT](https://img.shields.io/github/license/dmdevgo/premo?color=yellow)](https://github.com/dmdevgo/Premo/blob/master/LICENSE)
 ![platform-android](https://img.shields.io/badge/platform-android-green)
 ![platform-ios](https://img.shields.io/badge/platform-ios-lightgrey)
 
