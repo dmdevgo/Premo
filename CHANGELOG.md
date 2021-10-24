@@ -1,5 +1,6 @@
 # 1.0.0-alpha.01 / 24.10.2021
 First public release:
+
 **Premo**
 - `PresentationModel` — the base class for placing presentation logic.
 - `PmLifecycle` — represents the lifecycle of the Presentation Model.
