@@ -1,3 +1,5 @@
+import java.util.*
+
 /*
  * The MIT License (MIT)
  *
@@ -27,11 +29,53 @@ plugins {
     signing
 }
 
+ext["signing.keyId"] = ""
+ext["signing.password"] = "'"
+ext["signing.secretKeyRingFile"] = ""
+ext["ossrhUsername"] = ""
+ext["ossrhPassword"] = ""
+ext["sonatypeStagingProfileId"] = ""
+
+val secretPropsFile = project.rootProject.file("local.properties")
+if (secretPropsFile.exists()) {
+    secretPropsFile.reader().use {
+        Properties().apply {
+            load(it)
+        }
+    }.onEach { (name, value) ->
+        ext[name.toString()] = value
+    }
+} else {
+    ext["signing.keyId"] = System.getenv("SIGNING_KEY_ID")
+    ext["signing.password"] = System.getenv("SIGNING_PASSWORD")
+    ext["signing.secretKeyRingFile"] = System.getenv("SIGNING_SECRET_KEY_RING_FILE")
+    ext["ossrhUsername"] = System.getenv("OSSRH_USERNAME")
+    ext["ossrhPassword"] = System.getenv("OSSRH_PASSWORD")
+    ext["sonatypeStagingProfileId"] = System.getenv("SONATYPE_STAGING_PROFILE_ID")
+}
+
+fun getExtraString(name: String) = ext[name]?.toString()
+
 publishing {
     publications.withType<MavenPublication> {
 
         groupId = Premo.groupId
         version = Premo.version
+
+        repositories {
+            maven {
+                name = "sonatype"
+                val releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                val snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                val url = if (version.endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+                setUrl(url)
+
+                credentials {
+                    username = getExtraString("ossrhUsername")
+                    password = getExtraString("ossrhPassword")
+                }
+            }
+        }
 
         pom {
             name.set(project.name)
@@ -57,4 +101,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications)
 }
