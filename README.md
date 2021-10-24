@@ -1,5 +1,10 @@
 # Premo
 
+![Maven Central](https://img.shields.io/maven-central/v/me.dmdev.premo/premo)
+![GitHub](https://img.shields.io/github/license/dmdevgo/premo?color=yellow)
+![platform-android](https://img.shields.io/badge/platform-android-green)
+![platform-ios](https://img.shields.io/badge/platform-ios-lightgrey)
+
 Premo is a Kotlin Multiplatform library that helps you implement the Presentation Layer and share it on iOS and Android. 
 
 Focus on writing logic instead of solving common and boring UI related issues:
