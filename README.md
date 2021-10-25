@@ -1,6 +1,6 @@
 # Premo
 
-[![Maven Central](https://img.shields.io/maven-central/v/me.dmdev.premo/premo)](https://repo1.maven.org/maven2/me/dmdev/premo/premo/1.0.0-alpha.01)
+[![Maven Central](https://img.shields.io/maven-central/v/me.dmdev.premo/premo)](https://search.maven.org/artifact/me.dmdev.premo/premo)
 [![License: MIT](https://img.shields.io/github/license/dmdevgo/premo?color=yellow)](https://github.com/dmdevgo/Premo/blob/master/LICENSE)
 ![platform-android](https://img.shields.io/badge/platform-android-green)
 ![platform-ios](https://img.shields.io/badge/platform-ios-lightgrey)
@@ -16,7 +16,14 @@ At the same time, the library provides freedom of choice:
 - **Architecture** — MVVM, PM, MVI or other.
 - **UI** — Jetpack Compose for Android and SwiftUI for iOS.
 
-## Main Idea
+## Table of Contents
+
+- [Overview](#overview)
+- [Installation](#installation)
+- [Sample](#sample)
+- [License](#license)
+
+## Overview
 
 The library is based on the ideas of the [Presentation Model](https://martinfowler.com/eaaDev/PresentationModel.html) pattern described by Martin Fowler.
 The Presentation Model stores the state for presentation and coordinates with the domain model layer.
@@ -27,17 +34,42 @@ Children can be pushed into the Stack Navigator, thus organizing the navigation 
 
 Such a tree composition is well suited for a hierarchical view as well as for a composition of functions from declarative UI frameworks.
 
-<img src="/docs/images/premo_diagram.png" width="600px">
+<img src="/docs/images/premo_diagram.jpg" width="600px">
+
+## Installation
+
+Add to the root gradle script:
+```Kotlin
+allprojects {
+    repositories {
+        mavenLocal()
+    }
+}
+```
+Add dependencies to the shared multiplatform module:
+```Kotlin
+kotlin {
+	sourceSets {
+	    val commonMain by getting {
+	        dependencies {
+	            api("me.dmdev.premo:premo:<latest_version>")
+	            api("me.dmdev.premo:premo-navigation:<latest_version>")
+	        }
+	    }
+    }
+}
+```
+> Attention! The library is in the pre-release alpha version. Stable work and backward compatibility are not guaranteed. API may be changed in the future.
 
 ## Sample
 
 [Sample](https://github.com/dmdevgo/Premo/tree/master/sample) demonstrates:
 - Sharing presentation logic between Android and iOS.
+- UI on Jetpack Compose and SwiftUI.
 - Using StateFlow to implement MVVM (PM).
 - Simple Counter.
 - Stack and Bottom navigation with multistack.
 - Saving and restoring the state after killing the process.
-- UI on Jetpack Compose and SwiftUI.
 
 ## License
 
