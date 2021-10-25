@@ -42,7 +42,7 @@ Add to the root gradle script:
 ```Kotlin
 allprojects {
     repositories {
-        mavenLocal()
+        mavenCentral()
     }
 }
 ```
