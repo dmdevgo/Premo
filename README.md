@@ -5,12 +5,14 @@
 ![platform-android](https://img.shields.io/badge/platform-android-green)
 ![platform-ios](https://img.shields.io/badge/platform-ios-lightgrey)
 
-Premo is a Kotlin Multiplatform library that helps you implement the Presentation Layer and share it on iOS and Android. 
+Premo is a Kotlin Multiplatform library that helps you implement the Presentation Layer and share it on iOS and Android. Focus on writing logic instead of solving common and boring UI related issues.
 
-Focus on writing logic instead of solving common and boring UI related issues:
-- **Lifecycle**
-- **Persistence**
-- **Navigation**
+Here are some key features:
+- **State holding** — PresentationModel is a multiplatform version of the ViewModel.
+- **Lifecycle** — Presentation Model is lifecycle aware.
+- **Navigation** — navigate between Presentation Models instead of switching views.
+- **Persistence** — saving and restoring state after recreating a process.
+- **Communication** — send messages from children towards the root Presentation Model.
 
 At the same time, the library provides freedom of choice:
 - **Architecture** — MVVM, PM, MVI or other.
@@ -25,16 +27,23 @@ At the same time, the library provides freedom of choice:
 
 ## Overview
 
-The library is based on the ideas of the [Presentation Model](https://martinfowler.com/eaaDev/PresentationModel.html) pattern described by Martin Fowler.
-The Presentation Model stores the state for presentation and coordinates with the domain model layer.
+The library is based on the ideas of the [Presentation Model](https://martinfowler.com/eaaDev/PresentationModel.html) pattern described by Martin Fowler. The Presentation Model stores the state for presentation and coordinates with the domain model layer. 
 
-In practice, you will have not one Presentation Model, but a composition of child Presentation Models.
-At the base, there will be a root Presentation Model, from which a tree of children will grow.
-Children can be pushed into the Stack Navigator, thus organizing the navigation stack.
+In practice, you will have not one Presentation Model, but a composition of child Presentation Models. At the base, there will be a root Presentation Model, from which a tree of children will grow. Children can be pushed into the Stack Navigator, thus organizing the navigation stack.
 
 Such a tree composition is well suited for a hierarchical view as well as for a composition of functions from declarative UI frameworks.
 
-<img src="/docs/images/premo_diagram.jpg" width="600px">
+<img src="/docs/images/premo_diagram.jpg" width="500px">
+
+One interesting feature of the tree is that the child keeps a reference to the parent. This allows for messaging between Presentation Models. For example, when some event occurs in a child that requires a reaction from the parent. In this case, the child can send a message towards the root for one of the parents to handle it.
+
+<img src="/docs/images/premo_messaging.jpg" width="500px">
+
+Navigation commands can be one such event. The Child PM sends a message and then the Parent PM can intercept this message and push the next Child PM into the Stack Navigator.
+
+This way of navigation has several advantages:
+- Relieves the Child PM from the responsibility of what transition to make transitions and allow the parents to decide.
+- Simplifies nested navigation when an event occurs deep in the hierarchy.
 
 ## Installation
 
@@ -55,10 +64,13 @@ kotlin {
 	            api("me.dmdev.premo:premo:<latest_version>")
 	            api("me.dmdev.premo:premo-navigation:<latest_version>")
 	        }
-	    }
-    }
+	    } 
+	}
 }
 ```
+
+Note that the library depends on the multithreaded version of coroutines(native-mt). You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.serialization) to implement the `StateSaver`. See [sample](#sample) for more details.
+
 > Attention! The library is in the pre-release alpha version. Stable work and backward compatibility are not guaranteed. API may be changed in the future.
 
 ## Sample
