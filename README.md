@@ -42,7 +42,7 @@ One interesting feature of the tree is that the child keeps a reference to the p
 Navigation commands can be one such event. The Child PM sends a message and then the Parent PM can intercept this message and push the next Child PM into the Stack Navigator.
 
 This way of navigation has several advantages:
-- Relieves the Child PM from the responsibility of what transition to make transitions and allow the parents to decide.
+- Relieves the Child PM from the responsibility of what transition to make and allow the parents to decide.
 - Simplifies nested navigation when an event occurs deep in the hierarchy.
 
 ## Installation
@@ -58,18 +58,18 @@ allprojects {
 Add dependencies to the shared multiplatform module:
 ```Kotlin
 kotlin {
-	sourceSets {
-	    val commonMain by getting {
-	        dependencies {
-	            api("me.dmdev.premo:premo:<latest_version>")
-	            api("me.dmdev.premo:premo-navigation:<latest_version>")
-	        }
-	    } 
-	}
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                api("me.dmdev.premo:premo:<latest_version>")
+                api("me.dmdev.premo:premo-navigation:<latest_version>")
+            }
+        } 
+    }
 }
 ```
 
-Note that the library depends on the multithreaded version of coroutines(native-mt). You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.serialization) to implement the `StateSaver`. See [sample](#sample) for more details.
+Note that the library depends on the multithreaded version of coroutines(native-mt). You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.serialization) to implement the `PmStateSaver`. See [sample](#sample) for more details.
 
 > Attention! The library is in the pre-release alpha version. Stable work and backward compatibility are not guaranteed. API may be changed in the future.
 
