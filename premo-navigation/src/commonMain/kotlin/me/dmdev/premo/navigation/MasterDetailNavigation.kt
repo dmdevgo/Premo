@@ -22,35 +22,28 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.navigation
 
-import kotlinx.serialization.Serializable
-import me.dmdev.premo.*
-import me.dmdev.premo.navigation.MasterDetailNavigation
-import me.dmdev.premo.navigation.SystemBackMessage
-import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
-import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
+import kotlinx.coroutines.flow.StateFlow
+import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmMessageHandler
+import me.dmdev.premo.PresentationModel
 
+interface MasterDetailNavigation<M, D>
+        where M : PresentationModel,
+              D : PresentationModel {
 
-class MainPm(params: PmParams) : PresentationModel(params) {
+    val masterPm: M
+    val detailPm: D?
+    val detailPmState: StateFlow<D?>
+}
 
-    @Serializable
-    object Description : PmDescription
-
-    val navigation = MasterDetailNavigation<SamplesPm, PresentationModel>(
-        masterPmDescription = SamplesPm.Description
-    ) { navigator ->
-        onMessage<CounterSampleMessage> {
-            navigator.setDetail(Child(CounterPm.Description(10)))
-        }
-        onMessage<StackNavigationSampleMessage> {
-            navigator.setDetail(Child(StackNavigationPm.Description))
-        }
-        onMessage<BottomNavigationSampleMessage> {
-            navigator.setDetail(Child(BottomNavigationPm.Description))
-        }
-        handle<SystemBackMessage> {
-            navigator.handleBack()
-        }
-    }
+@Suppress("FunctionName")
+fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigation(
+    masterPmDescription: PmDescription,
+    initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit
+): MasterDetailNavigation<M, D> {
+    val navigator = MasterDetailNavigator<M, D>(masterPmDescription)
+    messageHandler.initHandlers(navigator)
+    return navigator
 }

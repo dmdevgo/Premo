@@ -63,10 +63,10 @@ abstract class PresentationModel(params: PmParams) {
     }
 
     @Suppress("FunctionName")
-    fun Child(
+    fun <PM : PresentationModel> Child(
         description: PmDescription,
         tag: String = randomUUID()
-    ): PresentationModel {
+    ): PM {
         val config = PmParams(
             tag = tag,
             parent = this,
@@ -76,15 +76,15 @@ abstract class PresentationModel(params: PmParams) {
             stateSaver = pmStateSaver
         )
 
-        return pmFactory.createPm(config)
+        return pmFactory.createPm(config) as PM
     }
 
     @Suppress("FunctionName")
-    fun AttachedChild(
+    fun <PM : PresentationModel> AttachedChild(
         description: PmDescription,
         tag: String
-    ): PresentationModel {
-        return Child(description, tag).also {
+    ): PM {
+        return Child<PM>(description, tag).also {
             attachChild(it)
         }
     }
