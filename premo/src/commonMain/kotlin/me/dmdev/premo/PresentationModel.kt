@@ -120,3 +120,11 @@ abstract class PresentationModel(params: PmParams) {
         })
     }
 }
+
+fun PresentationModel.attachToParent() {
+    parent?.attachChild(this)
+}
+
+fun PresentationModel.detachFromParent() {
+    parent?.detachChild(this)
+}

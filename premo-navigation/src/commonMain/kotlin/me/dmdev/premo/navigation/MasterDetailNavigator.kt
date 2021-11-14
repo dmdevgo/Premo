@@ -27,10 +27,7 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.getSaved
-import me.dmdev.premo.setSaver
+import me.dmdev.premo.*
 
 
 interface MasterDetailNavigator<M, D> : MasterDetailNavigation<M, D>
@@ -48,12 +45,12 @@ fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetai
 ): MasterDetailNavigator<M, D> {
     val masterKey = "${key}_master_pm"
     val navigator = MasterDetailNavigatorImpl<M, D>(
-        AttachedChild(masterPmDescription, masterKey)
+        Child(masterPmDescription, masterKey)
     )
     val detailKey = "${key}_detail_pm"
     val savedDetail = stateHandler.getSaved<Pair<PmDescription, String>>(detailKey)
     if (savedDetail != null) {
-        navigator.setDetail(AttachedChild(savedDetail.first, savedDetail.second))
+        navigator.setDetail(Child(savedDetail.first, savedDetail.second))
     }
     stateHandler.setSaver(detailKey) {
         navigator.detailPm?.let { detailPm ->
@@ -69,13 +66,19 @@ internal class MasterDetailNavigatorImpl<M, D>(
         where M : PresentationModel,
               D : PresentationModel {
 
+    init {
+        masterPm.attachToParent()
+    }
+
     private val _detailPmState: MutableStateFlow<D?> = MutableStateFlow(null)
     override val detailPmState: StateFlow<D?> = _detailPmState.asStateFlow()
 
     override val detailPm: D? get() = detailPmState.value
 
     override fun setDetail(detailPm: D?) {
+        this.detailPm?.detachFromParent()
         _detailPmState.value = detailPm
+        detailPm?.attachToParent()
     }
 
     override fun handleBack(): Boolean {
