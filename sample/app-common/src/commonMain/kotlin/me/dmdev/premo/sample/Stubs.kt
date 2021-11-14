@@ -37,6 +37,7 @@ object Stubs {
 
     private val mainPmFactory = MainPmFactory()
 
+    val mainPm = createPm<MainPm>(MainPm.Description)
     val samplesPm = createPm<SamplesPm>(SamplesPm.Description)
     val counterPm = createPm<CounterPm>(CounterPm.Description(10))
     val stackNavigationPm = createPm<StackNavigationPm>(StackNavigationPm.Description)

@@ -35,7 +35,6 @@ interface MasterDetailNavigator<M, D> : MasterDetailNavigation<M, D>
               D : PresentationModel {
 
     fun setDetail(detailPm: D?)
-    fun handleBack(): Boolean
 }
 
 @Suppress("FunctionName")
@@ -79,14 +78,5 @@ internal class MasterDetailNavigatorImpl<M, D>(
         this.detailPm?.detachFromParent()
         _detailPmState.value = detailPm
         detailPm?.attachToParent()
-    }
-
-    override fun handleBack(): Boolean {
-        return if (_detailPmState.value != null) {
-            setDetail(null)
-            true
-        } else {
-            false
-        }
     }
 }

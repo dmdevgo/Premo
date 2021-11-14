@@ -85,7 +85,7 @@ dependencies {
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(libs.kotlin.stdlib)
-    implementation(libs.appcompat.appcompat)
+    implementation(libs.androidx.appcompat.appcompat)
 
     implementation(libs.compose.ui.ui)
     implementation(libs.compose.ui.tooling)
@@ -98,7 +98,7 @@ dependencies {
     androidTestImplementation(libs.android.test.ext.junit)
     androidTestImplementation(libs.android.test.espresso.core)
 
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.17.0")
+    implementation(libs.androidx.window.window)
 
     implementation(project(":sample:app-common"))
 }

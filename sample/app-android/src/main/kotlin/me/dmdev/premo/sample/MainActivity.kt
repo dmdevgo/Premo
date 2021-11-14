@@ -44,7 +44,8 @@ class MainActivity : PmActivity<MainPm>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainScreen(delegate.presentationModel)
+            val windowSizes = rememberWindowSizes()
+            MainScreen(delegate.presentationModel, windowSizes)
         }
     }
 

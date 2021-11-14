@@ -30,7 +30,8 @@ dependencyResolutionManagement {
             alias("compose-material-icons-extended").to("androidx.compose.material", "material-icons-extended").versionRef(compose)
             alias("compose-activity").to("androidx.activity:activity-compose:1.4.0")
             alias("accompanist-navigation-animation").to("com.google.accompanist:accompanist-navigation-animation:0.20.2")
-            alias("appcompat-appcompat").to("androidx.appcompat:appcompat:1.4.0-rc01")
+            alias("androidx-appcompat-appcompat").to("androidx.appcompat:appcompat:1.4.0-rc01")
+            alias("androidx-window-window").to("androidx.window:window:1.0.0-beta03")
 
             alias("android-test-ext-junit").to("androidx.test.ext:junit:1.1.3")
             alias("android-test-espresso-core").to("androidx.test.espresso:espresso-core:3.4.0")

@@ -28,6 +28,7 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.*
 import me.dmdev.premo.navigation.MasterDetailNavigation
 import me.dmdev.premo.navigation.SystemBackMessage
+import me.dmdev.premo.navigation.handleSystemBack
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
@@ -50,7 +51,7 @@ class MainPm(params: PmParams) : PresentationModel(params) {
             navigator.setDetail(Child(BottomNavigationPm.Description))
         }
         handle<SystemBackMessage> {
-            navigator.handleBack()
+            navigator.handleSystemBack()
         }
     }
 }

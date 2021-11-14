@@ -34,20 +34,26 @@ fun PresentationModel.handleSystemBack(): Boolean {
 }
 
 fun StackNavigator.handleSystemBack(): Boolean {
-    return when {
-        currentTop?.handleSystemBack() == true -> {
-            true
-        }
-        backstack.size > 1 -> {
-            pop()
-            true
-        }
-        else -> {
-            false
-        }
+    var handled = currentTop?.handleSystemBack() ?: false
+    if (!handled && backstack.size > 1) {
+        pop()
+        handled = true
     }
+    return handled
 }
 
 fun SetNavigator.handleSystemBack(): Boolean {
     return current.handleSystemBack()
+}
+
+fun MasterDetailNavigator<*, *>.handleSystemBack(): Boolean {
+    var handled = detailPm?.handleSystemBack() ?: false
+    if (!handled && detailPm != null) {
+        setDetail(null)
+        handled = true
+    }
+    if (!handled) {
+        handled = masterPm.handleSystemBack()
+    }
+    return handled
 }
