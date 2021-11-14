@@ -74,10 +74,10 @@ fun BottomNavigationScreen(pm: BottomNavigationPm = Stubs.bottomBarPm) {
         if (currentTabPm is TabPm) {
             AnimatedNavigationBox(
                 navigation = currentTabPm.navigation,
-                enterTransition = { _, _ -> slideInHorizontally({ height -> height }) },
-                exitTransition = { _, _ -> slideOutHorizontally({ height -> -height }) },
-                popEnterTransition = { _, _ -> slideInHorizontally({ height -> -height }) },
-                popExitTransition = { _, _ -> slideOutHorizontally({ height -> height }) },
+                enterTransition = { _, _ -> slideInHorizontally { height -> height } },
+                exitTransition = { _, _ -> slideOutHorizontally { height -> -height } },
+                popEnterTransition = { _, _ -> slideInHorizontally { height -> -height } },
+                popExitTransition = { _, _ -> slideOutHorizontally { height -> height } },
             ) { pm ->
                 when (pm) {
                     is TabItemPm -> ItemScreen(pm)

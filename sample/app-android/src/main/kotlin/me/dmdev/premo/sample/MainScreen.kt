@@ -24,33 +24,38 @@
 
 package me.dmdev.premo.sample
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import me.dmdev.premo.PmActivity
-import me.dmdev.premo.PmActivityDelegate
-import me.dmdev.premo.navigation.handleSystemBack
+import androidx.compose.animation.*
+import androidx.compose.runtime.Composable
+import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
+import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
-class MainActivity : PmActivity<MainPm>() {
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun MainScreen(mainPm: MainPm) {
 
-    override val delegate: PmActivityDelegate<MainPm> by lazy {
-        PmActivityDelegate(
-            pmActivity = this,
-            pmDescription = MainPm.Description,
-            pmFactory = MainPmFactory(),
-            pmStateSaver = JsonPmStateSaver(),
-        )
-    }
+    val detailPm = mainPm.navigation.detailPmState.bind()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MainScreen(delegate.presentationModel)
+    AnimatedContent(
+        targetState = detailPm,
+        transitionSpec = {
+            if (targetState != null) {
+                slideInHorizontally { height -> height } with
+                        slideOutHorizontally { height -> -height }
+            } else {
+                slideInHorizontally { height -> -height } with
+                        slideOutHorizontally { height -> height }
+            }
         }
-    }
-
-    override fun onBackPressed() {
-        if (delegate.presentationModel.handleSystemBack().not()) {
-            super.onBackPressed()
+    ) { pm ->
+        if (pm == null) {
+            SamplesScreen(mainPm.navigation.masterPm)
+        } else {
+            when (pm) {
+                is CounterPm -> CounterScreen(pm)
+                is StackNavigationPm -> StackNavigationScreen(pm)
+                is BottomNavigationPm -> BottomNavigationScreen(pm)
+                else -> EmptyScreen()
+            }
         }
     }
 }

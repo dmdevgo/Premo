@@ -55,10 +55,10 @@ fun StackNavigationScreen(pm: StackNavigationPm = Stubs.stackNavigationPm) {
         AnimatedNavigationBox(
             navigation = pm.navigation,
             modifier = Modifier.requiredSize(100.dp),
-            enterTransition = { _, _ -> slideInHorizontally({ height -> height }) },
-            exitTransition = { _, _ -> slideOutHorizontally({ height -> -height }) },
-            popEnterTransition = { _, _ -> slideInHorizontally({ height -> -height }) },
-            popExitTransition = { _, _ -> slideOutHorizontally({ height -> height }) },
+            enterTransition = { _, _ -> slideInHorizontally { height -> height } },
+            exitTransition = { _, _ -> slideOutHorizontally { height -> -height } },
+            popEnterTransition = { _, _ -> slideInHorizontally { height -> -height } },
+            popExitTransition = { _, _ -> slideOutHorizontally { height -> height } },
         ) { pm ->
             when (pm) {
                 is SimpleScreenPm -> SimpleScreen(pm)
