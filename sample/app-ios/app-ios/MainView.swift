@@ -28,15 +28,17 @@ import Common
 struct MainView: View {
     
     private let delegate: PmDelegate<MainPm>
-    private let pm: MainPm
+    private let mainPm: MainPm
+    private let masterPm: SamplesPm
     
     @ObservedObject
-    private var currentPm: ObservableState<PresentationModel>
+    private var detailPm: ObservableState<PresentationModel>
     
     init(delegate: PmDelegate<MainPm>) {
         self.delegate = delegate
-        self.pm = delegate.presentationModel
-        currentPm = ObservableState(pm.navigation.currentTopState)
+        self.mainPm = delegate.presentationModel
+        self.masterPm = mainPm.navigation.masterPm as! SamplesPm
+        detailPm = ObservableState(mainPm.navigation.detailPmState)
     }
     
     var body: some View {
@@ -52,12 +54,11 @@ struct MainView: View {
             
             Spacer()
             
-            switch currentPm.value {
-            case let pm as SamplesPm: SamplesView(pm: pm)
+            switch detailPm.value {
             case let pm as CounterPm: CounterView(pm: pm)
             case let pm as StackNavigationPm: StackNavigationView(pm: pm)
             case let pm as BottomNavigationPm: BottomNavigationView(pm: pm)
-            default: EmptyView()
+            default: SamplesView(pm: masterPm)
             }
             
             Spacer()
