@@ -33,12 +33,16 @@ class MasterDetailNavigatorTest {
     private lateinit var navigator: MasterDetailNavigator<TestPm, TestPm>
     private lateinit var parentPm: TestPm
     private lateinit var masterPm: TestPm
+    private lateinit var detailPm1: TestPm
+    private lateinit var detailPm2: TestPm
 
     @BeforeTest
     fun setUp() {
         parentPm = TestPm()
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
         masterPm = parentPm.Child(TestPm.Description)
+        detailPm1 = parentPm.Child(TestPm.Description)
+        detailPm2 = parentPm.Child(TestPm.Description)
         navigator = MasterDetailNavigatorImpl(masterPm)
     }
 
@@ -50,17 +54,14 @@ class MasterDetailNavigatorTest {
 
     @Test
     fun testSetDetail() {
-        val detailPm = parentPm.Child<TestPm>(TestPm.Description)
-        navigator.setDetail(detailPm)
-        assertEquals(detailPm, navigator.detailPm)
-        assertEquals(detailPm.lifecycle.state, IN_FOREGROUND)
+        navigator.setDetail(detailPm1)
+        assertEquals(detailPm1, navigator.detailPm)
+        assertEquals(detailPm1.lifecycle.state, IN_FOREGROUND)
         assertEquals(masterPm.lifecycle.state, IN_FOREGROUND)
     }
 
     @Test
     fun testResetDetail() {
-        val detailPm1 = parentPm.Child<TestPm>(TestPm.Description)
-        val detailPm2 = parentPm.Child<TestPm>(TestPm.Description)
         navigator.setDetail(detailPm1)
         navigator.setDetail(detailPm2)
 
@@ -72,7 +73,6 @@ class MasterDetailNavigatorTest {
 
     @Test
     fun testResetNullDetail() {
-        val detailPm1 = parentPm.Child<TestPm>(TestPm.Description)
         navigator.setDetail(detailPm1)
         navigator.setDetail(null)
 
@@ -92,12 +92,11 @@ class MasterDetailNavigatorTest {
 
     @Test
     fun testHandleBackWhenDetailIsNotNull() {
-        val detailPm = parentPm.Child<TestPm>(TestPm.Description)
-        navigator.setDetail(detailPm)
+        navigator.setDetail(detailPm1)
         val handled = navigator.handleSystemBack()
 
         assertTrue(handled)
-        assertEquals(detailPm.lifecycle.state, DESTROYED)
+        assertEquals(detailPm1.lifecycle.state, DESTROYED)
         assertEquals(navigator.detailPm, null)
         assertEquals(masterPm.lifecycle.state, IN_FOREGROUND)
     }
