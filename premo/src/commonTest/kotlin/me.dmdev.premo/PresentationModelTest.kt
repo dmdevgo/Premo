@@ -70,8 +70,8 @@ class PresentationModelTest {
 
     @Test
     fun testNotAttachedChildrenLifecycle() {
-        val pm1 = pm.Child(TestPm.Description)
-        val pm2 = pm.Child(TestPm.Description)
+        val pm1 = pm.Child<TestPm>(TestPm.Description)
+        val pm2 = pm.Child<TestPm>(TestPm.Description)
 
         pm.lifecycle.moveTo(IN_FOREGROUND)
 
@@ -81,8 +81,8 @@ class PresentationModelTest {
 
     @Test
     fun testAttachedChildrenLifecycle() {
-        val pm1 = pm.AttachedChild(TestPm.Description, "pm1")
-        val pm2 = pm.AttachedChild(TestPm.Description, "pm2")
+        val pm1 = pm.AttachedChild<TestPm>(TestPm.Description, "pm1")
+        val pm2 = pm.AttachedChild<TestPm>(TestPm.Description, "pm2")
 
         pm.lifecycle.moveTo(IN_FOREGROUND)
 
