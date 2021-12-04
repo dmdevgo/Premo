@@ -62,7 +62,7 @@ abstract class PresentationModel(params: PmParams) {
         attachedChildren.remove(pm)
     }
 
-    @Suppress("FunctionName")
+    @Suppress("FunctionName", "UNCHECKED_CAST")
     fun <PM : PresentationModel> Child(
         description: PmDescription,
         tag: String = randomUUID()

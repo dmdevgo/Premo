@@ -59,17 +59,14 @@ class PmStateHandler(
     }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 inline fun <reified T> PmStateHandler.getSaved(key: String): T? {
     return getSaved(key, typeOf<T>())
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 inline fun <reified T> PmStateHandler.setSaver(key: String, noinline saveValue: () -> T) {
     setSaver(key, typeOf<T>(), saveValue)
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 @Suppress("FunctionName")
 inline fun <reified T> PresentationModel.SaveableFlow(
     key: String,
@@ -78,7 +75,6 @@ inline fun <reified T> PresentationModel.SaveableFlow(
     return stateHandler.SaveableFlow(key, initialValue, typeOf<T>())
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 @Suppress("FunctionName")
 inline fun <reified T> PmStateHandler.SaveableFlow(
     key: String,
