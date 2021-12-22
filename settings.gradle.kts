@@ -13,13 +13,14 @@ dependencyResolutionManagement {
 
         val kotlin = "kotlin"
         val compose = "compose"
+        val coroutines = "coroutines"
 
         create("libs") {
             version(kotlin, "1.6.0")
+            version(coroutines, "1.6.0")
             version(compose, "1.1.0-beta04")
             alias("kotlin-stdlib").to("org.jetbrains.kotlin", "kotlin-stdlib-jdk7").versionRef(kotlin)
-            alias("coroutines-core").to("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-RC")
-            alias("coroutines-android").to("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0-RC")
+            alias("coroutines-core").to("org.jetbrains.kotlinx","kotlinx-coroutines-core").versionRef(coroutines)
             alias("kotlinx-serialization-json").to("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
 
             alias("compose-ui-ui").to("androidx.compose.ui", "ui").versionRef(compose)
