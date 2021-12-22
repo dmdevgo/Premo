@@ -9,10 +9,10 @@ Premo is a Kotlin Multiplatform library that helps you implement the Presentatio
 
 Here are some key features:
 - **State holding** — PresentationModel is a multiplatform version of the ViewModel.
-- **Lifecycle** — Presentation Model is lifecycle aware.
-- **Navigation** — navigate between Presentation Models instead of switching views.
+- **Lifecycle** — PresentationModel is lifecycle aware.
+- **Navigation** — navigate between PresentationModels instead of switching views.
 - **Persistence** — saving and restoring state after recreating a process.
-- **Communication** — send messages from children towards the root Presentation Model.
+- **Communication** — send messages from children towards the root PresentationModel.
 
 At the same time, the library provides freedom of choice:
 - **Architecture** — MVVM, PM, MVI or other.
@@ -29,7 +29,7 @@ At the same time, the library provides freedom of choice:
 
 The library is based on the ideas of the [Presentation Model](https://martinfowler.com/eaaDev/PresentationModel.html) pattern described by Martin Fowler. The Presentation Model stores the state for presentation and coordinates with the domain model layer. 
 
-In practice, you will have not one Presentation Model, but a composition of child Presentation Models. At the base, there will be a root Presentation Model, from which a tree of children will grow. Children can be pushed into the Stack Navigator, thus organizing the navigation stack.
+In practice, you will have not only one Presentation Model, but a composition of child Presentation Models. At the base, there will be a root Presentation Model, from which a tree of children will grow. Children can be pushed into the Stack Navigator, thus organizing the navigation stack.
 
 Such a tree composition is well suited for a hierarchical view as well as for a composition of functions from declarative UI frameworks.
 
@@ -39,7 +39,7 @@ One interesting feature of the tree is that the child keeps a reference to the p
 
 <img src="/docs/images/premo_messaging.jpg" width="500px">
 
-Navigation commands can be one such event. The Child PM sends a message and then the Parent PM can intercept this message and push the next Child PM into the Stack Navigator.
+Navigation commands can be the such event. A Child PM sends a message and then its Parent PM can intercept this message and push the next Child PM into the Stack Navigator.
 
 This way of navigation has several advantages:
 - Relieves the Child PM from the responsibility of what transition to make and allow the parents to decide.
@@ -69,7 +69,7 @@ kotlin {
 }
 ```
 
-Note that the library depends on the multithreaded version of coroutines(native-mt). You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.serialization) to implement the `PmStateSaver`. See [sample](#sample) for more details.
+You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.serialization) to implement the `PmStateSaver`. See [sample](#sample) for more details.
 
 > Attention! The library is in the pre-release alpha version. Stable work and backward compatibility are not guaranteed. API may be changed in the future.
 
@@ -81,6 +81,7 @@ Note that the library depends on the multithreaded version of coroutines(native-
 - Using StateFlow to implement MVVM (PM).
 - Simple Counter.
 - Stack and Bottom navigation with multistack.
+- Master-Detail navigation.  
 - Saving and restoring the state after killing the process.
 
 ## License

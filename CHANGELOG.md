@@ -1,3 +1,11 @@
+# 1.0.0-alpha.02 / 22.12.2021
+**Premo**
+- Kotlin is updated to 1.6.0.
+- Migrated to the new memory model.
+
+**Premo-navigation**
+- `MasterDetailNavigator` — implements adaptive navigation for Master-Detail views.
+
 # 1.0.0-alpha.01 / 24.10.2021
 First public release:
 
