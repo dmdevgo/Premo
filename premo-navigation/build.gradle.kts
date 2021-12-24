@@ -31,6 +31,7 @@ plugins {
 kotlin {
 
     ios()
+    jvm()
     android {
         publishLibraryVariants("release", "debug")
     }
@@ -55,19 +56,37 @@ kotlin {
             }
         }
 
+        val jvmMain by getting {
+            dependsOn(commonMain)
+        }
+
+        val jvmTest by getting {
+            dependsOn(commonTest)
+        }
+
+        val androidMain by getting {
+            dependsOn(jvmMain)
+            dependencies {
+                compileOnly(libs.androidx.appcompat.appcompat)
+            }
+        }
+
+        // Fix test run: https://youtrack.jetbrains.com/issue/KT-40571
         val androidTest  by getting {
+            dependsOn(jvmTest)
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
             }
         }
 
-        val iosMain by getting {}
-        val androidMain by getting {}
+        val iosMain by getting {
+            dependsOn(commonMain)
+        }
 
-        iosMain.dependsOn(commonMain)
-        androidMain.dependsOn(commonMain)
-        androidTest.dependsOn(commonTest)
+        val iosTest by getting {
+            dependsOn(commonTest)
+        }
     }
 }
 
