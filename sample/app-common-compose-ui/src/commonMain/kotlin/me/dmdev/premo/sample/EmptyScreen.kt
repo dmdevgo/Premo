@@ -22,33 +22,25 @@
  * SOFTWARE.
  */
 
-object Premo {
+package me.dmdev.premo.sample
 
-    const val groupId = "me.dmdev.premo"
-    const val version = "1.0.0-alpha.02"
-    const val description = "Premo helps you implement the presentation layer and share it on iOS and Android."
-    const val url = "https://github.com/dmdevgo/Premo"
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
 
-    object License {
-        const val name = "MIT"
-        const val url = "https://github.com/dmdevgo/Premo/blob/master/LICENSE"
-    }
-
-    object Scm {
-        const val url = "https://github.com/dmdevgo/Premo"
-    }
-
-    class Developer(
-        val id: String,
-        val name: String,
-        val email: String,
-    )
-
-    val developers = listOf(
-        Developer(
-            id = "dmdevgo",
-            name = "Dmitriy Gorbunov",
-            email = "dmitriy.goto@gmail.com"
+@Composable
+fun EmptyScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Empty screen",
+            fontSize = 16.sp
         )
-    )
+    }
 }

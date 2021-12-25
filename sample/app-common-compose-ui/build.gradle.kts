@@ -22,64 +22,64 @@
  * SOFTWARE.
  */
 
+import org.jetbrains.compose.compose
 
 plugins {
+    id("com.android.library")
+    kotlin("multiplatform")
     id("org.jetbrains.compose") version BuildVersions.compose
-    id("com.android.application")
-    kotlin("android")
+}
+
+kotlin {
+    android()
+    jvm("desktop") {
+        compilations.all {
+            kotlinOptions.jvmTarget = "11"
+        }
+    }
+    sourceSets {
+
+        all {
+            languageSettings.optIn("kotlin.RequiresOptIn")
+        }
+
+        val commonMain by getting {
+            dependencies {
+                api(compose.runtime)
+                api(compose.foundation)
+                api(compose.material)
+                api(project(":sample:app-common"))
+            }
+        }
+
+        val androidMain by getting {
+            dependsOn(commonMain)
+            dependencies {
+                api(compose.preview)
+            }
+        }
+
+        val desktopMain by getting {
+            dependsOn(commonMain)
+            dependencies {
+                api(compose.preview)
+            }
+        }
+    }
 }
 
 android {
-
     compileSdk = AndroidSdk.compile
-
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        applicationId = "me.dmdev.premo.sample"
         minSdk = AndroidSdk.min
         targetSdk = AndroidSdk.target
-        versionCode = 1
-        versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-
     sourceSets {
-        getByName("main") {
-            java.srcDirs("src/main/kotlin")
-        }
-
-        getByName("test") {
-            java.srcDirs("src/test/kotlin")
-        }
+        getByName("main").java.srcDirs("src/androidMain/kotlin")
     }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs.plus("-Xopt-in=kotlin.RequiresOptIn")
-    }
-
-}
-
-dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation(Libs.kotlinStd)
-    implementation(Libs.androidxAppcompat)
-    implementation(Libs.composeActivity)
-    implementation(Libs.androidxWindow)
-    implementation(project(":sample:app-common-compose-ui"))
 }

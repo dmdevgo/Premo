@@ -22,45 +22,56 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
-
-import android.app.Activity
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.toComposeRect
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.window.layout.WindowMetricsCalculator
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowState
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
+import me.dmdev.premo.PmLifecycle
+import me.dmdev.premo.PmParams
+import me.dmdev.premo.sample.*
 
-enum class WindowSizeClass { Compact, Medium, Expanded }
+val pm = MainPm(params = PmParams(
+    "main",
+    null,
+    MainPm.Description,
+    mapOf(),
+    MainPmFactory(),
+    JsonPmStateSaver(),
+)).also {
+    it.lifecycle.moveTo(PmLifecycle.State.IN_FOREGROUND)
+}
 
-data class WindowSizes(
-    val widthSizeClass: WindowSizeClass,
-    val heightSizeClass: WindowSizeClass,
-)
+@Preview
+fun main() = application {
+    val state = rememberWindowState()
+    val windowSizeClass = rememberWindowSizes(state)
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "Premo",
+        state = state
+    ) {
+        MaterialTheme {
+            MainScreen(pm, windowSizeClass)
+        }
+    }
+}
 
 @Composable
-fun Activity.rememberWindowSizes(): WindowSizes {
-    val configuration = LocalConfiguration.current
-    val windowMetrics = remember(configuration) {
-        WindowMetricsCalculator.getOrCreate()
-            .computeCurrentWindowMetrics(this)
-    }
-
-    val windowDpSize = with(LocalDensity.current) {
-        windowMetrics.bounds.toComposeRect().size.toDpSize()
-    }
+fun rememberWindowSizes(state: WindowState): WindowSizes {
 
     val widthWindowSizeClass = when {
-        windowDpSize.width < 600.dp -> WindowSizeClass.Compact
-        windowDpSize.width < 840.dp -> WindowSizeClass.Medium
+        state.size.width < 600.dp -> WindowSizeClass.Compact
+        state.size.width < 840.dp -> WindowSizeClass.Medium
         else -> WindowSizeClass.Expanded
     }
 
     val heightWindowSizeClass = when {
-        windowDpSize.height < 480.dp -> WindowSizeClass.Compact
-        windowDpSize.height < 900.dp -> WindowSizeClass.Medium
+        state.size.height < 480.dp -> WindowSizeClass.Compact
+        state.size.height < 900.dp -> WindowSizeClass.Medium
         else -> WindowSizeClass.Expanded
     }
 

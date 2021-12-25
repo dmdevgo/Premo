@@ -30,8 +30,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
@@ -41,7 +39,7 @@ fun MainScreen(mainPm: MainPm, windowSizes: WindowSizes) {
 
     val detailPm = mainPm.navigation.detailPmState.bind()
 
-    if (windowSizes.widthSizeClass == WindowSizeClass.Expanded) {
+    if (windowSizes.widthSizeClass >= WindowSizeClass.Medium) {
         ExpandedMainScreen(mainPm, detailPm)
     } else {
         CompactMainScreen(mainPm, detailPm)
@@ -49,10 +47,6 @@ fun MainScreen(mainPm: MainPm, windowSizes: WindowSizes) {
 }
 
 @OptIn(ExperimentalAnimationApi::class)
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
 @Composable
 fun CompactMainScreen(
     mainPm: MainPm = Stubs.mainPm,
@@ -84,11 +78,6 @@ fun CompactMainScreen(
     }
 }
 
-@Preview(
-    showBackground = true,
-    showSystemUi = true,
-    device = Devices.NEXUS_7,
-)
 @Composable
 fun ExpandedMainScreen(
     mainPm: MainPm = Stubs.mainPm,

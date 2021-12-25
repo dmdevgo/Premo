@@ -24,28 +24,21 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Android
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottom_navigation.TabItemPm
 import me.dmdev.premo.sample.bottom_navigation.TabPm
 
-@OptIn(ExperimentalAnimationApi::class)
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
 @Composable
 fun BottomNavigationScreen(pm: BottomNavigationPm = Stubs.bottomBarPm) {
 
@@ -62,7 +55,7 @@ fun BottomNavigationScreen(pm: BottomNavigationPm = Stubs.bottomBarPm) {
                         label = { Text(title) },
                         icon = {
                             Icon(
-                                imageVector = Icons.Filled.Android,
+                                imageVector = Icons.Filled.Star,
                                 contentDescription = null
                             )
                         }
@@ -88,10 +81,6 @@ fun BottomNavigationScreen(pm: BottomNavigationPm = Stubs.bottomBarPm) {
     }
 }
 
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
 @Composable
 fun ItemScreen(pmTab: TabItemPm = Stubs.tabItemPm) {
     Column(

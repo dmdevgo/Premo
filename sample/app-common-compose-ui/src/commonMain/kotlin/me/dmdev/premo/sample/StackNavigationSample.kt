@@ -24,7 +24,6 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.*
@@ -33,17 +32,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
-@OptIn(ExperimentalAnimationApi::class)
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
 @Composable
 fun StackNavigationScreen(pm: StackNavigationPm = Stubs.stackNavigationPm) {
     Column(
@@ -82,10 +75,6 @@ fun StackNavigationScreen(pm: StackNavigationPm = Stubs.stackNavigationPm) {
     }
 }
 
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
 @Composable
 fun SimpleScreen(pm: SimpleScreenPm = Stubs.simplePm) {
     Row(
