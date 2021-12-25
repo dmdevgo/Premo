@@ -22,33 +22,11 @@
  * SOFTWARE.
  */
 
-object Premo {
+package me.dmdev.premo.sample
 
-    const val groupId = "me.dmdev.premo"
-    const val version = "1.0.0-alpha.02"
-    const val description = "Premo helps you implement the presentation layer and share it on iOS and Android."
-    const val url = "https://github.com/dmdevgo/Premo"
+enum class WindowSizeClass { Compact, Medium, Expanded }
 
-    object License {
-        const val name = "MIT"
-        const val url = "https://github.com/dmdevgo/Premo/blob/master/LICENSE"
-    }
-
-    object Scm {
-        const val url = "https://github.com/dmdevgo/Premo"
-    }
-
-    class Developer(
-        val id: String,
-        val name: String,
-        val email: String,
-    )
-
-    val developers = listOf(
-        Developer(
-            id = "dmdevgo",
-            name = "Dmitriy Gorbunov",
-            email = "dmitriy.goto@gmail.com"
-        )
-    )
-}
+data class WindowSizes(
+    val widthSizeClass: WindowSizeClass,
+    val heightSizeClass: WindowSizeClass,
+)

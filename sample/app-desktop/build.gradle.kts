@@ -22,33 +22,38 @@
  * SOFTWARE.
  */
 
-object Premo {
+import org.jetbrains.compose.compose
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
-    const val groupId = "me.dmdev.premo"
-    const val version = "1.0.0-alpha.02"
-    const val description = "Premo helps you implement the presentation layer and share it on iOS and Android."
-    const val url = "https://github.com/dmdevgo/Premo"
+plugins {
+    kotlin("multiplatform")
+    id("org.jetbrains.compose") version BuildVersions.compose
+}
 
-    object License {
-        const val name = "MIT"
-        const val url = "https://github.com/dmdevgo/Premo/blob/master/LICENSE"
+kotlin {
+    jvm {
+        compilations.all {
+            kotlinOptions.jvmTarget = "11"
+        }
     }
-
-    object Scm {
-        const val url = "https://github.com/dmdevgo/Premo"
+    sourceSets {
+        val jvmMain by getting {
+            dependencies {
+                api(project(":sample:app-common-compose-ui"))
+                implementation(compose.desktop.currentOs)
+            }
+        }
+        val jvmTest by getting
     }
+}
 
-    class Developer(
-        val id: String,
-        val name: String,
-        val email: String,
-    )
-
-    val developers = listOf(
-        Developer(
-            id = "dmdevgo",
-            name = "Dmitriy Gorbunov",
-            email = "dmitriy.goto@gmail.com"
-        )
-    )
+compose.desktop {
+    application {
+        mainClass = "PremoSample"
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "me.dmdev.premo.sample"
+            packageVersion = "1.0.0"
+        }
+    }
 }

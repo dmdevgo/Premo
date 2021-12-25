@@ -38,31 +38,41 @@ kotlin {
                 baseName = "Common"
                 export(project(":premo"))
                 export(project(":premo-navigation"))
-                export(libs.coroutines.core)
+                export(Libs.coroutinesCore)
             }
         }
     }
 
+    jvm()
     android()
 
     sourceSets {
+
+        all {
+            languageSettings.optIn("kotlin.RequiresOptIn")
+        }
+
         val commonMain by getting {
             dependencies {
                 api(project(":premo"))
                 api(project(":premo-navigation"))
-                api(libs.coroutines.core)
-                api(libs.kotlinx.serialization.json)
+                api(Libs.coroutinesCore)
+                api(Libs.kotlinxSerializationJson)
             }
         }
     }
 }
 
 android {
-    compileSdk = 31
+    compileSdk = AndroidSdk.compile
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = 21
-        targetSdk = 31
+        minSdk = AndroidSdk.min
+        targetSdk = AndroidSdk.target
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     sourceSets {
         getByName("main").java.srcDirs("src/androidMain/kotlin")

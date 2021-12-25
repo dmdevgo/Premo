@@ -67,7 +67,7 @@ kotlin {
         val androidMain by getting {
             dependsOn(jvmMain)
             dependencies {
-                compileOnly(libs.androidx.appcompat.appcompat)
+                compileOnly(Libs.androidxAppcompat)
             }
         }
 
@@ -91,10 +91,10 @@ kotlin {
 }
 
 android {
-    compileSdk = Premo.AndroidSdk.compile
+    compileSdk = AndroidSdk.compile
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = Premo.AndroidSdk.min
-        targetSdk = Premo.AndroidSdk.target
+        minSdk = AndroidSdk.min
+        targetSdk = AndroidSdk.target
     }
 }

@@ -22,30 +22,11 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
-
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
-
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
-@Composable
-fun EmptyScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Empty screen",
-            fontSize = 16.sp
-        )
-    }
+object Libs {
+    const val kotlinStd = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${BuildVersions.kotlin}"
+    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${BuildVersions.coroutines}"
+    const val kotlinxSerializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2"
+    const val composeActivity = "androidx.activity:activity-compose:1.4.0"
+    const val androidxWindow = "androidx.window:window:1.0.0-rc01"
+    const val androidxAppcompat = "androidx.appcompat:appcompat:1.4.0"
 }
