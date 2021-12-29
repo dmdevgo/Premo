@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.window.layout.WindowMetricsCalculator
 import me.dmdev.premo.PmActivity
 import me.dmdev.premo.PmActivityDelegate
-import me.dmdev.premo.navigation.handleSystemBack
+import me.dmdev.premo.navigation.handleBack
 
 class MainActivity : PmActivity<MainPm>() {
 
@@ -58,7 +58,7 @@ class MainActivity : PmActivity<MainPm>() {
     }
 
     override fun onBackPressed() {
-        if (delegate.presentationModel.handleSystemBack().not()) {
+        if (delegate.presentationModel.handleBack().not()) {
             super.onBackPressed()
         }
     }

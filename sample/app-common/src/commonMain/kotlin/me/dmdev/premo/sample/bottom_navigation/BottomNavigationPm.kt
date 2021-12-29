@@ -28,10 +28,7 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.handle
 import me.dmdev.premo.navigation.SetNavigator
-import me.dmdev.premo.navigation.SystemBackMessage
-import me.dmdev.premo.navigation.handleSystemBack
 
 class BottomNavigationPm(params: PmParams) : PresentationModel(params) {
 
@@ -43,10 +40,4 @@ class BottomNavigationPm(params: PmParams) : PresentationModel(params) {
         Child(TabPm.Description("Tab #2"), "Tab #2"),
         Child(TabPm.Description("Tab #3"), "Tab #3"),
     )
-
-    init {
-        messageHandler.handle<SystemBackMessage> {
-            navigator.handleSystemBack()
-        }
-    }
 }

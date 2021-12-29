@@ -33,22 +33,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SamplesScreen(pm: SamplesPm = Stubs.samplesPm) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+fun SamplesScreen(
+    pm: SamplesPm,
+    windowSizes: WindowSizes
+) {
+    PmBox(
+        title = "Samples",
+        windowSizes = windowSizes,
+        backHandler = null
     ) {
-        Button(onClick = { pm.counterSample() }) {
-            Text("Counter")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { pm.stackNavigationSample() }) {
-            Text("Stack Navigation")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { pm.bottomNavigationSample() }) {
-            Text("Bottom Navigation")
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(Modifier.weight(0.5f))
+            Button(onClick = { pm.counterSample() }) {
+                Text("Counter")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { pm.stackNavigationSample() }) {
+                Text("Stack Navigation")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { pm.bottomNavigationSample() }) {
+                Text("Bottom Navigation")
+            }
+            Spacer(Modifier.weight(0.5f))
         }
     }
 }

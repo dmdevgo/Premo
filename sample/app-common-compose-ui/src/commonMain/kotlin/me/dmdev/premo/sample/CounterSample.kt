@@ -31,28 +31,42 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import me.dmdev.premo.navigation.back
 
 @Composable
-fun CounterScreen(pm: CounterPm = Stubs.counterPm) {
-    Row(
-        modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+fun CounterScreen(
+    pm: CounterPm,
+    windowSizes: WindowSizes
+) {
+    PmBox(
+        title = "Counter",
+        backHandler = { pm.back() },
+        windowSizes = windowSizes
     ) {
-        Button(
-            onClick = { pm.minus() },
-            enabled = pm.minusButtonEnabled.bind()
-        ) {
-            Text(" - ")
-        }
-        Spacer(modifier = Modifier.width(12.dp))
-        Text("Count: ${pm.count.bind()}")
-        Spacer(modifier = Modifier.width(12.dp))
-        Button(
-            onClick = { pm.plus() },
-            enabled = pm.plusButtonEnabled.bind()
-        ) {
-            Text(" + ")
+        Column {
+            Spacer(Modifier.weight(0.5f))
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = { pm.minus() },
+                    enabled = pm.minusButtonEnabled.bind()
+                ) {
+                    Text(" - ")
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Text("Count: ${pm.count.bind()}")
+                Spacer(modifier = Modifier.width(12.dp))
+                Button(
+                    onClick = { pm.plus() },
+                    enabled = pm.plusButtonEnabled.bind()
+                ) {
+                    Text(" + ")
+                }
+            }
+            Spacer(Modifier.weight(0.5f))
         }
     }
 }

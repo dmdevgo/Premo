@@ -55,7 +55,6 @@ kotlin {
         val androidMain by getting {
             dependsOn(commonMain)
             dependencies {
-                api(compose.preview)
             }
         }
 
