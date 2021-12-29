@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.sample.WindowSizeClass.Medium
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
@@ -39,10 +40,10 @@ fun MainScreen(mainPm: MainPm, windowSizes: WindowSizes) {
 
     val detailPm = mainPm.navigation.detailPmState.bind()
 
-    if (windowSizes.widthSizeClass >= WindowSizeClass.Medium) {
-        ExpandedMainScreen(mainPm, detailPm)
+    if (windowSizes.widthSizeClass >= Medium) {
+        ExpandedMainScreen(mainPm, detailPm, windowSizes)
     } else {
-        CompactMainScreen(mainPm, detailPm)
+        CompactMainScreen(mainPm, detailPm, windowSizes)
     }
 }
 
@@ -50,7 +51,8 @@ fun MainScreen(mainPm: MainPm, windowSizes: WindowSizes) {
 @Composable
 fun CompactMainScreen(
     mainPm: MainPm = Stubs.mainPm,
-    detailPm: PresentationModel? = null
+    detailPm: PresentationModel?,
+    windowSizes: WindowSizes
 ) {
 
     AnimatedContent(
@@ -66,22 +68,18 @@ fun CompactMainScreen(
         }
     ) { pm ->
         if (pm == null) {
-            SamplesScreen(mainPm.navigation.masterPm)
+            SamplesScreen(mainPm.navigation.masterPm, windowSizes)
         } else {
-            when (pm) {
-                is CounterPm -> CounterScreen(pm)
-                is StackNavigationPm -> StackNavigationScreen(pm)
-                is BottomNavigationPm -> BottomNavigationScreen(pm)
-                else -> EmptyScreen()
-            }
+            pm.mapToComposable(windowSizes)
         }
     }
 }
 
 @Composable
 fun ExpandedMainScreen(
-    mainPm: MainPm = Stubs.mainPm,
-    detailPm: PresentationModel? = null
+    mainPm: MainPm,
+    detailPm: PresentationModel?,
+    windowSizes: WindowSizes
 ) {
     Row(
         Modifier
@@ -92,7 +90,7 @@ fun ExpandedMainScreen(
                 .fillMaxSize()
                 .weight(0.5f)
         ) {
-            SamplesScreen(pm = mainPm.navigation.masterPm)
+            SamplesScreen(mainPm.navigation.masterPm, windowSizes)
         }
 
         Box(
@@ -100,12 +98,17 @@ fun ExpandedMainScreen(
                 .fillMaxSize()
                 .weight(0.5f)
         ) {
-            when (detailPm) {
-                is CounterPm -> CounterScreen(detailPm)
-                is StackNavigationPm -> StackNavigationScreen(detailPm)
-                is BottomNavigationPm -> BottomNavigationScreen(detailPm)
-                else -> EmptyScreen()
-            }
+            detailPm.mapToComposable(windowSizes)
         }
+    }
+}
+
+@Composable
+private fun PresentationModel?.mapToComposable(windowSizes: WindowSizes) {
+    when (this) {
+        is CounterPm -> CounterScreen(this, windowSizes)
+        is StackNavigationPm -> StackNavigationScreen(this, windowSizes)
+        is BottomNavigationPm -> BottomNavigationScreen(this, windowSizes)
+        else -> EmptyBox()
     }
 }

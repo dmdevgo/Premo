@@ -29,7 +29,7 @@ import me.dmdev.premo.*
 import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.StackNavigator
 import me.dmdev.premo.navigation.SystemBackMessage
-import me.dmdev.premo.navigation.handleSystemBack
+import me.dmdev.premo.navigation.handleBack
 import me.dmdev.premo.sample.NextClickMessage
 import me.dmdev.premo.sample.PreviousClickMessage
 
@@ -67,7 +67,7 @@ class TabPm(
     }
 
     private fun handleBack(navigator: StackNavigator): Boolean {
-        return if (navigator.handleSystemBack()) {
+        return if (navigator.handleBack()) {
             number--
             true
         } else {

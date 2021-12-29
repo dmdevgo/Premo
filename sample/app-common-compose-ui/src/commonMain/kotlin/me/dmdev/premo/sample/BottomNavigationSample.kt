@@ -33,48 +33,61 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import me.dmdev.premo.navigation.back
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottom_navigation.TabItemPm
 import me.dmdev.premo.sample.bottom_navigation.TabPm
 
 @Composable
-fun BottomNavigationScreen(pm: BottomNavigationPm = Stubs.bottomBarPm) {
+fun BottomNavigationScreen(
+    pm: BottomNavigationPm,
+    windowSizes: WindowSizes
+) {
 
     val currentTabPm = pm.navigator.currentState.bind()
 
-    Scaffold(
-        bottomBar = {
-            BottomNavigation {
-                pm.navigator.values.forEach { tabPm ->
-                    val title = (tabPm as? TabPm)?.tabTitle ?: ""
-                    BottomNavigationItem(
-                        selected = tabPm == currentTabPm,
-                        onClick = { pm.navigator.setCurrent(tabPm) },
-                        label = { Text(title) },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Filled.Star,
-                                contentDescription = null
-                            )
-                        }
-                    )
+    PmBox(
+        title = "Bottom Navigation",
+        backHandler = { pm.back() },
+        windowSizes = windowSizes
+    ) {
+
+        Scaffold(
+            backgroundColor = Color.Transparent,
+            bottomBar = {
+                BottomNavigation {
+                    pm.navigator.values.forEach { tabPm ->
+                        val title = (tabPm as? TabPm)?.tabTitle ?: ""
+                        BottomNavigationItem(
+                            selected = tabPm == currentTabPm,
+                            onClick = { pm.navigator.setCurrent(tabPm) },
+                            label = { Text(title) },
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Filled.Star,
+                                    contentDescription = null
+                                )
+                            }
+                        )
+                    }
                 }
             }
-        }
-    ) {
-        if (currentTabPm is TabPm) {
-            AnimatedNavigationBox(
-                navigation = currentTabPm.navigation,
-                enterTransition = { _, _ -> slideInHorizontally { height -> height } },
-                exitTransition = { _, _ -> slideOutHorizontally { height -> -height } },
-                popEnterTransition = { _, _ -> slideInHorizontally { height -> -height } },
-                popExitTransition = { _, _ -> slideOutHorizontally { height -> height } },
-            ) { pm ->
-                when (pm) {
-                    is TabItemPm -> ItemScreen(pm)
-                    else -> EmptyScreen()
+        ) {
+            if (currentTabPm is TabPm) {
+                AnimatedNavigationBox(
+                    navigation = currentTabPm.navigation,
+                    enterTransition = { _, _ -> slideInHorizontally { height -> height } },
+                    exitTransition = { _, _ -> slideOutHorizontally { height -> -height } },
+                    popEnterTransition = { _, _ -> slideInHorizontally { height -> -height } },
+                    popExitTransition = { _, _ -> slideOutHorizontally { height -> height } },
+                ) { pm ->
+                    when (pm) {
+                        is TabItemPm -> ItemScreen(pm)
+                        else -> EmptyBox()
+                    }
                 }
             }
         }
@@ -83,27 +96,32 @@ fun BottomNavigationScreen(pm: BottomNavigationPm = Stubs.bottomBarPm) {
 
 @Composable
 fun ItemScreen(pmTab: TabItemPm = Stubs.tabItemPm) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            fontSize = 24.sp,
-            text = pmTab.screenTitle
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            fontSize = 24.sp,
-            text = pmTab.tabTitle
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = { pmTab.nextClick() }) {
-            Text("Next")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { pmTab.previousClick() }) {
-            Text("Previous")
+    CardBox {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                fontSize = 24.sp,
+                text = pmTab.screenTitle
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Row {
+                Button(
+                    onClick = { pmTab.previousClick() },
+                    modifier = Modifier.width(100.dp)
+                ) {
+                    Text("Previous")
+                }
+                Spacer(Modifier.width(16.dp))
+                Button(
+                    onClick = { pmTab.nextClick() },
+                    modifier = Modifier.width(100.dp)
+                ) {
+                    Text("Next")
+                }
+            }
         }
     }
 }

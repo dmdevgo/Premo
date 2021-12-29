@@ -22,25 +22,43 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
+import me.dmdev.premo.PmMessage
+import me.dmdev.premo.PresentationModel
 
-@Composable
-fun EmptyScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Empty screen",
-            fontSize = 16.sp
-        )
+object BackMessage : PmMessage
+object SystemBackMessage : PmMessage
+
+fun PresentationModel.handleBack(): Boolean {
+    return messageHandler.handle(SystemBackMessage)
+}
+
+fun PresentationModel.back() {
+    messageHandler.send(BackMessage)
+}
+
+fun StackNavigator.handleBack(): Boolean {
+    var handled = currentTop?.handleBack() ?: false
+    if (!handled && backstack.size > 1) {
+        pop()
+        handled = true
     }
+    return handled
+}
+
+fun SetNavigator.handleBack(): Boolean {
+    return current.handleBack()
+}
+
+fun MasterDetailNavigator<*, *>.handleBack(): Boolean {
+    var handled = detailPm?.handleBack() ?: false
+    if (!handled && detailPm != null) {
+        setDetail(null)
+        handled = true
+    }
+    if (!handled) {
+        handled = masterPm.handleBack()
+    }
+    return handled
 }

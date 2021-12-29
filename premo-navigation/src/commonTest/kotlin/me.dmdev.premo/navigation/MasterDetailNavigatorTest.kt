@@ -83,7 +83,7 @@ class MasterDetailNavigatorTest {
 
     @Test
     fun testHandleBackWhenDetailIsNull() {
-        val handled = navigator.handleSystemBack()
+        val handled = navigator.handleBack()
 
         assertFalse(handled)
         assertEquals(navigator.detailPm, null)
@@ -93,7 +93,7 @@ class MasterDetailNavigatorTest {
     @Test
     fun testHandleBackWhenDetailIsNotNull() {
         navigator.setDetail(detailPm1)
-        val handled = navigator.handleSystemBack()
+        val handled = navigator.handleBack()
 
         assertTrue(handled)
         assertEquals(detailPm1.lifecycle.state, DESTROYED)

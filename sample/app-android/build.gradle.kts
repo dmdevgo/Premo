@@ -81,5 +81,6 @@ dependencies {
     implementation(Libs.androidxAppcompat)
     implementation(Libs.composeActivity)
     implementation(Libs.androidxWindow)
+    implementation(compose.preview)
     implementation(project(":sample:app-common-compose-ui"))
 }
