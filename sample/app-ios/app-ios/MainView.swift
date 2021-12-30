@@ -42,26 +42,13 @@ struct MainView: View {
     }
     
     var body: some View {
-        VStack {
-            
-            HStack {
-                Button(action: {
-                    delegate.presentationModel.handleSystemBack()
-                }) { Text("Back") }
-                .padding()
-                Spacer()
-            }
-            
-            Spacer()
-            
+        ZStack {
             switch detailPm.value {
             case let pm as CounterPm: CounterView(pm: pm)
             case let pm as StackNavigationPm: StackNavigationView(pm: pm)
             case let pm as BottomNavigationPm: BottomNavigationView(pm: pm)
             default: SamplesView(pm: masterPm)
             }
-            
-            Spacer()
         }
     }
 }

@@ -38,6 +38,9 @@ struct CounterView: View {
     @ObservedObject
     private var plusButtonEnabled: ObservableBoolean
     
+    @GestureState
+    private var dragOffset = CGSize.zero
+    
     init(pm: CounterPm) {
         self.pm = pm
         counter = ObservableInt(pm.count)
@@ -46,22 +49,30 @@ struct CounterView: View {
     }
     
     var body: some View {
-        HStack {
-            
-            Button("Minus", action: {
-                pm.minus()
+        NavigationView {
+            HStack {
+                Button("Minus", action: {
+                    pm.minus()
+                })
+                    .disabled(minusButtonEnabled.value == false)
+                    .padding()
+                
+                Text("\(counter.value)")
+                    .padding()
+                
+                Button("Plus", action: {
+                    pm.plus()
+                })
+                    .disabled(plusButtonEnabled.value == false)
+                    .padding()
+            }
+            .navigationTitle("Counter")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(leading: Button(action : {
+                pm.back()
+            }){
+                Image(systemName: "arrow.left")
             })
-            .disabled(minusButtonEnabled.value == false)
-            .padding()
-            
-            Text("\(counter.value)")
-                .padding()
-            
-            Button("Plus", action: {
-                pm.plus()
-            })
-            .disabled(plusButtonEnabled.value == false)
-            .padding()
         }
     }
 }

@@ -43,35 +43,47 @@ struct StackNavigationView: View {
     
     var body: some View {
         
-        VStack {
-            
-            Spacer()
-            
-            switch currentPm.value {
-            case let pm as SimpleScreenPm: SimpleView(pm: pm)
-            default: EmptyView()
+        NavigationView {
+            VStack {
+                
+                Spacer()
+                
+                switch currentPm.value {
+                case let pm as SimpleScreenPm: SimpleView(pm: pm)
+                default: EmptyView()
+                }
+                
+                Spacer()
+                
+                Text("Stack: \(backstack.value)")
+                    .padding()
+                
+                Spacer()
+                
+                HStack {
+                    Button("Push", action: {
+                        pm.pushClick()
+                    }).padding()
+                    
+                    Button("Pop", action: {
+                        pm.popClick()
+                    }).padding()
+                }
+                
+                Button("Set back stack", action: {
+                    pm.setBackstackClick()
+                }).padding()
+                
+                Spacer()
             }
-            
-            Spacer()
-            
-            Text("Stack: \(backstack.value)")
-                .padding()
-            
-            Spacer()
-            
-            Button("Push", action: {
-                pm.pushClick()
-            }).padding()
-            
-            Button("Pop", action: {
-                pm.popClick()
-            }).padding()
-            
-            Button("Set back stack", action: {
-                pm.setBackstackClick()
-            }).padding()
-            
-            Spacer()
+            .navigationTitle("Stack Navigation")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .navigationBarItems(leading: Button(action : {
+                pm.back()
+            }){
+                Image(systemName: "arrow.left")
+            })
         }
     }
 }

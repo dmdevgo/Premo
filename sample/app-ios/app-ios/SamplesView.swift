@@ -34,22 +34,26 @@ struct SamplesView: View {
     }
     
     var body: some View {
-        VStack {
-            
-            Button("Counter", action: {
-                pm.counterSample()
-            })
-            .padding()
-            
-            Button("Stack Navigation", action: {
-                pm.stackNavigationSample()
-            })
-            .padding()
-            
-            Button("Bottom Navigation", action: {
-                pm.bottomNavigationSample()
-            })
-            .padding()
+        NavigationView {
+            VStack {
+                
+                Button("Counter", action: {
+                    pm.counterSample()
+                })
+                    .padding()
+                
+                Button("Stack Navigation", action: {
+                    pm.stackNavigationSample()
+                })
+                    .padding()
+                
+                Button("Bottom Navigation", action: {
+                    pm.bottomNavigationSample()
+                })
+                    .padding()
+            }
+            .navigationTitle("Samples")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

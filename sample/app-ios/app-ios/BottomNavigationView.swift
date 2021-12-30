@@ -39,21 +39,30 @@ struct BottomNavigationView: View {
     }
     
     var body: some View {
-        TabView {
-            ForEach(pm.navigator.values, id: \.self) { itemPm in
-                if (itemPm is TabPm) {
-                    let tabPm = itemPm as! TabPm
-                    TabContainerView(pm: tabPm)
-                        .tabItem {
-                            Image(systemName: "star.fill")
-                            Text(tabPm.tabTitle)
-                        }
-                        .tag(tabPm.tag)
-                        .onAppear {
-                            pm.navigator.setCurrent(pm: tabPm)
-                        }
+        NavigationView {
+            TabView {
+                ForEach(pm.navigator.values, id: \.self) { itemPm in
+                    if (itemPm is TabPm) {
+                        let tabPm = itemPm as! TabPm
+                        TabContainerView(pm: tabPm)
+                            .tabItem {
+                                Image(systemName: "star.fill")
+                                Text(tabPm.tabTitle)
+                            }
+                            .tag(tabPm.tag)
+                            .onAppear {
+                                pm.navigator.setCurrent(pm: tabPm)
+                            }
+                    }
                 }
             }
+            .navigationTitle("Bottom Navigation")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(leading: Button(action : {
+                pm.back()
+            }){
+                Image(systemName: "arrow.left")
+            })
         }
     }
 }

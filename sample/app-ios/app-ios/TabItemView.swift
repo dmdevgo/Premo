@@ -40,16 +40,15 @@ struct TabItemView: View {
             Text(pm.screenTitle)
                 .padding()
             
-            Text(pm.tabTitle)
-                .padding()
-            
-            Button("Next", action: {
-                pm.nextClick()
-            }).padding()
-            
-            Button("Previous", action: {
-                pm.previousClick()
-            }).padding()
+            HStack {
+                Button("Previous", action: {
+                    pm.previousClick()
+                }).padding()
+                
+                Button("Next", action: {
+                    pm.nextClick()
+                }).padding()
+            }
         }
     }
 }
