@@ -25,7 +25,7 @@
 object Premo {
 
     const val groupId = "me.dmdev.premo"
-    const val version = "1.0.0-alpha.02"
+    const val version = "1.0.0-alpha.03"
     const val description = "Premo helps you implement the presentation layer and share it on iOS and Android."
     const val url = "https://github.com/dmdevgo/Premo"
 

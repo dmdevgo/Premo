@@ -1,3 +1,7 @@
+# 1.0.0-alpha.03 / 30.12.2021
+- Added JVM target.
+- Implemented the sample for desktop with Compose Multiplatform.
+
 # 1.0.0-alpha.02 / 22.12.2021
 **Premo**
 - Kotlin is updated to 1.6.0.

@@ -4,8 +4,9 @@
 [![License: MIT](https://img.shields.io/github/license/dmdevgo/premo?color=yellow)](https://github.com/dmdevgo/Premo/blob/master/LICENSE)
 ![platform-android](https://img.shields.io/badge/platform-android-green)
 ![platform-ios](https://img.shields.io/badge/platform-ios-lightgrey)
+![platform-jvm](https://img.shields.io/badge/platform-jvm-orange)
 
-Premo is a Kotlin Multiplatform library that helps you implement the Presentation Layer and share it on iOS and Android. Focus on writing logic instead of solving common and boring UI related issues.
+Premo is a Kotlin Multiplatform library that helps you implement the Presentation Layer and share it on Android, iOS and Desktop. Focus on writing logic instead of solving common and boring UI related issues.
 
 Here are some key features:
 - **State holding** — PresentationModel is a multiplatform version of the ViewModel.
@@ -76,12 +77,14 @@ You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.ser
 ## Sample
 
 [Sample](https://github.com/dmdevgo/Premo/tree/master/sample) demonstrates:
-- Sharing presentation logic between Android and iOS.
-- UI on Jetpack Compose and SwiftUI.
+- Sharing presentation logic between Android, iOS and Desktop.
+- Sharing Compose UI between Android and Desktop.
+- UI on Compose and SwiftUI.
 - Using StateFlow to implement MVVM (PM).
 - Simple Counter.
-- Stack and Bottom navigation with multistack.
-- Master-Detail navigation.  
+- Stack navigation.
+- Bottom navigation with multistack.
+- Master-Detail navigation.
 - Saving and restoring the state after killing the process.
 
 ## License

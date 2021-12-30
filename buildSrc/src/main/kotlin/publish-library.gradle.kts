@@ -56,6 +56,10 @@ if (secretPropsFile.exists()) {
 
 fun getExtraString(name: String) = ext[name]?.toString()
 
+val javadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+}
+
 publishing {
     publications.withType<MavenPublication> {
 
@@ -76,6 +80,9 @@ publishing {
                 }
             }
         }
+
+        // Stub javadoc.jar artifact
+        artifact(javadocJar.get())
 
         pom {
             name.set(project.name)
