@@ -87,9 +87,8 @@ You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.ser
 - Master-Detail navigation.
 - Saving and restoring the state after killing the process.
 
-<img src="/docs/images/desktop_demo.gif" width="800px">
-<br/>
-<img src="/docs/images/android_and_ios_demo.gif" width="800px">
+<img src="/docs/images/desktop_demo.gif" width="600px">
+<img src="/docs/images/android_and_ios_demo.gif" width="600px">
 
 ## License
 
