@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import me.dmdev.premo.PmLifecycle.Event.*
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import kotlin.random.Random
 
 abstract class PresentationModel(params: PmParams) {
 
@@ -65,7 +66,7 @@ abstract class PresentationModel(params: PmParams) {
     @Suppress("FunctionName", "UNCHECKED_CAST")
     fun <PM : PresentationModel> Child(
         description: PmDescription,
-        tag: String = randomUUID()
+        tag: String = Random.Default.nextLong().toString()
     ): PM {
         val config = PmParams(
             tag = tag,
