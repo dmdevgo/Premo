@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,9 @@ kotlin {
 
     ios()
     jvm()
+    js(IR) {
+        browser()
+    }
     android {
         publishLibraryVariants("release", "debug")
     }
@@ -61,6 +64,14 @@ kotlin {
         }
 
         val jvmTest by getting {
+            dependsOn(commonTest)
+        }
+
+        val jsMain by getting {
+            dependsOn(commonMain)
+        }
+
+        val jsTest by getting {
             dependsOn(commonTest)
         }
 
