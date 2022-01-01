@@ -22,31 +22,34 @@
  * SOFTWARE.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+import org.jetbrains.compose.compose
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 
-buildscript {
+plugins {
+    kotlin("multiplatform")
+    id("org.jetbrains.compose") version BuildVersions.compose
+}
 
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
+kotlin {
+    js(IR) {
+        browser()
+        binaries.executable()
     }
-
-    dependencies {
-        classpath("com.android.tools.build:gradle:${BuildVersions.agp}")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${BuildVersions.kotlin}")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:${BuildVersions.kotlin}")
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+    sourceSets {
+        val jsMain by getting {
+            dependencies {
+                api(project(":sample:app-common"))
+                implementation(compose.web.core)
+                implementation(compose.runtime)
+            }
+        }
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        mavenLocal()
+// a temporary workaround for a bug in jsRun invocation - see https://youtrack.jetbrains.com/issue/KT-48273
+afterEvaluate {
+    rootProject.extensions.configure<NodeJsRootExtension> {
+        versions.webpackDevServer.version = "4.0.0"
+        versions.webpackCli.version = "4.9.0"
     }
 }
