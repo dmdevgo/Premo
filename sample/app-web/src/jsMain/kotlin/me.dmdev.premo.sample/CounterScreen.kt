@@ -22,62 +22,32 @@
  * SOFTWARE.
  */
 
-import androidx.compose.runtime.collectAsState
-import me.dmdev.premo.PmLifecycle
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.sample.CounterPm
-import me.dmdev.premo.sample.JsonPmStateSaver
-import me.dmdev.premo.sample.MainPmFactory
-import org.jetbrains.compose.web.attributes.disabled
+package me.dmdev.premo.sample
+
+import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.css.padding
 import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
-import org.jetbrains.compose.web.renderComposable
 
-val pm = CounterPm(
-    10,
-    PmParams(
-        "Counter",
-        null,
-        CounterPm.Description(10),
-        mapOf(),
-        MainPmFactory(),
-        JsonPmStateSaver()
-    )
-)
+@Composable
+fun CounterScreen(pm: CounterPm) {
 
-fun main() {
+    val count = pm.count.bind()
+    val minusButtonEnabled = pm.minusButtonEnabled.bind()
+    val plusButtonEnabled = pm.plusButtonEnabled.bind()
 
-    pm.lifecycle.moveTo(PmLifecycle.State.IN_FOREGROUND)
-
-    renderComposable(rootElementId = "root") {
-
-        val count = pm.count.collectAsState().value
-        val minusButtonEnabled = pm.minusButtonEnabled.collectAsState().value
-        val plusButtonEnabled = pm.plusButtonEnabled.collectAsState().value
-
-        Div({ style { padding(25.px) } }) {
-            Button(attrs = {
-                onClick { pm.minus() }
-                contentEditable(false)
-                if (minusButtonEnabled.not()) disabled()
-            }) {
-                Text("-")
+    ScreenBox("Counter") {
+        Div {
+            TextButton("-", minusButtonEnabled) {
+                pm.minus()
             }
-
             Span({ style { padding(15.px) } }) {
                 Text("$count")
             }
-
-            Button(attrs = {
-                onClick { pm.plus() }
-                contentEditable(false)
-                if (plusButtonEnabled.not()) disabled()
-            }) {
-                Text("+")
+            TextButton("+", plusButtonEnabled) {
+                pm.plus()
             }
         }
     }
