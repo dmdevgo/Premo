@@ -1,3 +1,7 @@
+# 1.0.0-alpha.04 / 02.01.2022
+- Added JS target.
+- Implemented the sample for Web with Compose Multiplatform.
+
 # 1.0.0-alpha.03 / 30.12.2021
 - Added JVM target.
 - Implemented the sample for desktop with Compose Multiplatform.

@@ -1,12 +1,13 @@
 # Premo
 
 [![Maven Central](https://img.shields.io/maven-central/v/me.dmdev.premo/premo)](https://search.maven.org/artifact/me.dmdev.premo/premo)
-[![License: MIT](https://img.shields.io/github/license/dmdevgo/premo?color=yellow)](https://github.com/dmdevgo/Premo/blob/master/LICENSE)
+[![License: MIT](https://img.shields.io/github/license/dmdevgo/premo?color=informational)](https://github.com/dmdevgo/Premo/blob/master/LICENSE)
 ![platform-android](https://img.shields.io/badge/platform-android-green)
-![platform-ios](https://img.shields.io/badge/platform-ios-lightgrey)
+![platform-ios](https://img.shields.io/badge/platform-ios-lightgray)
 ![platform-jvm](https://img.shields.io/badge/platform-jvm-orange)
+![platform-js](https://img.shields.io/badge/platform-js-yellow)
 
-Premo is a Kotlin Multiplatform library that helps you implement the Presentation Layer and share it on Android, iOS and Desktop. Focus on writing logic instead of solving common and boring UI related issues.
+Premo is a Kotlin Multiplatform library that helps you implement the Presentation Layer and share it on Android, iOS, Desktop and Web. Focus on writing logic instead of solving common and boring UI related issues.
 
 Here are some key features:
 - **State holding** — PresentationModel is a multiplatform version of the ViewModel.
@@ -77,7 +78,7 @@ You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.ser
 ## Sample
 
 [Sample](https://github.com/dmdevgo/Premo/tree/master/sample) demonstrates:
-- Sharing presentation logic between Android, iOS and Desktop.
+- Sharing presentation logic between Android, iOS, Desktop and Web.
 - Sharing Compose UI between Android and Desktop.
 - UI on Compose and SwiftUI.
 - Using StateFlow to implement MVVM (PM).
@@ -89,6 +90,7 @@ You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.ser
 
 <img src="/docs/images/desktop_demo.gif" width="600px">
 <img src="/docs/images/android_and_ios_demo.gif" width="600px">
+<img src="/docs/images/web_demo.gif" width="600px">
 
 ## License
 
