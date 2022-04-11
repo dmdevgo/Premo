@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,9 @@
 
 object Libs {
     const val kotlinStd = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${BuildVersions.kotlin}"
-    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${BuildVersions.coroutines}"
+    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1"
     const val kotlinxSerializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2"
     const val composeActivity = "androidx.activity:activity-compose:1.4.0"
-    const val androidxWindow = "androidx.window:window:1.0.0-rc01"
-    const val androidxAppcompat = "androidx.appcompat:appcompat:1.4.0"
+    const val androidxWindow = "androidx.window:window:1.0.0"
+    const val androidxAppcompat = "androidx.appcompat:appcompat:1.4.1"
 }

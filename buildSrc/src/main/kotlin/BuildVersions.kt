@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,7 @@
  */
 
 object BuildVersions {
-    const val agp = "7.0.4"
+    const val agp = "7.1.3"
     const val kotlin = "1.6.10"
-    const val coroutines = "1.6.0"
-    const val compose = "1.0.1"
+    const val compose = "1.1.1"
 }
