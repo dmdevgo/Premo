@@ -24,6 +24,7 @@
 
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
     id("com.android.library")
     `publish-library`
 }
@@ -55,6 +56,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+                implementation(Libs.kotlinxSerializationJson)
             }
         }
 
