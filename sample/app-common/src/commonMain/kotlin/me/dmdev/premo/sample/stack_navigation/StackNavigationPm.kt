@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,16 @@ package me.dmdev.premo.sample.stack_navigation
 
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.*
+import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmParams
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.getSaved
+import me.dmdev.premo.handle
 import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.StackNavigator
 import me.dmdev.premo.navigation.SystemBackMessage
 import me.dmdev.premo.sample.StateFlow
+import me.dmdev.premo.setSaver
 
 class StackNavigationPm(params: PmParams) : PresentationModel(params) {
 
@@ -83,7 +88,7 @@ class StackNavigationPm(params: PmParams) : PresentationModel(params) {
         val number = screenNumber++
         return Child(
             description = SimpleScreenPm.Description(number),
-            tag = number.toString()
+            key = number.toString()
         )
     }
 

@@ -47,8 +47,9 @@ class PmStateSaverTest {
         }
 
         val savedState = delegate.savePm()
+        delegate.onDestroy()
 
-        val delegateForRestoredPm = createDelegate(tag = "Restored Root", state = savedState)
+        val delegateForRestoredPm = createDelegate(tag = "Root", state = savedState)
         val restoredPm = delegateForRestoredPm.presentationModel
         delegateForRestoredPm.onForeground()
 
@@ -82,7 +83,7 @@ private class RootPm(params: PmParams): PresentationModel(params) {
     val children: List<ContainerPm> = keys.map { key ->
         Child(
             description = ContainerPm.Description,
-            tag = key
+            key = key
         )
     }
 
@@ -103,6 +104,10 @@ private class RootPm(params: PmParams): PresentationModel(params) {
         result = 31 * result + children.hashCode()
         return result
     }
+
+    override fun toString(): String {
+        return "RootPm(keys=$keys, children=$children)"
+    }
 }
 
 private class ContainerPm(params: PmParams): PresentationModel(params) {
@@ -115,7 +120,7 @@ private class ContainerPm(params: PmParams): PresentationModel(params) {
     val children: List<ChildPm> = keys.map { key ->
         Child(
             description = ChildPm.Description(key),
-            tag = key
+            key = key
         )
     }
 
@@ -137,7 +142,9 @@ private class ContainerPm(params: PmParams): PresentationModel(params) {
         return result
     }
 
-
+    override fun toString(): String {
+        return "ContainerPm(keys=$keys, children=$children)"
+    }
 }
 
 private class ChildPm(params: PmParams): PresentationModel(params) {
@@ -170,6 +177,10 @@ private class ChildPm(params: PmParams): PresentationModel(params) {
 
     override fun hashCode(): Int {
         return state.value.hashCode()
+    }
+
+    override fun toString(): String {
+        return "ChildPm(state=${state.value})"
     }
 
     @Serializable
