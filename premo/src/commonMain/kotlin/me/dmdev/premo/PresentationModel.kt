@@ -24,12 +24,14 @@
 
 package me.dmdev.premo
 
+import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import me.dmdev.premo.PmLifecycle.Event.*
+import me.dmdev.premo.PmLifecycle.Event.ON_BACKGROUND
+import me.dmdev.premo.PmLifecycle.Event.ON_DESTROY
+import me.dmdev.premo.PmLifecycle.Event.ON_FOREGROUND
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
-import kotlin.random.Random
 
 abstract class PresentationModel(params: PmParams) {
 
@@ -66,8 +68,9 @@ abstract class PresentationModel(params: PmParams) {
     @Suppress("FunctionName", "UNCHECKED_CAST")
     fun <PM : PresentationModel> Child(
         description: PmDescription,
-        tag: String = Random.Default.nextLong().toString()
+        key: String = Random.Default.nextLong().toString()
     ): PM {
+        val tag = "$tag/$key"
         val config = PmParams(
             tag = tag,
             parent = this,
@@ -83,9 +86,9 @@ abstract class PresentationModel(params: PmParams) {
     @Suppress("FunctionName")
     fun <PM : PresentationModel> AttachedChild(
         description: PmDescription,
-        tag: String
+        key: String
     ): PM {
-        return Child<PM>(description, tag).also {
+        return Child<PM>(description, key).also {
             attachChild(it)
         }
     }
