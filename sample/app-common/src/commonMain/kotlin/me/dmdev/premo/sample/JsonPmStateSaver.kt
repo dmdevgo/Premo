@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 package me.dmdev.premo.sample
 
+import kotlin.reflect.KType
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
@@ -35,61 +36,74 @@ import me.dmdev.premo.sample.bottom_navigation.TabItemPm
 import me.dmdev.premo.sample.bottom_navigation.TabPm
 import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
-import kotlin.reflect.KType
 
-class JsonPmStateSaver : PmStateSaver {
+class JsonPmStateSaver(
+    private val map: MutableMap<String, String>
+) : PmStateSaver {
 
-    private val json = Json {
-        serializersModule = SerializersModule {
-            polymorphic(
-                PmDescription::class,
-                MainPm.Description::class,
-                MainPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
-                SamplesPm.Description::class,
-                SamplesPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
-                CounterPm.Description::class,
-                CounterPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
-                StackNavigationPm.Description::class,
-                StackNavigationPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
-                SimpleScreenPm.Description::class,
-                SimpleScreenPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
-                BottomNavigationPm.Description::class,
-                BottomNavigationPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
-                TabPm.Description::class,
-                TabPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
-                TabItemPm.Description::class,
-                TabItemPm.Description.serializer()
-            )
+    override fun <T> saveState(key: String, kType: KType, value: T?) {
+        @Suppress("UNCHECKED_CAST")
+        if (value != null) {
+            map[key] = json.encodeToString(serializer(kType) as KSerializer<T>, value)
         }
     }
 
-    override fun <T> saveState(kType: KType, value: T): String {
-        return json.encodeToString(serializer(kType), value)
+    override fun <T> restoreState(key: String, kType: KType): T? {
+        @Suppress("UNCHECKED_CAST")
+        return map[key]?.let {
+            json.decodeFromString(serializer(kType) as KSerializer<T>, it)
+        }
     }
 
-    override fun <T> restoreState(kType: KType, jsonString: String): T {
-        @Suppress("UNCHECKED_CAST")
-        return json.decodeFromString(serializer(kType) as KSerializer<T>, jsonString)
+    companion object {
+        val json = Json {
+            serializersModule = SerializersModule {
+                polymorphic(
+                    PmDescription::class,
+                    MainPm.Description::class,
+                    MainPm.Description.serializer()
+                )
+                polymorphic(
+                    PmDescription::class,
+                    MainPm.Description::class,
+                    MainPm.Description.serializer()
+                )
+                polymorphic(
+                    PmDescription::class,
+                    SamplesPm.Description::class,
+                    SamplesPm.Description.serializer()
+                )
+                polymorphic(
+                    PmDescription::class,
+                    CounterPm.Description::class,
+                    CounterPm.Description.serializer()
+                )
+                polymorphic(
+                    PmDescription::class,
+                    StackNavigationPm.Description::class,
+                    StackNavigationPm.Description.serializer()
+                )
+                polymorphic(
+                    PmDescription::class,
+                    SimpleScreenPm.Description::class,
+                    SimpleScreenPm.Description.serializer()
+                )
+                polymorphic(
+                    PmDescription::class,
+                    BottomNavigationPm.Description::class,
+                    BottomNavigationPm.Description.serializer()
+                )
+                polymorphic(
+                    PmDescription::class,
+                    TabPm.Description::class,
+                    TabPm.Description.serializer()
+                )
+                polymorphic(
+                    PmDescription::class,
+                    TabItemPm.Description::class,
+                    TabItemPm.Description.serializer()
+                )
+            }
+        }
     }
 }

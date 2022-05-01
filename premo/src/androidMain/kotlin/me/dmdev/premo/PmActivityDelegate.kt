@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,15 +31,10 @@ import java.util.*
 
 class PmActivityDelegate<PM : PresentationModel>(
     private val pmActivity: Activity,
-    private val pmStateSaver: PmStateSaver,
-    private val pmFactory: PmFactory,
     private val pmDescription: PmDescription,
+    private val pmFactory: PmFactory,
+    private val stateSaver: BundleStateSaver,
 ) {
-
-    companion object {
-        private const val SAVED_PM_TAG_KEY = "premo_presentation_model_tag"
-        private const val SAVED_PM_STATE_KEY = "premo_presentation_model_state"
-    }
 
     private var pmDelegate: PmDelegate<PM>? = null
 
@@ -51,15 +46,14 @@ class PmActivityDelegate<PM : PresentationModel>(
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
-
+        stateSaver.restore(savedInstanceState)
         val pmTag = getPmTag(savedInstanceState) ?: UUID.randomUUID().toString()
         val pmParams = PmParams(
             tag = pmTag,
             parent = null,
             description = pmDescription,
-            state = restorePmState(savedInstanceState),
             factory = pmFactory,
-            stateSaver = pmStateSaver
+            stateSaverFactory = stateSaver
         )
 
         pmDelegate = PmDelegate(pmParams)
@@ -115,22 +109,14 @@ class PmActivityDelegate<PM : PresentationModel>(
         return savedInstanceState?.getString(SAVED_PM_TAG_KEY)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private fun savePmState(outState: Bundle) {
         outState.putString(SAVED_PM_TAG_KEY, pmDelegate?.presentationModel?.tag)
-        val pmState = pmDelegate?.savePm()
-        if (pmState != null) {
-            outState.putString(SAVED_PM_STATE_KEY, pmStateSaver.saveState(pmState))
-        }
+        pmDelegate?.savePm()
+        stateSaver.save(outState)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    private fun restorePmState(savedInstanceState: Bundle?): Map<String, String> {
-        val pmStateString = savedInstanceState?.getString(SAVED_PM_STATE_KEY)
-        return if (pmStateString != null) {
-            pmStateSaver.restoreState(pmStateString)
-        } else {
-            mapOf()
-        }
+    companion object {
+        private const val SAVED_PM_TAG_KEY = "premo_presentation_model_tag"
     }
 }
+

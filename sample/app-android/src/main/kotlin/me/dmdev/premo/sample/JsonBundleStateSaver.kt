@@ -22,24 +22,34 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.sample
 
-import kotlin.reflect.KType
-import kotlin.reflect.typeOf
+import android.os.Bundle
+import kotlinx.serialization.serializer
+import me.dmdev.premo.BundleStateSaver
+import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.sample.JsonPmStateSaver.Companion.json
 
-interface PmStateSaverFactory {
-    fun createPmStateSaver(key: String): PmStateSaver
-}
+class JsonBundleStateSaver : BundleStateSaver {
 
-interface PmStateSaver {
-    fun <T> saveState(key: String, kType: KType, value: T?)
-    fun <T> restoreState(key: String, kType: KType): T?
-}
+    private var pmStates = mutableMapOf<String, MutableMap<String, String>>()
 
-internal inline fun <reified T> PmStateSaver.saveState(key: String, value: T) {
-    saveState(key, typeOf<T>(), value)
-}
+    override fun save(outState: Bundle) {
+        outState.putString(PM_STATE_KEY, json.encodeToString(serializer(), pmStates))
+    }
 
-internal inline fun <reified T> PmStateSaver.restoreState(key: String): T? {
-    return restoreState(key, typeOf<T>())
+    override fun restore(bundle: Bundle?) {
+        bundle?.getString(PM_STATE_KEY)?.let { jsonString ->
+            pmStates = json.decodeFromString(serializer(), jsonString)
+        }
+    }
+
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        val map = pmStates[key] ?: mutableMapOf<String, String>().also { pmStates[key] = it }
+        return JsonPmStateSaver(map)
+    }
+
+    companion object {
+        private const val PM_STATE_KEY = "pm_state"
+    }
 }

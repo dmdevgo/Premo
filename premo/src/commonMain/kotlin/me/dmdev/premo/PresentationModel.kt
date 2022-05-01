@@ -36,7 +36,7 @@ import me.dmdev.premo.PmLifecycle.State.DESTROYED
 abstract class PresentationModel(params: PmParams) {
 
     private val pmFactory: PmFactory = params.factory
-    private val pmStateSaver: PmStateSaver = params.stateSaver
+    private val pmStateSaverProvider = params.stateSaverFactory
 
     val tag: String = params.tag
     val description: PmDescription = params.description
@@ -46,7 +46,7 @@ abstract class PresentationModel(params: PmParams) {
     var inForegroundScope: CoroutineScope? = null
         private set
     val messageHandler: PmMessageHandler = PmMessageHandler(parent?.messageHandler)
-    val stateHandler: PmStateHandler = PmStateHandler(pmStateSaver, params.state)
+    val stateHandler: PmStateHandler = PmStateHandler(pmStateSaverProvider.createPmStateSaver(tag))
 
     private val attachedChildren = mutableListOf<PresentationModel>()
 
@@ -70,14 +70,13 @@ abstract class PresentationModel(params: PmParams) {
         description: PmDescription,
         key: String = Random.Default.nextLong().toString()
     ): PM {
-        val tag = "$tag/$key"
+        val tag = if (key.contains(tag)) key else "$tag/$key"
         val config = PmParams(
             tag = tag,
             parent = this,
             description = description,
-            state = stateHandler.getSaved(tag) ?: mapOf(),
             factory = pmFactory,
-            stateSaver = pmStateSaver
+            stateSaverFactory = pmStateSaverProvider
         )
 
         return pmFactory.createPm(config) as PM
@@ -122,6 +121,11 @@ abstract class PresentationModel(params: PmParams) {
                 }
             }
         })
+    }
+
+    fun saveState() {
+        stateHandler.saveState()
+        attachedChildren.forEach { it.saveState() }
     }
 }
 
