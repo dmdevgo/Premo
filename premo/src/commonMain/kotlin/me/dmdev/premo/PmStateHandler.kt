@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,27 +24,26 @@
 
 package me.dmdev.premo
 
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class PmStateHandler(
     private val stateSaver: PmStateSaver,
-    private val states: Map<String, String>
 ) {
 
     private class Saver<T>(
         val kType: KType,
-        val saveValue: () -> T
+        val saveValue: () -> T?
     )
 
     private val savers = mutableMapOf<String, Saver<*>>()
 
     fun <T> getSaved(key: String, kType: KType): T? {
-        return states[key]?.let { stateSaver.restoreState(kType, it) }
+        return stateSaver.restoreState(key, kType)
     }
 
-    fun <T> setSaver(key: String, kType: KType, saveValue: () -> T) {
+    fun <T> setSaver(key: String, kType: KType, saveValue: () -> T?) {
         savers[key] = Saver(kType, saveValue)
     }
 
@@ -52,9 +51,9 @@ class PmStateHandler(
         savers.remove(key)
     }
 
-    fun saveState(): Map<String, String> {
-        return savers.mapValues { entry ->
-            stateSaver.saveState(entry.value.kType, entry.value.saveValue())
+    fun saveState() {
+        savers.mapValues { entry ->
+            stateSaver.saveState(entry.key, entry.value.kType, entry.value.saveValue())
         }
     }
 }

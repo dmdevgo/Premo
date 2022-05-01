@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,8 @@ package me.dmdev.premo.sample
 
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
+import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.PmStateSaverFactory
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottom_navigation.TabItemPm
@@ -51,9 +53,12 @@ object Stubs {
             tag = "",
             parent = null,
             description = description,
-            state = mapOf(),
             factory = mainPmFactory,
-            stateSaver = JsonPmStateSaver()
+            stateSaverFactory = object : PmStateSaverFactory {
+                override fun createPmStateSaver(key: String): PmStateSaver {
+                    return JsonPmStateSaver(mutableMapOf())
+                }
+            }
         )
         @Suppress("UNCHECKED_CAST")
         return mainPmFactory.createPm(config) as PM

@@ -25,21 +25,17 @@
 package me.dmdev.premo
 
 import kotlin.reflect.KType
-import kotlin.reflect.typeOf
 
-interface PmStateSaverFactory {
-    fun createPmStateSaver(key: String): PmStateSaver
-}
+class TestStateSaverFactory : PmStateSaverFactory {
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        return object : PmStateSaver {
+            override fun <T> saveState(key: String, kType: KType, value: T?) {
+                TODO("Not yet implemented")
+            }
 
-interface PmStateSaver {
-    fun <T> saveState(key: String, kType: KType, value: T?)
-    fun <T> restoreState(key: String, kType: KType): T?
-}
-
-internal inline fun <reified T> PmStateSaver.saveState(key: String, value: T) {
-    saveState(key, typeOf<T>(), value)
-}
-
-internal inline fun <reified T> PmStateSaver.restoreState(key: String): T? {
-    return restoreState(key, typeOf<T>())
+            override fun <T> restoreState(key: String, kType: KType): T? {
+                TODO("Not yet implemented")
+            }
+        }
+    }
 }

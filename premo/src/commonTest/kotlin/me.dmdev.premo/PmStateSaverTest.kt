@@ -35,9 +35,11 @@ import kotlinx.serialization.serializer
 
 class PmStateSaverTest {
 
+    private val stateSaverFactory = JsonStateSaverFactory()
+
     @Test
     fun testPmStateRestoring() {
-        val delegate = createDelegate(state = mapOf(), tag = "Root")
+        val delegate = createPmDelegate()
         val rootPm = delegate.presentationModel
         delegate.onForeground()
         rootPm.children.forEach { containerPm ->
@@ -46,37 +48,33 @@ class PmStateSaverTest {
             }
         }
 
-        val savedState = delegate.savePm()
+        delegate.savePm()
         delegate.onDestroy()
 
-        val delegateForRestoredPm = createDelegate(tag = "Root", state = savedState)
+        val delegateForRestoredPm = createPmDelegate()
         val restoredPm = delegateForRestoredPm.presentationModel
         delegateForRestoredPm.onForeground()
 
         assertEquals(rootPm, restoredPm)
     }
 
-    private fun createDelegate(
-        tag: String,
-        state: Map<String, String>,
-    ): PmDelegate<RootPm> {
+    private fun createPmDelegate(): PmDelegate<RootPm> {
         return PmDelegate(
             pmParams = PmParams(
-                tag = tag,
+                tag = "Root",
                 parent = null,
                 description = RootPm.Description,
-                state = state,
                 factory = MainPmFactory(),
-                stateSaver = JsonPmStateSaver()
+                stateSaverFactory = stateSaverFactory
             )
         )
     }
 }
 
-private class RootPm(params: PmParams): PresentationModel(params) {
+private class RootPm(params: PmParams) : PresentationModel(params) {
 
     @Serializable
-    object Description: PmDescription
+    object Description : PmDescription
 
     val keys = listOf("container1", "container2", "container3", "container4", "container5")
 
@@ -110,7 +108,7 @@ private class RootPm(params: PmParams): PresentationModel(params) {
     }
 }
 
-private class ContainerPm(params: PmParams): PresentationModel(params) {
+private class ContainerPm(params: PmParams) : PresentationModel(params) {
 
     @Serializable
     object Description : PmDescription
@@ -147,16 +145,16 @@ private class ContainerPm(params: PmParams): PresentationModel(params) {
     }
 }
 
-private class ChildPm(params: PmParams): PresentationModel(params) {
+private class ChildPm(params: PmParams) : PresentationModel(params) {
 
-    private val state = SaveableFlow<State?>("state",null)
+    private val state = SaveableFlow<State?>("state", null)
 
     @Serializable
-    class Description(val key: String): PmDescription
+    class Description(val key: String) : PmDescription
 
     fun setNumber(number: Int) {
         state.value = State(
-            int =  number,
+            int = number,
             long = number.toLong(),
             float = number.toFloat(),
             double = number.toDouble(),
@@ -204,39 +202,59 @@ private class MainPmFactory : PmFactory {
     }
 }
 
-private class JsonPmStateSaver : PmStateSaver {
+class JsonStateSaverFactory : PmStateSaverFactory {
 
-    private val json = Json {
-        serializersModule = SerializersModule {
-            polymorphic(
-                PmDescription::class,
-                RootPm.Description::class,
-                RootPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
-                ContainerPm.Description::class,
-                ContainerPm.Description.serializer()
-            )
-            polymorphic(
-                PmDescription::class,
-                ChildPm.Description::class,
-                ChildPm.Description.serializer()
-            )
-            polymorphic(
-                ChildPm.State::class,
-                ChildPm.State::class,
-                ChildPm.State.serializer()
-            )
+    var pmStates = mutableMapOf<String, MutableMap<String, String>>()
+        private set
+
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        val map = pmStates[key] ?: mutableMapOf<String, String>().also { pmStates[key] = it }
+        return JsonPmStateSaver(map)
+    }
+}
+
+class JsonPmStateSaver(
+    private val map: MutableMap<String, String>
+) : PmStateSaver {
+
+    override fun <T> saveState(key: String, kType: KType, value: T?) {
+        @Suppress("UNCHECKED_CAST")
+        if (value != null) {
+            map[key] = json.encodeToString(serializer(kType) as KSerializer<T>, value)
         }
     }
 
-    override fun <T> saveState(kType: KType, value: T): String {
-        return json.encodeToString(serializer(kType), value)
+    override fun <T> restoreState(key: String, kType: KType): T? {
+        @Suppress("UNCHECKED_CAST")
+        return map[key]?.let {
+            json.decodeFromString(serializer(kType) as KSerializer<T>, it)
+        }
     }
 
-    override fun <T> restoreState(kType: KType, jsonString: String): T {
-        @Suppress("UNCHECKED_CAST")
-        return json.decodeFromString(serializer(kType) as KSerializer<T>, jsonString)
+    companion object {
+        val json = Json {
+            serializersModule = SerializersModule {
+                polymorphic(
+                    PmDescription::class,
+                    RootPm.Description::class,
+                    RootPm.Description.serializer()
+                )
+                polymorphic(
+                    PmDescription::class,
+                    ContainerPm.Description::class,
+                    ContainerPm.Description.serializer()
+                )
+                polymorphic(
+                    PmDescription::class,
+                    ChildPm.Description::class,
+                    ChildPm.Description.serializer()
+                )
+                polymorphic(
+                    ChildPm.State::class,
+                    ChildPm.State::class,
+                    ChildPm.State.serializer()
+                )
+            }
+        }
     }
 }

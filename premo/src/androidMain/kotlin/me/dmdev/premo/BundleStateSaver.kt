@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,9 @@
 
 package me.dmdev.premo
 
-import kotlin.reflect.KType
+import android.os.Bundle
 
-class TestPmStateSaver : PmStateSaver {
-    override fun <T> saveState(kType: KType, value: T): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun <T> restoreState(kType: KType, jsonString: String): T {
-        TODO("Not yet implemented")
-    }
+interface BundleStateSaver: PmStateSaverFactory {
+    fun save(outState: Bundle)
+    fun restore(bundle: Bundle?)
 }
