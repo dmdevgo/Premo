@@ -26,6 +26,7 @@ package me.dmdev.premo.sample
 
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmParams
+import me.dmdev.premo.sample.serialization.JsonPmStateSaver
 import org.jetbrains.compose.web.renderComposable
 
 fun main() {

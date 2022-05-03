@@ -28,7 +28,8 @@ import android.os.Bundle
 import kotlinx.serialization.serializer
 import me.dmdev.premo.BundleStateSaver
 import me.dmdev.premo.PmStateSaver
-import me.dmdev.premo.sample.JsonPmStateSaver.Companion.json
+import me.dmdev.premo.sample.serialization.JsonPmStateSaver
+import me.dmdev.premo.sample.serialization.Serializers.json
 
 class JsonBundleStateSaver : BundleStateSaver {
 

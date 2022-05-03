@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,12 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmParams
-import me.dmdev.premo.sample.*
+import me.dmdev.premo.sample.MainPm
+import me.dmdev.premo.sample.MainPmFactory
+import me.dmdev.premo.sample.MainScreen
+import me.dmdev.premo.sample.WindowSizeClass
+import me.dmdev.premo.sample.WindowSizes
+import me.dmdev.premo.sample.serialization.JsonPmStateSaver
 
 val pm = MainPm(params = PmParams(
     "main",

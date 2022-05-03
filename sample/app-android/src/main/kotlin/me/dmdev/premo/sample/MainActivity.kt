@@ -45,7 +45,8 @@ class MainActivity : PmActivity<MainPm>() {
             pmActivity = this,
             pmDescription = MainPm.Description,
             pmFactory = MainPmFactory(),
-            stateSaver = JsonBundleStateSaver(),
+//            stateSaver = JsonBundleStateSaver(),
+            stateSaver = BundleStateSaverImpl(),
         )
     }
 
