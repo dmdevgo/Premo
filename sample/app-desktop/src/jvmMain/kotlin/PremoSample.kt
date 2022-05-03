@@ -37,16 +37,17 @@ import me.dmdev.premo.sample.MainPmFactory
 import me.dmdev.premo.sample.MainScreen
 import me.dmdev.premo.sample.WindowSizeClass
 import me.dmdev.premo.sample.WindowSizes
-import me.dmdev.premo.sample.serialization.JsonPmStateSaver
+import me.dmdev.premo.sample.serialization.SimpleJsonPmStateSaverFactory
 
-val pm = MainPm(params = PmParams(
-    "main",
-    null,
-    MainPm.Description,
-    mapOf(),
-    MainPmFactory(),
-    JsonPmStateSaver(),
-)).also {
+val pm = MainPm(
+    params = PmParams(
+        tag = "main",
+        description = MainPm.Description,
+        parent = null,
+        factory = MainPmFactory(),
+        stateSaverFactory = SimpleJsonPmStateSaverFactory(),
+    )
+).also {
     it.lifecycle.moveTo(PmLifecycle.State.IN_FOREGROUND)
 }
 

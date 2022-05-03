@@ -22,26 +22,13 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.serialization
 
-import me.dmdev.premo.PmLifecycle
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.sample.serialization.SimpleJsonPmStateSaverFactory
-import org.jetbrains.compose.web.renderComposable
+import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.PmStateSaverFactory
 
-fun main() {
-    val mainPm = MainPm(
-        params = PmParams(
-            tag = "main",
-            description = MainPm.Description,
-            parent = null,
-            factory = MainPmFactory(),
-            stateSaverFactory = SimpleJsonPmStateSaverFactory(),
-        )
-    )
-    mainPm.lifecycle.moveTo(PmLifecycle.State.IN_FOREGROUND)
-
-    renderComposable(rootElementId = "root") {
-        MainScreen(mainPm)
+class SimpleJsonPmStateSaverFactory : PmStateSaverFactory {
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        return JsonPmStateSaver()
     }
 }
