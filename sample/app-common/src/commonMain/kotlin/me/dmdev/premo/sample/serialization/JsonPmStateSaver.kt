@@ -31,7 +31,7 @@ import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.sample.serialization.Serializers.json
 
 class JsonPmStateSaver(
-    private val map: MutableMap<String, String>
+    private val map: MutableMap<String, String> = mutableMapOf()
 ) : PmStateSaver {
 
     override fun <T> saveState(key: String, kType: KType, value: T?) {

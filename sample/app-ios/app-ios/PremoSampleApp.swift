@@ -33,14 +33,13 @@ struct PremoSampleApp: App {
     private let delegate: PmDelegate<MainPm>
     
     init() {
-        delegate = PmDelegate(
+        delegate = PmDelegate<MainPm>(
             pmParams: PmParams(
-                tag: "MainPm",
-                parent: nil,
+                tag: "main",
                 description: MainPm.Description(),
-                state: [String: String](),
+                parent: nil,
                 factory: MainPmFactory(),
-                stateSaver: JsonPmStateSaver()
+                stateSaverFactory: SimpleJsonPmStateSaverFactory()
             )
         )
     
