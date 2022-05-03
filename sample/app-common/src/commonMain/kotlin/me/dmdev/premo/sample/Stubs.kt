@@ -32,6 +32,7 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottom_navigation.TabItemPm
 import me.dmdev.premo.sample.bottom_navigation.TabPm
+import me.dmdev.premo.sample.serialization.JsonPmStateSaver
 import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 

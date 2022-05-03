@@ -22,12 +22,33 @@
  * SOFTWARE.
  */
 
-object Libs {
-    const val kotlinStd = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${BuildVersions.kotlin}"
-    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1"
-    const val kotlinxSerializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2"
-    const val composeActivity = "androidx.activity:activity-compose:1.4.0"
-    const val androidxWindow = "androidx.window:window:1.0.0"
-    const val androidxAppcompat = "androidx.appcompat:appcompat:1.4.1"
-    const val bundlizer = "dev.ahmedmourad.bundlizer:bundlizer-core:0.7.0"
+package me.dmdev.premo.sample
+
+import android.os.Bundle
+import dev.ahmedmourad.bundlizer.Bundlizer
+import kotlin.reflect.KType
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
+import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.sample.serialization.Serializers
+
+@Suppress("SpellCheckingInspection")
+class BundlizerStateSaver(private val bundle: Bundle) : PmStateSaver {
+
+    override fun <T> saveState(key: String, kType: KType, value: T?) {
+        if (value != null) {
+            @Suppress("UNCHECKED_CAST")
+            bundle.putBundle(
+                key,
+                Bundlizer.bundle(serializer(kType) as KSerializer<T>, value, Serializers.module)
+            )
+        }
+    }
+
+    override fun <T> restoreState(key: String, kType: KType): T? {
+        @Suppress("UNCHECKED_CAST")
+        return bundle.getBundle(key)?.let { bundle ->
+            Bundlizer.unbundle(serializer(kType) as KSerializer<T>, bundle, Serializers.module)
+        }
+    }
 }
