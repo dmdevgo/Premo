@@ -52,7 +52,7 @@ class StackNavigationPm(params: PmParams) : PresentationModel(params) {
                     separator = " - ",
                     prefix = "[ ",
                     postfix = " ]"
-                ) { it.tag }
+                ) { (it as? SimpleScreenPm)?.numberText ?: "" }
             }
     }
 
