@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,12 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import me.dmdev.premo.*
+import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.attachToParent
+import me.dmdev.premo.detachFromParent
+import me.dmdev.premo.getSaved
+import me.dmdev.premo.setSaver
 
 
 interface MasterDetailNavigator<M, D> : MasterDetailNavigation<M, D>
@@ -47,7 +52,7 @@ fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetai
         Child(masterPmDescription, masterKey)
     )
     val detailKey = "${key}_detail_pm"
-    val savedDetail = stateHandler.getSaved<Pair<PmDescription, String>>(detailKey)
+    val savedDetail = stateHandler.getSaved<Pair<PmDescription, String>?>(detailKey)
     if (savedDetail != null) {
         navigator.setDetail(Child(savedDetail.first, savedDetail.second))
     }
