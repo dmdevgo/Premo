@@ -22,33 +22,33 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.savers
 
 import android.os.Bundle
-import dev.ahmedmourad.bundlizer.Bundlizer
-import kotlin.reflect.KType
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.serializer
+import me.dmdev.premo.BundleStateSaver
 import me.dmdev.premo.PmStateSaver
-import me.dmdev.premo.sample.serialization.Serializers
 
-@Suppress("SpellCheckingInspection")
-class BundlizerPmStateSaver(private val bundle: Bundle) : PmStateSaver {
+class ParcelableBundleStateSaver : BundleStateSaver {
 
-    override fun <T> saveState(key: String, kType: KType, value: T?) {
-        if (value != null) {
-            @Suppress("UNCHECKED_CAST")
-            bundle.putBundle(
-                key,
-                Bundlizer.bundle(serializer(kType) as KSerializer<T>, value, Serializers.module)
-            )
-        }
+    private var bundles = Bundle()
+
+    override fun save(outState: Bundle) {
+        outState.putBundle(PM_STATE_KEY, bundles)
     }
 
-    override fun <T> restoreState(key: String, kType: KType): T? {
-        @Suppress("UNCHECKED_CAST")
-        return bundle.getBundle(key)?.let { bundle ->
-            Bundlizer.unbundle(serializer(kType) as KSerializer<T>, bundle, Serializers.module)
+    override fun restore(bundle: Bundle?) {
+        bundles = bundle?.getBundle(PM_STATE_KEY) ?: Bundle()
+    }
+
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        val bundle = bundles.getBundle(key) ?: Bundle().also {
+            bundles.putBundle(key, it)
         }
+        return ParcelablePmStateSaver(bundle)
+    }
+
+    companion object {
+        private const val PM_STATE_KEY = "pm_state"
     }
 }
+

@@ -22,35 +22,47 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.savers
 
 import android.os.Bundle
+import com.chrynan.parcelable.core.Parcelable
+import com.chrynan.parcelable.core.getParcelable
+import com.chrynan.parcelable.core.putParcelable
+import kotlin.reflect.KType
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
-import me.dmdev.premo.BundleStateSaver
 import me.dmdev.premo.PmStateSaver
-import me.dmdev.premo.sample.serialization.JsonPmStateSaver
-import me.dmdev.premo.sample.serialization.Serializers.json
+import me.dmdev.premo.sample.serialization.Serializers
 
-class JsonBundleStateSaver : BundleStateSaver {
+class ParcelablePmStateSaver(
+    private val bundle: Bundle
+) : PmStateSaver {
 
-    private var pmStates = mutableMapOf<String, MutableMap<String, String>>()
-
-    override fun save(outState: Bundle) {
-        outState.putString(PM_STATE_KEY, json.encodeToString(serializer(), pmStates))
-    }
-
-    override fun restore(bundle: Bundle?) {
-        bundle?.getString(PM_STATE_KEY)?.let { jsonString ->
-            pmStates = json.decodeFromString(serializer(), jsonString)
+    @OptIn(ExperimentalSerializationApi::class)
+    override fun <T> saveState(key: String, kType: KType, value: T?) {
+        @Suppress("UNCHECKED_CAST")
+        if (value != null) {
+            bundle.putParcelable(key, value, parcelable, serializer(kType) as KSerializer<T>)
         }
     }
 
-    override fun createPmStateSaver(key: String): PmStateSaver {
-        val map = pmStates[key] ?: mutableMapOf<String, String>().also { pmStates[key] = it }
-        return JsonPmStateSaver(map)
+    @OptIn(ExperimentalSerializationApi::class)
+    override fun <T> restoreState(key: String, kType: KType): T? {
+        @Suppress("UNCHECKED_CAST")
+        return restore(key, kType)
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    private fun <T: Any> restore(key: String, kType: KType): T? {
+        @Suppress("UNCHECKED_CAST")
+        return bundle.getParcelable(key, parcelable, serializer(kType) as KSerializer<T>)
     }
 
     companion object {
-        private const val PM_STATE_KEY = "pm_state"
+        @OptIn(ExperimentalSerializationApi::class)
+        val parcelable = Parcelable {
+            serializersModule = Serializers.module
+        }
     }
 }

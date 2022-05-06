@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.savers
 
 import android.os.Bundle
 import kotlinx.serialization.ExperimentalSerializationApi
