@@ -38,6 +38,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import me.dmdev.premo.PmActivity
 import me.dmdev.premo.PmActivityDelegate
 import me.dmdev.premo.navigation.handleBack
+import me.dmdev.premo.sample.savers.ParcelableBundleStateSaver
 
 class MainActivity : PmActivity<MainPm>() {
 
@@ -47,8 +48,9 @@ class MainActivity : PmActivity<MainPm>() {
             pmDescription = MainPm.Description,
             pmFactory = MainPmFactory(),
 //            stateSaver = JsonBundleStateSaver(),
-            stateSaver = ProtoBufBundleStateSaver(),
+//            stateSaver = ProtoBufBundleStateSaver(),
 //            stateSaver = BundlizerBundleStateSaver(),
+            stateSaver = ParcelableBundleStateSaver()
         )
     }
 

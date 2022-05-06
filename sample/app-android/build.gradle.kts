@@ -35,7 +35,7 @@ android {
 
     defaultConfig {
         applicationId = "me.dmdev.premo.sample"
-        minSdk = AndroidSdk.min
+        minSdk = 23
         targetSdk = AndroidSdk.target
         versionCode = 1
         versionName = "1.0"
@@ -75,6 +75,10 @@ android {
 
 }
 
+repositories {
+    maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
+}
+
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(Libs.kotlinStd)
@@ -84,4 +88,5 @@ dependencies {
     implementation(compose.preview)
     implementation(Libs.bundlizer)
     implementation(project(":sample:app-common-compose-ui"))
+    implementation("com.chrynan.parcelable:parcelable-core:0.4.1")
 }
