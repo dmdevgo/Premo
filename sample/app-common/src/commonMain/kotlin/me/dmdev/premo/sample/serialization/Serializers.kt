@@ -24,8 +24,10 @@
 
 package me.dmdev.premo.sample.serialization
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.protobuf.ProtoBuf
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.sample.CounterPm
 import me.dmdev.premo.sample.MainPm
@@ -86,6 +88,11 @@ object Serializers {
     }
 
     val json =  Json {
+        serializersModule = module
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    val protoBuf = ProtoBuf {
         serializersModule = module
     }
 }

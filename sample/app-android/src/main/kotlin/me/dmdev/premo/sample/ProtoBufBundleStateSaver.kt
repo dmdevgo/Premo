@@ -25,30 +25,35 @@
 package me.dmdev.premo.sample
 
 import android.os.Bundle
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.serializer
 import me.dmdev.premo.BundleStateSaver
 import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.sample.serialization.ProtoBufPmStateSaver
+import me.dmdev.premo.sample.serialization.Serializers.protoBuf
 
-class BundleStateSaverImpl : BundleStateSaver {
+class ProtoBufBundleStateSaver : BundleStateSaver {
 
-    private var bundles = Bundle()
+    private var pmStates = mutableMapOf<String, MutableMap<String, ByteArray>>()
 
+    @OptIn(ExperimentalSerializationApi::class)
     override fun save(outState: Bundle) {
-        outState.putBundle(PM_STATE_KEY, bundles)
+        outState.putByteArray(PM_STATE_KEY, protoBuf.encodeToByteArray(serializer(), pmStates))
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     override fun restore(bundle: Bundle?) {
-        bundles = bundle?.getBundle(PM_STATE_KEY) ?: Bundle()
+        bundle?.getByteArray(PM_STATE_KEY)?.let { byteArray ->
+            pmStates = protoBuf.decodeFromByteArray(serializer(), byteArray)
+        }
     }
 
     override fun createPmStateSaver(key: String): PmStateSaver {
-        val bundle = bundles.getBundle(key) ?: Bundle().also {
-            bundles.putBundle(key, it)
-        }
-        return BundlizerStateSaver(bundle)
+        val map = pmStates[key] ?: mutableMapOf<String, ByteArray>().also { pmStates[key] = it }
+        return ProtoBufPmStateSaver(map)
     }
 
     companion object {
         private const val PM_STATE_KEY = "pm_state"
     }
 }
-

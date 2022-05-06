@@ -22,13 +22,30 @@
  * SOFTWARE.
  */
 
-object Libs {
-    const val kotlinStd = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${BuildVersions.kotlin}"
-    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1"
-    const val kotlinxSerializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2"
-    const val kotlinxSerializationProtobuf = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.2"
-    const val composeActivity = "androidx.activity:activity-compose:1.4.0"
-    const val androidxWindow = "androidx.window:window:1.0.0"
-    const val androidxAppcompat = "androidx.appcompat:appcompat:1.4.1"
-    const val bundlizer = "dev.ahmedmourad.bundlizer:bundlizer-core:0.7.0"
+package me.dmdev.premo.sample.serialization
+
+import kotlin.reflect.KType
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
+import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.sample.serialization.Serializers.protoBuf
+
+class ProtoBufPmStateSaver(private val map: MutableMap<String, ByteArray>) : PmStateSaver {
+
+    @OptIn(ExperimentalSerializationApi::class)
+    override fun <T> saveState(key: String, kType: KType, value: T?) {
+        @Suppress("UNCHECKED_CAST")
+        if (value != null) {
+            map[key] = protoBuf.encodeToByteArray(serializer(kType) as KSerializer<T>, value)
+        }
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    override fun <T> restoreState(key: String, kType: KType): T? {
+        @Suppress("UNCHECKED_CAST")
+        return map[key]?.let {
+            protoBuf.decodeFromByteArray(serializer(kType) as KSerializer<T>, it)
+        }
+    }
 }

@@ -33,7 +33,7 @@ import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.sample.serialization.Serializers
 
 @Suppress("SpellCheckingInspection")
-class BundlizerStateSaver(private val bundle: Bundle) : PmStateSaver {
+class BundlizerPmStateSaver(private val bundle: Bundle) : PmStateSaver {
 
     override fun <T> saveState(key: String, kType: KType, value: T?) {
         if (value != null) {

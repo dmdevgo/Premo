@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.window.layout.WindowMetricsCalculator
+import kotlinx.serialization.ExperimentalSerializationApi
 import me.dmdev.premo.PmActivity
 import me.dmdev.premo.PmActivityDelegate
 import me.dmdev.premo.navigation.handleBack
@@ -46,10 +47,12 @@ class MainActivity : PmActivity<MainPm>() {
             pmDescription = MainPm.Description,
             pmFactory = MainPmFactory(),
 //            stateSaver = JsonBundleStateSaver(),
-            stateSaver = BundleStateSaverImpl(),
+            stateSaver = ProtoBufBundleStateSaver(),
+//            stateSaver = BundlizerBundleStateSaver(),
         )
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

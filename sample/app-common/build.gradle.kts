@@ -61,6 +61,7 @@ kotlin {
                 api(project(":premo-navigation"))
                 api(Libs.coroutinesCore)
                 api(Libs.kotlinxSerializationJson)
+                api(Libs.kotlinxSerializationProtobuf)
             }
         }
     }

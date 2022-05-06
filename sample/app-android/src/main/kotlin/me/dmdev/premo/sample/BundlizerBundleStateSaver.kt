@@ -22,13 +22,33 @@
  * SOFTWARE.
  */
 
-object Libs {
-    const val kotlinStd = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${BuildVersions.kotlin}"
-    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1"
-    const val kotlinxSerializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2"
-    const val kotlinxSerializationProtobuf = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.2"
-    const val composeActivity = "androidx.activity:activity-compose:1.4.0"
-    const val androidxWindow = "androidx.window:window:1.0.0"
-    const val androidxAppcompat = "androidx.appcompat:appcompat:1.4.1"
-    const val bundlizer = "dev.ahmedmourad.bundlizer:bundlizer-core:0.7.0"
+package me.dmdev.premo.sample
+
+import android.os.Bundle
+import me.dmdev.premo.BundleStateSaver
+import me.dmdev.premo.PmStateSaver
+
+class BundlizerBundleStateSaver : BundleStateSaver {
+
+    private var bundles = Bundle()
+
+    override fun save(outState: Bundle) {
+        outState.putBundle(PM_STATE_KEY, bundles)
+    }
+
+    override fun restore(bundle: Bundle?) {
+        bundles = bundle?.getBundle(PM_STATE_KEY) ?: Bundle()
+    }
+
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        val bundle = bundles.getBundle(key) ?: Bundle().also {
+            bundles.putBundle(key, it)
+        }
+        return BundlizerPmStateSaver(bundle)
+    }
+
+    companion object {
+        private const val PM_STATE_KEY = "pm_state"
+    }
 }
+
