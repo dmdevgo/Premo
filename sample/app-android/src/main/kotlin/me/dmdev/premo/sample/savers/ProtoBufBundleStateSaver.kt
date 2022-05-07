@@ -42,8 +42,8 @@ class ProtoBufBundleStateSaver : BundleStateSaver {
     }
 
     @OptIn(ExperimentalSerializationApi::class)
-    override fun restore(bundle: Bundle?) {
-        bundle?.getByteArray(PM_STATE_KEY)?.let { byteArray ->
+    override fun restore(savedState: Bundle?) {
+        savedState?.getByteArray(PM_STATE_KEY)?.let { byteArray ->
             pmStates = protoBuf.decodeFromByteArray(serializer(), byteArray)
         }
     }

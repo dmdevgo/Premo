@@ -34,7 +34,7 @@ class PmStateHandler(
 
     private class Saver<T>(
         val kType: KType,
-        val saveValue: () -> T?
+        val saveValue: () -> T
     )
 
     private val savers = mutableMapOf<String, Saver<*>>()
@@ -43,7 +43,7 @@ class PmStateHandler(
         return stateSaver.restoreState(key, kType)
     }
 
-    fun <T> setSaver(key: String, kType: KType, saveValue: () -> T?) {
+    fun <T> setSaver(key: String, kType: KType, saveValue: () -> T) {
         savers[key] = Saver(kType, saveValue)
     }
 

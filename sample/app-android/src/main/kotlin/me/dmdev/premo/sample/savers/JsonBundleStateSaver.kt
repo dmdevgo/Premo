@@ -39,8 +39,8 @@ class JsonBundleStateSaver : BundleStateSaver {
         outState.putString(PM_STATE_KEY, json.encodeToString(serializer(), pmStates))
     }
 
-    override fun restore(bundle: Bundle?) {
-        bundle?.getString(PM_STATE_KEY)?.let { jsonString ->
+    override fun restore(savedState: Bundle?) {
+        savedState?.getString(PM_STATE_KEY)?.let { jsonString ->
             pmStates = json.decodeFromString(serializer(), jsonString)
         }
     }
