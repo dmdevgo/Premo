@@ -36,8 +36,8 @@ class ParcelableBundleStateSaver : BundleStateSaver {
         outState.putBundle(PM_STATE_KEY, bundles)
     }
 
-    override fun restore(bundle: Bundle?) {
-        bundles = bundle?.getBundle(PM_STATE_KEY) ?: Bundle()
+    override fun restore(savedState: Bundle?) {
+        bundles = savedState?.getBundle(PM_STATE_KEY) ?: Bundle()
     }
 
     override fun createPmStateSaver(key: String): PmStateSaver {

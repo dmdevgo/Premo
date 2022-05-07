@@ -27,10 +27,6 @@ package me.dmdev.premo
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
-interface PmStateSaverFactory {
-    fun createPmStateSaver(key: String): PmStateSaver
-}
-
 interface PmStateSaver {
     fun <T> saveState(key: String, kType: KType, value: T?)
     fun <T> restoreState(key: String, kType: KType): T?

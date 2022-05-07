@@ -24,9 +24,6 @@
 
 package me.dmdev.premo
 
-import android.os.Bundle
-
-interface BundleStateSaver: PmStateSaverFactory {
-    fun save(outState: Bundle)
-    fun restore(savedState: Bundle?)
+interface PmStateSaverFactory {
+    fun createPmStateSaver(key: String): PmStateSaver
 }
