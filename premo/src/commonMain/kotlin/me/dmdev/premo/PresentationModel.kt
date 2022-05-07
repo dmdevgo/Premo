@@ -122,11 +122,6 @@ abstract class PresentationModel(params: PmParams) {
             }
         })
     }
-
-    fun saveState() {
-        stateHandler.saveState()
-        attachedChildren.forEach { it.saveState() }
-    }
 }
 
 fun PresentationModel.attachToParent() {
