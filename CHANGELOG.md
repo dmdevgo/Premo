@@ -1,3 +1,7 @@
+# 1.0.0-alpha.05 / 09.05.2022
+- Abstraction level support for implementing state persistence in different formats (Json, ProtoBuf, Parcelable) #6.
+- Added PmStateSaverFactory and BundleStateSaver. 
+
 # 1.0.0-alpha.04 / 02.01.2022
 - Added JS target.
 - Implemented the sample for Web with Compose Multiplatform.
