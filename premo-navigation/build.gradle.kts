@@ -53,9 +53,9 @@ kotlin {
 
         val commonTest by getting {
             dependencies {
+                dependsOn(commonMain)
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-                implementation(project(":premo"))
             }
         }
 
@@ -65,6 +65,10 @@ kotlin {
 
         val jvmTest by getting {
             dependsOn(commonTest)
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(kotlin("test-junit"))
+            }
         }
 
         val jsMain by getting {
@@ -73,6 +77,9 @@ kotlin {
 
         val jsTest by getting {
             dependsOn(commonTest)
+            dependencies {
+                implementation(kotlin("test-js"))
+            }
         }
 
         val androidMain by getting {
@@ -85,10 +92,6 @@ kotlin {
         // Fix test run: https://youtrack.jetbrains.com/issue/KT-40571
         val androidTest  by getting {
             dependsOn(jvmTest)
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
-            }
         }
 
         val iosMain by getting {

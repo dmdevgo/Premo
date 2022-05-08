@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,20 @@
 
 package me.dmdev.premo.navigation
 
-import me.dmdev.premo.PmStateSaver
 import kotlin.reflect.KType
+import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.PmStateSaverFactory
 
-class TestPmStateSaver : PmStateSaver {
-    override fun <T> saveState(kType: KType, value: T): String {
-        TODO("Not yet implemented")
-    }
+class TestStateSaverFactory : PmStateSaverFactory {
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        return object : PmStateSaver {
+            override fun <T> saveState(key: String, kType: KType, value: T?) {
+                TODO("Not yet implemented")
+            }
 
-    override fun <T> restoreState(kType: KType, jsonString: String): T {
-        TODO("Not yet implemented")
+            override fun <T> restoreState(key: String, kType: KType): T? {
+                TODO("Not yet implemented")
+            }
+        }
     }
 }

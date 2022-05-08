@@ -62,6 +62,10 @@ kotlin {
 
         val jvmMain by getting {
             dependsOn(commonMain)
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(kotlin("test-junit"))
+            }
         }
 
         val jvmTest by getting {
@@ -74,6 +78,9 @@ kotlin {
 
         val jsTest by getting {
             dependsOn(commonTest)
+            dependencies {
+                implementation(kotlin("test-js"))
+            }
         }
 
         val androidMain by getting {
@@ -86,10 +93,6 @@ kotlin {
         // Fix test run: https://youtrack.jetbrains.com/issue/KT-40571
         val androidTest  by getting {
             dependsOn(jvmTest)
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
-            }
         }
 
         val iosMain by getting {
