@@ -23,7 +23,7 @@
  */
 
 object BuildVersions {
-    const val agp = "7.1.3"
+    const val agp = "7.2.1"
     const val kotlin = "1.6.10"
     const val compose = "1.1.1"
 }
