@@ -34,6 +34,8 @@ import me.dmdev.premo.handle
 import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.StackNavigator
 import me.dmdev.premo.navigation.SystemBackMessage
+import me.dmdev.premo.navigation.pop
+import me.dmdev.premo.navigation.push
 import me.dmdev.premo.sample.StateFlow
 import me.dmdev.premo.setSaver
 

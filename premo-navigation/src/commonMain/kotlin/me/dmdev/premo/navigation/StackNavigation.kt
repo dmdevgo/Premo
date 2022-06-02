@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,13 +32,17 @@ import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
 
 interface StackNavigation {
-    val currentTop: PresentationModel?
     val currentTopState: StateFlow<PresentationModel?>
-    val backstack: List<PresentationModel>
     val backstackState: StateFlow<List<PresentationModel>>
     @ExperimentalPremoApi
     val backstackChanges: Flow<BackstackChange>
 }
+
+val StackNavigation.backstack: List<PresentationModel>
+    get() = backstackState.value
+
+val StackNavigation.currentTop: PresentationModel?
+    get() = backstack.lastOrNull()
 
 fun PresentationModel.StackNavigation(
     initialDescription: PmDescription,

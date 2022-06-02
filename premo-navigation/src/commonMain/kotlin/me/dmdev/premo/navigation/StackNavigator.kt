@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,14 +25,35 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
-import me.dmdev.premo.*
-import me.dmdev.premo.PmLifecycle.State.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import me.dmdev.premo.ExperimentalPremoApi
+import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmLifecycle
+import me.dmdev.premo.PmLifecycle.State.CREATED
+import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.getSaved
+import me.dmdev.premo.setSaver
 
 interface StackNavigator : StackNavigation {
-    fun push(pm: PresentationModel)
-    fun pop(): Boolean
     fun setBackStack(pmList: List<PresentationModel>)
+}
+
+fun StackNavigator.push(pm: PresentationModel) {
+    setBackStack(backstack.plus(pm))
+}
+
+fun StackNavigator.pop(): Boolean {
+    if (backstack.isEmpty()) return false
+    setBackStack(backstack.dropLast(1))
+    return true
 }
 
 fun PresentationModel.StackNavigator(
@@ -63,14 +84,11 @@ internal class StackNavigatorImpl(
     private val _backstackState = MutableStateFlow<List<PresentationModel>>(listOf())
     override val backstackState: StateFlow<List<PresentationModel>> = _backstackState
 
-    override var backstack: List<PresentationModel>
+    private var backstack: List<PresentationModel>
         get() = backstackState.value
         private set(value) {
             _backstackState.value = value
         }
-
-    override val currentTop: PresentationModel?
-        get() = backstack.lastOrNull()
 
     override val currentTopState: StateFlow<PresentationModel?> =
         backstackState.map { it.lastOrNull() }.stateIn(
@@ -114,29 +132,22 @@ internal class StackNavigatorImpl(
         }
     }
 
-    override fun push(pm: PresentationModel) {
-        currentTop?.lifecycle?.moveTo(CREATED)
-        pm.lifecycle.moveTo(lifecycle.state)
-        backstack = backstack.plus(pm)
-    }
-
-    override fun pop(): Boolean {
-        return if (backstack.isNotEmpty()) {
-            currentTop?.lifecycle?.moveTo(DESTROYED)
-            if (backstack.isNotEmpty()) backstack = backstack.dropLast(1)
-            currentTop?.lifecycle?.moveTo(lifecycle.state)
-            true
-        } else {
-            false
-        }
-    }
-
     override fun setBackStack(pmList: List<PresentationModel>) {
-        backstack = pmList
-        pmList.forEach { pm ->
-            pm.lifecycle.moveTo(CREATED)
+        val iterator = pmList.listIterator()
+        while (iterator.hasNext()) {
+            val pm = iterator.next()
+            if (iterator.hasNext()) {
+                pm.lifecycle.moveTo(CREATED)
+            } else {
+                pm.lifecycle.moveTo(lifecycle.state)
+            }
         }
-        pmList.lastOrNull()?.lifecycle?.moveTo(lifecycle.state)
+        backstack.forEach { pm ->
+            if (pmList.contains(pm).not()) {
+                pm.lifecycle.moveTo(DESTROYED)
+            }
+        }
+        backstack = pmList
     }
 
     private fun subscribeToLifecycle() {
