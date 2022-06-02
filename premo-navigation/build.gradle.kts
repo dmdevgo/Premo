@@ -54,6 +54,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 dependsOn(commonMain)
+                implementation(project(":premo"))
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
             }
