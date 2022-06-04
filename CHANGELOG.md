@@ -1,3 +1,10 @@
+# 1.0.0-alpha.06 / 04.06.2022
+Added commands for `StackNavigator`:
+- popToRoot
+- popUntil
+- replaceTop
+- replaceAll
+
 # 1.0.0-alpha.05 / 09.05.2022
 - Abstraction level support for implementing state persistence in different formats (Json, ProtoBuf, Parcelable) #6.
 - Added PmStateSaverFactory and BundleStateSaver. 
