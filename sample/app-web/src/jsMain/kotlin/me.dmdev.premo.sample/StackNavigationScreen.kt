@@ -27,7 +27,12 @@ package me.dmdev.premo.sample
 import androidx.compose.runtime.Composable
 import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
-import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.FlexDirection
+import org.jetbrains.compose.web.css.alignItems
+import org.jetbrains.compose.web.css.display
+import org.jetbrains.compose.web.css.flexDirection
 import org.jetbrains.compose.web.dom.Div
 
 @Composable
@@ -50,12 +55,46 @@ fun StackNavigationScreen(pm: StackNavigationPm) {
                 else -> TextBox("Empty back stack.")
             }
             TextBox("Stack: $backStack")
-            TextButton("Push") {
-                pm.pushClick()
+
+            Div(
+                {
+                    style {
+                        display(DisplayStyle.Flex)
+                        flexDirection(FlexDirection.Row)
+                        alignItems(AlignItems.Center)
+                    }
+                }
+
+            ) {
+                TextButton("Push") {
+                    pm.pushClick()
+                }
+                TextButton("Pop") {
+                    pm.popClick()
+                }
+                TextButton("Pop to root") {
+                    pm.popToRootClick()
+                }
             }
-            TextButton("Pop") {
-                pm.popClick()
+
+            Div(
+                {
+                    style {
+                        display(DisplayStyle.Flex)
+                        flexDirection(FlexDirection.Row)
+                        alignItems(AlignItems.Center)
+                    }
+                }
+
+            ) {
+                TextButton("Replace top") {
+                    pm.replaceTopClick()
+                }
+                TextButton("Replace all") {
+                    pm.replaceAllClick()
+                }
             }
+
             TextButton("Set back stack") {
                 pm.setBackstackClick()
             }
