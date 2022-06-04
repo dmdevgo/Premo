@@ -119,9 +119,77 @@ class StackNavigatorTest {
     }
 
     @Test
+    fun testPopToRoot() {
+        navigator.setBackStack(listOf(pm1, pm2, pm3))
+        val popped = navigator.popToRoot()
+
+        assertEquals(popped,  true)
+        assertEquals(pm1,  navigator.currentTop)
+        assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
+        assertEquals(pm2.lifecycle.state, DESTROYED)
+        assertEquals(pm3.lifecycle.state, DESTROYED)
+        assertEquals(listOf(pm1), navigator.backstack)
+    }
+
+    @Test
+    fun testPopToRootWhenBackstackIsEmpty() {
+        val popped = navigator.popToRoot()
+
+        assertEquals(popped,  false)
+        assertEquals(listOf(), navigator.backstack)
+    }
+
+    @Test
+    fun testReplaceTop() {
+        navigator.setBackStack(listOf(pm1, pm2))
+        navigator.replaceTop(pm3)
+
+        assertEquals(pm1.lifecycle.state, CREATED)
+        assertEquals(pm2.lifecycle.state, DESTROYED)
+        assertEquals(pm3.lifecycle.state, IN_FOREGROUND)
+        assertEquals(pm3,  navigator.currentTop)
+        assertEquals(listOf(pm1, pm3), navigator.backstack)
+    }
+
+    @Test
+    fun testReplaceTopWhenBackstackIsEmpty() {
+        navigator.replaceTop(pm3)
+
+        assertEquals(pm3,  navigator.currentTop)
+        assertEquals(pm3.lifecycle.state, IN_FOREGROUND)
+        assertEquals(listOf(pm3), navigator.backstack)
+    }
+
+    @Test
+    fun testReplaceAll() {
+        navigator.setBackStack(listOf(pm1, pm2))
+        navigator.replaceAll(pm3)
+
+        assertEquals(pm1.lifecycle.state, DESTROYED)
+        assertEquals(pm2.lifecycle.state, DESTROYED)
+        assertEquals(pm3.lifecycle.state, IN_FOREGROUND)
+        assertEquals(pm3,  navigator.currentTop)
+        assertEquals(listOf(pm3), navigator.backstack)
+    }
+
+    @Test
+    fun testPopUntil() {
+        println(listOf(pm1, pm2, pm3))
+        navigator.setBackStack(listOf(pm1, pm2, pm3))
+        navigator.popUntil { it === pm1 }
+
+        assertEquals(pm1,  navigator.currentTop)
+        assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
+        assertEquals(pm2.lifecycle.state, DESTROYED)
+        assertEquals(pm3.lifecycle.state, DESTROYED)
+        assertEquals(listOf(pm1), navigator.backstack)
+    }
+
+    @Test
     fun testSetBackstack() {
         val backstack = listOf(pm1, pm2, pm3)
         navigator.setBackStack(backstack)
+
         assertEquals(pm1.lifecycle.state, CREATED)
         assertEquals(pm2.lifecycle.state, CREATED)
         assertEquals(pm3.lifecycle.state, IN_FOREGROUND)

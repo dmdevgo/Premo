@@ -35,7 +35,10 @@ import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.StackNavigator
 import me.dmdev.premo.navigation.SystemBackMessage
 import me.dmdev.premo.navigation.pop
+import me.dmdev.premo.navigation.popToRoot
 import me.dmdev.premo.navigation.push
+import me.dmdev.premo.navigation.replaceAll
+import me.dmdev.premo.navigation.replaceTop
 import me.dmdev.premo.sample.StateFlow
 import me.dmdev.premo.setSaver
 
@@ -73,6 +76,18 @@ class StackNavigationPm(params: PmParams) : PresentationModel(params) {
 
     fun popClick() {
         navigator.pop()
+    }
+
+    fun popToRootClick() {
+        navigator.popToRoot()
+    }
+
+    fun replaceTopClick() {
+        navigator.replaceTop(nextChild())
+    }
+
+    fun replaceAllClick() {
+        navigator.replaceAll(nextChild())
     }
 
     fun setBackstackClick() {

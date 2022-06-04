@@ -68,6 +68,20 @@ struct StackNavigationView: View {
                     Button("Pop", action: {
                         pm.popClick()
                     }).padding()
+                    
+                    Button("Pop to root", action: {
+                        pm.popToRootClick()
+                    }).padding()
+                }
+                
+                HStack {
+                    Button("Replace top", action: {
+                        pm.replaceTopClick()
+                    }).padding()
+                    
+                    Button("Replace all", action: {
+                        pm.replaceAllClick()
+                    }).padding()
                 }
                 
                 Button("Set back stack", action: {

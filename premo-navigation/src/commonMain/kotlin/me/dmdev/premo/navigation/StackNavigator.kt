@@ -56,6 +56,24 @@ fun StackNavigator.pop(): Boolean {
     return true
 }
 
+fun StackNavigator.popToRoot(): Boolean {
+    if (backstack.isEmpty()) return false
+    setBackStack(backstack.subList(0, 1))
+    return true
+}
+
+fun StackNavigator.popUntil(predicate: (PresentationModel) -> Boolean) {
+    setBackStack(backstack.takeWhile(predicate))
+}
+
+fun StackNavigator.replaceTop(pm: PresentationModel) {
+    setBackStack(backstack.dropLast(1).plus(pm))
+}
+
+fun StackNavigator.replaceAll(pm: PresentationModel) {
+    setBackStack(listOf(pm))
+}
+
 fun PresentationModel.StackNavigator(
     initialDescription: PmDescription? = null,
     key: String = "stack_navigator"
