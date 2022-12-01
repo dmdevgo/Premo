@@ -88,5 +88,5 @@ dependencies {
     implementation(compose.preview)
     implementation(Libs.bundlizer)
     implementation(project(":sample:app-common-compose-ui"))
-    implementation("com.chrynan.parcelable:parcelable-core:0.4.1")
+    implementation("com.chrynan.parcelable:parcelable-core:0.5.1")
 }
