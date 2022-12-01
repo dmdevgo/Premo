@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -40,6 +39,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 api(project(":sample:app-common-compose-ui"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.4")
                 implementation(compose.desktop.currentOs)
             }
         }
@@ -49,7 +49,7 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "PremoSample"
+        mainClass = "PremoSampleKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "me.dmdev.premo.sample"
