@@ -25,22 +25,9 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import me.dmdev.premo.ExperimentalPremoApi
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmLifecycle
-import me.dmdev.premo.PmLifecycle.State.CREATED
-import me.dmdev.premo.PmLifecycle.State.DESTROYED
-import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.getSaved
-import me.dmdev.premo.setSaver
+import kotlinx.coroutines.flow.*
+import me.dmdev.premo.*
+import me.dmdev.premo.PmLifecycle.State.*
 
 interface StackNavigator : StackNavigation {
     fun setBackStack(pmList: List<PresentationModel>)
@@ -169,21 +156,19 @@ internal class StackNavigatorImpl(
     }
 
     private fun subscribeToLifecycle() {
-        lifecycle.addObserver(object : PmLifecycle.Observer {
-            override fun onLifecycleChange(lifecycle: PmLifecycle, event: PmLifecycle.Event) {
-                when (lifecycle.state) {
-                    CREATED,
-                    DESTROYED -> {
-                        backstack.forEach { pm ->
-                            pm.lifecycle.moveTo(lifecycle.state)
-                        }
-                    }
-
-                    IN_FOREGROUND -> {
-                        currentTop?.lifecycle?.moveTo(lifecycle.state)
+        lifecycle.addObserver { lifecycle, event ->
+            when (lifecycle.state) {
+                CREATED,
+                DESTROYED -> {
+                    backstack.forEach { pm ->
+                        pm.lifecycle.moveTo(lifecycle.state)
                     }
                 }
+
+                IN_FOREGROUND -> {
+                    currentTop?.lifecycle?.moveTo(lifecycle.state)
+                }
             }
-        })
+        }
     }
 }

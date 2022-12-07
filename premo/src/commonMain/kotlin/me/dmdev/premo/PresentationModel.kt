@@ -24,14 +24,12 @@
 
 package me.dmdev.premo
 
-import kotlin.random.Random
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import me.dmdev.premo.PmLifecycle.Event.ON_BACKGROUND
-import me.dmdev.premo.PmLifecycle.Event.ON_DESTROY
-import me.dmdev.premo.PmLifecycle.Event.ON_FOREGROUND
+import me.dmdev.premo.PmLifecycle.Event.*
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import kotlin.random.Random
 
 abstract class PresentationModel(params: PmParams) {
 
@@ -99,28 +97,25 @@ abstract class PresentationModel(params: PmParams) {
     }
 
     private fun subscribeToLifecycle() {
-        lifecycle.addObserver(object : PmLifecycle.Observer {
-            override fun onLifecycleChange(lifecycle: PmLifecycle, event: PmLifecycle.Event) {
+        lifecycle.addObserver { lifecycle, event ->
+            attachedChildren.forEach { pm ->
+                pm.lifecycle.moveTo(lifecycle.state)
+            }
 
-                attachedChildren.forEach { pm ->
-                    pm.lifecycle.moveTo(lifecycle.state)
+            when (event) {
+                ON_FOREGROUND -> {
+                    inForegroundScope = MainScope()
                 }
-
-                when (event) {
-                    ON_FOREGROUND -> {
-                        inForegroundScope = MainScope()
-                    }
-                    ON_BACKGROUND -> {
-                        inForegroundScope?.cancel()
-                        inForegroundScope = null
-                    }
-                    ON_DESTROY -> {
-                        scope.cancel()
-                        parent?.stateHandler?.removeSaver(tag)
-                    }
+                ON_BACKGROUND -> {
+                    inForegroundScope?.cancel()
+                    inForegroundScope = null
+                }
+                ON_DESTROY -> {
+                    scope.cancel()
+                    parent?.stateHandler?.removeSaver(tag)
                 }
             }
-        })
+        }
     }
 }
 

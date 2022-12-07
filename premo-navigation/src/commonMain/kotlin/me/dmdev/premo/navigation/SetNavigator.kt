@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -74,20 +74,18 @@ class SetNavigatorImpl(
 
     private fun subscribeToLifecycle() {
         current.lifecycle.moveTo(lifecycle.state)
-        lifecycle.addObserver(object : PmLifecycle.Observer {
-            override fun onLifecycleChange(lifecycle: PmLifecycle, event: PmLifecycle.Event) {
-                when (lifecycle.state) {
-                    CREATED,
-                    DESTROYED -> {
-                        values.forEach { pm ->
-                            pm.lifecycle.moveTo(lifecycle.state)
-                        }
-                    }
-                    IN_FOREGROUND -> {
-                        current.lifecycle.moveTo(lifecycle.state)
+        lifecycle.addObserver { lifecycle, event ->
+            when (lifecycle.state) {
+                CREATED,
+                DESTROYED -> {
+                    values.forEach { pm ->
+                        pm.lifecycle.moveTo(lifecycle.state)
                     }
                 }
+                IN_FOREGROUND -> {
+                    current.lifecycle.moveTo(lifecycle.state)
+                }
             }
-        })
+        }
     }
 }
