@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ fun PresentationModel.back() {
 
 fun StackNavigator.handleBack(): Boolean {
     var handled = currentTop?.handleBack() ?: false
-    if (!handled && backstack.size > 1) {
+    if (!handled && backStack.size > 1) {
         pop()
         handled = true
     }
@@ -52,13 +52,13 @@ fun SetNavigator.handleBack(): Boolean {
 }
 
 fun MasterDetailNavigator<*, *>.handleBack(): Boolean {
-    var handled = detailPm?.handleBack() ?: false
-    if (!handled && detailPm != null) {
-        setDetail(null)
+    var handled = detail?.handleBack() ?: false
+    if (!handled && detail != null) {
+        changeDetail(null)
         handled = true
     }
     if (!handled) {
-        handled = masterPm.handleBack()
+        handled = master.handleBack()
     }
     return handled
 }

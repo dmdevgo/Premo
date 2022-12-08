@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.BackstackChange
+import me.dmdev.premo.navigation.BackStackChange
 import me.dmdev.premo.navigation.StackNavigation
 
 @Composable
@@ -60,7 +60,7 @@ fun NavigationBox(
     content: @Composable (PresentationModel?) -> Unit
 ) {
     NavigationBox(
-        backstackChange = navigation.backstackChanges.bind(BackstackChange.Empty),
+        backstackChange = navigation.backStackChangesFlow.bind(BackStackChange.Nothing),
         modifier = modifier,
         content = content,
     )
@@ -69,7 +69,7 @@ fun NavigationBox(
 @OptIn(ExperimentalPremoApi::class)
 @Composable
 fun NavigationBox(
-    backstackChange: BackstackChange,
+    backstackChange: BackStackChange,
     modifier: Modifier = Modifier,
     content: @Composable (PresentationModel?) -> Unit
 ) {
@@ -77,18 +77,18 @@ fun NavigationBox(
     val stateHolder = rememberSaveableStateHolder()
 
     val pm = when (backstackChange) {
-        is BackstackChange.Push -> {
+        is BackStackChange.Push -> {
             stateHolder.removeState(backstackChange.enterPm.tag)
             backstackChange.enterPm
         }
-        is BackstackChange.Pop -> {
+        is BackStackChange.Pop -> {
             stateHolder.removeState(backstackChange.exitPm.tag)
             backstackChange.enterPm
         }
-        is BackstackChange.Set -> {
+        is BackStackChange.Set -> {
             backstackChange.pm
         }
-        is BackstackChange.Empty -> null
+        is BackStackChange.Nothing -> null
     }
 
     Box(modifier) {
@@ -113,17 +113,17 @@ fun AnimatedNavigationBox(
         { _, _ -> fadeOut() },
     content: @Composable (PresentationModel?) -> Unit
 ) {
-    val backStackChange = navigation.backstackChanges.bind(BackstackChange.Empty)
+    val backStackChange = navigation.backStackChangesFlow.bind(BackStackChange.Nothing)
 
     AnimatedContent(
         targetState = backStackChange,
         transitionSpec = {
             when (backStackChange) {
-                is BackstackChange.Push -> {
+                is BackStackChange.Push -> {
                     enterTransition(backStackChange.exitPm, backStackChange.enterPm) with
                             exitTransition(backStackChange.exitPm, backStackChange.enterPm)
                 }
-                is BackstackChange.Pop -> {
+                is BackStackChange.Pop -> {
                     popEnterTransition(backStackChange.exitPm, backStackChange.enterPm) with
                             popExitTransition(backStackChange.exitPm, backStackChange.enterPm)
                 }
@@ -132,7 +132,7 @@ fun AnimatedNavigationBox(
                 }
             }
         }
-    ) { backstackChange: BackstackChange ->
+    ) { backstackChange: BackStackChange ->
         NavigationBox(
             backstackChange = backstackChange,
             modifier = modifier,

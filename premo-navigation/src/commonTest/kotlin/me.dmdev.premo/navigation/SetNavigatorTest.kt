@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ class SetNavigatorTest {
 
     @Test
     fun testSetCurrent() {
-        navigator.setCurrent(pm2)
+        navigator.changeCurrent(navigator.values.indexOf(pm2))
 
         assertEquals(pm2, navigator.current)
         assertEquals(pm1.lifecycle.state, CREATED)

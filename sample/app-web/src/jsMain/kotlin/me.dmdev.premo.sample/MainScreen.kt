@@ -33,7 +33,7 @@ import org.jetbrains.compose.web.dom.Div
 
 @Composable
 fun MainScreen(pm: MainPm) {
-    val currentPm = pm.navigation.detailPmState.bind()
+    val currentPm = pm.navigation.detailFlow.bind()
     Div(
         {
             style {
@@ -42,7 +42,7 @@ fun MainScreen(pm: MainPm) {
             }
         }
     ) {
-        pm.navigation.masterPm.mapToComposable()
+        pm.navigation.master.mapToComposable()
         currentPm.mapToComposable()
     }
 }

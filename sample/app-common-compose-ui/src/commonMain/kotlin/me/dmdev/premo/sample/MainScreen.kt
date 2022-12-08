@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 @Composable
 fun MainScreen(mainPm: MainPm, windowSizes: WindowSizes) {
 
-    val detailPm = mainPm.navigation.detailPmState.bind()
+    val detailPm = mainPm.navigation.detailFlow.bind()
 
     if (windowSizes.widthSizeClass >= Medium) {
         ExpandedMainScreen(mainPm, detailPm, windowSizes)
@@ -68,7 +68,7 @@ fun CompactMainScreen(
         }
     ) { pm ->
         if (pm == null) {
-            SamplesScreen(mainPm.navigation.masterPm, windowSizes)
+            SamplesScreen(mainPm.navigation.master, windowSizes)
         } else {
             pm.mapToComposable(windowSizes)
         }
@@ -90,7 +90,7 @@ fun ExpandedMainScreen(
                 .fillMaxSize()
                 .weight(0.5f)
         ) {
-            SamplesScreen(mainPm.navigation.masterPm, windowSizes)
+            SamplesScreen(mainPm.navigation.master, windowSizes)
         }
 
         Box(

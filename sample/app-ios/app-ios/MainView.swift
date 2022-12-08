@@ -37,8 +37,8 @@ struct MainView: View {
     init(delegate: PmDelegate<MainPm>) {
         self.delegate = delegate
         self.mainPm = delegate.presentationModel
-        self.masterPm = mainPm.navigation.masterPm as! SamplesPm
-        detailPm = ObservableState(mainPm.navigation.detailPmState)
+        self.masterPm = mainPm.navigation.master as! SamplesPm
+        detailPm = ObservableState(mainPm.navigation.detailFlow)
     }
     
     var body: some View {

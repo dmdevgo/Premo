@@ -32,17 +32,13 @@ import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
 
 interface StackNavigation {
-    val currentTopState: StateFlow<PresentationModel?>
-    val backstackState: StateFlow<List<PresentationModel>>
+    val currentTop: PresentationModel?
+    val currentTopFlow: StateFlow<PresentationModel?>
+    val backStack: List<PresentationModel>
+    val backStackFlow: StateFlow<List<PresentationModel>>
     @ExperimentalPremoApi
-    val backstackChanges: Flow<BackstackChange>
+    val backStackChangesFlow: Flow<BackStackChange>
 }
-
-val StackNavigation.backstack: List<PresentationModel>
-    get() = backstackState.value
-
-val StackNavigation.currentTop: PresentationModel?
-    get() = backstack.lastOrNull()
 
 fun PresentationModel.StackNavigation(
     initialDescription: PmDescription,

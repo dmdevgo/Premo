@@ -33,7 +33,7 @@ import me.dmdev.premo.getSaved
 import me.dmdev.premo.setSaver
 
 interface SetNavigator : SetNavigation {
-    fun setCurrent(pm: PresentationModel)
+    fun changeCurrent(index: Int)
 }
 
 @Suppress("FunctionName")
@@ -45,7 +45,7 @@ fun PresentationModel.SetNavigator(
     val navigator = SetNavigatorImpl(lifecycle, pms.toList())
     val savedIndex: Int? = stateHandler.getSaved(indexKey)
     if (savedIndex != null && savedIndex >= 0) {
-        navigator.setCurrent(navigator.values[savedIndex])
+        navigator.changeCurrent(savedIndex)
     }
     stateHandler.setSaver(indexKey) {
         navigator.values.indexOf(navigator.current)
@@ -58,18 +58,21 @@ class SetNavigatorImpl(
     override val values: List<PresentationModel>,
 ) : SetNavigator {
 
-    private val _currentState = MutableStateFlow(values.first())
-    override val currentState = _currentState.asStateFlow()
-    override val current get() = currentState.value
+    private val _currentFlow = MutableStateFlow(values.first())
+    override val currentFlow = _currentFlow.asStateFlow()
+
+    override val current: PresentationModel get() = currentFlow.value
 
     init {
         subscribeToLifecycle()
     }
 
-    override fun setCurrent(pm: PresentationModel) {
-        _currentState.value.lifecycle.moveTo(CREATED)
+    override fun changeCurrent(index: Int) {
+        val pm = values[index]
+        if (pm === _currentFlow.value) return
+        _currentFlow.value.lifecycle.moveTo(CREATED)
         pm.lifecycle.moveTo(lifecycle.state)
-        _currentState.value = pm
+        _currentFlow.value = pm
     }
 
     private fun subscribeToLifecycle() {

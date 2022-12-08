@@ -27,19 +27,14 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.attachToParent
-import me.dmdev.premo.detachFromParent
-import me.dmdev.premo.getSaved
-import me.dmdev.premo.setSaver
+import me.dmdev.premo.*
 
 
 interface MasterDetailNavigator<M, D> : MasterDetailNavigation<M, D>
         where M : PresentationModel,
               D : PresentationModel {
 
-    fun setDetail(detailPm: D?)
+    fun changeDetail(detail: D?)
 }
 
 @Suppress("FunctionName")
@@ -54,10 +49,10 @@ fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetai
     val detailKey = "${key}_detail_pm"
     val savedDetail = stateHandler.getSaved<Pair<PmDescription, String>?>(detailKey)
     if (savedDetail != null) {
-        navigator.setDetail(Child(savedDetail.first, savedDetail.second))
+        navigator.changeDetail(Child(savedDetail.first, savedDetail.second))
     }
     stateHandler.setSaver(detailKey) {
-        navigator.detailPm?.let { detailPm ->
+        navigator.detail?.let { detailPm ->
             Pair(detailPm.description, detailPm.tag)
         }
     }
@@ -65,23 +60,23 @@ fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetai
 }
 
 internal class MasterDetailNavigatorImpl<M, D>(
-    override val masterPm: M
+    override val master: M
 ) : MasterDetailNavigator<M, D>
         where M : PresentationModel,
               D : PresentationModel {
 
     init {
-        masterPm.attachToParent()
+        master.attachToParent()
     }
 
-    private val _detailPmState: MutableStateFlow<D?> = MutableStateFlow(null)
-    override val detailPmState: StateFlow<D?> = _detailPmState.asStateFlow()
+    private val _detailFlow: MutableStateFlow<D?> = MutableStateFlow(null)
+    override val detailFlow: StateFlow<D?> = _detailFlow.asStateFlow()
 
-    override val detailPm: D? get() = detailPmState.value
+    override val detail: D? get() = detailFlow.value
 
-    override fun setDetail(detailPm: D?) {
-        this.detailPm?.detachFromParent()
-        _detailPmState.value = detailPm
-        detailPm?.attachToParent()
+    override fun changeDetail(detail: D?) {
+        this.detail?.detachFromParent()
+        _detailFlow.value = detail
+        detail?.attachToParent()
     }
 }

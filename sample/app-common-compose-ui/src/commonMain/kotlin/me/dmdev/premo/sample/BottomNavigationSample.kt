@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ fun BottomNavigationScreen(
     windowSizes: WindowSizes
 ) {
 
-    val currentTabPm = pm.navigator.currentState.bind()
+    val currentTabPm = pm.navigation.currentFlow.bind()
 
     PmBox(
         title = "Bottom Navigation",
@@ -59,11 +59,11 @@ fun BottomNavigationScreen(
             backgroundColor = Color.Transparent,
             bottomBar = {
                 BottomNavigation {
-                    pm.navigator.values.forEach { tabPm ->
+                    pm.navigation.values.forEach { tabPm ->
                         val title = (tabPm as? TabPm)?.tabTitle ?: ""
                         BottomNavigationItem(
                             selected = tabPm == currentTabPm,
-                            onClick = { pm.navigator.setCurrent(tabPm) },
+                            onClick = { pm.onSelectTab(tabPm) },
                             label = { Text(title) },
                             icon = {
                                 Icon(

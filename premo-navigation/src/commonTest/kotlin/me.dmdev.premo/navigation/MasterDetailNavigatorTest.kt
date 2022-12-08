@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,24 +48,24 @@ class MasterDetailNavigatorTest {
 
     @Test
     fun testInitialState() {
-        assertNull(navigator.detailPm)
+        assertNull(navigator.detail)
         assertEquals(masterPm.lifecycle.state, IN_FOREGROUND)
     }
 
     @Test
     fun testSetDetail() {
-        navigator.setDetail(detailPm1)
-        assertEquals(detailPm1, navigator.detailPm)
+        navigator.changeDetail(detailPm1)
+        assertEquals(detailPm1, navigator.detail)
         assertEquals(detailPm1.lifecycle.state, IN_FOREGROUND)
         assertEquals(masterPm.lifecycle.state, IN_FOREGROUND)
     }
 
     @Test
     fun testResetDetail() {
-        navigator.setDetail(detailPm1)
-        navigator.setDetail(detailPm2)
+        navigator.changeDetail(detailPm1)
+        navigator.changeDetail(detailPm2)
 
-        assertEquals(detailPm2, navigator.detailPm)
+        assertEquals(detailPm2, navigator.detail)
         assertEquals(detailPm1.lifecycle.state, DESTROYED)
         assertEquals(detailPm2.lifecycle.state, IN_FOREGROUND)
         assertEquals(masterPm.lifecycle.state, IN_FOREGROUND)
@@ -73,11 +73,11 @@ class MasterDetailNavigatorTest {
 
     @Test
     fun testResetNullDetail() {
-        navigator.setDetail(detailPm1)
-        navigator.setDetail(null)
+        navigator.changeDetail(detailPm1)
+        navigator.changeDetail(null)
 
         assertEquals(detailPm1.lifecycle.state, DESTROYED)
-        assertEquals(navigator.detailPm, null)
+        assertEquals(navigator.detail, null)
         assertEquals(masterPm.lifecycle.state, IN_FOREGROUND)
     }
 
@@ -86,18 +86,18 @@ class MasterDetailNavigatorTest {
         val handled = navigator.handleBack()
 
         assertFalse(handled)
-        assertEquals(navigator.detailPm, null)
+        assertEquals(navigator.detail, null)
         assertEquals(masterPm.lifecycle.state, IN_FOREGROUND)
     }
 
     @Test
     fun testHandleBackWhenDetailIsNotNull() {
-        navigator.setDetail(detailPm1)
+        navigator.changeDetail(detailPm1)
         val handled = navigator.handleBack()
 
         assertTrue(handled)
         assertEquals(detailPm1.lifecycle.state, DESTROYED)
-        assertEquals(navigator.detailPm, null)
+        assertEquals(navigator.detail, null)
         assertEquals(masterPm.lifecycle.state, IN_FOREGROUND)
     }
 }

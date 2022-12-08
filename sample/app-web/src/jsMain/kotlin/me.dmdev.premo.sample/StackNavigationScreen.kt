@@ -27,18 +27,13 @@ package me.dmdev.premo.sample
 import androidx.compose.runtime.Composable
 import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
-import org.jetbrains.compose.web.css.AlignItems
-import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.FlexDirection
-import org.jetbrains.compose.web.css.alignItems
-import org.jetbrains.compose.web.css.display
-import org.jetbrains.compose.web.css.flexDirection
+import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
 @Composable
 fun StackNavigationScreen(pm: StackNavigationPm) {
     val backStack = pm.backstackAsStringState.bind()
-    val currentPm = pm.navigation.currentTopState.bind()
+    val currentPm = pm.navigation.currentTopFlow.bind()
     ScreenBox("Stack Navigation") {
         Div(
             {

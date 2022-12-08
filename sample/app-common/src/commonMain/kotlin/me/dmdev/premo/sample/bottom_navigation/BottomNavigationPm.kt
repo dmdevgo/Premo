@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.navigation.SetNavigation
 import me.dmdev.premo.navigation.SetNavigator
 
 class BottomNavigationPm(params: PmParams) : PresentationModel(params) {
@@ -35,9 +36,15 @@ class BottomNavigationPm(params: PmParams) : PresentationModel(params) {
     @Serializable
     object Description : PmDescription
 
-    val navigator = SetNavigator(
+    private val navigator = SetNavigator(
         Child(TabPm.Description("Tab #1"), "Tab #1"),
         Child(TabPm.Description("Tab #2"), "Tab #2"),
         Child(TabPm.Description("Tab #3"), "Tab #3"),
     )
+
+    val navigation: SetNavigation = navigator
+
+    fun onSelectTab(pm: PresentationModel) {
+        navigator.changeCurrent(navigator.values.indexOf(pm))
+    }
 }

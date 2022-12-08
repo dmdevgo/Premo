@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +28,9 @@ import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.PresentationModel
 
 @ExperimentalPremoApi
-sealed class BackstackChange {
-    data class Push(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackstackChange()
-    data class Pop(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackstackChange()
-    data class Set(val pm: PresentationModel) : BackstackChange()
-    object Empty : BackstackChange()
+sealed class BackStackChange {
+    data class Push(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackStackChange()
+    data class Pop(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackStackChange()
+    data class Set(val pm: PresentationModel) : BackStackChange()
+    object Nothing : BackStackChange()
 }

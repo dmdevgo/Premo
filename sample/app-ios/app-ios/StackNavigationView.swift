@@ -38,7 +38,7 @@ struct StackNavigationView: View {
     init(pm: StackNavigationPm) {
         self.pm = pm
         backstack = ObservableString(pm.backstackAsStringState)
-        currentPm = ObservableState(pm.navigation.currentTopState)
+        currentPm = ObservableState(pm.navigation.currentTopFlow)
     }
     
     var body: some View {

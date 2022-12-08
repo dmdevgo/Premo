@@ -26,21 +26,9 @@ package me.dmdev.premo.sample.stack_navigation
 
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.getSaved
-import me.dmdev.premo.handle
-import me.dmdev.premo.navigation.StackNavigation
-import me.dmdev.premo.navigation.StackNavigator
-import me.dmdev.premo.navigation.SystemBackMessage
-import me.dmdev.premo.navigation.pop
-import me.dmdev.premo.navigation.popToRoot
-import me.dmdev.premo.navigation.push
-import me.dmdev.premo.navigation.replaceAll
-import me.dmdev.premo.navigation.replaceTop
+import me.dmdev.premo.*
+import me.dmdev.premo.navigation.*
 import me.dmdev.premo.sample.StateFlow
-import me.dmdev.premo.setSaver
 
 class StackNavigationPm(params: PmParams) : PresentationModel(params) {
 
@@ -51,7 +39,7 @@ class StackNavigationPm(params: PmParams) : PresentationModel(params) {
     val navigation: StackNavigation = navigator
 
     val backstackAsStringState = StateFlow("") {
-        navigation.backstackState
+        navigation.backStackFlow
             .map { backstack ->
                 backstack.joinToString(
                     separator = " - ",
@@ -91,7 +79,7 @@ class StackNavigationPm(params: PmParams) : PresentationModel(params) {
     }
 
     fun setBackstackClick() {
-        navigator.setBackStack(
+        navigator.changeBackStack(
             listOf(
                 nextChild(),
                 nextChild(),

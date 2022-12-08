@@ -30,35 +30,35 @@ import me.dmdev.premo.*
 import me.dmdev.premo.PmLifecycle.State.*
 
 interface StackNavigator : StackNavigation {
-    fun setBackStack(pmList: List<PresentationModel>)
+    fun changeBackStack(pmList: List<PresentationModel>)
 }
 
 fun StackNavigator.push(pm: PresentationModel) {
-    setBackStack(backstack.plus(pm))
+    changeBackStack(backStack.plus(pm))
 }
 
 fun StackNavigator.pop(): Boolean {
-    if (backstack.isEmpty()) return false
-    setBackStack(backstack.dropLast(1))
+    if (backStack.isEmpty()) return false
+    changeBackStack(backStack.dropLast(1))
     return true
 }
 
 fun StackNavigator.popToRoot(): Boolean {
-    if (backstack.isEmpty()) return false
-    setBackStack(backstack.subList(0, 1))
+    if (backStack.isEmpty()) return false
+    changeBackStack(backStack.subList(0, 1))
     return true
 }
 
 fun StackNavigator.popUntil(predicate: (PresentationModel) -> Boolean) {
-    setBackStack(backstack.takeWhile(predicate))
+    changeBackStack(backStack.takeWhile(predicate))
 }
 
 fun StackNavigator.replaceTop(pm: PresentationModel) {
-    setBackStack(backstack.dropLast(1).plus(pm))
+    changeBackStack(backStack.dropLast(1).plus(pm))
 }
 
 fun StackNavigator.replaceAll(pm: PresentationModel) {
-    setBackStack(listOf(pm))
+    changeBackStack(listOf(pm))
 }
 
 fun PresentationModel.StackNavigator(
@@ -67,14 +67,14 @@ fun PresentationModel.StackNavigator(
 ): StackNavigator {
     val navigator = StackNavigatorImpl(lifecycle, scope)
     stateHandler.setSaver(key) {
-        navigator.backstack.map { pm -> Pair(pm.description, pm.tag) }
+        navigator.backStack.map { pm -> Pair(pm.description, pm.tag) }
     }
     val savedBackStack: List<PresentationModel> =
         stateHandler.getSaved<List<Pair<PmDescription, String>>>(key)
             ?.map { (description, tag) -> Child(description, tag) }
             ?: listOf()
     if (savedBackStack.isNotEmpty()) {
-        navigator.setBackStack(savedBackStack)
+        navigator.changeBackStack(savedBackStack)
     } else if (initialDescription != null) {
         navigator.push(Child(initialDescription))
     }
@@ -86,30 +86,36 @@ internal class StackNavigatorImpl(
     private val scope: CoroutineScope
 ) : StackNavigator {
 
-    private val _backstackState = MutableStateFlow<List<PresentationModel>>(listOf())
-    override val backstackState: StateFlow<List<PresentationModel>> = _backstackState
+    private val _backStackFlow = MutableStateFlow<List<PresentationModel>>(listOf())
+    override val backStackFlow: StateFlow<List<PresentationModel>> = _backStackFlow
 
-    private var backstack: List<PresentationModel>
-        get() = backstackState.value
+    override var backStack: List<PresentationModel>
+        get() = backStackFlow.value
         private set(value) {
-            _backstackState.value = value
+            _backStackFlow.value = value
         }
 
-    override val currentTopState: StateFlow<PresentationModel?> =
-        backstackState.map { it.lastOrNull() }.stateIn(
-            scope = scope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null
-        )
+    override val currentTop: PresentationModel?
+        get() = backStack.lastOrNull()
+
+    override val currentTopFlow: StateFlow<PresentationModel?> get() {
+        return backStackFlow
+            .map { it.lastOrNull() }
+            .stateIn(
+                scope = scope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = null
+            )
+    }
 
     init {
         subscribeToLifecycle()
     }
 
     @ExperimentalPremoApi
-    override val backstackChanges: Flow<BackstackChange> = flow {
-        var oldPmStack: List<PresentationModel> = backstackState.value
-        _backstackState.collect { newPmStack ->
+    override val backStackChangesFlow: Flow<BackStackChange> = flow {
+        var oldPmStack: List<PresentationModel> = backStackFlow.value
+        backStackFlow.collect { newPmStack ->
 
             val oldTopPm = oldPmStack.lastOrNull()
             val newTopPm = newPmStack.lastOrNull()
@@ -117,19 +123,19 @@ internal class StackNavigatorImpl(
             val pmStackChange = if (newTopPm != null && oldTopPm != null) {
                 when {
                     oldTopPm === newTopPm -> {
-                        BackstackChange.Set(newTopPm)
+                        BackStackChange.Set(newTopPm)
                     }
                     oldPmStack.any { it === newTopPm } -> {
-                        BackstackChange.Pop(newTopPm, oldTopPm)
+                        BackStackChange.Pop(newTopPm, oldTopPm)
                     }
                     else -> {
-                        BackstackChange.Push(newTopPm, oldTopPm)
+                        BackStackChange.Push(newTopPm, oldTopPm)
                     }
                 }
             } else if (newTopPm != null) {
-                BackstackChange.Set(newTopPm)
+                BackStackChange.Set(newTopPm)
             } else {
-                BackstackChange.Empty
+                BackStackChange.Nothing
             }
 
             emit(pmStackChange)
@@ -137,7 +143,7 @@ internal class StackNavigatorImpl(
         }
     }
 
-    override fun setBackStack(pmList: List<PresentationModel>) {
+    override fun changeBackStack(pmList: List<PresentationModel>) {
         val iterator = pmList.listIterator()
         while (iterator.hasNext()) {
             val pm = iterator.next()
@@ -147,12 +153,12 @@ internal class StackNavigatorImpl(
                 pm.lifecycle.moveTo(lifecycle.state)
             }
         }
-        backstack.forEach { pm ->
+        backStack.forEach { pm ->
             if (pmList.contains(pm).not()) {
                 pm.lifecycle.moveTo(DESTROYED)
             }
         }
-        backstack = pmList
+        backStack = pmList
     }
 
     private fun subscribeToLifecycle() {
@@ -160,7 +166,7 @@ internal class StackNavigatorImpl(
             when (lifecycle.state) {
                 CREATED,
                 DESTROYED -> {
-                    backstack.forEach { pm ->
+                    backStack.forEach { pm ->
                         pm.lifecycle.moveTo(lifecycle.state)
                     }
                 }

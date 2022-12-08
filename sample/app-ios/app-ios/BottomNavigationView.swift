@@ -34,14 +34,14 @@ struct BottomNavigationView: View {
     
     init(pm: BottomNavigationPm) {
         self.pm = pm
-        self.currentPm = ObservableState(pm.navigator.currentState)
+        self.currentPm = ObservableState(pm.navigation.currentFlow)
         
     }
     
     var body: some View {
         NavigationView {
             TabView {
-                ForEach(pm.navigator.values, id: \.self) { itemPm in
+                ForEach(pm.navigation.values, id: \.self) { itemPm in
                     if (itemPm is TabPm) {
                         let tabPm = itemPm as! TabPm
                         TabContainerView(pm: tabPm)
@@ -50,8 +50,8 @@ struct BottomNavigationView: View {
                                 Text(tabPm.tabTitle)
                             }
                             .tag(tabPm.tag)
-                            .onAppear {
-                                pm.navigator.setCurrent(pm: tabPm)
+                            .onTapGesture {
+                                pm.onSelectTab(pm: tabPm)
                             }
                     }
                 }

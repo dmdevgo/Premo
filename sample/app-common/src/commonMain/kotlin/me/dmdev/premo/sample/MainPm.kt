@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,13 +43,13 @@ class MainPm(params: PmParams) : PresentationModel(params) {
         masterPmDescription = SamplesPm.Description
     ) { navigator ->
         onMessage<CounterSampleMessage> {
-            navigator.setDetail(Child(CounterPm.Description(10)))
+            navigator.changeDetail(Child(CounterPm.Description(10)))
         }
         onMessage<StackNavigationSampleMessage> {
-            navigator.setDetail(Child(StackNavigationPm.Description))
+            navigator.changeDetail(Child(StackNavigationPm.Description))
         }
         onMessage<BottomNavigationSampleMessage> {
-            navigator.setDetail(Child(BottomNavigationPm.Description))
+            navigator.changeDetail(Child(BottomNavigationPm.Description))
         }
         onMessage<BackMessage> {
             navigator.handleBack()
