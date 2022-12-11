@@ -25,16 +25,8 @@
 package me.dmdev.premo.sample.bottom_navigation
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.handle
-import me.dmdev.premo.navigation.StackNavigation
-import me.dmdev.premo.navigation.StackNavigator
-import me.dmdev.premo.navigation.SystemBackMessage
-import me.dmdev.premo.navigation.handleBack
-import me.dmdev.premo.navigation.push
-import me.dmdev.premo.onMessage
+import me.dmdev.premo.*
+import me.dmdev.premo.navigation.*
 import me.dmdev.premo.sample.NextClickMessage
 import me.dmdev.premo.sample.PreviousClickMessage
 
@@ -66,7 +58,7 @@ class TabPm(
         onMessage<PreviousClickMessage> {
             handleBack(navigator)
         }
-        handle<SystemBackMessage> {
+        handle<BackMessage> {
             handleBack(navigator)
         }
     }

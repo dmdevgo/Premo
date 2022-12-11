@@ -28,10 +28,9 @@ import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PresentationModel
 
 object BackMessage : PmMessage
-object SystemBackMessage : PmMessage
 
 fun PresentationModel.handleBack(): Boolean {
-    return messageHandler.handle(SystemBackMessage)
+    return messageHandler.handle(BackMessage)
 }
 
 fun PresentationModel.back() {

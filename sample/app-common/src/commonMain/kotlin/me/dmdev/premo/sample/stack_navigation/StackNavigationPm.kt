@@ -50,7 +50,7 @@ class StackNavigationPm(params: PmParams) : PresentationModel(params) {
     }
 
     init {
-        messageHandler.handle<SystemBackMessage> {
+        messageHandler.handle<BackMessage> {
             navigator.pop()
         }
         stateHandler.setSaver(KEY_SCREEN_NUMBER) {

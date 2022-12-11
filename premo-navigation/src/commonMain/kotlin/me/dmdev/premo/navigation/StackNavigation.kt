@@ -26,10 +26,7 @@ package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import me.dmdev.premo.ExperimentalPremoApi
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmMessageHandler
-import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.*
 
 interface StackNavigation {
     val currentTop: PresentationModel?
@@ -46,5 +43,6 @@ fun PresentationModel.StackNavigation(
 ): StackNavigation {
     val navigator = StackNavigator(initialDescription)
     messageHandler.initHandlers(navigator)
+    messageHandler.handle<BackMessage> { navigator.handleBack() }
     return navigator
 }
