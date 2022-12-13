@@ -1,3 +1,9 @@
+# 1.0.0-alpha.07 / 11.12.2022
+- Kotlin is updated to 1.7.20.
+- Fixed the desktop sample.
+- Removed `SystemBackMessage`. Use `BackMessage` instead.
+- A bit of refactoring: renaming and using SAM interface.
+
 # 1.0.0-alpha.06 / 04.06.2022
 Added commands for `StackNavigator`:
 - popToRoot
