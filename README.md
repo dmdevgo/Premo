@@ -86,6 +86,7 @@ You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.ser
 - Stack navigation.
 - Bottom navigation with multistack.
 - Master-Detail navigation.
+- Dialog navigation.
 - Saving and restoring the state after killing the process.
 
 <img src="/docs/images/desktop_demo.gif" width="600px">
