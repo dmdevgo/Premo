@@ -31,6 +31,7 @@ plugins {
 kotlin {
 
     ios()
+    iosSimulatorArm64()
     jvm()
     js(IR) {
         browser()
@@ -101,6 +102,14 @@ kotlin {
 
         val iosTest by getting {
             dependsOn(commonTest)
+        }
+
+        val iosSimulatorArm64Main by getting {
+            dependsOn(iosMain)
+        }
+
+        val iosSimulatorArm64Test by getting {
+            dependsOn(iosTest)
         }
     }
 }
