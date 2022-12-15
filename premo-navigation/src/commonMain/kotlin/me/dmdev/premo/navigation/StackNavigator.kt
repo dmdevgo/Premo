@@ -63,12 +63,10 @@ fun StackNavigator.replaceAll(pm: PresentationModel) {
 
 fun PresentationModel.StackNavigator(
     initialDescription: PmDescription? = null,
-    key: String = "stack_navigator"
+    key: String = "stack_navigator",
+    initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
 ): StackNavigator {
     val navigator = StackNavigatorImpl(lifecycle, scope)
-    stateHandler.setSaver(key) {
-        navigator.backStack.map { pm -> Pair(pm.description, pm.tag) }
-    }
     val savedBackStack: List<PresentationModel> =
         stateHandler.getSaved<List<Pair<PmDescription, String>>>(key)
             ?.map { (description, tag) -> Child(description, tag) }
@@ -78,6 +76,11 @@ fun PresentationModel.StackNavigator(
     } else if (initialDescription != null) {
         navigator.push(Child(initialDescription))
     }
+    stateHandler.setSaver(key) {
+        navigator.backStack.map { pm -> Pair(pm.description, pm.tag) }
+    }
+    messageHandler.handle<BackMessage> { navigator.handleBack() }
+    messageHandler.initHandlers(navigator)
     return navigator
 }
 

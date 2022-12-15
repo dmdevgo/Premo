@@ -35,11 +35,15 @@ interface SetNavigator : SetNavigation {
 
 @Suppress("FunctionName")
 fun PresentationModel.SetNavigator(
-    vararg pms: PresentationModel,
-    key: String = "set_navigator"
+    vararg pmDescriptions: PmDescription,
+    key: String = "set_navigator",
+    onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit = { index, navigator ->
+        navigator.changeCurrent(index)
+    }
 ): SetNavigator {
+    val pms = pmDescriptions.map { description -> Child<PresentationModel>(description) }
     val indexKey = "${key}_index"
-    val navigator = SetNavigatorImpl(lifecycle, pms.toList())
+    val navigator = SetNavigatorImpl(lifecycle, pms.toList(), onChangeCurrent)
     val savedIndex: Int? = stateHandler.getSaved(indexKey)
     if (savedIndex != null && savedIndex >= 0) {
         navigator.changeCurrent(savedIndex)
@@ -54,6 +58,7 @@ fun PresentationModel.SetNavigator(
 class SetNavigatorImpl(
     private val lifecycle: PmLifecycle,
     override val values: List<PresentationModel>,
+    private val onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit
 ) : SetNavigator {
 
     private val _currentFlow = MutableStateFlow(values.first())
@@ -71,6 +76,10 @@ class SetNavigatorImpl(
         _currentFlow.value.lifecycle.moveTo(CREATED)
         pm.lifecycle.moveTo(lifecycle.state)
         _currentFlow.value = pm
+    }
+
+    override fun onChangeCurrent(index: Int) {
+        onChangeCurrent(index, this)
     }
 
     private fun subscribeToLifecycle() {

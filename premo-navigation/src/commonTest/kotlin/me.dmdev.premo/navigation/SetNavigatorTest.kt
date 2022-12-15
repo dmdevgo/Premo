@@ -46,7 +46,11 @@ class SetNavigatorTest {
         pm1 = TestPm()
         pm2 = TestPm()
         pm3 = TestPm()
-        navigator = SetNavigatorImpl(lifecycle, listOf(pm1, pm2, pm3))
+        navigator = SetNavigatorImpl(
+            lifecycle = lifecycle,
+            values = listOf(pm1, pm2, pm3),
+            onChangeCurrent = { index, navigator -> navigator.changeCurrent(index) },
+        )
     }
 
     @Test

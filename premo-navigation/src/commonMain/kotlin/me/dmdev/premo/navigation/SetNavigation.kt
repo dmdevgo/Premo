@@ -25,11 +25,19 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.flow.StateFlow
+import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PresentationModel
 
 interface SetNavigation {
     val values: List<PresentationModel>
     val current: PresentationModel
     val currentFlow: StateFlow<PresentationModel>
+    fun onChangeCurrent(index: Int)
+}
+
+fun PresentationModel.SetNavigation(
+    vararg pms: PmDescription
+): SetNavigation {
+    return SetNavigator(*pms)
 }
 

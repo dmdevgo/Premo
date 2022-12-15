@@ -38,14 +38,11 @@ interface DialogNavigator<D: PresentationModel, R> : DialogNavigation<D> {
 }
 
 inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.DialogNavigator(
-    key: String = "dialog",
+    key: String = "dialog_navigator",
     noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator -> navigator.dismiss() },
 ): DialogNavigator<D, R> {
 
     val navigator = DialogNavigatorImpl(onDismissRequest)
-    messageHandler.onMessage<R> { navigator.sendResult(it) }
-    messageHandler.handle<BackMessage> { navigator.handleBack() }
-
     val savedDialogPm = stateHandler.getSaved<Pair<PmDescription, String>?>(key)
     if (savedDialogPm != null) {
         navigator.show(Child(savedDialogPm.first, savedDialogPm.second))
@@ -55,7 +52,8 @@ inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.Dial
             Pair(detailPm.description, detailPm.tag)
         }
     }
-
+    messageHandler.onMessage<R> { navigator.sendResult(it) }
+    messageHandler.handle<BackMessage> { navigator.handleBack() }
     return navigator
 }
 

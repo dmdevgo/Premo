@@ -59,11 +59,11 @@ fun BottomNavigationScreen(
             backgroundColor = Color.Transparent,
             bottomBar = {
                 BottomNavigation {
-                    pm.navigation.values.forEach { tabPm ->
+                    pm.navigation.values.forEachIndexed { index,  tabPm ->
                         val title = (tabPm as? TabPm)?.tabTitle ?: ""
                         BottomNavigationItem(
                             selected = tabPm == currentTabPm,
-                            onClick = { pm.onSelectTab(tabPm) },
+                            onClick = { pm.navigation.onChangeCurrent(index) },
                             label = { Text(title) },
                             icon = {
                                 Icon(

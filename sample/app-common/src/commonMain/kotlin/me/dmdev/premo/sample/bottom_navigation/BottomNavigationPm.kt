@@ -29,22 +29,15 @@ import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.SetNavigation
-import me.dmdev.premo.navigation.SetNavigator
 
 class BottomNavigationPm(params: PmParams) : PresentationModel(params) {
 
     @Serializable
     object Description : PmDescription
 
-    private val navigator = SetNavigator(
-        Child(TabPm.Description("Tab #1"), "Tab #1"),
-        Child(TabPm.Description("Tab #2"), "Tab #2"),
-        Child(TabPm.Description("Tab #3"), "Tab #3"),
+    val navigation = SetNavigation(
+        TabPm.Description("Tab #1"),
+        TabPm.Description("Tab #2"),
+        TabPm.Description("Tab #3"),
     )
-
-    val navigation: SetNavigation = navigator
-
-    fun onSelectTab(pm: PresentationModel) {
-        navigator.changeCurrent(navigator.values.indexOf(pm))
-    }
 }

@@ -40,7 +40,8 @@ interface MasterDetailNavigator<M, D> : MasterDetailNavigation<M, D>
 @Suppress("FunctionName")
 fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigator(
     masterPmDescription: PmDescription,
-    key: String = "master_detail_navigator"
+    key: String = "master_detail_navigator",
+    initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit = {}
 ): MasterDetailNavigator<M, D> {
     val masterKey = "${key}_master_pm"
     val navigator = MasterDetailNavigatorImpl<M, D>(
@@ -56,6 +57,11 @@ fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetai
             Pair(detailPm.description, detailPm.tag)
         }
     }
+    messageHandler.initHandlers(navigator)
+    messageHandler.handle<BackMessage> {
+        navigator.handleBack()
+    }
+    messageHandler.initHandlers(navigator)
     return navigator
 }
 

@@ -25,7 +25,6 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.flow.StateFlow
-import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PresentationModel
 
 interface DialogNavigation<D: PresentationModel> {
@@ -35,9 +34,3 @@ interface DialogNavigation<D: PresentationModel> {
 
 val <D: PresentationModel> DialogNavigation<D>.isShowing: Boolean get() = dialog.value != null
 
-inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.DialogNavigation(
-    key: String = "dialog",
-    noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator -> navigator.dismiss() }
-): DialogNavigation<D> {
-    return DialogNavigator(key, onDismissRequest)
-}

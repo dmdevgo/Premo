@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.StateFlow
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.handle
 
 interface MasterDetailNavigation<M, D>
         where M : PresentationModel,
@@ -44,10 +43,8 @@ fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetai
     masterPmDescription: PmDescription,
     initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit
 ): MasterDetailNavigation<M, D> {
-    val navigator = MasterDetailNavigator<M, D>(masterPmDescription)
-    messageHandler.initHandlers(navigator)
-    messageHandler.handle<BackMessage> {
-        navigator.handleBack()
-    }
-    return navigator
+    return MasterDetailNavigator(
+        masterPmDescription = masterPmDescription,
+        initHandlers = initHandlers
+    )
 }
