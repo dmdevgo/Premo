@@ -1,3 +1,10 @@
+# 1.0.0-alpha.08 / 16.12.2022
+- Add `iosSimulatorArm64` target
+- Implemented `DialogNavigator`
+- Fixed `currentTopFlow` property of `StackNavigator`
+- Added default back handling for `SetNavigator`
+- A bit of refactoring: improved extensions for navigators.
+
 # 1.0.0-alpha.07 / 11.12.2022
 - Kotlin is updated to 1.7.20.
 - Fixed the desktop sample.
