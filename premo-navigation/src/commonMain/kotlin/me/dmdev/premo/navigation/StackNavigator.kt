@@ -98,15 +98,14 @@ internal class StackNavigatorImpl(
     override val currentTop: PresentationModel?
         get() = backStack.lastOrNull()
 
-    override val currentTopFlow: StateFlow<PresentationModel?> get() {
-        return backStackFlow
+    override val currentTopFlow: StateFlow<PresentationModel?> =
+        backStackFlow
             .map { it.lastOrNull() }
             .stateIn(
                 scope = scope,
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = null
             )
-    }
 
     init {
         subscribeToLifecycle()
