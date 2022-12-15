@@ -26,11 +26,8 @@ package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import me.dmdev.premo.PmLifecycle
+import me.dmdev.premo.*
 import me.dmdev.premo.PmLifecycle.State.*
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.getSaved
-import me.dmdev.premo.setSaver
 
 interface SetNavigator : SetNavigation {
     fun changeCurrent(index: Int)
@@ -50,6 +47,7 @@ fun PresentationModel.SetNavigator(
     stateHandler.setSaver(indexKey) {
         navigator.values.indexOf(navigator.current)
     }
+    messageHandler.handle<BackMessage> { navigator.handleBack() }
     return navigator
 }
 

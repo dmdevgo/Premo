@@ -47,7 +47,14 @@ fun StackNavigator.handleBack(): Boolean {
 }
 
 fun SetNavigator.handleBack(): Boolean {
-    return current.handleBack()
+    return if (current.handleBack()) {
+        true
+    } else if (values.indexOf(current) > 0) {
+        changeCurrent(0)
+        true
+    } else {
+        false
+    }
 }
 
 fun MasterDetailNavigator<*, *>.handleBack(): Boolean {
@@ -60,4 +67,13 @@ fun MasterDetailNavigator<*, *>.handleBack(): Boolean {
         handled = master.handleBack()
     }
     return handled
+}
+
+fun DialogNavigator<*, *>.handleBack(): Boolean {
+    return if (isShowing) {
+        dismiss()
+        true
+    } else {
+        false
+    }
 }

@@ -44,14 +44,7 @@ inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.Dial
 
     val navigator = DialogNavigatorImpl(onDismissRequest)
     messageHandler.onMessage<R> { navigator.sendResult(it) }
-    messageHandler.handle<BackMessage> {
-        if (navigator.isShowing) {
-            navigator.dismiss()
-            true
-        } else {
-            false
-        }
-    }
+    messageHandler.handle<BackMessage> { navigator.handleBack() }
 
     val savedDialogPm = stateHandler.getSaved<Pair<PmDescription, String>?>(key)
     if (savedDialogPm != null) {
