@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,29 +22,30 @@
  * SOFTWARE.
  */
 
+package me.dmdev.premo.sample
 
-import Foundation
-import Common
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
-public class ObservableInt : ObservableObject {
-    
-    private let observableState: State<KotlinInt>
+interface Cancelable {
+    fun cancel()
+}
 
-    @Published
-    var value: Int
-    
-    private var cancelable: Cancelable? = nil
-    
-    init(_ value: StateFlow) {
-        self.observableState = State<KotlinInt>(stateFlow: value)
-        self.value = observableState.value?.intValue ?? 0
-        
-        cancelable = observableState.bind(consumer: { value in
-            self.value = value?.intValue ?? 0
-        })
-    }
-    
-    deinit {
-        self.cancelable?.cancel()
+class FlowWrapper<T>(
+    private val flow: Flow<T>
+) : Flow<T> by flow {
+
+    fun bind(consumer: (T) -> Unit): Cancelable {
+        val job = Job()
+        onEach { consumer(it) }.launchIn(CoroutineScope(Dispatchers.Main + job))
+        return object : Cancelable {
+            override fun cancel() {
+                job.cancel()
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DD26C603294B9AE600DF9F79 /* DialogNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD26C602294B9AE600DF9F79 /* DialogNavigationView.swift */; };
 		DD2A8D5C260666DC00BE07A7 /* PremoSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2A8D5B260666DC00BE07A7 /* PremoSampleApp.swift */; };
 		DD2A8D60260666DE00BE07A7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2A8D5F260666DE00BE07A7 /* Assets.xcassets */; };
 		DD2A8D63260666DE00BE07A7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2A8D62260666DE00BE07A7 /* Preview Assets.xcassets */; };
@@ -22,9 +23,6 @@
 		DD68334F2607AF1600FE13F4 /* TabContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD68334E2607AF1600FE13F4 /* TabContainerView.swift */; };
 		DD6833512607B02500FE13F4 /* TabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6833502607B02500FE13F4 /* TabItemView.swift */; };
 		DD6833532607BC0900FE13F4 /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6833522607BC0900FE13F4 /* EmptyView.swift */; };
-		DDB533F6261096220086C183 /* ObservableBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB533F5261096220086C183 /* ObservableBoolean.swift */; };
-		DDB533F82610C56D0086C183 /* ObservableString.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB533F72610C56D0086C183 /* ObservableString.swift */; };
-		DDB533FB2610FD520086C183 /* ObservableInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB533FA2610FD520086C183 /* ObservableInt.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,6 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DD26C602294B9AE600DF9F79 /* DialogNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogNavigationView.swift; sourceTree = "<group>"; };
 		DD2A8D58260666DC00BE07A7 /* app-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "app-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD2A8D5B260666DC00BE07A7 /* PremoSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremoSampleApp.swift; sourceTree = "<group>"; };
 		DD2A8D5F260666DE00BE07A7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -58,9 +57,6 @@
 		DD68334E2607AF1600FE13F4 /* TabContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabContainerView.swift; sourceTree = "<group>"; };
 		DD6833502607B02500FE13F4 /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
 		DD6833522607BC0900FE13F4 /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
-		DDB533F5261096220086C183 /* ObservableBoolean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableBoolean.swift; sourceTree = "<group>"; };
-		DDB533F72610C56D0086C183 /* ObservableString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableString.swift; sourceTree = "<group>"; };
-		DDB533FA2610FD520086C183 /* ObservableInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableInt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +105,7 @@
 				DD6833522607BC0900FE13F4 /* EmptyView.swift */,
 				DD3995B4271E00A500338B68 /* SimpleView.swift */,
 				DD3995B8271E02A900338B68 /* StackNavigationView.swift */,
+				DD26C602294B9AE600DF9F79 /* DialogNavigationView.swift */,
 			);
 			path = "app-ios";
 			sourceTree = "<group>";
@@ -125,9 +122,6 @@
 			isa = PBXGroup;
 			children = (
 				DD68333C26066DD200FE13F4 /* ObservableState.swift */,
-				DDB533F5261096220086C183 /* ObservableBoolean.swift */,
-				DDB533F72610C56D0086C183 /* ObservableString.swift */,
-				DDB533FA2610FD520086C183 /* ObservableInt.swift */,
 			);
 			path = Observables;
 			sourceTree = "<group>";
@@ -219,10 +213,8 @@
 				DD68334526075C5000FE13F4 /* MainView.swift in Sources */,
 				DD6833512607B02500FE13F4 /* TabItemView.swift in Sources */,
 				DD68333B26066DA600FE13F4 /* CounterView.swift in Sources */,
-				DDB533FB2610FD520086C183 /* ObservableInt.swift in Sources */,
-				DDB533F82610C56D0086C183 /* ObservableString.swift in Sources */,
+				DD26C603294B9AE600DF9F79 /* DialogNavigationView.swift in Sources */,
 				DD3995B9271E02A900338B68 /* StackNavigationView.swift in Sources */,
-				DDB533F6261096220086C183 /* ObservableBoolean.swift in Sources */,
 				DD68334F2607AF1600FE13F4 /* TabContainerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

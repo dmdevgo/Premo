@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,29 +22,10 @@
  * SOFTWARE.
  */
 
+package me.dmdev.premo.sample
 
-import Foundation
-import Common
+import androidx.compose.runtime.Composable
+import me.dmdev.premo.sample.dilaog_navigation.SimpleDialogPm
 
-public class ObservableString : ObservableObject {
-    
-    private let observableState: State<NSString>
-
-    @Published
-    var value: String
-    
-    private var cancelable: Cancelable? = nil
-    
-    init(_ value: StateFlow) {
-        self.observableState = State<NSString>(stateFlow: value)
-        self.value = observableState.value as? String ?? ""
-        
-        cancelable = observableState.bind(consumer: { value in
-            self.value = value as? String ?? ""
-        })
-    }
-    
-    deinit {
-        self.cancelable?.cancel()
-    }
-}
+@Composable
+expect fun DialogScreen(pm: SimpleDialogPm, onDismissRequest: () -> Unit)

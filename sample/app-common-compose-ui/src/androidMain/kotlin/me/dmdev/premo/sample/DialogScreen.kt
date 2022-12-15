@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,28 +24,44 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import me.dmdev.premo.sample.dilaog_navigation.SimpleDialogPm
 
-interface Cancelable {
-    fun cancel()
-}
-
-class State<T>(
-    private val stateFlow: StateFlow<T>
-) : StateFlow<T> by stateFlow {
-
-    fun bind(consumer: (T) -> Unit): Cancelable {
-        val job = Job()
-        onEach { consumer(it) }.launchIn(CoroutineScope(Dispatchers.Main + job))
-        return object : Cancelable {
-            override fun cancel() {
-                job.cancel()
+@Composable
+actual fun DialogScreen(
+    pm: SimpleDialogPm,
+    onDismissRequest: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
+            Text(text = pm.title)
+        },
+        text = {
+            Text(pm.message)
+        },
+        confirmButton = {
+            if (pm.okButtonText.isNotEmpty()) {
+                Button(
+                    onClick = {
+                        pm.onOkClick()
+                    }) {
+                    Text(pm.okButtonText)
+                }
+            }
+        },
+        dismissButton = {
+            if (pm.cancelButtonText.isNotEmpty()) {
+                Button(
+                    onClick = {
+                        pm.onCancelClick()
+                    }) {
+                    Text(pm.cancelButtonText)
+                }
             }
         }
-    }
+    )
 }

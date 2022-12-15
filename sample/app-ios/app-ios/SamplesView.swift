@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -49,6 +49,11 @@ struct SamplesView: View {
                 
                 Button("Bottom Navigation", action: {
                     pm.bottomNavigationSample()
+                })
+                    .padding()
+                
+                Button("Dialog Navigation", action: {
+                    pm.dialogNavigationSample()
                 })
                     .padding()
             }

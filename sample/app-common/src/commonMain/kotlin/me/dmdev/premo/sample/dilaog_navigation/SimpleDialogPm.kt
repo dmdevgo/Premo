@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,29 +22,39 @@
  * SOFTWARE.
  */
 
+package me.dmdev.premo.sample.dilaog_navigation
 
-import Foundation
-import Common
+import kotlinx.serialization.Serializable
+import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmMessage
+import me.dmdev.premo.PmParams
+import me.dmdev.premo.PresentationModel
 
-public class ObservableBoolean : ObservableObject {
-    
-    private let observableState: State<KotlinBoolean>
+class SimpleDialogPm(
+    val title: String,
+    val message: String,
+    val okButtonText: String,
+    val cancelButtonText: String,
+    params: PmParams
+) : PresentationModel(params) {
 
-    @Published
-    var value: Bool
-    
-    private var cancelable: Cancelable? = nil
-    
-    init(_ value: StateFlow) {
-        self.observableState = State<KotlinBoolean>(stateFlow: value)
-        self.value = observableState.value?.boolValue ?? false
-        
-        cancelable = observableState.bind(consumer: { value in
-            self.value = value?.boolValue ?? false
-        })
+    @Serializable
+    data class Description(
+        val title: String,
+        val message: String,
+        val okButtonText: String,
+        val cancelButtonText: String,
+    ) : PmDescription
+
+    sealed interface ResultMessage : PmMessage
+    object Ok : ResultMessage
+    object Cancel : ResultMessage
+
+    fun onOkClick() {
+        messageHandler.send(Ok)
     }
-    
-    deinit {
-        self.cancelable?.cancel()
+
+    fun onCancelClick() {
+        messageHandler.send(Cancel)
     }
 }

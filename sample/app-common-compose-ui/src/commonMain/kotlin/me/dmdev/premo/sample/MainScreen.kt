@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.WindowSizeClass.Medium
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
+import me.dmdev.premo.sample.dilaog_navigation.DialogNavigationPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
 @Composable
@@ -109,6 +110,7 @@ private fun PresentationModel?.mapToComposable(windowSizes: WindowSizes) {
         is CounterPm -> CounterScreen(this, windowSizes)
         is StackNavigationPm -> StackNavigationScreen(this, windowSizes)
         is BottomNavigationPm -> BottomNavigationScreen(this, windowSizes)
+        is DialogNavigationPm -> DialogNavigationScreen(this, windowSizes)
         else -> EmptyBox()
     }
 }

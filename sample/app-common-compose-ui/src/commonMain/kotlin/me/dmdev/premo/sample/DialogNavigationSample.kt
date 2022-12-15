@@ -31,39 +31,43 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import me.dmdev.premo.navigation.back
+import me.dmdev.premo.sample.dilaog_navigation.DialogNavigationPm
 
 @Composable
-fun SamplesScreen(
-    pm: SamplesPm,
+fun DialogNavigationScreen(
+    pm: DialogNavigationPm,
     windowSizes: WindowSizes
 ) {
+
     PmBox(
-        title = "Samples",
-        windowSizes = windowSizes,
-        backHandler = null
+        title = "Dialog Navigation",
+        backHandler = { pm.back() },
+        windowSizes = windowSizes
     ) {
+
+        val message = pm.messagesFlow.bind("")
+
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.weight(0.5f))
-            Button(onClick = { pm.counterSample() }) {
-                Text("Counter")
+            Text(message)
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { pm.showSimpleDialogClick() }) {
+                Text("Show simple dialog")
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { pm.stackNavigationSample() }) {
-                Text("Stack Navigation")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { pm.bottomNavigationSample() }) {
-                Text("Bottom Navigation")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { pm.dialogNavigationSample() }) {
-                Text("Dialog Navigation")
+            Button(onClick = { pm.showSimpleDialogForResultClick() }) {
+                Text("Show dialog for result")
             }
             Spacer(Modifier.weight(0.5f))
+        }
+
+        pm.dialogNavigation.dialog.bind()?.let { dialogPm ->
+            DialogScreen(dialogPm, pm.dialogNavigation::onDismissRequest)
         }
     }
 }

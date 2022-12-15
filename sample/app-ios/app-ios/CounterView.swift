@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,22 +30,20 @@ struct CounterView: View {
     private let pm: CounterPm
     
     @ObservedObject
-    private var counter: ObservableInt
+    private var counter: ObservableState<KotlinInt>
     
     @ObservedObject
-    private var minusButtonEnabled: ObservableBoolean
+    private var minusButtonEnabled: ObservableState<KotlinBoolean>
     
     @ObservedObject
-    private var plusButtonEnabled: ObservableBoolean
-    
-    @GestureState
-    private var dragOffset = CGSize.zero
+    private var plusButtonEnabled: ObservableState<KotlinBoolean>
+
     
     init(pm: CounterPm) {
         self.pm = pm
-        counter = ObservableInt(pm.count)
-        minusButtonEnabled = ObservableBoolean(pm.minusButtonEnabled)
-        plusButtonEnabled = ObservableBoolean(pm.plusButtonEnabled)
+        counter = ObservableState(pm.count)
+        minusButtonEnabled = ObservableState(pm.minusButtonEnabled)
+        plusButtonEnabled = ObservableState(pm.plusButtonEnabled)
     }
     
     var body: some View {
@@ -57,7 +55,7 @@ struct CounterView: View {
                     .disabled(minusButtonEnabled.value == false)
                     .padding()
                 
-                Text("\(counter.value)")
+                Text("\(counter.value ?? 0)")
                     .padding()
                 
                 Button("Plus", action: {

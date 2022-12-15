@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import Common
 
 public class ObservableState<T : AnyObject> : ObservableObject {
     
-    private let observableState: State<T>
+    private let observableState: FlowWrapper<T>
 
     @Published
     var value: T?
@@ -36,9 +36,16 @@ public class ObservableState<T : AnyObject> : ObservableObject {
     private var cancelable: Cancelable? = nil
     
     init(_ value: StateFlow) {
-        self.observableState = State<T>(stateFlow: value)
-        self.value = observableState.value
-        
+        self.observableState = FlowWrapper<T>(flow: value)
+        self.value = value.value as? T
+        cancelable = observableState.bind(consumer: { value in
+            self.value = value
+        })
+    }
+    
+    init(initialValue: T, flow: Flow) {
+        self.observableState = FlowWrapper<T>(flow: flow)
+        self.value = initialValue
         cancelable = observableState.bind(consumer: { value in
             self.value = value
         })

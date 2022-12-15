@@ -25,72 +25,49 @@
 import SwiftUI
 import Common
 
-struct StackNavigationView: View {
+struct DialogNavigationView: View {
     
-    private let pm: StackNavigationPm
-    
-    @ObservedObject
-    private var backstack: ObservableState<NSString>
+    private let pm: DialogNavigationPm
     
     @ObservedObject
-    private var currentPm: ObservableState<PresentationModel>
+    private var dialogPm: ObservableState<SimpleDialogPm>
     
-    init(pm: StackNavigationPm) {
+    @ObservedObject
+    private var messages: ObservableState<NSString>
+    
+    init(pm: DialogNavigationPm) {
         self.pm = pm
-        backstack = ObservableState(pm.backstackAsStringState)
-        currentPm = ObservableState(pm.navigation.currentTopFlow)
+        self.dialogPm = ObservableState(pm.dialogNavigation.dialog)
+        self.messages = ObservableState(initialValue: "", flow: pm.messagesFlow)
     }
     
     var body: some View {
+        
+        let alertIsShowingBinding = Binding<Bool>(get: { self.dialogPm.value != nil }, set: { _ in })
         
         NavigationView {
             VStack {
                 
                 Spacer()
                 
-                switch currentPm.value {
-                case let pm as SimpleScreenPm: SimpleView(pm: pm)
-                default: EmptyView()
-                }
-                
-                Spacer()
-                
-                Text("Stack: \(backstack.value ?? "")")
+                Text("\(messages.value ?? "")")
                     .padding()
                 
                 Spacer()
                 
-                HStack {
-                    Button("Push", action: {
-                        pm.pushClick()
-                    }).padding()
-                    
-                    Button("Pop", action: {
-                        pm.popClick()
-                    }).padding()
-                    
-                    Button("Pop to root", action: {
-                        pm.popToRootClick()
-                    }).padding()
-                }
+                Button("Show simple dialog", action: {
+                    pm.showSimpleDialogClick()
+                })
+                    .padding()
                 
-                HStack {
-                    Button("Replace top", action: {
-                        pm.replaceTopClick()
-                    }).padding()
-                    
-                    Button("Replace all", action: {
-                        pm.replaceAllClick()
-                    }).padding()
-                }
-                
-                Button("Set back stack", action: {
-                    pm.setBackstackClick()
-                }).padding()
+                Button("Show dialog for result", action: {
+                    pm.showSimpleDialogForResultClick()
+                })
+                    .padding()
                 
                 Spacer()
             }
-            .navigationTitle("Stack Navigation")
+            .navigationTitle("Dialog Navigation")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(leading: Button(action : {
@@ -98,12 +75,25 @@ struct StackNavigationView: View {
             }){
                 Image(systemName: "arrow.left")
             })
+            .alert(isPresented: alertIsShowingBinding) {
+                Alert(
+                    title: Text(dialogPm.value?.title ?? ""),
+                    message: Text(dialogPm.value?.message ?? ""),
+                    primaryButton: .default(Text(dialogPm.value?.cancelButtonText ?? ""), action: {
+                        dialogPm.value?.onCancelClick()
+                        
+                    }),
+                    secondaryButton: .default(Text(dialogPm.value?.okButtonText ?? ""), action: {
+                        dialogPm.value?.onOkClick()
+                    })
+                )
+            }
         }
     }
 }
 
-struct StackNavigationView_Previews: PreviewProvider {
+struct DialogNavigationView_Previews: PreviewProvider {
     static var previews: some View {
-        StackNavigationView(pm: Stubs.init().stackNavigationPm)
+        DialogNavigationView(pm: Stubs.init().dialogNavigationPm)
     }
 }

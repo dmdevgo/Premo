@@ -26,12 +26,12 @@ package me.dmdev.premo.sample
 
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
-import me.dmdev.premo.PmStateSaver
-import me.dmdev.premo.PmStateSaverFactory
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottom_navigation.TabItemPm
 import me.dmdev.premo.sample.bottom_navigation.TabPm
+import me.dmdev.premo.sample.dilaog_navigation.DialogNavigationPm
+import me.dmdev.premo.sample.dilaog_navigation.SimpleDialogPm
 import me.dmdev.premo.sample.serialization.JsonPmStateSaver
 import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
@@ -48,6 +48,10 @@ object Stubs {
     val bottomBarPm = createPm<BottomNavigationPm>(BottomNavigationPm.Description)
     val tabPm = createPm<TabPm>(TabPm.Description("Tab #"))
     val tabItemPm = createPm<TabItemPm>(TabItemPm.Description("Screen #", "Tab #"))
+    val dialogNavigationPm = createPm<DialogNavigationPm>(DialogNavigationPm.Description)
+    val simpleDialogPm = createPm<SimpleDialogPm>(
+        SimpleDialogPm.Description("Title", "Text", "Ок", "Cancel")
+    )
 
     private fun <PM : PresentationModel> createPm(description: PmDescription): PM {
         val config = PmParams(
@@ -55,11 +59,7 @@ object Stubs {
             parent = null,
             description = description,
             factory = mainPmFactory,
-            stateSaverFactory = object : PmStateSaverFactory {
-                override fun createPmStateSaver(key: String): PmStateSaver {
-                    return JsonPmStateSaver(mutableMapOf())
-                }
-            }
+            stateSaverFactory = { JsonPmStateSaver(mutableMapOf()) }
         )
         @Suppress("UNCHECKED_CAST")
         return mainPmFactory.createPm(config) as PM

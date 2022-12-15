@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,8 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottom_navigation.TabItemPm
 import me.dmdev.premo.sample.bottom_navigation.TabPm
+import me.dmdev.premo.sample.dilaog_navigation.DialogNavigationPm
+import me.dmdev.premo.sample.dilaog_navigation.SimpleDialogPm
 import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
@@ -44,6 +46,14 @@ class MainPmFactory : PmFactory {
             is BottomNavigationPm.Description -> BottomNavigationPm(params)
             is TabPm.Description -> TabPm(description.tabTitle, params)
             is TabItemPm.Description -> TabItemPm(description.screenTitle, description.tabTitle, params)
+            is DialogNavigationPm.Description -> DialogNavigationPm(params)
+            is SimpleDialogPm.Description -> SimpleDialogPm(
+                description.title,
+                description.message,
+                description.okButtonText,
+                description.cancelButtonText,
+                params
+            )
             else -> throw IllegalArgumentException("Not handled instance creation for pm description $description")
         }
     }

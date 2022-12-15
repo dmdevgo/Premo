@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,6 +47,7 @@ struct MainView: View {
             case let pm as CounterPm: CounterView(pm: pm)
             case let pm as StackNavigationPm: StackNavigationView(pm: pm)
             case let pm as BottomNavigationPm: BottomNavigationView(pm: pm)
+            case let pm as DialogNavigationPm: DialogNavigationView(pm: pm)
             default: SamplesView(pm: masterPm)
             }
         }

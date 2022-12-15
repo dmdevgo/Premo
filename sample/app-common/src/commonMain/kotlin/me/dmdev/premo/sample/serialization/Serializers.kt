@@ -35,6 +35,8 @@ import me.dmdev.premo.sample.SamplesPm
 import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottom_navigation.TabItemPm
 import me.dmdev.premo.sample.bottom_navigation.TabPm
+import me.dmdev.premo.sample.dilaog_navigation.DialogNavigationPm
+import me.dmdev.premo.sample.dilaog_navigation.SimpleDialogPm
 import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
@@ -84,6 +86,16 @@ object Serializers {
             PmDescription::class,
             TabItemPm.Description::class,
             TabItemPm.Description.serializer()
+        )
+        polymorphic(
+            PmDescription::class,
+            DialogNavigationPm.Description::class,
+            DialogNavigationPm.Description.serializer()
+        )
+        polymorphic(
+            PmDescription::class,
+            SimpleDialogPm.Description::class,
+            SimpleDialogPm.Description.serializer()
         )
     }
 
