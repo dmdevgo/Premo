@@ -26,7 +26,10 @@ package me.dmdev.premo.sample.serialization
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.protobuf.ProtoBuf
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.sample.CounterPm
@@ -41,62 +44,9 @@ import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
 import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
 
 object Serializers {
+
     val module = SerializersModule {
-        polymorphic(
-            PmDescription::class,
-            MainPm.Description::class,
-            MainPm.Description.serializer()
-        )
-        polymorphic(
-            PmDescription::class,
-            MainPm.Description::class,
-            MainPm.Description.serializer()
-        )
-        polymorphic(
-            PmDescription::class,
-            SamplesPm.Description::class,
-            SamplesPm.Description.serializer()
-        )
-        polymorphic(
-            PmDescription::class,
-            CounterPm.Description::class,
-            CounterPm.Description.serializer()
-        )
-        polymorphic(
-            PmDescription::class,
-            StackNavigationPm.Description::class,
-            StackNavigationPm.Description.serializer()
-        )
-        polymorphic(
-            PmDescription::class,
-            SimpleScreenPm.Description::class,
-            SimpleScreenPm.Description.serializer()
-        )
-        polymorphic(
-            PmDescription::class,
-            BottomNavigationPm.Description::class,
-            BottomNavigationPm.Description.serializer()
-        )
-        polymorphic(
-            PmDescription::class,
-            TabPm.Description::class,
-            TabPm.Description.serializer()
-        )
-        polymorphic(
-            PmDescription::class,
-            TabItemPm.Description::class,
-            TabItemPm.Description.serializer()
-        )
-        polymorphic(
-            PmDescription::class,
-            DialogNavigationPm.Description::class,
-            DialogNavigationPm.Description.serializer()
-        )
-        polymorphic(
-            PmDescription::class,
-            SimpleDialogPm.Description::class,
-            SimpleDialogPm.Description.serializer()
-        )
+        polymorphic(PmDescription::class) { registerPmDescriptionSubclasses() }
     }
 
     val json =  Json {
@@ -106,5 +56,18 @@ object Serializers {
     @OptIn(ExperimentalSerializationApi::class)
     val protoBuf = ProtoBuf {
         serializersModule = module
+    }
+
+    private fun PolymorphicModuleBuilder<PmDescription>.registerPmDescriptionSubclasses() {
+        subclass(MainPm.Description::class)
+        subclass(SamplesPm.Description::class)
+        subclass(CounterPm.Description::class)
+        subclass(StackNavigationPm.Description::class)
+        subclass(SimpleScreenPm.Description::class)
+        subclass(BottomNavigationPm.Description::class)
+        subclass(TabPm.Description::class)
+        subclass(TabItemPm.Description::class)
+        subclass(DialogNavigationPm.Description::class)
+        subclass(SimpleDialogPm.Description::class)
     }
 }
