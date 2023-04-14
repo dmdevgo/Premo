@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ package me.dmdev.premo.sample
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toComposeRect
@@ -39,7 +40,7 @@ import me.dmdev.premo.PmActivityDelegate
 import me.dmdev.premo.navigation.handleBack
 import me.dmdev.premo.sample.savers.ParcelableBundleStateSaver
 
-class MainActivity : PmActivity<MainPm>() {
+class MainActivity : AppCompatActivity(), PmActivity<MainPm> {
 
     override val delegate: PmActivityDelegate<MainPm> by lazy {
         PmActivityDelegate(

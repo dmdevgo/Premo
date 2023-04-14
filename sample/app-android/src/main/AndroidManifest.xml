@@ -2,7 +2,7 @@
 <!--
   ~ The MIT License (MIT)
   ~
-  ~ Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+  ~ Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".SampleApp">
         <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

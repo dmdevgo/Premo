@@ -22,9 +22,15 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.sample
 
+import android.app.Application
+import me.dmdev.premo.Premo
 
-interface PmActivity<PM : PresentationModel> {
-    val delegate : PmActivityDelegate<PM>
+class SampleApp : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        Premo.init(this)
+    }
 }

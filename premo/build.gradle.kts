@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -86,9 +86,6 @@ kotlin {
 
         val androidMain by getting {
             dependsOn(jvmMain)
-            dependencies {
-                compileOnly(Libs.androidxAppcompat)
-            }
         }
 
         // Fix test run: https://youtrack.jetbrains.com/issue/KT-40571
