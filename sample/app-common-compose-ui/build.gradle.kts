@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +22,10 @@
  * SOFTWARE.
  */
 
-import org.jetbrains.compose.compose
-
 plugins {
     id("com.android.library")
     kotlin("multiplatform")
-    id("org.jetbrains.compose") version BuildVersions.compose
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
@@ -54,8 +52,6 @@ kotlin {
 
         val androidMain by getting {
             dependsOn(commonMain)
-            dependencies {
-            }
         }
 
         val desktopMain by getting {

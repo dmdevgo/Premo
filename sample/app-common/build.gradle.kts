@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ kotlin {
                 baseName = "Common"
                 export(project(":premo"))
                 export(project(":premo-navigation"))
-                export(Libs.coroutinesCore)
+                export(libs.kotlinx.coroutines.core)
             }
         }
     }
@@ -59,9 +59,9 @@ kotlin {
             dependencies {
                 api(project(":premo"))
                 api(project(":premo-navigation"))
-                api(Libs.coroutinesCore)
-                api(Libs.kotlinxSerializationJson)
-                api(Libs.kotlinxSerializationProtobuf)
+                api(libs.kotlinx.coroutines.core)
+                api(libs.kotlinx.serialization.json)
+                api(libs.kotlinx.serialization.protobuf)
             }
         }
     }

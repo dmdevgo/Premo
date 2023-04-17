@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,9 +33,9 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:${BuildVersions.agp}")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${BuildVersions.kotlin}")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:${BuildVersions.kotlin}")
+        classpath("com.android.tools.build:gradle:7.3.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:1.7.20")
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

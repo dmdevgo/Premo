@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,9 @@
 
 
 plugins {
-    id("org.jetbrains.compose") version BuildVersions.compose
     id("com.android.application")
     kotlin("android")
+    alias(libs.plugins.jetbrains.compose)
 }
 
 android {
@@ -81,12 +81,11 @@ repositories {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation(Libs.kotlinStd)
-    implementation(Libs.androidxAppcompat)
-    implementation(Libs.composeActivity)
-    implementation(Libs.androidxWindow)
-    implementation(compose.preview)
-    implementation(Libs.bundlizer)
     implementation(project(":sample:app-common-compose-ui"))
-    implementation("com.chrynan.parcelable:parcelable-core:0.5.1")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.window)
+    implementation(compose.preview)
+    implementation(libs.bundlizer)
+    implementation(libs.parcelable.core)
 }

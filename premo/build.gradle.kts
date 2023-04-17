@@ -49,7 +49,7 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                api(Libs.coroutinesCore)
+                api(libs.kotlinx.coroutines.core)
             }
         }
 
@@ -57,7 +57,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-                implementation(Libs.kotlinxSerializationJson)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
 
