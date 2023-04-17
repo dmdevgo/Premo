@@ -72,6 +72,7 @@ android {
         jvmTarget = "1.8"
         freeCompilerArgs = freeCompilerArgs.plus("-Xopt-in=kotlin.RequiresOptIn")
     }
+    namespace = "me.dmdev.premo.sample"
 
 }
 

@@ -118,4 +118,5 @@ android {
         minSdk = AndroidSdk.min
         targetSdk = AndroidSdk.target
     }
+    namespace = "me.dmdev.premo.navigation"
 }

@@ -81,6 +81,7 @@ android {
     sourceSets {
         getByName("main").java.srcDirs("src/androidMain/kotlin")
     }
+    namespace = "me.dmdev.premo.sample.common"
 }
 
 val packForXcode by tasks.creating(Sync::class) {
