@@ -67,6 +67,14 @@ fun NavigationBox(
 
 @OptIn(ExperimentalPremoApi::class)
 @Composable
+fun StackNavigation.bindNavigation(): BackStackChange {
+    return backStackChangesFlow.collectAsState(
+        currentTop?.let { BackStackChange.Set(it) } ?: BackStackChange.Nothing
+    ).value
+}
+
+@OptIn(ExperimentalPremoApi::class)
+@Composable
 fun NavigationBox(
     backstackChange: BackStackChange,
     modifier: Modifier = Modifier,
@@ -99,22 +107,23 @@ fun NavigationBox(
 @OptIn(ExperimentalAnimationApi::class, ExperimentalPremoApi::class)
 @Composable
 fun AnimatedNavigationBox(
-    navigation: StackNavigation,
+    backStackChange: BackStackChange,
     modifier: Modifier = Modifier,
     enterTransition: ((initialPm: PresentationModel, targetPm: PresentationModel) -> EnterTransition) =
-        { _, _ -> fadeIn() },
+        { _, _ -> slideInHorizontally { height -> height } },
     exitTransition: ((initialPm: PresentationModel, targetPm: PresentationModel) -> ExitTransition) =
-        { _, _ -> fadeOut() },
+        { _, _ -> slideOutHorizontally { height -> -height } },
     popEnterTransition: ((initialPm: PresentationModel, targetPm: PresentationModel) -> EnterTransition) =
-        { _, _ -> fadeIn() },
+        { _, _ -> slideInHorizontally { height -> -height } },
     popExitTransition: ((initialPm: PresentationModel, targetPm: PresentationModel) -> ExitTransition) =
-        { _, _ -> fadeOut() },
+        { _, _ -> slideOutHorizontally { height -> height } },
+    setTransition: ((pm: PresentationModel) -> EnterTransition) = { EnterTransition.None },
+    defaultTransition: (() -> EnterTransition) = { EnterTransition.None },
     content: @Composable (PresentationModel?) -> Unit
 ) {
-    val backStackChange = navigation.backStackChangesFlow.bind(BackStackChange.Nothing)
-
     AnimatedContent(
         targetState = backStackChange,
+        contentAlignment = Alignment.Center,
         transitionSpec = {
             when (backStackChange) {
                 is BackStackChange.Push -> {
@@ -125,8 +134,11 @@ fun AnimatedNavigationBox(
                     popEnterTransition(backStackChange.exitPm, backStackChange.enterPm) with
                         popExitTransition(backStackChange.exitPm, backStackChange.enterPm)
                 }
+                is BackStackChange.Set -> {
+                    setTransition(backStackChange.pm) with ExitTransition.None
+                }
                 else -> {
-                    fadeIn() with fadeOut()
+                    defaultTransition() with ExitTransition.None
                 }
             }
         }

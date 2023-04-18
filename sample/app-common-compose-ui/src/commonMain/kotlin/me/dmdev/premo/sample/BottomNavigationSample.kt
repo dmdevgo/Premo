@@ -33,11 +33,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
+import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.navigation.back
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottomnavigation.TabItemPm
 import me.dmdev.premo.sample.bottomnavigation.TabPm
 
+@OptIn(ExperimentalPremoApi::class)
 @Composable
 fun BottomNavigationScreen(
     pm: BottomNavigationPm,
@@ -73,7 +75,7 @@ fun BottomNavigationScreen(
         ) {
             if (currentTabPm is TabPm) {
                 AnimatedNavigationBox(
-                    navigation = currentTabPm.navigation,
+                    backStackChange = currentTabPm.navigation.bindNavigation(),
                     enterTransition = { _, _ -> slideInHorizontally { height -> height } },
                     exitTransition = { _, _ -> slideOutHorizontally { height -> -height } },
                     popEnterTransition = { _, _ -> slideInHorizontally { height -> -height } },

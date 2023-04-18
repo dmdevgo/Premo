@@ -30,10 +30,12 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
+import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.navigation.back
 import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
+@OptIn(ExperimentalPremoApi::class)
 @Composable
 fun StackNavigationScreen(
     pm: StackNavigationPm,
@@ -51,7 +53,7 @@ fun StackNavigationScreen(
         ) {
             Spacer(Modifier.weight(0.5f))
             AnimatedNavigationBox(
-                navigation = pm.navigation,
+                backStackChange = pm.navigation.bindNavigation(),
                 modifier = Modifier.size(100.dp),
                 enterTransition = { _, _ -> slideInHorizontally { height -> height } },
                 exitTransition = { _, _ -> slideOutHorizontally { height -> -height } },
