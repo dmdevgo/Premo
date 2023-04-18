@@ -41,6 +41,7 @@ fun CounterScreen(
         backHandler = { pm.back() },
         windowSizes = windowSizes
     ) {
+        val state = pm.stateFlow.bind()
         Column {
             Spacer(Modifier.weight(0.5f))
             Row(
@@ -50,16 +51,16 @@ fun CounterScreen(
             ) {
                 Button(
                     onClick = { pm.minus() },
-                    enabled = pm.minusButtonEnabled.bind()
+                    enabled = state.minusEnabled
                 ) {
                     Text(" - ")
                 }
                 Spacer(modifier = Modifier.width(12.dp))
-                Text("Count: ${pm.count.bind()}")
+                Text("Count: ${state.count}")
                 Spacer(modifier = Modifier.width(12.dp))
                 Button(
                     onClick = { pm.plus() },
-                    enabled = pm.plusButtonEnabled.bind()
+                    enabled = state.plusEnabled
                 ) {
                     Text(" + ")
                 }

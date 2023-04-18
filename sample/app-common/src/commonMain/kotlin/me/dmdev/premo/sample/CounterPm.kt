@@ -24,8 +24,8 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
@@ -33,33 +33,40 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
 
 class CounterPm(
-    private val maxCount: Int,
+    maxCount: Int,
     params: PmParams
 ) : PresentationModel(params) {
 
     @Serializable
-    class Description(val maxCount: Int) : PmDescription
+    data class Description(val maxCount: Int) : PmDescription
 
-    private val _count = SaveableFlow(key = "count", initialValue = 0)
-    val count = _count.asStateFlow()
-
-    val plusButtonEnabled = StateFlow(false) {
-        count.map { it < maxCount }
+    @Serializable
+    data class State(
+        val count: Int,
+        val maxCount: Int
+    ) {
+        val plusEnabled: Boolean get() = count < maxCount
+        val minusEnabled: Boolean get() = count > 0
     }
 
-    val minusButtonEnabled = StateFlow(false) {
-        count.map { it > 0 }
-    }
+    private val _stateFlow = SaveableFlow(
+        key = "count",
+        initialValue = State(maxCount = maxCount, count = 0)
+    )
+    val stateFlow: StateFlow<State> = _stateFlow.asStateFlow()
+    val state: State get() = stateFlow.value
 
     fun plus() {
-        if (count.value < maxCount) {
-            _count.value = count.value + 1
-        }
+        _stateFlow.value = state.copy(
+            count = state.count + 1
+        )
     }
 
     fun minus() {
-        if (count.value > 0) {
-            _count.value = count.value - 1
+        if (state.count > 0) {
+            _stateFlow.value = state.copy(
+                count = state.count - 1
+            )
         }
     }
 }
