@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,13 +35,13 @@ import me.dmdev.premo.PmDescription
 import me.dmdev.premo.sample.CounterPm
 import me.dmdev.premo.sample.MainPm
 import me.dmdev.premo.sample.SamplesPm
-import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
-import me.dmdev.premo.sample.bottom_navigation.TabItemPm
-import me.dmdev.premo.sample.bottom_navigation.TabPm
-import me.dmdev.premo.sample.dilaog_navigation.DialogNavigationPm
-import me.dmdev.premo.sample.dilaog_navigation.SimpleDialogPm
-import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
-import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
+import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
+import me.dmdev.premo.sample.bottomnavigation.TabItemPm
+import me.dmdev.premo.sample.bottomnavigation.TabPm
+import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
+import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm
+import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
+import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
 object Serializers {
 
@@ -49,7 +49,7 @@ object Serializers {
         polymorphic(PmDescription::class) { registerPmDescriptionSubclasses() }
     }
 
-    val json =  Json {
+    val json = Json {
         serializersModule = module
     }
 

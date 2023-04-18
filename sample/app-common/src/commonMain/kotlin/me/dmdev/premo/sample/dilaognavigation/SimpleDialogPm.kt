@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,32 +22,39 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample.bottom_navigation
+package me.dmdev.premo.sample.dilaognavigation
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.sample.NextClickMessage
-import me.dmdev.premo.sample.PreviousClickMessage
 
-class TabItemPm(
-    val screenTitle: String,
-    val tabTitle: String,
+class SimpleDialogPm(
+    val title: String,
+    val message: String,
+    val okButtonText: String,
+    val cancelButtonText: String,
     params: PmParams
 ) : PresentationModel(params) {
 
     @Serializable
-    class Description(
-        val screenTitle: String,
-        val tabTitle: String
+    data class Description(
+        val title: String,
+        val message: String,
+        val okButtonText: String,
+        val cancelButtonText: String
     ) : PmDescription
 
-    fun nextClick() {
-        messageHandler.send(NextClickMessage)
+    sealed interface ResultMessage : PmMessage
+    object Ok : ResultMessage
+    object Cancel : ResultMessage
+
+    fun onOkClick() {
+        messageHandler.send(Ok)
     }
 
-    fun previousClick() {
-        messageHandler.send(PreviousClickMessage)
+    fun onCancelClick() {
+        messageHandler.send(Cancel)
     }
 }

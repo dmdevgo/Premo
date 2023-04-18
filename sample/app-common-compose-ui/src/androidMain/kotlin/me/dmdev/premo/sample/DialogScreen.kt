@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,9 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import me.dmdev.premo.sample.dilaog_navigation.SimpleDialogPm
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm
 
 @Composable
 actual fun DialogScreen(
@@ -48,7 +46,8 @@ actual fun DialogScreen(
                 Button(
                     onClick = {
                         pm.onOkClick()
-                    }) {
+                    }
+                ) {
                     Text(pm.okButtonText)
                 }
             }
@@ -58,7 +57,8 @@ actual fun DialogScreen(
                 Button(
                     onClick = {
                         pm.onCancelClick()
-                    }) {
+                    }
+                ) {
                     Text(pm.cancelButtonText)
                 }
             }

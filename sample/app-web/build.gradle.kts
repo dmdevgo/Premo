@@ -27,6 +27,7 @@ import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 plugins {
     kotlin("multiplatform")
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.ktlint)
 }
 
 kotlin {

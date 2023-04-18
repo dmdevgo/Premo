@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,20 +25,17 @@
 package me.dmdev.premo.sample
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.WindowSizeClass.Medium
-import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
-import me.dmdev.premo.sample.dilaog_navigation.DialogNavigationPm
-import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
+import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
+import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
+import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
 @Composable
 fun MainScreen(mainPm: MainPm, windowSizes: WindowSizes) {
-
     val detailPm = mainPm.navigation.detailFlow.bind()
 
     if (windowSizes.widthSizeClass >= Medium) {
@@ -55,16 +52,15 @@ fun CompactMainScreen(
     detailPm: PresentationModel?,
     windowSizes: WindowSizes
 ) {
-
     AnimatedContent(
         targetState = detailPm,
         transitionSpec = {
             if (targetState != null) {
                 slideInHorizontally { height -> height } with
-                        slideOutHorizontally { height -> -height }
+                    slideOutHorizontally { height -> -height }
             } else {
                 slideInHorizontally { height -> -height } with
-                        slideOutHorizontally { height -> height }
+                    slideOutHorizontally { height -> height }
             }
         }
     ) { pm ->

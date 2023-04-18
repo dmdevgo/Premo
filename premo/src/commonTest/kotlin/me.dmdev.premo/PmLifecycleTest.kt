@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,12 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.PmLifecycle.Event.*
-import me.dmdev.premo.PmLifecycle.State.*
+import me.dmdev.premo.PmLifecycle.Event.ON_BACKGROUND
+import me.dmdev.premo.PmLifecycle.Event.ON_DESTROY
+import me.dmdev.premo.PmLifecycle.Event.ON_FOREGROUND
+import me.dmdev.premo.PmLifecycle.State.CREATED
+import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -105,4 +109,3 @@ class PmLifecycleTest {
         assertEquals(listOf(), observer.events)
     }
 }
-

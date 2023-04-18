@@ -26,6 +26,7 @@ plugins {
     id("com.android.library")
     kotlin("multiplatform")
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.ktlint)
 }
 
 kotlin {

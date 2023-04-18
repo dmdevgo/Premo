@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package me.dmdev.premo.sample
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.sample.serialization.SimpleJsonPmStateSaverFactory
-import org.jetbrains.compose.web.renderComposable
+import org.jetbrains.compose.web.*
 
 fun main() {
     val mainPm = MainPm(
@@ -36,7 +36,7 @@ fun main() {
             description = MainPm.Description,
             parent = null,
             factory = MainPmFactory(),
-            stateSaverFactory = SimpleJsonPmStateSaverFactory(),
+            stateSaverFactory = SimpleJsonPmStateSaverFactory()
         )
     )
     mainPm.lifecycle.moveTo(PmLifecycle.State.IN_FOREGROUND)

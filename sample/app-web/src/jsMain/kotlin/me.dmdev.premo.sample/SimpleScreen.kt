@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,8 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.runtime.Composable
-import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
+import androidx.compose.runtime.*
+import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 
 @Composable
 fun SimpleScreen(pm: SimpleScreenPm) {

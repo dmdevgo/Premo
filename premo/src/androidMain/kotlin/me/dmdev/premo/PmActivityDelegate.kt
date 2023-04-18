@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,12 +28,11 @@ import android.app.Activity
 import android.os.Bundle
 import java.util.*
 
-
 class PmActivityDelegate<PM : PresentationModel>(
     private val pmActivity: Activity,
     private val pmDescription: PmDescription,
     private val pmFactory: PmFactory,
-    private val stateSaver: BundleStateSaver,
+    private val stateSaver: BundleStateSaver
 ) {
 
     private var pmDelegate: PmDelegate<PM>? = null
@@ -119,4 +118,3 @@ class PmActivityDelegate<PM : PresentationModel>(
         private const val SAVED_PM_TAG_KEY = "premo_presentation_model_tag"
     }
 }
-

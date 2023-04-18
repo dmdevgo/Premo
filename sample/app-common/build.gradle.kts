@@ -28,6 +28,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("com.android.library")
+    alias(libs.plugins.ktlint)
 }
 
 kotlin {
@@ -96,13 +97,15 @@ val packForXcode by tasks.creating(Sync::class) {
     from({ framework.outputDirectory })
     into(targetDir)
 
-    /// generate a helpful ./gradlew wrapper with embedded Java path
+    // / generate a helpful ./gradlew wrapper with embedded Java path
     doLast {
         val gradlew = File(targetDir, "gradlew")
-        gradlew.writeText("#!/bin/bash\n"
-                + "export 'JAVA_HOME=${System.getProperty("java.home")}'\n"
-                + "cd '${rootProject.rootDir}'\n"
-                + "./gradlew \$@\n")
+        gradlew.writeText(
+            "#!/bin/bash\n" +
+                "export 'JAVA_HOME=${System.getProperty("java.home")}'\n" +
+                "cd '${rootProject.rootDir}'\n" +
+                "./gradlew \$@\n"
+        )
         gradlew.setExecutable(true)
     }
 }

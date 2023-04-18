@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ class CounterPm(
 ) : PresentationModel(params) {
 
     @Serializable
-    class Description(val maxCount: Int): PmDescription
+    class Description(val maxCount: Int) : PmDescription
 
     private val _count = SaveableFlow(key = "count", initialValue = 0)
     val count = _count.asStateFlow()
@@ -57,8 +57,8 @@ class CounterPm(
         }
     }
 
-    fun minus(){
-        if (count.value > 0 ) {
+    fun minus() {
+        if (count.value > 0) {
             _count.value = count.value - 1
         }
     }

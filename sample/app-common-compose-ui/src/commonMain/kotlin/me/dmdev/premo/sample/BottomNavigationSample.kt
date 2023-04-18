@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,29 +24,25 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.unit.*
 import me.dmdev.premo.navigation.back
-import me.dmdev.premo.sample.bottom_navigation.BottomNavigationPm
-import me.dmdev.premo.sample.bottom_navigation.TabItemPm
-import me.dmdev.premo.sample.bottom_navigation.TabPm
+import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
+import me.dmdev.premo.sample.bottomnavigation.TabItemPm
+import me.dmdev.premo.sample.bottomnavigation.TabPm
 
 @Composable
 fun BottomNavigationScreen(
     pm: BottomNavigationPm,
     windowSizes: WindowSizes
 ) {
-
     val currentTabPm = pm.navigation.currentFlow.bind()
 
     PmBox(
@@ -54,12 +50,11 @@ fun BottomNavigationScreen(
         backHandler = { pm.back() },
         windowSizes = windowSizes
     ) {
-
         Scaffold(
             backgroundColor = Color.Transparent,
             bottomBar = {
                 BottomNavigation {
-                    pm.navigation.values.forEachIndexed { index,  tabPm ->
+                    pm.navigation.values.forEachIndexed { index, tabPm ->
                         val title = (tabPm as? TabPm)?.tabTitle ?: ""
                         BottomNavigationItem(
                             selected = tabPm == currentTabPm,
@@ -82,7 +77,7 @@ fun BottomNavigationScreen(
                     enterTransition = { _, _ -> slideInHorizontally { height -> height } },
                     exitTransition = { _, _ -> slideOutHorizontally { height -> -height } },
                     popEnterTransition = { _, _ -> slideInHorizontally { height -> -height } },
-                    popExitTransition = { _, _ -> slideOutHorizontally { height -> height } },
+                    popExitTransition = { _, _ -> slideOutHorizontally { height -> height } }
                 ) { pm ->
                     when (pm) {
                         is TabItemPm -> ItemScreen(pm)

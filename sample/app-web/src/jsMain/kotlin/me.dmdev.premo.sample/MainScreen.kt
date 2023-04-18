@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,9 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.runtime.Composable
-import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.FlexDirection
-import org.jetbrains.compose.web.css.display
-import org.jetbrains.compose.web.css.flexDirection
-import org.jetbrains.compose.web.dom.Div
+import androidx.compose.runtime.*
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.*
 
 @Composable
 fun MainScreen(pm: MainPm) {

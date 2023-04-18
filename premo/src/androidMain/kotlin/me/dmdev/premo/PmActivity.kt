@@ -24,7 +24,6 @@
 
 package me.dmdev.premo
 
-
 interface PmActivity<PM : PresentationModel> {
-    val delegate : PmActivityDelegate<PM>
+    val delegate: PmActivityDelegate<PM>
 }

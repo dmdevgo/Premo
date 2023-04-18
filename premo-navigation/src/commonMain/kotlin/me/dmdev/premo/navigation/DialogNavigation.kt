@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,10 +27,9 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.flow.StateFlow
 import me.dmdev.premo.PresentationModel
 
-interface DialogNavigation<D: PresentationModel> {
+interface DialogNavigation<D : PresentationModel> {
     val dialog: StateFlow<D?>
     fun onDismissRequest()
 }
 
-val <D: PresentationModel> DialogNavigation<D>.isShowing: Boolean get() = dialog.value != null
-
+val <D : PresentationModel> DialogNavigation<D>.isShowing: Boolean get() = dialog.value != null

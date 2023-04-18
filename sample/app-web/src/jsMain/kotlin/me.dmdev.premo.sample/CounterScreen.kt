@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,12 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.runtime.Composable
-import org.jetbrains.compose.web.css.padding
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Text
+import androidx.compose.runtime.*
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.*
 
 @Composable
 fun CounterScreen(pm: CounterPm) {
-
     val count = pm.count.bind()
     val minusButtonEnabled = pm.minusButtonEnabled.bind()
     val plusButtonEnabled = pm.plusButtonEnabled.bind()

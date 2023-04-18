@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,10 @@
 package me.dmdev.premo.sample
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.layout.Box
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.saveable.rememberSaveableStateHolder
-import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.*
+import androidx.compose.ui.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import me.dmdev.premo.ExperimentalPremoApi
@@ -62,7 +61,7 @@ fun NavigationBox(
     NavigationBox(
         backstackChange = navigation.backStackChangesFlow.bind(BackStackChange.Nothing),
         modifier = modifier,
-        content = content,
+        content = content
     )
 }
 
@@ -73,7 +72,6 @@ fun NavigationBox(
     modifier: Modifier = Modifier,
     content: @Composable (PresentationModel?) -> Unit
 ) {
-
     val stateHolder = rememberSaveableStateHolder()
 
     val pm = when (backstackChange) {
@@ -121,11 +119,11 @@ fun AnimatedNavigationBox(
             when (backStackChange) {
                 is BackStackChange.Push -> {
                     enterTransition(backStackChange.exitPm, backStackChange.enterPm) with
-                            exitTransition(backStackChange.exitPm, backStackChange.enterPm)
+                        exitTransition(backStackChange.exitPm, backStackChange.enterPm)
                 }
                 is BackStackChange.Pop -> {
                     popEnterTransition(backStackChange.exitPm, backStackChange.enterPm) with
-                            popExitTransition(backStackChange.exitPm, backStackChange.enterPm)
+                        popExitTransition(backStackChange.exitPm, backStackChange.enterPm)
                 }
                 else -> {
                     fadeIn() with fadeOut()
@@ -136,7 +134,7 @@ fun AnimatedNavigationBox(
         NavigationBox(
             backstackChange = backstackChange,
             modifier = modifier,
-            content = content,
+            content = content
         )
     }
 }

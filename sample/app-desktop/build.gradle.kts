@@ -22,11 +22,12 @@
  * SOFTWARE.
  */
 
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.desktop.application.dsl.*
 
 plugins {
     kotlin("multiplatform")
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.ktlint)
 }
 
 kotlin {

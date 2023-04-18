@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowState
-import androidx.compose.ui.window.application
-import androidx.compose.ui.window.rememberWindowState
+import androidx.compose.desktop.ui.tooling.preview.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.unit.*
+import androidx.compose.ui.window.*
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.sample.MainPm
@@ -45,7 +42,7 @@ val pm = MainPm(
         description = MainPm.Description,
         parent = null,
         factory = MainPmFactory(),
-        stateSaverFactory = SimpleJsonPmStateSaverFactory(),
+        stateSaverFactory = SimpleJsonPmStateSaverFactory()
     )
 ).also {
     it.lifecycle.moveTo(PmLifecycle.State.IN_FOREGROUND)
@@ -68,7 +65,6 @@ fun main() = application {
 
 @Composable
 fun rememberWindowSizes(state: WindowState): WindowSizes {
-
     val widthWindowSizeClass = when {
         state.size.width < 600.dp -> WindowSizeClass.Compact
         state.size.width < 840.dp -> WindowSizeClass.Medium

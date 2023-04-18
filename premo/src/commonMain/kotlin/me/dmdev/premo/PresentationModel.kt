@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,9 @@ package me.dmdev.premo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import me.dmdev.premo.PmLifecycle.Event.*
+import me.dmdev.premo.PmLifecycle.Event.ON_BACKGROUND
+import me.dmdev.premo.PmLifecycle.Event.ON_DESTROY
+import me.dmdev.premo.PmLifecycle.Event.ON_FOREGROUND
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import kotlin.random.Random
 

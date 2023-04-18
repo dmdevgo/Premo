@@ -25,6 +25,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    alias(libs.plugins.ktlint)
     `publish-library`
 }
 
@@ -89,7 +90,7 @@ kotlin {
         }
 
         // Fix test run: https://youtrack.jetbrains.com/issue/KT-40571
-        val androidTest  by getting {
+        val androidTest by getting {
             dependsOn(jvmTest)
         }
 

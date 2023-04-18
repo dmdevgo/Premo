@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import me.dmdev.premo.PmLifecycle
-import me.dmdev.premo.PmLifecycle.State.*
-import kotlin.test.*
+import me.dmdev.premo.PmLifecycle.State.CREATED
+import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class StackNavigatorTest {
 
@@ -73,7 +80,7 @@ class StackNavigatorTest {
         navigator.push(pm1)
         navigator.push(pm2)
 
-        assertEquals(pm2,  navigator.currentTop)
+        assertEquals(pm2, navigator.currentTop)
         assertEquals(pm1.lifecycle.state, CREATED)
         assertEquals(pm2.lifecycle.state, IN_FOREGROUND)
         assertEquals(listOf(pm1, pm2), navigator.backStack)
@@ -105,7 +112,7 @@ class StackNavigatorTest {
         navigator.push(pm2)
         navigator.pop()
 
-        assertEquals(pm1,  navigator.currentTop)
+        assertEquals(pm1, navigator.currentTop)
         assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
         assertEquals(pm2.lifecycle.state, DESTROYED)
         assertEquals(listOf(pm1), navigator.backStack)
@@ -116,8 +123,8 @@ class StackNavigatorTest {
         navigator.changeBackStack(listOf(pm1, pm2, pm3))
         val popped = navigator.popToRoot()
 
-        assertEquals(popped,  true)
-        assertEquals(pm1,  navigator.currentTop)
+        assertEquals(popped, true)
+        assertEquals(pm1, navigator.currentTop)
         assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
         assertEquals(pm2.lifecycle.state, DESTROYED)
         assertEquals(pm3.lifecycle.state, DESTROYED)
@@ -128,7 +135,7 @@ class StackNavigatorTest {
     fun testPopToRootWhenBackstackIsEmpty() {
         val popped = navigator.popToRoot()
 
-        assertEquals(popped,  false)
+        assertEquals(popped, false)
         assertEquals(listOf(), navigator.backStack)
     }
 
@@ -140,7 +147,7 @@ class StackNavigatorTest {
         assertEquals(pm1.lifecycle.state, CREATED)
         assertEquals(pm2.lifecycle.state, DESTROYED)
         assertEquals(pm3.lifecycle.state, IN_FOREGROUND)
-        assertEquals(pm3,  navigator.currentTop)
+        assertEquals(pm3, navigator.currentTop)
         assertEquals(listOf(pm1, pm3), navigator.backStack)
     }
 
@@ -148,7 +155,7 @@ class StackNavigatorTest {
     fun testReplaceTopWhenBackstackIsEmpty() {
         navigator.replaceTop(pm3)
 
-        assertEquals(pm3,  navigator.currentTop)
+        assertEquals(pm3, navigator.currentTop)
         assertEquals(pm3.lifecycle.state, IN_FOREGROUND)
         assertEquals(listOf(pm3), navigator.backStack)
     }
@@ -161,7 +168,7 @@ class StackNavigatorTest {
         assertEquals(pm1.lifecycle.state, DESTROYED)
         assertEquals(pm2.lifecycle.state, DESTROYED)
         assertEquals(pm3.lifecycle.state, IN_FOREGROUND)
-        assertEquals(pm3,  navigator.currentTop)
+        assertEquals(pm3, navigator.currentTop)
         assertEquals(listOf(pm3), navigator.backStack)
     }
 
@@ -171,7 +178,7 @@ class StackNavigatorTest {
         navigator.changeBackStack(listOf(pm1, pm2, pm3))
         navigator.popUntil { it === pm1 }
 
-        assertEquals(pm1,  navigator.currentTop)
+        assertEquals(pm1, navigator.currentTop)
         assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
         assertEquals(pm2.lifecycle.state, DESTROYED)
         assertEquals(pm3.lifecycle.state, DESTROYED)
@@ -207,7 +214,6 @@ class StackNavigatorTest {
         assertFalse(navigator.handleBack())
         assertEquals(pm1, navigator.currentTop)
         assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
-
     }
 
     @Test
@@ -245,5 +251,4 @@ class StackNavigatorTest {
         assertEquals(pm1.lifecycle.state, DESTROYED)
         assertEquals(pm2.lifecycle.state, DESTROYED)
     }
-
 }

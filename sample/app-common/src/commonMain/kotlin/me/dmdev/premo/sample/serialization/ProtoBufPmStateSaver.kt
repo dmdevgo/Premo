@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,12 @@
 
 package me.dmdev.premo.sample.serialization
 
-import kotlin.reflect.KType
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.sample.serialization.Serializers.protoBuf
+import kotlin.reflect.KType
 
 class ProtoBufPmStateSaver(private val map: MutableMap<String, ByteArray>) : PmStateSaver {
 

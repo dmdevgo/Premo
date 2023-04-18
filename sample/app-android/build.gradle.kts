@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-
 plugins {
     id("com.android.application")
     kotlin("android")
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -73,7 +73,6 @@ android {
         freeCompilerArgs = freeCompilerArgs.plus("-Xopt-in=kotlin.RequiresOptIn")
     }
     namespace = "me.dmdev.premo.sample"
-
 }
 
 repositories {

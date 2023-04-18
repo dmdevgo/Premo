@@ -1,0 +1,5 @@
+root = true
+
+[{*.kt,*.kts}]
+ij_kotlin_packages_to_use_import_on_demand = java.util.*,kotlinx.android.synthetic.**,io.ktor.**,androidx.compose.**,org.jetbrains.compose.**
+

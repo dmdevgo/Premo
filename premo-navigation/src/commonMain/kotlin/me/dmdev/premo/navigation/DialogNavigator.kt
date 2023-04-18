@@ -28,9 +28,17 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import me.dmdev.premo.*
+import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmMessage
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.attachToParent
+import me.dmdev.premo.detachFromParent
+import me.dmdev.premo.getSaved
+import me.dmdev.premo.handle
+import me.dmdev.premo.onMessage
+import me.dmdev.premo.setSaver
 
-interface DialogNavigator<D: PresentationModel, R> : DialogNavigation<D> {
+interface DialogNavigator<D : PresentationModel, R> : DialogNavigation<D> {
     fun show(pm: D)
     suspend fun showForResult(pm: D): R?
     fun sendResult(result: R)
@@ -39,9 +47,8 @@ interface DialogNavigator<D: PresentationModel, R> : DialogNavigation<D> {
 
 inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.DialogNavigator(
     key: String = "dialog_navigator",
-    noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator -> navigator.dismiss() },
+    noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator -> navigator.dismiss() }
 ): DialogNavigator<D, R> {
-
     val navigator = DialogNavigatorImpl(onDismissRequest)
     val savedDialogPm = stateHandler.getSaved<Pair<PmDescription, String>?>(key)
     if (savedDialogPm != null) {
@@ -57,7 +64,7 @@ inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.Dial
     return navigator
 }
 
-class DialogNavigatorImpl<D: PresentationModel, R : PmMessage>(
+class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
     private val onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit
 ) : DialogNavigator<D, R> {
 

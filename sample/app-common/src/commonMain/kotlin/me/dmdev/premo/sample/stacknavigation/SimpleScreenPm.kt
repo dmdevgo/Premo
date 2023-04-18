@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,39 +22,20 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample.dilaog_navigation
+package me.dmdev.premo.sample.stacknavigation
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 
-class SimpleDialogPm(
-    val title: String,
-    val message: String,
-    val okButtonText: String,
-    val cancelButtonText: String,
+class SimpleScreenPm(
+    number: Int,
     params: PmParams
 ) : PresentationModel(params) {
 
     @Serializable
-    data class Description(
-        val title: String,
-        val message: String,
-        val okButtonText: String,
-        val cancelButtonText: String,
-    ) : PmDescription
+    class Description(val number: Int) : PmDescription
 
-    sealed interface ResultMessage : PmMessage
-    object Ok : ResultMessage
-    object Cancel : ResultMessage
-
-    fun onOkClick() {
-        messageHandler.send(Ok)
-    }
-
-    fun onCancelClick() {
-        messageHandler.send(Cancel)
-    }
+    val numberText = number.toString()
 }

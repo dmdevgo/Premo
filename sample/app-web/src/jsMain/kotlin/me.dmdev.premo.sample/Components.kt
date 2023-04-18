@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,18 +24,14 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import kotlinx.coroutines.flow.StateFlow
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
-import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
-import org.jetbrains.compose.web.attributes.disabled
+import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
+import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
+import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Button
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.H4
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 
 @Composable
 fun <T> StateFlow<T>.bind(): T {

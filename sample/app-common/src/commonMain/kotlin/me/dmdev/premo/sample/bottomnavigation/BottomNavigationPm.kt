@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,20 +22,22 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample.stack_navigation
+package me.dmdev.premo.sample.bottomnavigation
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.navigation.SetNavigation
 
-class SimpleScreenPm(
-    number: Int,
-    params: PmParams
-) : PresentationModel(params) {
+class BottomNavigationPm(params: PmParams) : PresentationModel(params) {
 
     @Serializable
-    class Description(val number: Int) : PmDescription
+    object Description : PmDescription
 
-    val numberText = number.toString()
+    val navigation = SetNavigation(
+        TabPm.Description("Tab #1"),
+        TabPm.Description("Tab #2"),
+        TabPm.Description("Tab #3")
+    )
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,27 +24,15 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.animation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.unit.*
 import me.dmdev.premo.navigation.back
-import me.dmdev.premo.sample.stack_navigation.SimpleScreenPm
-import me.dmdev.premo.sample.stack_navigation.StackNavigationPm
+import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
+import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
 @Composable
 fun StackNavigationScreen(
@@ -68,7 +56,7 @@ fun StackNavigationScreen(
                 enterTransition = { _, _ -> slideInHorizontally { height -> height } },
                 exitTransition = { _, _ -> slideOutHorizontally { height -> -height } },
                 popEnterTransition = { _, _ -> slideInHorizontally { height -> -height } },
-                popExitTransition = { _, _ -> slideOutHorizontally { height -> height } },
+                popExitTransition = { _, _ -> slideOutHorizontally { height -> height } }
             ) { pm ->
                 when (pm) {
                     is SimpleScreenPm -> SimpleScreen(pm)

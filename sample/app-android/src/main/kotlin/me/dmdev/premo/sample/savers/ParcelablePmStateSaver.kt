@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,12 +28,12 @@ import android.os.Bundle
 import com.chrynan.parcelable.core.Parcelable
 import com.chrynan.parcelable.core.getParcelable
 import com.chrynan.parcelable.core.putParcelable
-import kotlin.reflect.KType
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.sample.serialization.Serializers
+import kotlin.reflect.KType
 
 class ParcelablePmStateSaver(
     private val bundle: Bundle
@@ -54,7 +54,7 @@ class ParcelablePmStateSaver(
     }
 
     @OptIn(ExperimentalSerializationApi::class)
-    private fun <T: Any> restore(key: String, kType: KType): T? {
+    private fun <T : Any> restore(key: String, kType: KType): T? {
         @Suppress("UNCHECKED_CAST")
         return bundle.getParcelable(key, parcelable, serializer(kType) as KSerializer<T>)
     }

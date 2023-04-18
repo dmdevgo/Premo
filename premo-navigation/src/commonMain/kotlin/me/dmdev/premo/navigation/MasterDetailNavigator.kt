@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,14 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import me.dmdev.premo.*
-
+import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmMessageHandler
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.attachToParent
+import me.dmdev.premo.detachFromParent
+import me.dmdev.premo.getSaved
+import me.dmdev.premo.handle
+import me.dmdev.premo.setSaver
 
 interface MasterDetailNavigator<M, D> : MasterDetailNavigation<M, D>
         where M : PresentationModel,
