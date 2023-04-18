@@ -136,21 +136,22 @@ internal class StackNavigatorImpl(
 
             val oldTopPm = oldPmStack.lastOrNull()
             val newTopPm = newPmStack.lastOrNull()
+            val removedPms = oldPmStack.filter { newPmStack.contains(it).not() }
 
             val pmStackChange = if (newTopPm != null && oldTopPm != null) {
                 when {
                     oldTopPm === newTopPm -> {
-                        BackStackChange.Set(newTopPm)
+                        BackStackChange.Set(newTopPm, removedPms)
                     }
                     oldPmStack.any { it === newTopPm } -> {
-                        BackStackChange.Pop(newTopPm, oldTopPm)
+                        BackStackChange.Pop(newTopPm, oldTopPm, removedPms)
                     }
                     else -> {
-                        BackStackChange.Push(newTopPm, oldTopPm)
+                        BackStackChange.Push(newTopPm, oldTopPm, removedPms)
                     }
                 }
             } else if (newTopPm != null) {
-                BackStackChange.Set(newTopPm)
+                BackStackChange.Set(newTopPm, removedPms)
             } else {
                 BackStackChange.Nothing
             }

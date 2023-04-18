@@ -69,7 +69,7 @@ fun NavigationBox(
 @Composable
 fun StackNavigation.bindNavigation(): BackStackChange {
     return backStackChangesFlow.collectAsState(
-        currentTop?.let { BackStackChange.Set(it) } ?: BackStackChange.Nothing
+        currentTop?.let { BackStackChange.Set(it, listOf()) } ?: BackStackChange.Nothing
     ).value
 }
 
@@ -82,16 +82,23 @@ fun NavigationBox(
 ) {
     val stateHolder = rememberSaveableStateHolder()
 
+    fun removePms(pms: List<PresentationModel>) {
+        pms.forEach {
+            stateHolder.removeState(it.tag)
+        }
+    }
+
     val pm = when (backstackChange) {
         is BackStackChange.Push -> {
-            stateHolder.removeState(backstackChange.enterPm.tag)
+            removePms(backstackChange.removedPms)
             backstackChange.enterPm
         }
         is BackStackChange.Pop -> {
-            stateHolder.removeState(backstackChange.exitPm.tag)
+            removePms(backstackChange.removedPms)
             backstackChange.enterPm
         }
         is BackStackChange.Set -> {
+            removePms(backstackChange.removedPms)
             backstackChange.pm
         }
         is BackStackChange.Nothing -> null

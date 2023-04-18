@@ -29,8 +29,22 @@ import me.dmdev.premo.PresentationModel
 
 @ExperimentalPremoApi
 sealed class BackStackChange {
-    data class Push(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackStackChange()
-    data class Pop(val enterPm: PresentationModel, val exitPm: PresentationModel) : BackStackChange()
-    data class Set(val pm: PresentationModel) : BackStackChange()
+    data class Push(
+        val enterPm: PresentationModel,
+        val exitPm: PresentationModel,
+        val removedPms: List<PresentationModel>
+    ) : BackStackChange()
+
+    data class Pop(
+        val enterPm: PresentationModel,
+        val exitPm: PresentationModel,
+        val removedPms: List<PresentationModel>
+    ) : BackStackChange()
+
+    data class Set(
+        val pm: PresentationModel,
+        val removedPms: List<PresentationModel>
+    ) : BackStackChange()
+
     object Nothing : BackStackChange()
 }
