@@ -30,9 +30,10 @@ import me.dmdev.premo.PresentationModel
 
 interface SetNavigation {
     val values: List<PresentationModel>
-    val current: PresentationModel
-    val currentFlow: StateFlow<PresentationModel>
+    val current: PresentationModel?
+    val currentFlow: StateFlow<PresentationModel?>
     fun onChangeCurrent(index: Int)
+    val valuesFlow: StateFlow<List<PresentationModel>>
 }
 
 fun PresentationModel.SetNavigation(

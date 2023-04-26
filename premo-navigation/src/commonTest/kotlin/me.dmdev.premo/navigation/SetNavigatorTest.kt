@@ -26,6 +26,7 @@ package me.dmdev.premo.navigation
 
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmLifecycle.State.CREATED
+import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -89,5 +90,72 @@ class SetNavigatorTest {
         assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
         assertEquals(pm2.lifecycle.state, CREATED)
         assertEquals(pm3.lifecycle.state, CREATED)
+    }
+
+    @Test
+    fun testEmptySetNavigator() {
+        navigator = SetNavigatorImpl(
+            lifecycle = lifecycle,
+            values = listOf(),
+            onChangeCurrent = { index, navigator -> navigator.changeCurrent(index) }
+        )
+
+        assertEquals(listOf(), navigator.values)
+        assertEquals(null, navigator.current)
+    }
+
+    @Test
+    fun testSetValuesToEmptyNavigator() {
+        navigator = SetNavigatorImpl(
+            lifecycle = lifecycle,
+            values = listOf(),
+            onChangeCurrent = { index, navigator -> navigator.changeCurrent(index) }
+        )
+
+        val pm1 = TestPm()
+        val pm2 = TestPm()
+        val pm3 = TestPm()
+
+        navigator.setValues(listOf(pm1, pm2, pm3))
+
+        assertEquals(listOf(pm1, pm2, pm3), navigator.values)
+        assertEquals(navigator.current, pm1)
+        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(CREATED, pm2.lifecycle.state)
+        assertEquals(CREATED, pm3.lifecycle.state)
+    }
+
+    @Test
+    fun testReplaceValues() {
+        val pm4 = TestPm()
+        val pm5 = TestPm()
+        val pm6 = TestPm()
+
+        navigator.setValues(listOf(pm4, pm5, pm6))
+
+        assertEquals(listOf(pm4, pm5, pm6), navigator.values)
+        assertEquals(navigator.current, pm4)
+        assertEquals(DESTROYED, pm1.lifecycle.state)
+        assertEquals(DESTROYED, pm2.lifecycle.state)
+        assertEquals(DESTROYED, pm3.lifecycle.state)
+        assertEquals(IN_FOREGROUND, pm4.lifecycle.state)
+        assertEquals(CREATED, pm5.lifecycle.state)
+        assertEquals(CREATED, pm6.lifecycle.state)
+    }
+
+    @Test
+    fun testPartlyReplaceValues() {
+        val pm4 = TestPm()
+        val pm5 = TestPm()
+
+        navigator.setValues(listOf(pm2, pm4, pm5))
+
+        assertEquals(listOf(pm2, pm4, pm5), navigator.values)
+        assertEquals(navigator.current, pm2)
+        assertEquals(DESTROYED, pm1.lifecycle.state)
+        assertEquals(IN_FOREGROUND, pm2.lifecycle.state)
+        assertEquals(DESTROYED, pm3.lifecycle.state)
+        assertEquals(CREATED, pm4.lifecycle.state)
+        assertEquals(CREATED, pm5.lifecycle.state)
     }
 }

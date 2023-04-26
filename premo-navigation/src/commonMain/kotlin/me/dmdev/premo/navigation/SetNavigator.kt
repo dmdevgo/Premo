@@ -25,6 +25,7 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmLifecycle
@@ -38,6 +39,7 @@ import me.dmdev.premo.setSaver
 
 interface SetNavigator : SetNavigation {
     fun changeCurrent(index: Int)
+    fun setValues(pmList: List<PresentationModel>)
 }
 
 @Suppress("FunctionName")
@@ -64,14 +66,18 @@ fun PresentationModel.SetNavigator(
 
 class SetNavigatorImpl(
     private val lifecycle: PmLifecycle,
-    override val values: List<PresentationModel>,
+    values: List<PresentationModel>,
     private val onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit
 ) : SetNavigator {
 
-    private val _currentFlow = MutableStateFlow(values.first())
+    private val _valuesFlow = MutableStateFlow(values)
+    override val valuesFlow: StateFlow<List<PresentationModel>> = _valuesFlow.asStateFlow()
+    override val values: List<PresentationModel> get() = valuesFlow.value
+
+    private val _currentFlow = MutableStateFlow(values.firstOrNull())
     override val currentFlow = _currentFlow.asStateFlow()
 
-    override val current: PresentationModel get() = currentFlow.value
+    override val current: PresentationModel? get() = currentFlow.value
 
     init {
         subscribeToLifecycle()
@@ -80,9 +86,25 @@ class SetNavigatorImpl(
     override fun changeCurrent(index: Int) {
         val pm = values[index]
         if (pm === _currentFlow.value) return
-        _currentFlow.value.lifecycle.moveTo(CREATED)
+        _currentFlow.value?.lifecycle?.moveTo(CREATED)
         pm.lifecycle.moveTo(lifecycle.state)
         _currentFlow.value = pm
+    }
+
+    override fun setValues(pmList: List<PresentationModel>) {
+        val iterator = pmList.listIterator()
+        while (iterator.hasNext()) {
+            val pm = iterator.next()
+            pm.lifecycle.moveTo(CREATED)
+        }
+        values.forEach { pm ->
+            if (pmList.contains(pm).not()) {
+                pm.lifecycle.moveTo(DESTROYED)
+            }
+        }
+        _currentFlow.value = if (pmList.contains(current)) current else pmList.first()
+        current?.lifecycle?.moveTo(lifecycle.state)
+        _valuesFlow.value = pmList
     }
 
     override fun onChangeCurrent(index: Int) {
@@ -90,7 +112,7 @@ class SetNavigatorImpl(
     }
 
     private fun subscribeToLifecycle() {
-        current.lifecycle.moveTo(lifecycle.state)
+        current?.lifecycle?.moveTo(lifecycle.state)
         lifecycle.addObserver { lifecycle, event ->
             when (lifecycle.state) {
                 CREATED,
@@ -100,7 +122,7 @@ class SetNavigatorImpl(
                     }
                 }
                 IN_FOREGROUND -> {
-                    current.lifecycle.moveTo(lifecycle.state)
+                    current?.lifecycle?.moveTo(lifecycle.state)
                 }
             }
         }
