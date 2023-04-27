@@ -30,19 +30,17 @@ import org.jetbrains.compose.web.dom.*
 
 @Composable
 fun CounterScreen(pm: CounterPm) {
-    val count = pm.count.bind()
-    val minusButtonEnabled = pm.minusButtonEnabled.bind()
-    val plusButtonEnabled = pm.plusButtonEnabled.bind()
+    val state = pm.stateFlow.bind()
 
     ScreenBox("Counter") {
         Div {
-            TextButton("-", minusButtonEnabled) {
+            TextButton("-", state.minusEnabled) {
                 pm.minus()
             }
             Span({ style { padding(15.px) } }) {
-                Text("$count")
+                Text("${state.count}")
             }
-            TextButton("+", plusButtonEnabled) {
+            TextButton("+", state.plusEnabled) {
                 pm.plus()
             }
         }
