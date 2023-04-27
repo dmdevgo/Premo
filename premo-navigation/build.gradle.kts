@@ -23,15 +23,16 @@
  */
 
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.ktlint)
     `publish-library`
 }
 
 kotlin {
 
-    ios()
+    iosX64()
+    iosArm64()
     iosSimulatorArm64()
     jvm()
     js(IR) {
@@ -55,59 +56,19 @@ kotlin {
 
         val commonTest by getting {
             dependencies {
-                dependsOn(commonMain)
                 implementation(project(":premo"))
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
+                implementation(libs.kotlin.test)
             }
         }
 
-        val jvmMain by getting {
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {
             dependsOn(commonMain)
-        }
-
-        val jvmTest by getting {
-            dependsOn(commonTest)
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
-            }
-        }
-
-        val jsMain by getting {
-            dependsOn(commonMain)
-        }
-
-        val jsTest by getting {
-            dependsOn(commonTest)
-            dependencies {
-                implementation(kotlin("test-js"))
-            }
-        }
-
-        val androidMain by getting {
-            dependsOn(jvmMain)
-        }
-
-        // Fix test run: https://youtrack.jetbrains.com/issue/KT-40571
-        val androidTest by getting {
-            dependsOn(jvmTest)
-        }
-
-        val iosMain by getting {
-            dependsOn(commonMain)
-        }
-
-        val iosTest by getting {
-            dependsOn(commonTest)
-        }
-
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }
-
-        val iosSimulatorArm64Test by getting {
-            dependsOn(iosTest)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
         }
     }
 }

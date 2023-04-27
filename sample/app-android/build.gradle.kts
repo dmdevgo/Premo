@@ -23,8 +23,8 @@
  */
 
 plugins {
-    id("com.android.application")
-    kotlin("android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.ktlint)
 }
@@ -73,10 +73,6 @@ android {
         freeCompilerArgs = freeCompilerArgs.plus("-Xopt-in=kotlin.RequiresOptIn")
     }
     namespace = "me.dmdev.premo.sample"
-}
-
-repositories {
-    maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
 }
 
 dependencies {

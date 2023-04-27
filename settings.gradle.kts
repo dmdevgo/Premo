@@ -32,11 +32,13 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         mavenCentral()
-        google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        google()
+        maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
+        mavenLocal()
     }
     versionCatalogs {
         create("libs") {

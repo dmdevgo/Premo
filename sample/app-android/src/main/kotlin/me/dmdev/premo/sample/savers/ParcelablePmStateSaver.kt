@@ -43,20 +43,27 @@ class ParcelablePmStateSaver(
     override fun <T> saveState(key: String, kType: KType, value: T?) {
         @Suppress("UNCHECKED_CAST")
         if (value != null) {
-            bundle.putParcelable(key, value, parcelable, serializer(kType) as KSerializer<T>)
+            bundle.putParcelable(
+                key = key,
+                value = value,
+                serializer = serializer(kType) as KSerializer<T>,
+                parcelable = parcelable
+            )
         }
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     override fun <T> restoreState(key: String, kType: KType): T? {
-        @Suppress("UNCHECKED_CAST")
         return restore(key, kType)
     }
 
     @OptIn(ExperimentalSerializationApi::class)
     private fun <T : Any> restore(key: String, kType: KType): T? {
         @Suppress("UNCHECKED_CAST")
-        return bundle.getParcelable(key, parcelable, serializer(kType) as KSerializer<T>)
+        return bundle.getParcelable(
+            key = key,
+            deserializer = serializer(kType) as KSerializer<T>,
+            parcelable = parcelable
+        )
     }
 
     companion object {
