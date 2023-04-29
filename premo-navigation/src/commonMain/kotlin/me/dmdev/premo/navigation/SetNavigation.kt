@@ -33,6 +33,7 @@ interface SetNavigation {
     val current: PresentationModel?
     val currentFlow: StateFlow<PresentationModel?>
     fun onChangeCurrent(index: Int)
+    fun onChangeCurrent(pm: PresentationModel)
     val valuesFlow: StateFlow<List<PresentationModel>>
 }
 

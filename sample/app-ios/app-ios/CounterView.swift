@@ -30,20 +30,11 @@ struct CounterView: View {
     private let pm: CounterPm
     
     @ObservedObject
-    private var counter: ObservableState<KotlinInt>
-    
-    @ObservedObject
-    private var minusButtonEnabled: ObservableState<KotlinBoolean>
-    
-    @ObservedObject
-    private var plusButtonEnabled: ObservableState<KotlinBoolean>
+    private var state: ObservableState<CounterPm.State>
 
-    
     init(pm: CounterPm) {
         self.pm = pm
-        counter = ObservableState(pm.count)
-        minusButtonEnabled = ObservableState(pm.minusButtonEnabled)
-        plusButtonEnabled = ObservableState(pm.plusButtonEnabled)
+        state = ObservableState(pm.stateFlow)
     }
     
     var body: some View {
@@ -52,16 +43,16 @@ struct CounterView: View {
                 Button("Minus", action: {
                     pm.minus()
                 })
-                    .disabled(minusButtonEnabled.value == false)
+                .disabled(state.value?.minusEnabled == false)
                     .padding()
                 
-                Text("\(counter.value ?? 0)")
+                Text("\(state.value?.count ?? 0)")
                     .padding()
                 
                 Button("Plus", action: {
                     pm.plus()
                 })
-                    .disabled(plusButtonEnabled.value == false)
+                .disabled(state.value?.plusEnabled == false)
                     .padding()
             }
             .navigationTitle("Counter")

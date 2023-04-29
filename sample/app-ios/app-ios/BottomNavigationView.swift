@@ -35,7 +35,6 @@ struct BottomNavigationView: View {
     init(pm: BottomNavigationPm) {
         self.pm = pm
         self.currentPm = ObservableState(pm.navigation.currentFlow)
-        
     }
     
     var body: some View {
@@ -51,7 +50,7 @@ struct BottomNavigationView: View {
                             }
                             .tag(tabPm.tag)
                             .onTapGesture {
-                                pm.onSelectTab(pm: tabPm)
+                                pm.navigation.onChangeCurrent(pm: tabPm)
                             }
                     }
                 }

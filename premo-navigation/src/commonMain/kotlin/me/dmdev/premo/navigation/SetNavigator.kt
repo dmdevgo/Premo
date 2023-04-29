@@ -39,6 +39,7 @@ import me.dmdev.premo.setSaver
 
 interface SetNavigator : SetNavigation {
     fun changeCurrent(index: Int)
+    fun changeCurrent(pm: PresentationModel)
     fun setValues(pmList: List<PresentationModel>)
 }
 
@@ -91,6 +92,10 @@ class SetNavigatorImpl(
         _currentFlow.value = pm
     }
 
+    override fun changeCurrent(pm: PresentationModel) {
+        changeCurrent(values.indexOf(pm))
+    }
+
     override fun setValues(pmList: List<PresentationModel>) {
         val iterator = pmList.listIterator()
         while (iterator.hasNext()) {
@@ -109,6 +114,10 @@ class SetNavigatorImpl(
 
     override fun onChangeCurrent(index: Int) {
         onChangeCurrent(index, this)
+    }
+
+    override fun onChangeCurrent(pm: PresentationModel) {
+        onChangeCurrent(values.indexOf(pm), this)
     }
 
     private fun subscribeToLifecycle() {
