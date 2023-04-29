@@ -33,11 +33,10 @@ class PmDelegate<PM : PresentationModel>(
 ) {
 
     @Suppress("UNCHECKED_CAST")
-    val presentationModel: PM = PmStore.get(pmParams.tag) as? PM
-        ?: pmParams.factory.createPm(pmParams) as PM
-
-    init {
-        PmStore.put(pmParams.tag, presentationModel)
+    val presentationModel: PM by lazy {
+        val pm = PmStore.get(pmParams.tag) as? PM ?: pmParams.factory.createPm(pmParams) as PM
+        PmStore.put(pmParams.tag, pm)
+        pm
     }
 
     fun onCreate() {

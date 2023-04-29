@@ -28,29 +28,27 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.toComposeRect
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.unit.*
 import androidx.window.layout.WindowMetricsCalculator
 import me.dmdev.premo.PmActivity
 import me.dmdev.premo.PmActivityDelegate
 import me.dmdev.premo.navigation.handleBack
-import me.dmdev.premo.sample.savers.ParcelableBundleStateSaver
+import me.dmdev.premo.sample.savers.JsonBundleStateSaver
 
 class MainActivity : AppCompatActivity(), PmActivity<MainPm> {
 
     override val delegate: PmActivityDelegate<MainPm> by lazy {
+        val pmStateSaver = JsonBundleStateSaver()
+//        val pmStateSaver = ParcelableBundleStateSaver()
+//        val pmStateSaver = ProtoBufBundleStateSaver()
+//        val pmStateSaver = BundlizerBundleStateSaver()
         PmActivityDelegate(
             pmActivity = this,
-            pmDescription = MainPm.Description,
-            pmFactory = MainPmFactory(),
-//            stateSaver = JsonBundleStateSaver(),
-//            stateSaver = ProtoBufBundleStateSaver(),
-//            stateSaver = BundlizerBundleStateSaver(),
-            stateSaver = ParcelableBundleStateSaver()
+            pmDelegate = PremoSample.createPmDelegate(pmStateSaver),
+            stateSaver = pmStateSaver
         )
     }
 

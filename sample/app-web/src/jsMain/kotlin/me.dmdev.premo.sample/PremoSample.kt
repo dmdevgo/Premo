@@ -24,24 +24,18 @@
 
 package me.dmdev.premo.sample
 
-import me.dmdev.premo.PmLifecycle
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.sample.serialization.SimpleJsonPmStateSaverFactory
+import androidx.compose.runtime.*
 import org.jetbrains.compose.web.*
 
 fun main() {
-    val mainPm = MainPm(
-        params = PmParams(
-            tag = "main",
-            description = MainPm.Description,
-            parent = null,
-            factory = MainPmFactory(),
-            stateSaverFactory = SimpleJsonPmStateSaverFactory()
-        )
-    )
-    mainPm.lifecycle.moveTo(PmLifecycle.State.IN_FOREGROUND)
-
     renderComposable(rootElementId = "root") {
-        MainScreen(mainPm)
+        val pm = remember {
+            PremoSample.createPmDelegate().let { delegate ->
+                delegate.onCreate()
+                delegate.onForeground()
+                delegate.presentationModel
+            }
+        }
+        MainScreen(pm)
     }
 }

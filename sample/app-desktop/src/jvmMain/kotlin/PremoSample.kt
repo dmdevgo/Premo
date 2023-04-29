@@ -27,31 +27,24 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
-import me.dmdev.premo.PmLifecycle
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.sample.MainPm
-import me.dmdev.premo.sample.MainPmFactory
 import me.dmdev.premo.sample.MainScreen
+import me.dmdev.premo.sample.PremoSample
 import me.dmdev.premo.sample.WindowSizeClass
 import me.dmdev.premo.sample.WindowSizes
-import me.dmdev.premo.sample.serialization.SimpleJsonPmStateSaverFactory
-
-val pm = MainPm(
-    params = PmParams(
-        tag = "main",
-        description = MainPm.Description,
-        parent = null,
-        factory = MainPmFactory(),
-        stateSaverFactory = SimpleJsonPmStateSaverFactory()
-    )
-).also {
-    it.lifecycle.moveTo(PmLifecycle.State.IN_FOREGROUND)
-}
 
 @Preview
 fun main() = application {
+    val pm = remember {
+        PremoSample.createPmDelegate().let { delegate ->
+            delegate.onCreate()
+            delegate.onForeground()
+            delegate.presentationModel
+        }
+    }
+
     val state = rememberWindowState()
     val windowSizeClass = rememberWindowSizes(state)
+
     Window(
         onCloseRequest = ::exitApplication,
         title = "Premo",

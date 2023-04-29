@@ -26,44 +26,28 @@ package me.dmdev.premo
 
 import android.app.Activity
 import android.os.Bundle
-import java.util.*
 
 class PmActivityDelegate<PM : PresentationModel>(
     private val pmActivity: Activity,
-    private val pmDescription: PmDescription,
-    private val pmFactory: PmFactory,
+    private var pmDelegate: PmDelegate<PM>,
     private val stateSaver: BundleStateSaver
 ) {
 
-    private var pmDelegate: PmDelegate<PM>? = null
-
-    val presentationModel: PM
-        get() = pmDelegate?.presentationModel
-            ?: throw IllegalStateException("Presentation Model has not been initialized yet, call this method after onCreate.")
+    val presentationModel: PM get() = pmDelegate.presentationModel
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onCreate(savedInstanceState: Bundle?) {
         stateSaver.restore(savedInstanceState)
-        val pmTag = getPmTag(savedInstanceState) ?: UUID.randomUUID().toString()
-        val pmParams = PmParams(
-            tag = pmTag,
-            parent = null,
-            description = pmDescription,
-            factory = pmFactory,
-            stateSaverFactory = stateSaver
-        )
-
-        pmDelegate = PmDelegate(pmParams)
-        pmDelegate?.onCreate()
+        pmDelegate.onCreate()
     }
 
     /**
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onStart() {
-        pmDelegate?.onForeground()
+        pmDelegate.onForeground()
     }
 
     /**
@@ -91,7 +75,7 @@ class PmActivityDelegate<PM : PresentationModel>(
      * You must call this method from the containing [Activity]'s corresponding method.
      */
     fun onStop() {
-        pmDelegate?.onBackground()
+        pmDelegate.onBackground()
     }
 
     /**
@@ -99,9 +83,8 @@ class PmActivityDelegate<PM : PresentationModel>(
      */
     fun onDestroy() {
         if (pmActivity.isFinishing) {
-            pmDelegate?.onDestroy()
+            pmDelegate.onDestroy()
         }
-        pmDelegate = null
     }
 
     private fun getPmTag(savedInstanceState: Bundle?): String? {
@@ -109,8 +92,8 @@ class PmActivityDelegate<PM : PresentationModel>(
     }
 
     private fun savePmState(outState: Bundle) {
-        outState.putString(SAVED_PM_TAG_KEY, pmDelegate?.presentationModel?.tag)
-        pmDelegate?.savePm()
+        outState.putString(SAVED_PM_TAG_KEY, pmDelegate.presentationModel.tag)
+        pmDelegate.savePm()
         stateSaver.save(outState)
     }
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,38 +22,23 @@
  * SOFTWARE.
  */
 
-import SwiftUI
-import Common
+package me.dmdev.premo.sample
 
-@main
-struct PremoSampleApp: App {
-    
-    @Environment(\.scenePhase) var scenePhase
-    
-    private let delegate: PmDelegate<MainPm>
-    
-    init() {
-        delegate = PremoSample().createPmDelegate(pmStateSaver: SimpleJsonPmStateSaverFactory())
-        delegate.onCreate()
-    }
-    
-    var body: some Scene {
-        WindowGroup {
-            MainView(delegate: delegate)
-        }
-        .onChange(of: scenePhase) { newScenePhase in
-              switch newScenePhase {
-              case .active:
-                print("App is active")
-                delegate.onForeground()
-              case .inactive:
-                print("App is inactive")
-              case .background:
-                print("App is in background")
-                delegate.onBackground()
-              @unknown default:
-                print("Unexpected Scene Phase")
-              }
-        }
-    }
+import me.dmdev.premo.PmDelegate
+import me.dmdev.premo.PmParams
+import me.dmdev.premo.PmStateSaverFactory
+import me.dmdev.premo.sample.serialization.SimpleJsonPmStateSaverFactory
+
+object PremoSample {
+    fun createPmDelegate(
+        pmStateSaver: PmStateSaverFactory = SimpleJsonPmStateSaverFactory()
+    ): PmDelegate<MainPm> = PmDelegate(
+        pmParams = PmParams(
+            tag = "main",
+            description = MainPm.Description,
+            parent = null,
+            factory = MainPmFactory(),
+            stateSaverFactory = pmStateSaver
+        )
+    )
 }
