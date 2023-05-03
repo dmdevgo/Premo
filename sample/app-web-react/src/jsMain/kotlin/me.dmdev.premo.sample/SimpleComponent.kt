@@ -22,36 +22,42 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
+package me.dmdev.premo.sample
+
+import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
+import mui.material.Card
+import mui.material.Stack
+import mui.material.Typography
+import mui.material.TypographyAlign
+import mui.material.styles.TypographyVariant
+import mui.system.sx
+import react.FC
+import react.Props
+import web.cssom.AlignItems
+import web.cssom.HtmlAttributes.Companion.height
+import web.cssom.HtmlAttributes.Companion.width
+import web.cssom.JustifyContent
+import web.cssom.px
+
+external interface SimpleComponentProps : Props {
+    var pm: SimpleScreenPm
 }
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        google()
-        maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
-        mavenLocal()
-    }
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
+val SimpleComponent = FC<SimpleComponentProps> { props ->
+
+    Card {
+        Stack {
+            sx {
+                justifyContent = JustifyContent.center
+                alignItems = AlignItems.center
+                width = 100.px
+                height = 100.px
+            }
+            Typography {
+                align = TypographyAlign.center
+                variant = TypographyVariant.h6
+                +"#${props.pm.numberText}"
+            }
         }
     }
 }
-rootProject.name = "Premo"
-
-include(":premo")
-include(":premo-navigation")
-include(":sample:app-common")
-include(":sample:app-common-compose-ui")
-include(":sample:app-android")
-include(":sample:app-desktop")
-include(":sample:app-web-compose-html")
-include(":sample:app-web-react")

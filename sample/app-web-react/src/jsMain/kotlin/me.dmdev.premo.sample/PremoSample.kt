@@ -22,36 +22,21 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
-}
+package me.dmdev.premo.sample
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        google()
-        maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
-        mavenLocal()
+import react.create
+import react.dom.client.createRoot
+import web.dom.document
+
+fun main() {
+    val delegate = PremoSample.createPmDelegate().apply {
+        this.onCreate()
+        this.onForeground()
     }
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
+    val container = document.getElementById("root") ?: error("Couldn't find root container!")
+    createRoot(container).render(
+        MainComponent.create {
+            pm = delegate.presentationModel
         }
-    }
+    )
 }
-rootProject.name = "Premo"
-
-include(":premo")
-include(":premo-navigation")
-include(":sample:app-common")
-include(":sample:app-common-compose-ui")
-include(":sample:app-android")
-include(":sample:app-desktop")
-include(":sample:app-web-compose-html")
-include(":sample:app-web-react")

@@ -24,6 +24,13 @@ kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-co
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "kotlinx-serialization" }
 
+kotlin-wrappers-react = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-react", version = "18.2.0-pre.545" }
+kotlin-wrappers-react-core = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-react-core", version = "18.2.0-pre.545" }
+kotlin-wrappers-react-dom = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-react-dom", version = "18.2.0-pre.545" }
+kotlin-wrappers-emotion = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-emotion", version = "11.10.8-pre.545" }
+kotlin-wrappers-mui = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui", version = "5.11.2-pre.545" }
+kotlin-wrappers-mui-icons = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-icons", version = "5.11.11-pre.545" }
+
 androidx-window = { group = "androidx.window", name = "window", version = "1.0.0" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
 
