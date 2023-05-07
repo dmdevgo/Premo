@@ -74,11 +74,15 @@ kotlin {
 }
 
 android {
+    namespace = "me.dmdev.premo.navigation"
     compileSdk = AndroidSdk.compile
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = AndroidSdk.min
         targetSdk = AndroidSdk.target
     }
-    namespace = "me.dmdev.premo.navigation"
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 }

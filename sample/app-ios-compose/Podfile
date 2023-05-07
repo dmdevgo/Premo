@@ -1,0 +1,5 @@
+target 'app-ios-compose' do
+  use_frameworks!
+  platform :ios, '14.1'
+  pod 'CommonUIPod', :path => '../app-common-compose-ui'
+end

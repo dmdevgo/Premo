@@ -18,3 +18,9 @@ project.xcworkspace/
 
 # Web
 yarn.lock
+
+# iOS
+Pods/
+*.podspec
+*.lock
+*.xcworkspace

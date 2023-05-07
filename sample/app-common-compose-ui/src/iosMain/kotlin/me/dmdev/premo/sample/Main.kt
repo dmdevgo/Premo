@@ -22,13 +22,24 @@
  * SOFTWARE.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.kotlin.multiplatform) apply false
-    alias(libs.plugins.kotlin.native.cocoapods) apply false
-    alias(libs.plugins.kotlinx.serialization) apply false
-    alias(libs.plugins.ktlint) apply false
+package me.dmdev.premo.sample
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.window.*
+import me.dmdev.premo.sample.WindowSizeClass.Compact
+
+fun MainViewController() = ComposeUIViewController {
+    val pm = remember {
+        PremoSample.createPmDelegate().let { delegate ->
+            delegate.onCreate()
+            delegate.onForeground()
+            delegate.presentationModel
+        }
+    }
+
+//    val state = rememberWindowState()
+//    val windowSizeClass = rememberWindowSizes(state)
+    MainScreen(pm, WindowSizes(Compact, Compact))
 }

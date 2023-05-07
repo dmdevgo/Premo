@@ -24,18 +24,39 @@
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.native.cocoapods)
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.ktlint)
 }
 
 kotlin {
+
     android()
     jvm("desktop") {
         compilations.all {
             kotlinOptions.jvmTarget = "11"
         }
     }
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    cocoapods {
+        version = "1.0.0"
+        summary = "Some description for the Shared Module"
+        homepage = "Link to the Shared Module homepage"
+        ios.deploymentTarget = "14.1"
+        podfile = project.file("../app-ios-compose/Podfile")
+        name = "CommonUIPod"
+        framework {
+            baseName = "CommonUI"
+            isStatic = true
+        }
+        extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
+    }
+
     sourceSets {
 
         all {
@@ -44,10 +65,14 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
+                api(project(":sample:app-common"))
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
-                api(project(":sample:app-common"))
+                api(compose.ui)
+                api(compose.material3)
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.components.resources)
             }
         }
 
@@ -61,22 +86,38 @@ kotlin {
                 api(compose.preview)
             }
         }
+
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }
     }
 }
 
 android {
+    namespace = "me.dmdev.premo.sample.common.compose.ui"
     compileSdk = AndroidSdk.compile
+
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    sourceSets["main"].res.srcDirs("src/androidMain/res")
+    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+
     defaultConfig {
         minSdk = AndroidSdk.min
         targetSdk = AndroidSdk.target
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    sourceSets {
-        getByName("main").java.srcDirs("src/androidMain/kotlin")
+
+    kotlin {
+        jvmToolchain(11)
     }
-    namespace = "me.dmdev.premo.sample.common.compose.ui"
 }
