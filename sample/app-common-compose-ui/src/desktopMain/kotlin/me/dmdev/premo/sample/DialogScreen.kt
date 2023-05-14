@@ -30,50 +30,46 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
-import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-actual fun DialogScreen(pm: SimpleDialogPm, onDismissRequest: () -> Unit) {
-    Dialog(
-        onCloseRequest = onDismissRequest,
-        title = pm.title,
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.weight(0.5f))
-                Text(pm.message)
-                Spacer(modifier = Modifier.weight(0.5f))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+actual fun DialogScreen(
+    title: String,
+    message: String,
+    okButtonText: String,
+    cancelButtonText: String,
+    onOkButtonClick: () -> Unit,
+    onCancelButtonClick: () -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
+            Text(text = title)
+        },
+        text = {
+            Text(message)
+        },
+        confirmButton = {
+            if (okButtonText.isNotEmpty()) {
+                Button(
+                    onClick = {
+                        onOkButtonClick()
+                    }
                 ) {
-                    if (pm.cancelButtonText.isNotEmpty()) {
-                        Button(
-                            onClick = {
-                                pm.onCancelClick()
-                            }
-                        ) {
-                            Text(pm.cancelButtonText)
-                        }
-                        Spacer(modifier = Modifier.width(16.dp))
-                    }
-
-                    if (pm.okButtonText.isNotEmpty()) {
-                        Button(
-                            onClick = {
-                                pm.onOkClick()
-                            }
-                        ) {
-                            Text(pm.okButtonText)
-                        }
-                    }
+                    Text(okButtonText)
                 }
-                Spacer(modifier = Modifier.weight(0.5f))
+            }
+        },
+        dismissButton = {
+            if (cancelButtonText.isNotEmpty()) {
+                Button(
+                    onClick = {
+                        onCancelButtonClick()
+                    }
+                ) {
+                    Text(cancelButtonText)
+                }
             }
         }
     )

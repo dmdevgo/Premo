@@ -25,26 +25,13 @@
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.window.*
-import me.dmdev.premo.sample.MainScreen
-import me.dmdev.premo.sample.PremoSample
-import me.dmdev.premo.sample.WindowSizeClass
-import me.dmdev.premo.sample.WindowSizes
+import me.dmdev.premo.sample.App
 import org.jetbrains.skiko.wasm.onWasmReady
 
 fun main() {
     onWasmReady {
         Window {
-            val pm = remember {
-                PremoSample.createPmDelegate().let { delegate ->
-                    delegate.onCreate()
-                    delegate.onForeground()
-                    delegate.presentationModel
-                }
-            }
-
-            MaterialTheme {
-                MainScreen(pm, WindowSizes(WindowSizeClass.Expanded, WindowSizeClass.Expanded))
-            }
+            App()
         }
     }
 }

@@ -23,36 +23,24 @@
  */
 
 import androidx.compose.desktop.ui.tooling.preview.*
-import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
-import me.dmdev.premo.sample.MainScreen
-import me.dmdev.premo.sample.PremoSample
+import me.dmdev.premo.sample.App
 import me.dmdev.premo.sample.WindowSizeClass
 import me.dmdev.premo.sample.WindowSizes
 
 @Preview
 fun main() = application {
-    val pm = remember {
-        PremoSample.createPmDelegate().let { delegate ->
-            delegate.onCreate()
-            delegate.onForeground()
-            delegate.presentationModel
-        }
-    }
-
     val state = rememberWindowState()
-    val windowSizeClass = rememberWindowSizes(state)
+    val windowSizes = rememberWindowSizes(state)
 
     Window(
         onCloseRequest = ::exitApplication,
         title = "Premo",
         state = state
     ) {
-        MaterialTheme {
-            MainScreen(pm, windowSizeClass)
-        }
+        App(windowSizes = windowSizes)
     }
 }
 

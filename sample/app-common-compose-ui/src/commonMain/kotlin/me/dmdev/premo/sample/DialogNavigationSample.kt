@@ -62,8 +62,20 @@ fun DialogNavigationScreen(
             Spacer(Modifier.weight(0.5f))
         }
 
-        pm.dialogNavigation.dialog.bind()?.let { dialogPm ->
-            DialogScreen(dialogPm, pm.dialogNavigation::onDismissRequest)
+        pm.dialogNavigation.dialog.bind().let { dialogPm ->
+            DialogContainer(isVisible = dialogPm != null) {
+                if (dialogPm != null) {
+                    CommonDialog(
+                        title = dialogPm.title,
+                        message = dialogPm.message,
+                        okButtonText = dialogPm.okButtonText,
+                        cancelButtonText = dialogPm.cancelButtonText,
+                        onOkButtonClick = dialogPm::onOkClick,
+                        onCancelButtonClick = dialogPm::onCancelClick,
+                        onDismissRequest = pm.dialogNavigation::onDismissRequest
+                    )
+                }
+            }
         }
     }
 }

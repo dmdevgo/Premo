@@ -24,22 +24,9 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.window.*
 import me.dmdev.premo.sample.WindowSizeClass.Compact
 
 fun MainViewController() = ComposeUIViewController {
-    val pm = remember {
-        PremoSample.createPmDelegate().let { delegate ->
-            delegate.onCreate()
-            delegate.onForeground()
-            delegate.presentationModel
-        }
-    }
-
-//    val state = rememberWindowState()
-//    val windowSizeClass = rememberWindowSizes(state)
-    MainScreen(pm, WindowSizes(Compact, Compact))
+    App(windowSizes = WindowSizes(Compact, Compact))
 }

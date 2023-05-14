@@ -26,40 +26,44 @@ package me.dmdev.premo.sample
 
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm
 
 @Composable
 actual fun DialogScreen(
-    pm: SimpleDialogPm,
+    title: String,
+    message: String,
+    okButtonText: String,
+    cancelButtonText: String,
+    onOkButtonClick: () -> Unit,
+    onCancelButtonClick: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
-            Text(text = pm.title)
+            Text(text = title)
         },
         text = {
-            Text(pm.message)
+            Text(message)
         },
         confirmButton = {
-            if (pm.okButtonText.isNotEmpty()) {
+            if (okButtonText.isNotEmpty()) {
                 Button(
                     onClick = {
-                        pm.onOkClick()
+                        onOkButtonClick()
                     }
                 ) {
-                    Text(pm.okButtonText)
+                    Text(okButtonText)
                 }
             }
         },
         dismissButton = {
-            if (pm.cancelButtonText.isNotEmpty()) {
+            if (cancelButtonText.isNotEmpty()) {
                 Button(
                     onClick = {
-                        pm.onCancelClick()
+                        onCancelButtonClick()
                     }
                 ) {
-                    Text(pm.cancelButtonText)
+                    Text(cancelButtonText)
                 }
             }
         }
