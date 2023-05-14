@@ -1,4 +1,4 @@
-/*
+package me.dmdev.premo.sample/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
@@ -22,34 +22,13 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
-}
+import androidx.compose.ui.window.*
+import org.jetbrains.skiko.wasm.onWasmReady
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        google()
-        maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
-        mavenLocal()
-    }
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
+fun main() {
+    onWasmReady {
+        Window {
+            App()
         }
     }
 }
-rootProject.name = "Premo"
-
-include(":premo")
-include(":premo-navigation")
-include(":sample:app-common")
-include(":sample:app-compose")
-include(":sample:app-web-html")
-include(":sample:app-web-react")
