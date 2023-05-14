@@ -9,7 +9,7 @@ ktlint = "11.3.1"
 
 [plugins]
 android-gradle-plugin = { id = "com.android.tools.build.gradle", version.ref = "agp" }
-android-application = { id = "com.android.application", version.ref = "agp"}
+android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp"}
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

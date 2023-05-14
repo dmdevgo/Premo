@@ -22,37 +22,26 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
+plugins {
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.ktlint)
 }
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        google()
-        maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
-        mavenLocal()
+kotlin {
+    js(IR) {
+        browser()
+        binaries.executable()
     }
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
+    sourceSets {
+        val jsMain by getting {
+            dependencies {
+                api(project(":sample:app-common-compose-ui"))
+            }
         }
     }
 }
-rootProject.name = "Premo"
 
-include(":premo")
-include(":premo-navigation")
-include(":sample:app-common")
-include(":sample:app-common-compose-ui")
-include(":sample:app-android")
-include(":sample:app-desktop")
-include(":sample:app-web-compose")
-include(":sample:app-web-compose-html")
-include(":sample:app-web-react")
+compose.experimental {
+    web.application {}
+}

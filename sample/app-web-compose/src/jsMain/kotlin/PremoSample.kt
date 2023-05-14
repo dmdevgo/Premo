@@ -22,37 +22,29 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
-}
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.window.*
+import me.dmdev.premo.sample.MainScreen
+import me.dmdev.premo.sample.PremoSample
+import me.dmdev.premo.sample.WindowSizeClass
+import me.dmdev.premo.sample.WindowSizes
+import org.jetbrains.skiko.wasm.onWasmReady
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        google()
-        maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
-        mavenLocal()
-    }
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
+fun main() {
+    onWasmReady {
+        Window {
+            val pm = remember {
+                PremoSample.createPmDelegate().let { delegate ->
+                    delegate.onCreate()
+                    delegate.onForeground()
+                    delegate.presentationModel
+                }
+            }
+
+            MaterialTheme {
+                MainScreen(pm, WindowSizes(WindowSizeClass.Expanded, WindowSizeClass.Expanded))
+            }
         }
     }
 }
-rootProject.name = "Premo"
-
-include(":premo")
-include(":premo-navigation")
-include(":sample:app-common")
-include(":sample:app-common-compose-ui")
-include(":sample:app-android")
-include(":sample:app-desktop")
-include(":sample:app-web-compose")
-include(":sample:app-web-compose-html")
-include(":sample:app-web-react")

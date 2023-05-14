@@ -43,6 +43,10 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    js(IR) {
+        browser()
+    }
+
     cocoapods {
         version = "1.0.0"
         summary = "Some description for the Shared Module"
