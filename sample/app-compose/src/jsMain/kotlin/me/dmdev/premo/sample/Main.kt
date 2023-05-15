@@ -1,4 +1,4 @@
-package me.dmdev.premo.sample/*
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
@@ -21,6 +21,8 @@ package me.dmdev.premo.sample/*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+package me.dmdev.premo.sample
 
 import androidx.compose.ui.window.*
 import org.jetbrains.skiko.wasm.onWasmReady

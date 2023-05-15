@@ -107,14 +107,14 @@ fun ItemScreen(pmTab: TabItemPm = Stubs.tabItemPm) {
             Row {
                 Button(
                     onClick = { pmTab.previousClick() },
-                    modifier = Modifier.width(100.dp)
+                    modifier = Modifier.width(120.dp)
                 ) {
                     Text("Previous")
                 }
                 Spacer(Modifier.width(16.dp))
                 Button(
                     onClick = { pmTab.nextClick() },
-                    modifier = Modifier.width(100.dp)
+                    modifier = Modifier.width(120.dp)
                 ) {
                     Text("Next")
                 }

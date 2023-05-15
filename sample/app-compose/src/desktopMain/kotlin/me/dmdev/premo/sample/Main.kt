@@ -22,13 +22,12 @@
  * SOFTWARE.
  */
 
+package me.dmdev.premo.sample
+
 import androidx.compose.desktop.ui.tooling.preview.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
-import me.dmdev.premo.sample.App
-import me.dmdev.premo.sample.WindowSizeClass
-import me.dmdev.premo.sample.WindowSizes
 
 @Preview
 fun main() = application {
