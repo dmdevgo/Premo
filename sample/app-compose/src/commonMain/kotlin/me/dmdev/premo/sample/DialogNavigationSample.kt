@@ -34,13 +34,11 @@ import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
 
 @Composable
 fun DialogNavigationScreen(
-    pm: DialogNavigationPm,
-    windowSizes: WindowSizes
+    pm: DialogNavigationPm
 ) {
     PmBox(
         title = "Dialog Navigation",
-        backHandler = { pm.back() },
-        windowSizes = windowSizes
+        backHandler = { pm.back() }
     ) {
         val message = pm.messagesFlow.bind("")
 

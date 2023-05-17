@@ -38,13 +38,11 @@ import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 @OptIn(ExperimentalPremoApi::class)
 @Composable
 fun StackNavigationScreen(
-    pm: StackNavigationPm,
-    windowSizes: WindowSizes
+    pm: StackNavigationPm
 ) {
     PmBox(
         title = "Stack Navigation",
-        backHandler = { pm.back() },
-        windowSizes = windowSizes
+        backHandler = { pm.back() }
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

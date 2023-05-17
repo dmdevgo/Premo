@@ -24,9 +24,32 @@
 
 package me.dmdev.premo.sample
 
+import androidx.compose.runtime.*
+import androidx.compose.ui.unit.*
+
 enum class WindowSizeClass { Compact, Medium, Expanded }
 
 data class WindowSizes(
     val widthSizeClass: WindowSizeClass,
     val heightSizeClass: WindowSizeClass
 )
+
+val LocalWindowSizes = staticCompositionLocalOf {
+    mutableStateOf(WindowSizes(WindowSizeClass.Compact, WindowSizeClass.Compact))
+}
+
+fun windowSizes(width: Dp, height: Dp): WindowSizes {
+    val widthWindowSizeClass = when {
+        width < 600.dp -> WindowSizeClass.Compact
+        width < 840.dp -> WindowSizeClass.Medium
+        else -> WindowSizeClass.Expanded
+    }
+
+    val heightWindowSizeClass = when {
+        height < 480.dp -> WindowSizeClass.Compact
+        height < 900.dp -> WindowSizeClass.Medium
+        else -> WindowSizeClass.Expanded
+    }
+
+    return WindowSizes(widthWindowSizeClass, heightWindowSizeClass)
+}

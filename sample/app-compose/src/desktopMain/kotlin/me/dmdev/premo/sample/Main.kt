@@ -38,7 +38,7 @@ fun main() = application {
         }
     }
     val state = rememberWindowState()
-    val windowSizes = rememberWindowSizes(state)
+    val windowSizes = windowSizes(state.size.width, state.size.height)
 
     Window(
         onCloseRequest = ::exitApplication,
@@ -47,21 +47,4 @@ fun main() = application {
     ) {
         App(delegate.presentationModel, windowSizes)
     }
-}
-
-@Composable
-fun rememberWindowSizes(state: WindowState): WindowSizes {
-    val widthWindowSizeClass = when {
-        state.size.width < 600.dp -> WindowSizeClass.Compact
-        state.size.width < 840.dp -> WindowSizeClass.Medium
-        else -> WindowSizeClass.Expanded
-    }
-
-    val heightWindowSizeClass = when {
-        state.size.height < 480.dp -> WindowSizeClass.Compact
-        state.size.height < 900.dp -> WindowSizeClass.Medium
-        else -> WindowSizeClass.Expanded
-    }
-
-    return WindowSizes(widthWindowSizeClass, heightWindowSizeClass)
 }

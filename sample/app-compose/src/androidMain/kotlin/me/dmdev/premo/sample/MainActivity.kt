@@ -79,17 +79,5 @@ fun Activity.rememberWindowSizes(): WindowSizes {
         windowMetrics.bounds.toComposeRect().size.toDpSize()
     }
 
-    val widthWindowSizeClass = when {
-        windowDpSize.width < 600.dp -> WindowSizeClass.Compact
-        windowDpSize.width < 840.dp -> WindowSizeClass.Medium
-        else -> WindowSizeClass.Expanded
-    }
-
-    val heightWindowSizeClass = when {
-        windowDpSize.height < 480.dp -> WindowSizeClass.Compact
-        windowDpSize.height < 900.dp -> WindowSizeClass.Medium
-        else -> WindowSizeClass.Expanded
-    }
-
-    return WindowSizes(widthWindowSizeClass, heightWindowSizeClass)
+    return windowSizes(windowDpSize.width, windowDpSize.height)
 }

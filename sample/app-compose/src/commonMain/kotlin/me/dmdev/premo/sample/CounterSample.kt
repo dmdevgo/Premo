@@ -33,13 +33,11 @@ import me.dmdev.premo.navigation.back
 
 @Composable
 fun CounterScreen(
-    pm: CounterPm,
-    windowSizes: WindowSizes
+    pm: CounterPm
 ) {
     PmBox(
         title = "Counter",
-        backHandler = { pm.back() },
-        windowSizes = windowSizes
+        backHandler = { pm.back() }
     ) {
         val state = pm.stateFlow.bind()
         Column {

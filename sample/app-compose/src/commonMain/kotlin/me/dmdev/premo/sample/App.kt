@@ -8,9 +8,10 @@ fun App(
     pm: MainPm,
     windowSizes: WindowSizes
 ) {
+    LocalWindowSizes.current.value = windowSizes
     MaterialTheme {
         FullScreenContainer {
-            MainScreen(pm, windowSizes)
+            MainScreen(pm)
         }
     }
 }

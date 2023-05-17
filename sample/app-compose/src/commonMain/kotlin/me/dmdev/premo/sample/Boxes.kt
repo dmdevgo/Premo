@@ -65,14 +65,13 @@ fun CardBox(content: @Composable () -> Unit) {
 @Composable
 fun PmBox(
     title: String,
-    windowSizes: WindowSizes,
     backHandler: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     @Composable
     fun contentWithTopAppBar() {
         Column {
-            if (backHandler != null && windowSizes.widthSizeClass == WindowSizeClass.Compact) {
+            if (backHandler != null && LocalWindowSizes.current.value.widthSizeClass == WindowSizeClass.Compact) {
                 TopAppBar(
                     navigationIcon = {
                         IconButton(
@@ -92,7 +91,7 @@ fun PmBox(
         }
     }
 
-    if (windowSizes.widthSizeClass >= WindowSizeClass.Medium) {
+    if (LocalWindowSizes.current.value.widthSizeClass >= WindowSizeClass.Medium) {
         CardBox { contentWithTopAppBar() }
     } else {
         contentWithTopAppBar()

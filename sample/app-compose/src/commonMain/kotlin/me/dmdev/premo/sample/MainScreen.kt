@@ -35,13 +35,13 @@ import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
 @Composable
-fun MainScreen(mainPm: MainPm, windowSizes: WindowSizes) {
+fun MainScreen(mainPm: MainPm) {
     val detailPm = mainPm.navigation.detailFlow.bind()
 
-    if (windowSizes.widthSizeClass >= Medium) {
-        ExpandedMainScreen(mainPm, detailPm, windowSizes)
+    if (LocalWindowSizes.current.value.widthSizeClass >= Medium) {
+        ExpandedMainScreen(mainPm, detailPm)
     } else {
-        CompactMainScreen(mainPm, detailPm, windowSizes)
+        CompactMainScreen(mainPm, detailPm)
     }
 }
 
@@ -49,8 +49,7 @@ fun MainScreen(mainPm: MainPm, windowSizes: WindowSizes) {
 @Composable
 fun CompactMainScreen(
     mainPm: MainPm = Stubs.mainPm,
-    detailPm: PresentationModel?,
-    windowSizes: WindowSizes
+    detailPm: PresentationModel?
 ) {
     AnimatedContent(
         targetState = detailPm,
@@ -65,9 +64,9 @@ fun CompactMainScreen(
         }
     ) { pm ->
         if (pm == null) {
-            SamplesScreen(mainPm.navigation.master, windowSizes)
+            SamplesScreen(mainPm.navigation.master)
         } else {
-            pm.mapToComposable(windowSizes)
+            pm.mapToComposable()
         }
     }
 }
@@ -75,8 +74,7 @@ fun CompactMainScreen(
 @Composable
 fun ExpandedMainScreen(
     mainPm: MainPm,
-    detailPm: PresentationModel?,
-    windowSizes: WindowSizes
+    detailPm: PresentationModel?
 ) {
     Row(
         Modifier
@@ -87,7 +85,7 @@ fun ExpandedMainScreen(
                 .fillMaxSize()
                 .weight(0.5f)
         ) {
-            SamplesScreen(mainPm.navigation.master, windowSizes)
+            SamplesScreen(mainPm.navigation.master)
         }
 
         Box(
@@ -95,18 +93,18 @@ fun ExpandedMainScreen(
                 .fillMaxSize()
                 .weight(0.5f)
         ) {
-            detailPm.mapToComposable(windowSizes)
+            detailPm.mapToComposable()
         }
     }
 }
 
 @Composable
-private fun PresentationModel?.mapToComposable(windowSizes: WindowSizes) {
+private fun PresentationModel?.mapToComposable() {
     when (this) {
-        is CounterPm -> CounterScreen(this, windowSizes)
-        is StackNavigationPm -> StackNavigationScreen(this, windowSizes)
-        is BottomNavigationPm -> BottomNavigationScreen(this, windowSizes)
-        is DialogNavigationPm -> DialogNavigationScreen(this, windowSizes)
+        is CounterPm -> CounterScreen(this)
+        is StackNavigationPm -> StackNavigationScreen(this)
+        is BottomNavigationPm -> BottomNavigationScreen(this)
+        is DialogNavigationPm -> DialogNavigationScreen(this)
         else -> EmptyBox()
     }
 }

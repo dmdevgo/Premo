@@ -32,12 +32,10 @@ import androidx.compose.ui.unit.*
 
 @Composable
 fun SamplesScreen(
-    pm: SamplesPm,
-    windowSizes: WindowSizes
+    pm: SamplesPm
 ) {
     PmBox(
         title = "Samples",
-        windowSizes = windowSizes,
         backHandler = null
     ) {
         Column(

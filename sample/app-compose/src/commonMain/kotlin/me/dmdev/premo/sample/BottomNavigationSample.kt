@@ -42,15 +42,13 @@ import me.dmdev.premo.sample.bottomnavigation.TabPm
 @OptIn(ExperimentalPremoApi::class)
 @Composable
 fun BottomNavigationScreen(
-    pm: BottomNavigationPm,
-    windowSizes: WindowSizes
+    pm: BottomNavigationPm
 ) {
     val currentTabPm = pm.navigation.currentFlow.bind()
 
     PmBox(
         title = "Bottom Navigation",
-        backHandler = { pm.back() },
-        windowSizes = windowSizes
+        backHandler = { pm.back() }
     ) {
         Scaffold(
             backgroundColor = Color.Transparent,
