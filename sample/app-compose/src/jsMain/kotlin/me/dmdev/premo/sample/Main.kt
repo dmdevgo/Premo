@@ -25,12 +25,17 @@
 package me.dmdev.premo.sample
 
 import androidx.compose.ui.window.*
+import me.dmdev.premo.sample.WindowSizeClass.Expanded
 import org.jetbrains.skiko.wasm.onWasmReady
 
 fun main() {
+    val delegate = PremoSample.createPmDelegate().apply {
+        onCreate()
+        onForeground()
+    }
     onWasmReady {
         Window {
-            App()
+            App(delegate.presentationModel, WindowSizes(Expanded, Expanded))
         }
     }
 }

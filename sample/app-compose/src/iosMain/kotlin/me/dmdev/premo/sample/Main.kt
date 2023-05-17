@@ -24,9 +24,17 @@
 
 package me.dmdev.premo.sample
 
+import androidx.compose.runtime.*
 import androidx.compose.ui.window.*
 import me.dmdev.premo.sample.WindowSizeClass.Compact
 
+@Suppress("FunctionName")
 fun MainViewController() = ComposeUIViewController {
-    App(windowSizes = WindowSizes(Compact, Compact))
+    val delegate = remember {
+        PremoSample.createPmDelegate().apply {
+            onCreate()
+            onForeground()
+        }
+    }
+    App(delegate.presentationModel, WindowSizes(Compact, Compact))
 }

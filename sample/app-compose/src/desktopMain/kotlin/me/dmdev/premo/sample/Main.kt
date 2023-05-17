@@ -31,6 +31,12 @@ import androidx.compose.ui.window.*
 
 @Preview
 fun main() = application {
+    val delegate = remember {
+        PremoSample.createPmDelegate().apply {
+            onCreate()
+            onForeground()
+        }
+    }
     val state = rememberWindowState()
     val windowSizes = rememberWindowSizes(state)
 
@@ -39,7 +45,7 @@ fun main() = application {
         title = "Premo",
         state = state
     ) {
-        App(windowSizes = windowSizes)
+        App(delegate.presentationModel, windowSizes)
     }
 }
 

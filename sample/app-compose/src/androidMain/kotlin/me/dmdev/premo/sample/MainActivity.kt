@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(), PmActivity<MainPm> {
         super.onCreate(savedInstanceState)
         setContent {
             val windowSizes = rememberWindowSizes()
-            MainScreen(delegate.presentationModel, windowSizes)
+            App(delegate.presentationModel, windowSizes)
         }
     }
 
