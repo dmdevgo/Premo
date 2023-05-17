@@ -26,9 +26,6 @@ package me.dmdev.premo.sample
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.flow.StateFlow
-import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
-import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -89,17 +86,5 @@ fun ScreenBox(
             Text(title)
         }
         content()
-    }
-}
-
-@Composable
-fun PresentationModel?.mapToComposable() {
-    when (this) {
-        is MainPm -> MainScreen(this)
-        is SamplesPm -> SamplesScreen(this)
-        is CounterPm -> CounterScreen(this)
-        is StackNavigationPm -> StackNavigationScreen(this)
-        is SimpleScreenPm -> SimpleScreen(this)
-        else -> EmptyScreen()
     }
 }

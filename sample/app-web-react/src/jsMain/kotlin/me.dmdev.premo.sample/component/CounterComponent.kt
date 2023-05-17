@@ -22,57 +22,62 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.component
 
-import js.core.jso
-import mui.material.Container
-import mui.material.CssBaseline
-import mui.material.PaletteMode
+import me.dmdev.premo.sample.CounterPm
+import me.dmdev.premo.sample.collectAsState
+import mui.material.Button
+import mui.material.ButtonVariant
 import mui.material.Stack
 import mui.material.StackDirection
-import mui.material.styles.ThemeProvider
-import mui.material.styles.createTheme
+import mui.material.Typography
+import mui.material.styles.TypographyVariant
 import mui.system.responsive
 import mui.system.sx
 import react.FC
 import react.Props
 import web.cssom.AlignItems
 import web.cssom.JustifyContent
-import web.cssom.px
 
-external interface MainComponentProps : Props {
-    var pm: MainPm
+external interface CounterComponentProps : Props {
+    var pm: CounterPm
 }
 
-val MainComponent = FC<MainComponentProps> { props ->
+val CounterComponent = FC<CounterComponentProps> { props ->
 
-    val masterPm = props.pm.navigation.master
-    val detailPm = props.pm.navigation.detailFlow.collectAsState()
+    val state = props.pm.stateFlow.collectAsState()
 
-    ThemeProvider {
-        this.theme = createTheme(
-            jso {
-                palette = jso { mode = PaletteMode.light }
+    Stack {
+
+        direction = responsive(StackDirection.row)
+        spacing = responsive(2)
+
+        sx {
+            justifyContent = JustifyContent.center
+            alignItems = AlignItems.center
+        }
+
+        Button {
+            onClick = {
+                props.pm.minus()
             }
-        )
-        CssBaseline()
+            variant = ButtonVariant.contained
+            disabled = !state.minusEnabled
+            +"-"
+        }
 
-        Stack {
-            direction = responsive(StackDirection.row)
-            spacing = responsive(2)
-            sx {
-                justifyContent = JustifyContent.center
-                alignItems = AlignItems.center
-                height = 500.px
-            }
+        Typography {
+            variant = TypographyVariant.h5
+            +"${state.count}"
+        }
 
-            Container {
-                this.component(masterPm)
+        Button {
+            onClick = {
+                props.pm.plus()
             }
-
-            Container {
-                this.component(detailPm)
-            }
+            variant = ButtonVariant.contained
+            disabled = !state.plusEnabled
+            +"+"
         }
     }
 }

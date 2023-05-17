@@ -30,6 +30,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.sample.component.CounterComponent
+import me.dmdev.premo.sample.component.DialogNavigationComponent
+import me.dmdev.premo.sample.component.SamplesComponent
+import me.dmdev.premo.sample.component.SimpleComponent
+import me.dmdev.premo.sample.component.StackNavigationComponent
 import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
 import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm

@@ -22,12 +22,31 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.screen
 
 import androidx.compose.runtime.*
-import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
+import me.dmdev.premo.sample.CounterPm
+import me.dmdev.premo.sample.ScreenBox
+import me.dmdev.premo.sample.TextButton
+import me.dmdev.premo.sample.bind
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.*
 
 @Composable
-fun SimpleScreen(pm: SimpleScreenPm) {
-    TextBox("#${pm.numberText}")
+fun CounterScreen(pm: CounterPm) {
+    val state = pm.stateFlow.bind()
+
+    ScreenBox("Counter") {
+        Div {
+            TextButton("-", state.minusEnabled) {
+                pm.minus()
+            }
+            Span({ style { padding(15.px) } }) {
+                Text("${state.count}")
+            }
+            TextButton("+", state.plusEnabled) {
+                pm.plus()
+            }
+        }
+    }
 }

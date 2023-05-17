@@ -22,8 +22,10 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.component
 
+import me.dmdev.premo.sample.collectAsState
+import me.dmdev.premo.sample.component
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 import mui.material.Button
 import mui.material.ButtonVariant

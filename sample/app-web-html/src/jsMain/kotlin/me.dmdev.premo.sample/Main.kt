@@ -25,27 +25,18 @@
 package me.dmdev.premo.sample
 
 import androidx.compose.runtime.*
-import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import me.dmdev.premo.sample.screen.MainScreen
+import org.jetbrains.compose.web.*
 
-@Composable
-fun SamplesScreen(pm: SamplesPm) {
-    ScreenBox("Samples") {
-        Div(
-            {
-                style {
-                    display(DisplayStyle.Flex)
-                    flexDirection(FlexDirection.Column)
-                    alignItems(AlignItems.Center)
-                }
-            }
-        ) {
-            TextButton("Counter") {
-                pm.counterSample()
-            }
-            TextButton("Stack Navigation") {
-                pm.stackNavigationSample()
+fun main() {
+    renderComposable(rootElementId = "root") {
+        val pm = remember {
+            PremoSample.createPmDelegate().let { delegate ->
+                delegate.onCreate()
+                delegate.onForeground()
+                delegate.presentationModel
             }
         }
+        MainScreen(pm)
     }
 }

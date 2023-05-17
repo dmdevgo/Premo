@@ -22,41 +22,59 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.component
 
-import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
-import mui.material.Card
+import js.core.jso
+import me.dmdev.premo.sample.MainPm
+import me.dmdev.premo.sample.collectAsState
+import me.dmdev.premo.sample.component
+import mui.material.Container
+import mui.material.CssBaseline
+import mui.material.PaletteMode
 import mui.material.Stack
-import mui.material.Typography
-import mui.material.TypographyAlign
-import mui.material.styles.TypographyVariant
+import mui.material.StackDirection
+import mui.material.styles.ThemeProvider
+import mui.material.styles.createTheme
+import mui.system.responsive
 import mui.system.sx
 import react.FC
 import react.Props
 import web.cssom.AlignItems
-import web.cssom.HtmlAttributes.Companion.height
-import web.cssom.HtmlAttributes.Companion.width
 import web.cssom.JustifyContent
 import web.cssom.px
 
-external interface SimpleComponentProps : Props {
-    var pm: SimpleScreenPm
+external interface MainComponentProps : Props {
+    var pm: MainPm
 }
 
-val SimpleComponent = FC<SimpleComponentProps> { props ->
+val MainComponent = FC<MainComponentProps> { props ->
 
-    Card {
+    val masterPm = props.pm.navigation.master
+    val detailPm = props.pm.navigation.detailFlow.collectAsState()
+
+    ThemeProvider {
+        this.theme = createTheme(
+            jso {
+                palette = jso { mode = PaletteMode.light }
+            }
+        )
+        CssBaseline()
+
         Stack {
+            direction = responsive(StackDirection.row)
+            spacing = responsive(2)
             sx {
                 justifyContent = JustifyContent.center
                 alignItems = AlignItems.center
-                width = 100.px
-                height = 100.px
+                height = 500.px
             }
-            Typography {
-                align = TypographyAlign.center
-                variant = TypographyVariant.h6
-                +"#${props.pm.numberText}"
+
+            Container {
+                this.component(masterPm)
+            }
+
+            Container {
+                this.component(detailPm)
             }
         }
     }

@@ -24,6 +24,7 @@
 
 package me.dmdev.premo.sample
 
+import me.dmdev.premo.sample.component.MainComponent
 import react.create
 import react.dom.client.createRoot
 import web.dom.document

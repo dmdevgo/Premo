@@ -22,9 +22,13 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.screen
 
 import androidx.compose.runtime.*
+import me.dmdev.premo.sample.ScreenBox
+import me.dmdev.premo.sample.TextBox
+import me.dmdev.premo.sample.TextButton
+import me.dmdev.premo.sample.bind
 import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 import org.jetbrains.compose.web.css.*

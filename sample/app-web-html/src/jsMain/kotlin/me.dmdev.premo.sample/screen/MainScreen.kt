@@ -22,9 +22,16 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.screen
 
 import androidx.compose.runtime.*
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.sample.CounterPm
+import me.dmdev.premo.sample.MainPm
+import me.dmdev.premo.sample.SamplesPm
+import me.dmdev.premo.sample.bind
+import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
+import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 
@@ -41,5 +48,17 @@ fun MainScreen(pm: MainPm) {
     ) {
         pm.navigation.master.mapToComposable()
         currentPm.mapToComposable()
+    }
+}
+
+@Composable
+private fun PresentationModel?.mapToComposable() {
+    when (this) {
+        is MainPm -> MainScreen(this)
+        is SamplesPm -> SamplesScreen(this)
+        is CounterPm -> CounterScreen(this)
+        is StackNavigationPm -> StackNavigationScreen(this)
+        is SimpleScreenPm -> SimpleScreen(this)
+        else -> EmptyScreen()
     }
 }

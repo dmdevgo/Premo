@@ -22,59 +22,33 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.screen
 
-import mui.material.Button
-import mui.material.ButtonVariant
-import mui.material.Stack
-import mui.material.StackDirection
-import mui.system.responsive
-import mui.system.sx
-import react.FC
-import react.Props
-import web.cssom.AlignItems
-import web.cssom.JustifyContent
+import androidx.compose.runtime.*
+import me.dmdev.premo.sample.SamplesPm
+import me.dmdev.premo.sample.ScreenBox
+import me.dmdev.premo.sample.TextButton
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.*
 
-external interface SamplesComponentProps : Props {
-    var pm: SamplesPm
-}
-
-val SamplesComponent = FC<SamplesComponentProps> { props ->
-
-    val pm = props.pm
-
-    Stack {
-
-        direction = responsive(StackDirection.column)
-        spacing = responsive(2)
-
-        sx {
-            justifyContent = JustifyContent.center
-            alignItems = AlignItems.center
-        }
-
-        Button {
-            onClick = {
+@Composable
+fun SamplesScreen(pm: SamplesPm) {
+    ScreenBox("Samples") {
+        Div(
+            {
+                style {
+                    display(DisplayStyle.Flex)
+                    flexDirection(FlexDirection.Column)
+                    alignItems(AlignItems.Center)
+                }
+            }
+        ) {
+            TextButton("Counter") {
                 pm.counterSample()
             }
-            variant = ButtonVariant.contained
-            +"Counter Sample"
-        }
-
-        Button {
-            onClick = {
+            TextButton("Stack Navigation") {
                 pm.stackNavigationSample()
             }
-            variant = ButtonVariant.contained
-            +"Stack Navigation Sample"
-        }
-
-        Button {
-            onClick = {
-                pm.dialogNavigationSample()
-            }
-            variant = ButtonVariant.contained
-            +"Dialog Navigation Sample"
         }
     }
 }

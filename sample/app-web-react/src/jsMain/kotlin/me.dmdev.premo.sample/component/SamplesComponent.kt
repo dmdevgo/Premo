@@ -22,27 +22,60 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.component
 
-import androidx.compose.runtime.*
-import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import me.dmdev.premo.sample.SamplesPm
+import mui.material.Button
+import mui.material.ButtonVariant
+import mui.material.Stack
+import mui.material.StackDirection
+import mui.system.responsive
+import mui.system.sx
+import react.FC
+import react.Props
+import web.cssom.AlignItems
+import web.cssom.JustifyContent
 
-@Composable
-fun CounterScreen(pm: CounterPm) {
-    val state = pm.stateFlow.bind()
+external interface SamplesComponentProps : Props {
+    var pm: SamplesPm
+}
 
-    ScreenBox("Counter") {
-        Div {
-            TextButton("-", state.minusEnabled) {
-                pm.minus()
+val SamplesComponent = FC<SamplesComponentProps> { props ->
+
+    val pm = props.pm
+
+    Stack {
+
+        direction = responsive(StackDirection.column)
+        spacing = responsive(2)
+
+        sx {
+            justifyContent = JustifyContent.center
+            alignItems = AlignItems.center
+        }
+
+        Button {
+            onClick = {
+                pm.counterSample()
             }
-            Span({ style { padding(15.px) } }) {
-                Text("${state.count}")
+            variant = ButtonVariant.contained
+            +"Counter Sample"
+        }
+
+        Button {
+            onClick = {
+                pm.stackNavigationSample()
             }
-            TextButton("+", state.plusEnabled) {
-                pm.plus()
+            variant = ButtonVariant.contained
+            +"Stack Navigation Sample"
+        }
+
+        Button {
+            onClick = {
+                pm.dialogNavigationSample()
             }
+            variant = ButtonVariant.contained
+            +"Dialog Navigation Sample"
         }
     }
 }

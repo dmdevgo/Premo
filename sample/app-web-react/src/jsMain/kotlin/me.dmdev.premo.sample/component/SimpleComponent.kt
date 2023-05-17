@@ -22,60 +22,40 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.component
 
-import mui.material.Button
-import mui.material.ButtonVariant
+import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
+import mui.material.Card
 import mui.material.Stack
-import mui.material.StackDirection
 import mui.material.Typography
+import mui.material.TypographyAlign
 import mui.material.styles.TypographyVariant
-import mui.system.responsive
 import mui.system.sx
 import react.FC
 import react.Props
 import web.cssom.AlignItems
 import web.cssom.JustifyContent
+import web.cssom.px
 
-external interface CounterComponentProps : Props {
-    var pm: CounterPm
+external interface SimpleComponentProps : Props {
+    var pm: SimpleScreenPm
 }
 
-val CounterComponent = FC<CounterComponentProps> { props ->
+val SimpleComponent = FC<SimpleComponentProps> { props ->
 
-    val state = props.pm.stateFlow.collectAsState()
-
-    Stack {
-
-        direction = responsive(StackDirection.row)
-        spacing = responsive(2)
-
-        sx {
-            justifyContent = JustifyContent.center
-            alignItems = AlignItems.center
-        }
-
-        Button {
-            onClick = {
-                props.pm.minus()
+    Card {
+        Stack {
+            sx {
+                justifyContent = JustifyContent.center
+                alignItems = AlignItems.center
+                width = 100.px
+                height = 100.px
             }
-            variant = ButtonVariant.contained
-            disabled = !state.minusEnabled
-            +"-"
-        }
-
-        Typography {
-            variant = TypographyVariant.h5
-            +"${state.count}"
-        }
-
-        Button {
-            onClick = {
-                props.pm.plus()
+            Typography {
+                align = TypographyAlign.center
+                variant = TypographyVariant.h6
+                +"#${props.pm.numberText}"
             }
-            variant = ButtonVariant.contained
-            disabled = !state.plusEnabled
-            +"+"
         }
     }
 }

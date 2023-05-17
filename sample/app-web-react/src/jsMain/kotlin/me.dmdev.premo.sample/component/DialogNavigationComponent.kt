@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.component
 
+import me.dmdev.premo.sample.collectAsState
 import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
 import mui.material.Alert
 import mui.material.AlertColor

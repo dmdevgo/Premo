@@ -22,20 +22,13 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.screen
 
 import androidx.compose.runtime.*
-import org.jetbrains.compose.web.*
+import me.dmdev.premo.sample.TextBox
+import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 
-fun main() {
-    renderComposable(rootElementId = "root") {
-        val pm = remember {
-            PremoSample.createPmDelegate().let { delegate ->
-                delegate.onCreate()
-                delegate.onForeground()
-                delegate.presentationModel
-            }
-        }
-        MainScreen(pm)
-    }
+@Composable
+fun SimpleScreen(pm: SimpleScreenPm) {
+    TextBox("#${pm.numberText}")
 }
