@@ -63,7 +63,7 @@ fun CardBox(content: @Composable () -> Unit) {
 }
 
 @Composable
-fun PmBox(
+fun ScreenBox(
     title: String,
     backHandler: (() -> Unit)? = null,
     content: @Composable () -> Unit

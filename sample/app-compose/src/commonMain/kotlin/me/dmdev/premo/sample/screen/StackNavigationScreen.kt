@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.screen
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
@@ -32,6 +32,12 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.navigation.back
+import me.dmdev.premo.sample.AnimatedNavigationBox
+import me.dmdev.premo.sample.CardBox
+import me.dmdev.premo.sample.EmptyBox
+import me.dmdev.premo.sample.ScreenBox
+import me.dmdev.premo.sample.bind
+import me.dmdev.premo.sample.bindNavigation
 import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
@@ -40,7 +46,7 @@ import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 fun StackNavigationScreen(
     pm: StackNavigationPm
 ) {
-    PmBox(
+    ScreenBox(
         title = "Stack Navigation",
         backHandler = { pm.back() }
     ) {

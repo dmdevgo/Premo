@@ -22,14 +22,20 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.screen
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.sample.CounterPm
+import me.dmdev.premo.sample.EmptyBox
+import me.dmdev.premo.sample.LocalWindowSizes
+import me.dmdev.premo.sample.MainPm
+import me.dmdev.premo.sample.Stubs
 import me.dmdev.premo.sample.WindowSizeClass.Medium
+import me.dmdev.premo.sample.bind
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm

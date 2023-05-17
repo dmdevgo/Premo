@@ -22,46 +22,44 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
-import me.dmdev.premo.navigation.back
+import me.dmdev.premo.sample.SamplesPm
+import me.dmdev.premo.sample.ScreenBox
 
 @Composable
-fun CounterScreen(
-    pm: CounterPm
+fun SamplesScreen(
+    pm: SamplesPm
 ) {
-    PmBox(
-        title = "Counter",
-        backHandler = { pm.back() }
+    ScreenBox(
+        title = "Samples",
+        backHandler = null
     ) {
-        val state = pm.stateFlow.bind()
-        Column {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Spacer(Modifier.weight(0.5f))
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = { pm.minus() },
-                    enabled = state.minusEnabled
-                ) {
-                    Text(" - ")
-                }
-                Spacer(modifier = Modifier.width(12.dp))
-                Text("Count: ${state.count}")
-                Spacer(modifier = Modifier.width(12.dp))
-                Button(
-                    onClick = { pm.plus() },
-                    enabled = state.plusEnabled
-                ) {
-                    Text(" + ")
-                }
+            Button(onClick = { pm.counterSample() }) {
+                Text("Counter")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { pm.stackNavigationSample() }) {
+                Text("Stack Navigation")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { pm.bottomNavigationSample() }) {
+                Text("Bottom Navigation")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { pm.dialogNavigationSample() }) {
+                Text("Dialog Navigation")
             }
             Spacer(Modifier.weight(0.5f))
         }

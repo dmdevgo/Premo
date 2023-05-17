@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -30,13 +30,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import me.dmdev.premo.navigation.back
+import me.dmdev.premo.sample.CommonDialog
+import me.dmdev.premo.sample.DialogContainer
+import me.dmdev.premo.sample.ScreenBox
+import me.dmdev.premo.sample.bind
 import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
 
 @Composable
 fun DialogNavigationScreen(
     pm: DialogNavigationPm
 ) {
-    PmBox(
+    ScreenBox(
         title = "Dialog Navigation",
         backHandler = { pm.back() }
     ) {

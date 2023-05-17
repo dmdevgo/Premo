@@ -22,42 +22,49 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
+import me.dmdev.premo.navigation.back
+import me.dmdev.premo.sample.CounterPm
+import me.dmdev.premo.sample.ScreenBox
+import me.dmdev.premo.sample.bind
 
 @Composable
-fun SamplesScreen(
-    pm: SamplesPm
+fun CounterScreen(
+    pm: CounterPm
 ) {
-    PmBox(
-        title = "Samples",
-        backHandler = null
+    ScreenBox(
+        title = "Counter",
+        backHandler = { pm.back() }
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        val state = pm.stateFlow.bind()
+        Column {
             Spacer(Modifier.weight(0.5f))
-            Button(onClick = { pm.counterSample() }) {
-                Text("Counter")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { pm.stackNavigationSample() }) {
-                Text("Stack Navigation")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { pm.bottomNavigationSample() }) {
-                Text("Bottom Navigation")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { pm.dialogNavigationSample() }) {
-                Text("Dialog Navigation")
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = { pm.minus() },
+                    enabled = state.minusEnabled
+                ) {
+                    Text(" - ")
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Text("Count: ${state.count}")
+                Spacer(modifier = Modifier.width(12.dp))
+                Button(
+                    onClick = { pm.plus() },
+                    enabled = state.plusEnabled
+                ) {
+                    Text(" + ")
+                }
             }
             Spacer(Modifier.weight(0.5f))
         }

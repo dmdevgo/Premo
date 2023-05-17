@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.sample.screen
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
@@ -35,6 +35,13 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.navigation.back
+import me.dmdev.premo.sample.AnimatedNavigationBox
+import me.dmdev.premo.sample.CardBox
+import me.dmdev.premo.sample.EmptyBox
+import me.dmdev.premo.sample.ScreenBox
+import me.dmdev.premo.sample.Stubs
+import me.dmdev.premo.sample.bind
+import me.dmdev.premo.sample.bindNavigation
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottomnavigation.TabItemPm
 import me.dmdev.premo.sample.bottomnavigation.TabPm
@@ -46,7 +53,7 @@ fun BottomNavigationScreen(
 ) {
     val currentTabPm = pm.navigation.currentFlow.bind()
 
-    PmBox(
+    ScreenBox(
         title = "Bottom Navigation",
         backHandler = { pm.back() }
     ) {
