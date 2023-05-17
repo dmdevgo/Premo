@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,46 +25,49 @@
 import SwiftUI
 import Common
 
-struct SamplesView: View {
+struct BottomNavigationView: View {
     
-    private let pm: SamplesPm
+    private let pm: BottomNavigationPm
     
-    init(pm: SamplesPm) {
+    @ObservedObject
+    private var currentPm: ObservableState<PresentationModel> // TODO bind tab selection
+    
+    init(pm: BottomNavigationPm) {
         self.pm = pm
+        self.currentPm = ObservableState(pm.navigation.currentFlow)
     }
     
     var body: some View {
         NavigationView {
-            VStack {
-                
-                Button("Counter", action: {
-                    pm.counterSample()
-                })
-                    .padding()
-                
-                Button("Stack Navigation", action: {
-                    pm.stackNavigationSample()
-                })
-                    .padding()
-                
-                Button("Bottom Navigation", action: {
-                    pm.bottomNavigationSample()
-                })
-                    .padding()
-                
-                Button("Dialog Navigation", action: {
-                    pm.dialogNavigationSample()
-                })
-                    .padding()
+            TabView {
+                ForEach(pm.navigation.values, id: \.self) { itemPm in
+                    if (itemPm is TabPm) {
+                        let tabPm = itemPm as! TabPm
+                        TabContainerView(pm: tabPm)
+                            .tabItem {
+                                Image(systemName: "star.fill")
+                                Text(tabPm.tabTitle)
+                            }
+                            .tag(tabPm.tag)
+                            .onTapGesture {
+                                pm.navigation.onChangeCurrent(pm: tabPm)
+                            }
+                    }
+                }
             }
-            .navigationTitle("Samples")
+            .navigationTitle("Bottom Navigation")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(leading: Button(action : {
+                pm.back()
+            }){
+                Image(systemName: "arrow.left")
+            })
         }
     }
 }
 
-struct SamplesView_Previews: PreviewProvider {
+struct BottomNavigationView_Previews: PreviewProvider {
     static var previews: some View {
-        SamplesView(pm: Stubs.init().samplesPm)
+        BottomNavigationView(pm: Stubs.init().bottomBarPm)
     }
 }

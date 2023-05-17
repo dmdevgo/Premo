@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,34 +19,37 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+* SOFTWARE.
  */
 
 import SwiftUI
 import Common
 
-struct TabContainerView: View {
+struct MainView: View {
     
-    private let pm: TabPm
+    private let delegate: PmDelegate<MainPm>
+    private let mainPm: MainPm
+    private let masterPm: SamplesPm
     
     @ObservedObject
-    private var currentPm: ObservableState<PresentationModel>
+    private var detailPm: ObservableState<PresentationModel>
     
-    init(pm: TabPm) {
-        self.pm = pm
-        currentPm = ObservableState(pm.navigation.currentTopFlow)
+    init(delegate: PmDelegate<MainPm>) {
+        self.delegate = delegate
+        self.mainPm = delegate.presentationModel
+        self.masterPm = mainPm.navigation.master as! SamplesPm
+        detailPm = ObservableState(mainPm.navigation.detailFlow)
     }
     
     var body: some View {
-        switch currentPm.value {
-        case let pm as TabItemPm: TabItemView(pm: pm)
-        default: EmptyView()
+        ZStack {
+            switch detailPm.value {
+            case let pm as CounterPm: CounterView(pm: pm)
+            case let pm as StackNavigationPm: StackNavigationView(pm: pm)
+            case let pm as BottomNavigationPm: BottomNavigationView(pm: pm)
+            case let pm as DialogNavigationPm: DialogNavigationView(pm: pm)
+            default: SamplesView(pm: masterPm)
+            }
         }
-    }
-}
-
-struct TabContainerView_Previews: PreviewProvider {
-    static var previews: some View {
-        TabContainerView(pm: Stubs.init().tabPm)
     }
 }

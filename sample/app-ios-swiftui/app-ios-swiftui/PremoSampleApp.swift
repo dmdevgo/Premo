@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,15 +23,37 @@
  */
 
 import SwiftUI
+import Common
 
-struct EmptyView: View {
-    var body: some View {
-        Text("Empty Screen")
+@main
+struct PremoSampleApp: App {
+
+    @Environment(\.scenePhase) var scenePhase
+
+    private let delegate: PmDelegate<MainPm>
+
+    init() {
+        delegate = PremoSample().createPmDelegate(pmStateSaver: SimpleJsonPmStateSaverFactory())
+        delegate.onCreate()
     }
-}
 
-struct EmptyView_Previews: PreviewProvider {
-    static var previews: some View {
-        EmptyView()
+    var body: some Scene {
+        WindowGroup {
+            MainView(delegate: delegate)
+        }
+        .onChange(of: scenePhase) { newScenePhase in
+              switch newScenePhase {
+              case .active:
+                print("App is active")
+                delegate.onForeground()
+              case .inactive:
+                print("App is inactive")
+              case .background:
+                print("App is in background")
+                delegate.onBackground()
+              @unknown default:
+                print("Unexpected Scene Phase")
+              }
+        }
     }
 }

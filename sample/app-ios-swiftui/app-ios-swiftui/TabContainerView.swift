@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,35 +25,28 @@
 import SwiftUI
 import Common
 
-@main
-struct PremoSampleApp: App {
+struct TabContainerView: View {
     
-    @Environment(\.scenePhase) var scenePhase
+    private let pm: TabPm
     
-    private let delegate: PmDelegate<MainPm>
+    @ObservedObject
+    private var currentPm: ObservableState<PresentationModel>
     
-    init() {
-        delegate = PremoSample().createPmDelegate(pmStateSaver: SimpleJsonPmStateSaverFactory())
-        delegate.onCreate()
+    init(pm: TabPm) {
+        self.pm = pm
+        currentPm = ObservableState(pm.navigation.currentTopFlow)
     }
     
-    var body: some Scene {
-        WindowGroup {
-            MainView(delegate: delegate)
+    var body: some View {
+        switch currentPm.value {
+        case let pm as TabItemPm: TabItemView(pm: pm)
+        default: EmptyView()
         }
-        .onChange(of: scenePhase) { newScenePhase in
-              switch newScenePhase {
-              case .active:
-                print("App is active")
-                delegate.onForeground()
-              case .inactive:
-                print("App is inactive")
-              case .background:
-                print("App is in background")
-                delegate.onBackground()
-              @unknown default:
-                print("Unexpected Scene Phase")
-              }
-        }
+    }
+}
+
+struct TabContainerView_Previews: PreviewProvider {
+    static var previews: some View {
+        TabContainerView(pm: Stubs.init().tabPm)
     }
 }

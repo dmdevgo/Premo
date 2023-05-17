@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,36 +25,46 @@
 import SwiftUI
 import Common
 
-
-struct TabItemView: View {
+struct SamplesView: View {
     
-    private let pm: TabItemPm
+    private let pm: SamplesPm
     
-    init(pm: TabItemPm) {
+    init(pm: SamplesPm) {
         self.pm = pm
     }
     
     var body: some View {
-        VStack {
-            
-            Text(pm.screenTitle)
-                .padding()
-            
-            HStack {
-                Button("Previous", action: {
-                    pm.previousClick()
-                }).padding()
+        NavigationView {
+            VStack {
                 
-                Button("Next", action: {
-                    pm.nextClick()
-                }).padding()
+                Button("Counter", action: {
+                    pm.counterSample()
+                })
+                    .padding()
+                
+                Button("Stack Navigation", action: {
+                    pm.stackNavigationSample()
+                })
+                    .padding()
+                
+                Button("Bottom Navigation", action: {
+                    pm.bottomNavigationSample()
+                })
+                    .padding()
+                
+                Button("Dialog Navigation", action: {
+                    pm.dialogNavigationSample()
+                })
+                    .padding()
             }
+            .navigationTitle("Samples")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
 
-struct TabItemView_Previews: PreviewProvider {
+struct SamplesView_Previews: PreviewProvider {
     static var previews: some View {
-        TabItemView(pm: Stubs.init().tabItemPm)
+        SamplesView(pm: Stubs.init().samplesPm)
     }
 }

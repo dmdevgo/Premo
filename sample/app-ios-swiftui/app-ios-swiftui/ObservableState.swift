@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,25 +22,37 @@
  * SOFTWARE.
  */
 
-import SwiftUI
+
+import Foundation
 import Common
 
+public class ObservableState<T : AnyObject> : ObservableObject {
+    
+    private let observableState: FlowWrapper<T>
 
-struct SimpleView: View {
+    @Published
+    var value: T?
     
-    private let pm: SimpleScreenPm
+    private var cancelable: Cancelable? = nil
     
-    init(pm: SimpleScreenPm) {
-        self.pm = pm
+    init(_ value: StateFlow) {
+        self.observableState = FlowWrapper<T>(flow: value)
+        self.value = value.value as? T
+        cancelable = observableState.bind(consumer: { value in
+            self.value = value
+        })
     }
     
-    var body: some View {
-        Text("#\(pm.numberText)")
+    init(initialValue: T, flow: Flow) {
+        self.observableState = FlowWrapper<T>(flow: flow)
+        self.value = initialValue
+        cancelable = observableState.bind(consumer: { value in
+            self.value = value
+        })
     }
-}
 
-struct SimpleView_Previews: PreviewProvider {
-    static var previews: some View {
-        SimpleView(pm: Stubs.init().simplePm)
+    
+    deinit {
+        self.cancelable?.cancel()
     }
 }

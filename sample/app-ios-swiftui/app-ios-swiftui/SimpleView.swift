@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,49 +25,22 @@
 import SwiftUI
 import Common
 
-struct CounterView: View {
-    
-    private let pm: CounterPm
-    
-    @ObservedObject
-    private var state: ObservableState<CounterPm.State>
 
-    init(pm: CounterPm) {
+struct SimpleView: View {
+    
+    private let pm: SimpleScreenPm
+    
+    init(pm: SimpleScreenPm) {
         self.pm = pm
-        state = ObservableState(pm.stateFlow)
     }
     
     var body: some View {
-        NavigationView {
-            HStack {
-                Button("Minus", action: {
-                    pm.minus()
-                })
-                .disabled(state.value?.minusEnabled == false)
-                    .padding()
-                
-                Text("\(state.value?.count ?? 0)")
-                    .padding()
-                
-                Button("Plus", action: {
-                    pm.plus()
-                })
-                .disabled(state.value?.plusEnabled == false)
-                    .padding()
-            }
-            .navigationTitle("Counter")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(leading: Button(action : {
-                pm.back()
-            }){
-                Image(systemName: "arrow.left")
-            })
-        }
+        Text("#\(pm.numberText)")
     }
 }
 
-struct CounterView_Previews: PreviewProvider {
+struct SimpleView_Previews: PreviewProvider {
     static var previews: some View {
-        CounterView(pm: Stubs.init().counterPm)
+        SimpleView(pm: Stubs.init().simplePm)
     }
 }

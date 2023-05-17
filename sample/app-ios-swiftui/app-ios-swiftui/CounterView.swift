@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,37 +25,37 @@
 import SwiftUI
 import Common
 
-struct BottomNavigationView: View {
+struct CounterView: View {
     
-    private let pm: BottomNavigationPm
+    private let pm: CounterPm
     
     @ObservedObject
-    private var currentPm: ObservableState<PresentationModel> // TODO bind tab selection
-    
-    init(pm: BottomNavigationPm) {
+    private var state: ObservableState<CounterPm.State>
+
+    init(pm: CounterPm) {
         self.pm = pm
-        self.currentPm = ObservableState(pm.navigation.currentFlow)
+        state = ObservableState(pm.stateFlow)
     }
     
     var body: some View {
         NavigationView {
-            TabView {
-                ForEach(pm.navigation.values, id: \.self) { itemPm in
-                    if (itemPm is TabPm) {
-                        let tabPm = itemPm as! TabPm
-                        TabContainerView(pm: tabPm)
-                            .tabItem {
-                                Image(systemName: "star.fill")
-                                Text(tabPm.tabTitle)
-                            }
-                            .tag(tabPm.tag)
-                            .onTapGesture {
-                                pm.navigation.onChangeCurrent(pm: tabPm)
-                            }
-                    }
-                }
+            HStack {
+                Button("Minus", action: {
+                    pm.minus()
+                })
+                .disabled(state.value?.minusEnabled == false)
+                    .padding()
+                
+                Text("\(state.value?.count ?? 0)")
+                    .padding()
+                
+                Button("Plus", action: {
+                    pm.plus()
+                })
+                .disabled(state.value?.plusEnabled == false)
+                    .padding()
             }
-            .navigationTitle("Bottom Navigation")
+            .navigationTitle("Counter")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(leading: Button(action : {
                 pm.back()
@@ -66,8 +66,8 @@ struct BottomNavigationView: View {
     }
 }
 
-struct BottomNavigationView_Previews: PreviewProvider {
+struct CounterView_Previews: PreviewProvider {
     static var previews: some View {
-        BottomNavigationView(pm: Stubs.init().bottomBarPm)
+        CounterView(pm: Stubs.init().counterPm)
     }
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,49 +25,72 @@
 import SwiftUI
 import Common
 
-struct DialogNavigationView: View {
+struct StackNavigationView: View {
     
-    private let pm: DialogNavigationPm
-    
-    @ObservedObject
-    private var dialogPm: ObservableState<SimpleDialogPm>
+    private let pm: StackNavigationPm
     
     @ObservedObject
-    private var messages: ObservableState<NSString>
+    private var backstack: ObservableState<NSString>
     
-    init(pm: DialogNavigationPm) {
+    @ObservedObject
+    private var currentPm: ObservableState<PresentationModel>
+    
+    init(pm: StackNavigationPm) {
         self.pm = pm
-        self.dialogPm = ObservableState(pm.dialogNavigation.dialog)
-        self.messages = ObservableState(initialValue: "", flow: pm.messagesFlow)
+        backstack = ObservableState(pm.backstackAsStringState)
+        currentPm = ObservableState(pm.navigation.currentTopFlow)
     }
     
     var body: some View {
-        
-        let alertIsShowingBinding = Binding<Bool>(get: { self.dialogPm.value != nil }, set: { _ in })
         
         NavigationView {
             VStack {
                 
                 Spacer()
                 
-                Text("\(messages.value ?? "")")
+                switch currentPm.value {
+                case let pm as SimpleScreenPm: SimpleView(pm: pm)
+                default: EmptyView()
+                }
+                
+                Spacer()
+                
+                Text("Stack: \(backstack.value ?? "")")
                     .padding()
                 
                 Spacer()
                 
-                Button("Show simple dialog", action: {
-                    pm.showSimpleDialogClick()
-                })
-                    .padding()
+                HStack {
+                    Button("Push", action: {
+                        pm.pushClick()
+                    }).padding()
+                    
+                    Button("Pop", action: {
+                        pm.popClick()
+                    }).padding()
+                    
+                    Button("Pop to root", action: {
+                        pm.popToRootClick()
+                    }).padding()
+                }
                 
-                Button("Show dialog for result", action: {
-                    pm.showSimpleDialogForResultClick()
-                })
-                    .padding()
+                HStack {
+                    Button("Replace top", action: {
+                        pm.replaceTopClick()
+                    }).padding()
+                    
+                    Button("Replace all", action: {
+                        pm.replaceAllClick()
+                    }).padding()
+                }
+                
+                Button("Set back stack", action: {
+                    pm.setBackstackClick()
+                }).padding()
                 
                 Spacer()
             }
-            .navigationTitle("Dialog Navigation")
+            .navigationTitle("Stack Navigation")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(leading: Button(action : {
@@ -75,25 +98,12 @@ struct DialogNavigationView: View {
             }){
                 Image(systemName: "arrow.left")
             })
-            .alert(isPresented: alertIsShowingBinding) {
-                Alert(
-                    title: Text(dialogPm.value?.title ?? ""),
-                    message: Text(dialogPm.value?.message ?? ""),
-                    primaryButton: .default(Text(dialogPm.value?.cancelButtonText ?? ""), action: {
-                        dialogPm.value?.onCancelClick()
-                        
-                    }),
-                    secondaryButton: .default(Text(dialogPm.value?.okButtonText ?? ""), action: {
-                        dialogPm.value?.onOkClick()
-                    })
-                )
-            }
         }
     }
 }
 
-struct DialogNavigationView_Previews: PreviewProvider {
+struct StackNavigationView_Previews: PreviewProvider {
     static var previews: some View {
-        DialogNavigationView(pm: Stubs.init().dialogNavigationPm)
+        StackNavigationView(pm: Stubs.init().stackNavigationPm)
     }
 }
