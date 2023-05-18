@@ -50,7 +50,7 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
-                compileOnly(project(":premo"))
+                api(project(":premo"))
             }
         }
 

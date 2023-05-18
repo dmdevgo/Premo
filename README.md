@@ -7,7 +7,7 @@
 ![platform-jvm](https://img.shields.io/badge/platform-jvm-orange)
 ![platform-js](https://img.shields.io/badge/platform-js-yellow)
 
-Premo is a Kotlin Multiplatform library that helps you implement the Presentation Layer and share it on Android, iOS, Desktop and Web. Focus on writing logic instead of solving common and boring UI related issues.
+Premo is a Kotlin Multiplatform library that helps to implement the Presentation Layer and share it on Android, iOS, Desktop and Web. Focus on writing logic instead of solving common and boring UI related issues.
 
 Here are some key features:
 - **State holding** — PresentationModel is a multiplatform version of the ViewModel.
@@ -16,16 +16,15 @@ Here are some key features:
 - **Persistence** — saving and restoring state after recreating a process.
 - **Communication** — send messages from children towards the root PresentationModel.
 
-At the same time, the library provides freedom of choice:
+At the same time, the library does not depend on:
 - **Architecture** — MVVM, PM, MVI or other.
-- **UI** — Jetpack Compose for Android and SwiftUI for iOS.
+- **UI** — Compose, SwiftUI, UIKit, React and other.
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Installation](#installation)
-- [Sample](#sample)
-- [License](#license)
+Navigation module implements the following commonly used navigators:
+- [`StackNavigator`](/premo-navigation/src/commonMain/kotlin/me/dmdev/premo/navigation/StackNavigator.kt) — organizes child presentation models in a stack and navigate between them.
+- [`SetNavigator`](/premo-navigation/src/commonMain/kotlin/me/dmdev/premo/navigation/SetNavigator.kt) — can be used for tabs, bottom navigation, navigation drawer.
+- [`MasterDetailNavigator`](/premo-navigation/src/commonMain/kotlin/me/dmdev/premo/navigation/MasterDetailNavigator.kt) — allows to implement an adaptive layout to show one pane or two panes side-by-side.
+- [`DialogNavigator`](/premo-navigation/src/commonMain/kotlin/me/dmdev/premo/navigation/DialogNavigator.kt) — helps to show a dialog and wait for the result from it
 
 ## Overview
 
@@ -79,9 +78,8 @@ You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.ser
 
 [Sample](https://github.com/dmdevgo/Premo/tree/master/sample) demonstrates:
 - Sharing presentation logic between Android, iOS, Desktop and Web.
-- Sharing Compose UI between Android and Desktop.
-- UI on Compose and SwiftUI.
-- Using StateFlow to implement MVVM (PM).
+- Sharing Compose UI between Android, iOS, Desktop and Web.
+- UI on Compose Multiplatform, SwiftUI, React, Compose for Html.
 - Simple Counter.
 - Stack navigation.
 - Bottom navigation with multistack.

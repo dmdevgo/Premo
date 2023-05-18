@@ -1,5 +1,14 @@
+# 1.0.0-alpha.09 / 18.05.2023
+- `PmActivity` is interface now. You need to call `Premo.init()` in the Android app's `onCreate`.
+- Added list of removed PMs to `BackStackChange`.
+- Added a method to replace values for `SetNavigator`.
+- Fixed: Detach a dialog's PM after sending result.
+- Kotlin is updated to 1.8.20.
+- Added React Sample.
+- Added Compose Sample for iOS and Web.
+
 # 1.0.0-alpha.08 / 16.12.2022
-- Add `iosSimulatorArm64` target.
+- Added `iosSimulatorArm64` target.
 - Implemented `DialogNavigator`.
 - Fixed `currentTopFlow` property of `StackNavigator`.
 - Added default back handling for `SetNavigator`.
@@ -20,7 +29,7 @@ Added commands for `StackNavigator`:
 
 # 1.0.0-alpha.05 / 09.05.2022
 - Abstraction level support for implementing state persistence in different formats (Json, ProtoBuf, Parcelable) #6.
-- Added PmStateSaverFactory and BundleStateSaver. 
+- Added `PmStateSaverFactory` and `BundleStateSaver`. 
 
 # 1.0.0-alpha.04 / 02.01.2022
 - Added JS target.
