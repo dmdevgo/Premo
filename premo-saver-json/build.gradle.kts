@@ -22,35 +22,28 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample.savers
+plugins {
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.ktlint)
+    id("me.dmdev.premo.plugin.android")
+    id("me.dmdev.premo.plugin.kmp")
+    id("me.dmdev.premo.plugin.publish")
+}
 
-import android.os.Bundle
-import kotlinx.serialization.serializer
-import me.dmdev.premo.BundleStateSaver
-import me.dmdev.premo.PmStateSaver
-import me.dmdev.premo.sample.serialization.JsonPmStateSaver
-import me.dmdev.premo.sample.serialization.Serializers.json
+kotlin {
 
-class JsonBundleStateSaver : BundleStateSaver {
+    sourceSets {
 
-    private var pmStates = mutableMapOf<String, MutableMap<String, String>>()
-
-    override fun save(outState: Bundle) {
-        outState.putString(PM_STATE_KEY, json.encodeToString(serializer(), pmStates))
-    }
-
-    override fun restore(savedState: Bundle?) {
-        savedState?.getString(PM_STATE_KEY)?.let { jsonString ->
-            pmStates = json.decodeFromString(serializer(), jsonString)
+        val commonMain by getting {
+            dependencies {
+                api(project(":premo"))
+                api(libs.kotlinx.serialization.json)
+            }
         }
     }
+}
 
-    override fun createPmStateSaver(key: String): PmStateSaver {
-        val map = pmStates[key] ?: mutableMapOf<String, String>().also { pmStates[key] = it }
-        return JsonPmStateSaver(map)
-    }
-
-    companion object {
-        private const val PM_STATE_KEY = "pm_state"
-    }
+android {
+    namespace = "me.dmdev.premo.saver"
 }

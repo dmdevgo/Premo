@@ -26,9 +26,10 @@ package me.dmdev.premo.sample.serialization
 
 import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.PmStateSaverFactory
+import me.dmdev.premo.saver.JsonPmStateSaver
 
 class SimpleJsonPmStateSaverFactory : PmStateSaverFactory {
     override fun createPmStateSaver(key: String): PmStateSaver {
-        return JsonPmStateSaver()
+        return JsonPmStateSaver(Serializers.json, mutableMapOf())
     }
 }

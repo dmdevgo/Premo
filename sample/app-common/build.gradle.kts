@@ -42,6 +42,7 @@ kotlin {
                 baseName = "Common"
                 export(project(":premo"))
                 export(project(":premo-navigation"))
+                export(project(":premo-saver-json"))
                 export(libs.kotlinx.coroutines.core)
             }
         }
@@ -63,8 +64,7 @@ kotlin {
             dependencies {
                 api(project(":premo"))
                 api(project(":premo-navigation"))
-                api(libs.kotlinx.coroutines.core)
-                api(libs.kotlinx.serialization.json)
+                api(project(":premo-saver-json"))
                 api(libs.kotlinx.serialization.protobuf)
             }
         }

@@ -31,17 +31,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.*
-import androidx.compose.ui.unit.*
 import androidx.window.layout.WindowMetricsCalculator
 import me.dmdev.premo.PmActivity
 import me.dmdev.premo.PmActivityDelegate
 import me.dmdev.premo.navigation.handleBack
-import me.dmdev.premo.sample.savers.JsonBundleStateSaver
+import me.dmdev.premo.sample.saver.JsonBundleStateSaver
+import me.dmdev.premo.sample.serialization.Serializers
 
 class MainActivity : AppCompatActivity(), PmActivity<MainPm> {
 
     override val delegate: PmActivityDelegate<MainPm> by lazy {
-        val pmStateSaver = JsonBundleStateSaver()
+        val pmStateSaver = JsonBundleStateSaver(Serializers.json)
 //        val pmStateSaver = ParcelableBundleStateSaver()
 //        val pmStateSaver = ProtoBufBundleStateSaver()
 //        val pmStateSaver = BundlizerBundleStateSaver()

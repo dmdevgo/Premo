@@ -22,37 +22,30 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
-}
+package me.dmdev.premo.saver
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        google()
-        maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
-        mavenLocal()
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
+import me.dmdev.premo.PmStateSaver
+import kotlin.reflect.KType
+
+class JsonPmStateSaver(
+    private val json: Json,
+    private val map: MutableMap<String, String>
+) : PmStateSaver {
+
+    override fun <T> saveState(key: String, kType: KType, value: T?) {
+        @Suppress("UNCHECKED_CAST")
+        if (value != null) {
+            map[key] = json.encodeToString(serializer(kType) as KSerializer<T>, value)
+        }
     }
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
+
+    override fun <T> restoreState(key: String, kType: KType): T? {
+        @Suppress("UNCHECKED_CAST")
+        return map[key]?.let {
+            json.decodeFromString(serializer(kType) as KSerializer<T>, it)
         }
     }
 }
-rootProject.name = "Premo"
-
-includeBuild("plugins")
-
-include(":premo")
-include(":premo-navigation")
-include(":premo-saver-json")
-include(":sample:app-common")
-include(":sample:app-compose")
-include(":sample:app-web-html")
-include(":sample:app-web-react")

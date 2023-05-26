@@ -22,29 +22,37 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample.serialization
+package me.dmdev.premo.sample.saver
 
-import kotlinx.serialization.KSerializer
+import android.os.Bundle
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
+import me.dmdev.premo.BundleStateSaver
 import me.dmdev.premo.PmStateSaver
-import me.dmdev.premo.sample.serialization.Serializers.json
-import kotlin.reflect.KType
+import me.dmdev.premo.saver.JsonPmStateSaver
 
-class JsonPmStateSaver(
-    private val map: MutableMap<String, String> = mutableMapOf()
-) : PmStateSaver {
+class JsonBundleStateSaver(
+    private val json: Json
+) : BundleStateSaver {
 
-    override fun <T> saveState(key: String, kType: KType, value: T?) {
-        @Suppress("UNCHECKED_CAST")
-        if (value != null) {
-            map[key] = json.encodeToString(serializer(kType) as KSerializer<T>, value)
+    private var pmStates = mutableMapOf<String, MutableMap<String, String>>()
+
+    override fun save(outState: Bundle) {
+        outState.putString(PM_STATE_KEY, json.encodeToString(serializer(), pmStates))
+    }
+
+    override fun restore(savedState: Bundle?) {
+        savedState?.getString(PM_STATE_KEY)?.let { jsonString ->
+            pmStates = json.decodeFromString(serializer(), jsonString)
         }
     }
 
-    override fun <T> restoreState(key: String, kType: KType): T? {
-        @Suppress("UNCHECKED_CAST")
-        return map[key]?.let {
-            json.decodeFromString(serializer(kType) as KSerializer<T>, it)
-        }
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        val map = pmStates[key] ?: mutableMapOf<String, String>().also { pmStates[key] = it }
+        return JsonPmStateSaver(json, map)
+    }
+
+    companion object {
+        private const val PM_STATE_KEY = "pm_state"
     }
 }
