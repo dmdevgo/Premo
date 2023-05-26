@@ -22,34 +22,46 @@
  * SOFTWARE.
  */
 
-plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.ktlint)
-    id("me.dmdev.premo.plugin.android")
-    id("me.dmdev.premo.plugin.kmp")
-    id("me.dmdev.premo.plugin.publish")
-}
+package me.dmdev.premo.plugin
 
-kotlin {
+import com.android.build.gradle.BaseExtension
+import org.gradle.api.Action
+import org.gradle.api.JavaVersion
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
-    sourceSets {
+class AndroidConfigurationPlugin : Plugin<Project> {
 
-        val commonMain by getting {
-            dependencies {
-                api(project(":premo"))
+    override fun apply(target: Project) {
+
+        target.android<BaseExtension> {
+
+            compileSdkVersion(ANDROID_SDK_COMPILE)
+
+            defaultConfig {
+                targetSdk = ANDROID_SDK_TARGET
+                minSdk = ANDROID_SDK_MIN
             }
-        }
 
-        val commonTest by getting {
-            dependencies {
-                implementation(project(":premo"))
-                implementation(libs.kotlin.test)
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_1_8
+                targetCompatibility = JavaVersion.VERSION_1_8
+            }
+
+            sourceSets.getByName("main").apply {
+                manifest.srcFile("src/androidMain/AndroidManifest.xml")
+                res.srcDirs("src/androidMain/res")
             }
         }
     }
+
+    companion object {
+        private const val ANDROID_SDK_MIN = 21
+        private const val ANDROID_SDK_COMPILE = 33
+        private const val ANDROID_SDK_TARGET = 33
+    }
 }
 
-android {
-    namespace = "me.dmdev.premo.navigation"
+private fun <T : BaseExtension> Project.android(configure: Action<T>) {
+    extensions.configure("android", configure)
 }

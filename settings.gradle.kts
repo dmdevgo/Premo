@@ -47,6 +47,8 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Premo"
 
+includeBuild("plugins")
+
 include(":premo")
 include(":premo-navigation")
 include(":sample:app-common")

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,30 @@
  * SOFTWARE.
  */
 
-object AndroidSdk {
-    const val compile = 33
-    const val min = 21
-    const val target = 33
+package me.dmdev.premo.plugin
+
+import org.gradle.api.Action
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+
+class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
+
+    override fun apply(target: Project) {
+        target.kotlin {
+            android()
+            ios()
+            iosSimulatorArm64()
+            jvm()
+            js(IR) {
+                browser()
+            }
+            sourceSets.getByName("iosSimulatorArm64Main")
+                .dependsOn(sourceSets.getByName("iosMain"))
+        }
+    }
+}
+
+internal fun Project.kotlin(configure: Action<KotlinMultiplatformExtension>) {
+    extensions.configure("kotlin", configure)
 }

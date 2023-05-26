@@ -1,9 +1,7 @@
-import java.util.*
-
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2021 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +21,11 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+package me.dmdev.premo.plugin
+
+import me.dmdev.premo.Premo
+import java.util.*
 
 plugins {
     `maven-publish`
@@ -58,6 +61,12 @@ fun getExtraString(name: String) = ext[name]?.toString()
 
 val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
+}
+
+kotlin {
+    android {
+        publishLibraryVariants("release")
+    }
 }
 
 publishing {

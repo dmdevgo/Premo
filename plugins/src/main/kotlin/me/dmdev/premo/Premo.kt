@@ -22,34 +22,35 @@
  * SOFTWARE.
  */
 
-plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.ktlint)
-    id("me.dmdev.premo.plugin.android")
-    id("me.dmdev.premo.plugin.kmp")
-    id("me.dmdev.premo.plugin.publish")
-}
+package me.dmdev.premo
 
-kotlin {
+object Premo {
 
-    sourceSets {
+    const val groupId = "me.dmdev.premo"
+    const val version = "1.0.0-alpha.09"
+    const val description = "Premo helps to implement the presentation layer and share it on Android, iOS, Desktop and Web."
+    const val url = "https://github.com/dmdevgo/Premo"
 
-        val commonMain by getting {
-            dependencies {
-                api(project(":premo"))
-            }
-        }
-
-        val commonTest by getting {
-            dependencies {
-                implementation(project(":premo"))
-                implementation(libs.kotlin.test)
-            }
-        }
+    object License {
+        const val name = "MIT"
+        const val url = "https://github.com/dmdevgo/Premo/blob/master/LICENSE"
     }
-}
 
-android {
-    namespace = "me.dmdev.premo.navigation"
+    object Scm {
+        const val url = "https://github.com/dmdevgo/Premo"
+    }
+
+    class Developer(
+        val id: String,
+        val name: String,
+        val email: String,
+    )
+
+    val developers = listOf(
+        Developer(
+            id = "dmdevgo",
+            name = "Dmitriy Gorbunov",
+            email = "dmitriy.goto@gmail.com"
+        )
+    )
 }

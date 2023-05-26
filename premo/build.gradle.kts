@@ -27,27 +27,14 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.android.library)
     alias(libs.plugins.ktlint)
-    `publish-library`
+    id("me.dmdev.premo.plugin.android")
+    id("me.dmdev.premo.plugin.kmp")
+    id("me.dmdev.premo.plugin.publish")
 }
 
 kotlin {
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    jvm()
-    js(IR) {
-        browser()
-    }
-    android {
-        publishLibraryVariants("release", "debug")
-    }
-
     sourceSets {
-
-        all {
-            languageSettings.optIn("kotlin.RequiresOptIn")
-        }
 
         val commonMain by getting {
             dependencies {
@@ -61,29 +48,9 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
             }
         }
-
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-        }
     }
 }
 
 android {
     namespace = "me.dmdev.premo"
-    compileSdk = AndroidSdk.compile
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    defaultConfig {
-        minSdk = AndroidSdk.min
-        targetSdk = AndroidSdk.target
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
 }

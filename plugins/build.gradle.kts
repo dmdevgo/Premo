@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2022 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,26 @@
  * SOFTWARE.
  */
 
-object Premo {
+plugins {
+    `kotlin-dsl`
+    alias(libs.plugins.ktlint)
+}
 
-    const val groupId = "me.dmdev.premo"
-    const val version = "1.0.0-alpha.09"
-    const val description = "Premo helps you implement the presentation layer and share it on iOS and Android."
-    const val url = "https://github.com/dmdevgo/Premo"
+dependencies {
+    implementation(libs.plugin.android)
+    implementation(libs.plugin.kotlin)
+}
 
-    object License {
-        const val name = "MIT"
-        const val url = "https://github.com/dmdevgo/Premo/blob/master/LICENSE"
+gradlePlugin {
+    plugins {
+        create("PremoAndroidPlugin") {
+            id = "me.dmdev.premo.plugin.android"
+            implementationClass = "me.dmdev.premo.plugin.AndroidConfigurationPlugin"
+        }
+        create("PremoKotlinMultiplatformPlugin") {
+            id = "me.dmdev.premo.plugin.kmp"
+            implementationClass =
+                "me.dmdev.premo.plugin.KotlinMultiplatformConfigurationPlugin"
+        }
     }
-
-    object Scm {
-        const val url = "https://github.com/dmdevgo/Premo"
-    }
-
-    class Developer(
-        val id: String,
-        val name: String,
-        val email: String,
-    )
-
-    val developers = listOf(
-        Developer(
-            id = "dmdevgo",
-            name = "Dmitriy Gorbunov",
-            email = "dmitriy.goto@gmail.com"
-        )
-    )
 }

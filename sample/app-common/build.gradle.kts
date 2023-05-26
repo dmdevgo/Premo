@@ -27,6 +27,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.android.library)
     alias(libs.plugins.ktlint)
+    id("me.dmdev.premo.plugin.android")
 }
 
 kotlin {
@@ -82,14 +83,7 @@ kotlin {
 
 android {
     namespace = "me.dmdev.premo.sample.common"
-    compileSdk = AndroidSdk.compile
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 23
-        targetSdk = AndroidSdk.target
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
