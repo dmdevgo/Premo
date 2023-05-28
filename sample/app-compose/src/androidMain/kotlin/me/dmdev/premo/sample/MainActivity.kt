@@ -26,43 +26,44 @@ package me.dmdev.premo.sample
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.*
 import androidx.window.layout.WindowMetricsCalculator
-import me.dmdev.premo.PmActivity
-import me.dmdev.premo.PmActivityDelegate
+import me.dmdev.premo.AndroidPmDelegate
 import me.dmdev.premo.navigation.handleBack
 import me.dmdev.premo.sample.serialization.Serializers
 import me.dmdev.premo.saver.JsonBundleStateSaver
 
-class MainActivity : AppCompatActivity(), PmActivity<MainPm> {
+class MainActivity : AppCompatActivity() {
 
-    override val delegate: PmActivityDelegate<MainPm> by lazy {
-        val pmStateSaver = JsonBundleStateSaver(Serializers.json)
-//        val pmStateSaver = ParcelableBundleStateSaver()
-//        val pmStateSaver = ProtoBufBundleStateSaver()
-//        val pmStateSaver = BundlizerBundleStateSaver()
-        PmActivityDelegate(
-            pmActivity = this,
-            pmDelegate = PremoSample.createPmDelegate(pmStateSaver),
-            stateSaver = pmStateSaver
-        )
-    }
+    private val delegate = AndroidPmDelegate<MainPm>(
+        pmActivity = this,
+        pmDescription = MainPm.Description,
+        pmFactory = MainPmFactory(),
+        pmStateSaver = JsonBundleStateSaver(Serializers.json)
+//        pmStateSaver = ParcelableBundleStateSaver()
+//        pmStateSaver = ProtoBufBundleStateSaver()
+//        pmStateSaver = BundlizerBundleStateSaver()
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        delegate.onCreate(savedInstanceState)
+        onBackPressedDispatcher.addCallback(
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (delegate.presentationModel.handleBack().not()) {
+                        finish()
+                    }
+                }
+            }
+        )
         setContent {
-            val windowSizes = rememberWindowSizes()
-            App(delegate.presentationModel, windowSizes)
-        }
-    }
-
-    override fun onBackPressed() {
-        if (delegate.presentationModel.handleBack().not()) {
-            super.onBackPressed()
+            App(delegate.presentationModel, rememberWindowSizes())
         }
     }
 }
