@@ -28,5 +28,5 @@ import platform.Foundation.NSCoder
 
 interface NSCoderStateSaver : PmStateSaverFactory {
     fun save(coder: NSCoder)
-    fun restore(coder: NSCoder)
+    fun restore(coder: NSCoder?)
 }

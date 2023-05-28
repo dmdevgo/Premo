@@ -27,16 +27,14 @@ import Common
 
 struct MainView: View {
     
-    private let delegate: PmDelegate<MainPm>
     private let mainPm: MainPm
     private let masterPm: SamplesPm
     
     @ObservedObject
     private var detailPm: ObservableState<PresentationModel>
     
-    init(delegate: PmDelegate<MainPm>) {
-        self.delegate = delegate
-        self.mainPm = delegate.presentationModel
+    init(pm: MainPm) {
+        self.mainPm = pm
         self.masterPm = mainPm.navigation.master as! SamplesPm
         detailPm = ObservableState(mainPm.navigation.detailFlow)
     }

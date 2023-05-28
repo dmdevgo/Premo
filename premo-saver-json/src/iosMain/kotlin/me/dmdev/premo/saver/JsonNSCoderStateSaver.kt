@@ -56,7 +56,8 @@ class JsonNSCoderStateSaver(json: Json) : NSCoderStateSaver {
         }
     }
 
-    override fun restore(coder: NSCoder) {
+    override fun restore(coder: NSCoder?) {
+        if (coder == null) return
         memScoped {
             val length: NSUIntegerVar = alloc()
             val decodedBytesPtr = coder.decodeBytesForKey(PM_STATE_KEY, length.ptr) ?: return

@@ -28,22 +28,24 @@ import Common
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     
-    private let saver: JsonNSCoderStateSaver = JsonNSCoderStateSaver(json: Serializers.shared.json)
-    
-    let pmDelegate: PmDelegate<MainPm>
-    
-    override init() {
-        pmDelegate = PremoSample().createPmDelegate(pmStateSaver: saver)
-    }
+    let pmDelegate: IosPmDelegate<MainPm> = IosPmDelegate(
+        pmDescription: MainPm.Description(),
+        pmFactory: MainPmFactory(),
+        pmStateSaver: JsonNSCoderStateSaver(json: Serializers.shared.json),
+        pmTag: "main"
+    )
     
     func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
-        pmDelegate.savePm()
-        saver.save(coder: coder)
+        pmDelegate.onSaveState(coder: coder)
         return true
     }
     
     func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        saver.restore(coder: coder)
+        pmDelegate.onCreate(coder: coder)
         return true
+    }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        pmDelegate.onDestroy()
     }
 }
