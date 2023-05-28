@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DD2347F52A2220A00037B63A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2347F42A2220A00037B63A /* AppDelegate.swift */; };
 		DD5F3D202A158C7D007EEA22 /* PremoSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5F3D1F2A158C7D007EEA22 /* PremoSampleApp.swift */; };
 		DD5F3D242A158C7F007EEA22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD5F3D232A158C7F007EEA22 /* Assets.xcassets */; };
 		DD5F3D272A158C7F007EEA22 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD5F3D262A158C7F007EEA22 /* Preview Assets.xcassets */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DD2347F42A2220A00037B63A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DD5F3D1C2A158C7D007EEA22 /* app-ios-swiftui.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "app-ios-swiftui.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD5F3D1F2A158C7D007EEA22 /* PremoSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremoSampleApp.swift; sourceTree = "<group>"; };
 		DD5F3D232A158C7F007EEA22 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 			children = (
 				DD5F3D442A158F00007EEA22 /* ObservableState.swift */,
 				DD5F3D1F2A158C7D007EEA22 /* PremoSampleApp.swift */,
+				DD2347F42A2220A00037B63A /* AppDelegate.swift */,
 				DD5F3D312A158EBE007EEA22 /* BottomNavigationView.swift */,
 				DD5F3D342A158EBE007EEA22 /* CounterView.swift */,
 				DD5F3D2E2A158EBE007EEA22 /* DialogNavigationView.swift */,
@@ -196,6 +199,7 @@
 				DD5F3D3E2A158EBE007EEA22 /* StackNavigationView.swift in Sources */,
 				DD5F3D3C2A158EBE007EEA22 /* BottomNavigationView.swift in Sources */,
 				DD5F3D452A158F00007EEA22 /* ObservableState.swift in Sources */,
+				DD2347F52A2220A00037B63A /* AppDelegate.swift in Sources */,
 				DD5F3D422A158EBE007EEA22 /* TabContainerView.swift in Sources */,
 				DD5F3D432A158EBE007EEA22 /* TabItemView.swift in Sources */,
 				DD5F3D3D2A158EBE007EEA22 /* SimpleView.swift in Sources */,

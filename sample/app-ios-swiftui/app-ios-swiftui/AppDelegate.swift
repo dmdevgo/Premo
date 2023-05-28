@@ -22,37 +22,28 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample.saver
+import ObjectiveC
+import UIKit
+import Common
 
-import android.os.Bundle
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
-import me.dmdev.premo.BundleStateSaver
-import me.dmdev.premo.PmStateSaver
-import me.dmdev.premo.saver.JsonPmStateSaver
-
-class JsonBundleStateSaver(
-    private val json: Json
-) : BundleStateSaver {
-
-    private var pmStates = mutableMapOf<String, MutableMap<String, String>>()
-
-    override fun save(outState: Bundle) {
-        outState.putString(PM_STATE_KEY, json.encodeToString(serializer(), pmStates))
+class AppDelegate: NSObject, UIApplicationDelegate {
+    
+    private let saver: JsonNSCoderStateSaver = JsonNSCoderStateSaver(json: Serializers.shared.json)
+    
+    let pmDelegate: PmDelegate<MainPm>
+    
+    override init() {
+        pmDelegate = PremoSample().createPmDelegate(pmStateSaver: saver)
     }
-
-    override fun restore(savedState: Bundle?) {
-        savedState?.getString(PM_STATE_KEY)?.let { jsonString ->
-            pmStates = json.decodeFromString(serializer(), jsonString)
-        }
+    
+    func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
+        pmDelegate.savePm()
+        saver.save(coder: coder)
+        return true
     }
-
-    override fun createPmStateSaver(key: String): PmStateSaver {
-        val map = pmStates[key] ?: mutableMapOf<String, String>().also { pmStates[key] = it }
-        return JsonPmStateSaver(json, map)
-    }
-
-    companion object {
-        private const val PM_STATE_KEY = "pm_state"
+    
+    func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
+        saver.restore(coder: coder)
+        return true
     }
 }

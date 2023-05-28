@@ -25,27 +25,93 @@
 package me.dmdev.premo.saver
 
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.PolymorphicSerializer
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.PairSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
+import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmStateSaver
 import kotlin.reflect.KType
 
+@Suppress("UNCHECKED_CAST")
 class JsonPmStateSaver(
     private val json: Json,
     private val map: MutableMap<String, String>
 ) : PmStateSaver {
 
     override fun <T> saveState(key: String, kType: KType, value: T?) {
-        @Suppress("UNCHECKED_CAST")
         if (value != null) {
-            map[key] = json.encodeToString(serializer(kType) as KSerializer<T>, value)
+            try {
+                val serializer = json.serializersModule.serializer(kType) as KSerializer<T>
+                map[key] = json.encodeToString(serializer, value)
+            } catch (e: SerializationException) {
+                // Workaround for JS and Native https://github.com/Kotlin/kotlinx.serialization/issues/1077
+                try {
+                    val serializer = polymorphicPmDescriptionSerializer as KSerializer<T>
+                    map[key] = json.encodeToString(serializer, value)
+                    return
+                } catch (_: Throwable) {}
+
+                try {
+                    val serializer = polymorphicPairSerializer as KSerializer<T>
+                    map[key] = json.encodeToString(serializer, value)
+                    return
+                } catch (_: Throwable) {}
+
+                try {
+                    val serializer = polymorphicListSerializer as KSerializer<T>
+                    map[key] = json.encodeToString(serializer, value)
+                    return
+                } catch (_: Throwable) {}
+
+                throw e
+            }
+        } else {
+            map.remove(key)
         }
     }
 
     override fun <T> restoreState(key: String, kType: KType): T? {
-        @Suppress("UNCHECKED_CAST")
-        return map[key]?.let {
-            json.decodeFromString(serializer(kType) as KSerializer<T>, it)
+        return map[key]?.let { jsonString ->
+            try {
+                val serializer = json.serializersModule.serializer(kType) as KSerializer<T>
+                return json.decodeFromString(serializer, jsonString)
+            } catch (e: SerializationException) {
+                // Workaround for JS and Native https://github.com/Kotlin/kotlinx.serialization/issues/1077
+                try {
+                    val serializer = polymorphicPmDescriptionSerializer as KSerializer<T>
+                    return json.decodeFromString(serializer, jsonString)
+                } catch (_: Throwable) {}
+
+                try {
+                    val serializer = polymorphicPairSerializer as KSerializer<T>
+                    return json.decodeFromString(serializer, jsonString)
+                } catch (_: Throwable) {}
+
+                try {
+                    val serializer = polymorphicListSerializer as KSerializer<T>
+                    return json.decodeFromString(serializer, jsonString)
+                } catch (_: Throwable) {}
+
+                throw e
+            }
         }
     }
+
+    private val polymorphicPmDescriptionSerializer = PolymorphicSerializer(PmDescription::class)
+
+    private val polymorphicPairSerializer = PairSerializer(
+        PolymorphicSerializer(PmDescription::class),
+        String.serializer()
+    )
+
+    private val polymorphicListSerializer = ListSerializer(
+        PairSerializer(
+            PolymorphicSerializer(PmDescription::class),
+            String.serializer()
+        )
+    )
 }

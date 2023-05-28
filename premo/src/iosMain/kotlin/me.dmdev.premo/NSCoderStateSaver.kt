@@ -22,33 +22,11 @@
  * SOFTWARE.
  */
 
-import SwiftUI
-import Common
+package me.dmdev.premo
 
-@main
-struct PremoSampleApp: App {
-    
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+import platform.Foundation.NSCoder
 
-    @Environment(\.scenePhase) var scenePhase
-
-    var body: some Scene {
-        WindowGroup {
-            MainView(delegate: appDelegate.pmDelegate)
-        }
-        .onChange(of: scenePhase) { newScenePhase in
-              switch newScenePhase {
-              case .active:
-                print("App is active")
-                appDelegate.pmDelegate.onForeground()
-              case .inactive:
-                print("App is inactive")
-              case .background:
-                print("App is in background")
-                appDelegate.pmDelegate.onBackground()
-              @unknown default:
-                print("Unexpected Scene Phase")
-              }
-        }
-    }
+interface NSCoderStateSaver : PmStateSaverFactory {
+    fun save(coder: NSCoder)
+    fun restore(coder: NSCoder)
 }

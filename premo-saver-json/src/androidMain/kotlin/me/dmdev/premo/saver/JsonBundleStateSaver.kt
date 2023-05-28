@@ -22,33 +22,32 @@
  * SOFTWARE.
  */
 
-import SwiftUI
-import Common
+package me.dmdev.premo.saver
 
-@main
-struct PremoSampleApp: App {
-    
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+import android.os.Bundle
+import kotlinx.serialization.json.Json
+import me.dmdev.premo.BundleStateSaver
+import me.dmdev.premo.PmStateSaver
 
-    @Environment(\.scenePhase) var scenePhase
+class JsonBundleStateSaver(json: Json) : BundleStateSaver {
 
-    var body: some Scene {
-        WindowGroup {
-            MainView(delegate: appDelegate.pmDelegate)
+    private val jsonStateSaverFactory = JsonStateSaverFactory(json)
+
+    override fun save(outState: Bundle) {
+        outState.putString(PM_STATE_KEY, jsonStateSaverFactory.save())
+    }
+
+    override fun restore(savedState: Bundle?) {
+        savedState?.getString(PM_STATE_KEY)?.let { jsonString ->
+            jsonStateSaverFactory.restore(jsonString)
         }
-        .onChange(of: scenePhase) { newScenePhase in
-              switch newScenePhase {
-              case .active:
-                print("App is active")
-                appDelegate.pmDelegate.onForeground()
-              case .inactive:
-                print("App is inactive")
-              case .background:
-                print("App is in background")
-                appDelegate.pmDelegate.onBackground()
-              @unknown default:
-                print("Unexpected Scene Phase")
-              }
-        }
+    }
+
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        return jsonStateSaverFactory.createPmStateSaver(key)
+    }
+
+    companion object {
+        private const val PM_STATE_KEY = "pm_state"
     }
 }

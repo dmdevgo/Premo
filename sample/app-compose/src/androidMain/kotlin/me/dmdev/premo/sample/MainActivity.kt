@@ -35,8 +35,8 @@ import androidx.window.layout.WindowMetricsCalculator
 import me.dmdev.premo.PmActivity
 import me.dmdev.premo.PmActivityDelegate
 import me.dmdev.premo.navigation.handleBack
-import me.dmdev.premo.sample.saver.JsonBundleStateSaver
 import me.dmdev.premo.sample.serialization.Serializers
+import me.dmdev.premo.saver.JsonBundleStateSaver
 
 class MainActivity : AppCompatActivity(), PmActivity<MainPm> {
 
