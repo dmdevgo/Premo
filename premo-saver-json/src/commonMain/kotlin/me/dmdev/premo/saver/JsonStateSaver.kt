@@ -26,23 +26,22 @@ package me.dmdev.premo.saver
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
-import me.dmdev.premo.ByteArrayStateSaver
 import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.StringStateSaver
 
 class JsonStateSaver(
     private val json: Json
-) : ByteArrayStateSaver {
+) : StringStateSaver {
 
     private var pmStates = mutableMapOf<String, MutableMap<String, String>>()
 
-    override fun save(): ByteArray {
+    override fun save(): String {
         return json.encodeToString(json.serializersModule.serializer(), pmStates)
-            .encodeToByteArray()
     }
 
-    override fun restore(byteArray: ByteArray?) {
-        val jsonString = byteArray?.decodeToString() ?: return
-        pmStates = json.decodeFromString(json.serializersModule.serializer(), jsonString)
+    override fun restore(string: String?) {
+        if (string == null) return
+        pmStates = json.decodeFromString(json.serializersModule.serializer(), string)
     }
 
     override fun createPmStateSaver(key: String): PmStateSaver {

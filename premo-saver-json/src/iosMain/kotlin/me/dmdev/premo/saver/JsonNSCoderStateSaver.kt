@@ -46,7 +46,7 @@ class JsonNSCoderStateSaver(json: Json) : NSCoderStateSaver {
     private val jsonStateSaver = JsonStateSaver(json)
 
     override fun save(coder: NSCoder) {
-        jsonStateSaver.save().usePinned {
+        jsonStateSaver.save().encodeToByteArray().usePinned {
             coder.encodeBytes(
                 it.addressOf(0).reinterpret(),
                 it.get().size.toULong(),
@@ -69,7 +69,7 @@ class JsonNSCoderStateSaver(json: Json) : NSCoderStateSaver {
                     length.value.toULong()
                 )
             }
-            jsonStateSaver.restore(bytes)
+            jsonStateSaver.restore(bytes.decodeToString())
         }
     }
 

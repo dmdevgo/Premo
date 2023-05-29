@@ -22,32 +22,9 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.saver
+package me.dmdev.premo
 
-import android.os.Bundle
-import kotlinx.serialization.json.Json
-import me.dmdev.premo.BundleStateSaver
-import me.dmdev.premo.PmStateSaver
-
-class JsonBundleStateSaver(json: Json) : BundleStateSaver {
-
-    private val jsonStateSaver = JsonStateSaver(json)
-
-    override fun save(outState: Bundle) {
-        outState.putString(PM_STATE_KEY, jsonStateSaver.save())
-    }
-
-    override fun restore(savedState: Bundle?) {
-        savedState?.getString(PM_STATE_KEY)?.let { jsonString ->
-            jsonStateSaver.restore(jsonString)
-        }
-    }
-
-    override fun createPmStateSaver(key: String): PmStateSaver {
-        return jsonStateSaver.createPmStateSaver(key)
-    }
-
-    companion object {
-        private const val PM_STATE_KEY = "pm_state"
-    }
+interface StringStateSaver : PmStateSaverFactory {
+    fun save(): String
+    fun restore(string: String?)
 }

@@ -34,11 +34,11 @@ class JsonFileStateSaver(json: Json) : FileStateSaver {
     private val jsonStateSaver = JsonStateSaver(json)
 
     override fun save(file: File) {
-        file.writeBytes(jsonStateSaver.save())
+        file.writeText(jsonStateSaver.save())
     }
 
     override fun restore(file: File?) {
-        file?.readBytes()?.let { bytes ->
+        file?.readText()?.let { bytes ->
             jsonStateSaver.restore(bytes)
         }
     }

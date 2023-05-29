@@ -25,17 +25,22 @@
 package me.dmdev.premo.sample
 
 import androidx.compose.ui.window.*
+import me.dmdev.premo.JsPmDelegate
 import me.dmdev.premo.sample.WindowSizeClass.Expanded
+import me.dmdev.premo.sample.serialization.Serializers
+import me.dmdev.premo.saver.JsonStateSaver
 import org.jetbrains.skiko.wasm.onWasmReady
 
 fun main() {
-    val delegate = PremoSample.createPmDelegate().apply {
-        onCreate()
-        onForeground()
-    }
+    val pmDelegate = JsPmDelegate<MainPm>(
+        pmDescription = MainPm.Description,
+        pmFactory = MainPmFactory(),
+        pmStateSaver = JsonStateSaver(Serializers.json)
+    )
+
     onWasmReady {
         Window {
-            App(delegate.presentationModel, WindowSizes(Expanded, Expanded))
+            App(pmDelegate.presentationModel, WindowSizes(Expanded, Expanded))
         }
     }
 }
