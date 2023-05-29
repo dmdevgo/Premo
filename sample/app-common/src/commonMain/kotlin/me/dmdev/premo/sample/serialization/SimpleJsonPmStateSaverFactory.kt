@@ -32,4 +32,6 @@ class SimpleJsonPmStateSaverFactory : PmStateSaverFactory {
     override fun createPmStateSaver(key: String): PmStateSaver {
         return JsonPmStateSaver(Serializers.json, mutableMapOf())
     }
+
+    override fun deletePmStateSaver(key: String) {}
 }

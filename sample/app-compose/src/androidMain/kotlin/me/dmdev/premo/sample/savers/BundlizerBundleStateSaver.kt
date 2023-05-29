@@ -47,6 +47,10 @@ class BundlizerBundleStateSaver : BundleStateSaver {
         return BundlizerPmStateSaver(bundle)
     }
 
+    override fun deletePmStateSaver(key: String) {
+        bundles.remove(key)
+    }
+
     companion object {
         private const val PM_STATE_KEY = "pm_state"
     }

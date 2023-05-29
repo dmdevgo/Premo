@@ -53,6 +53,10 @@ class ProtoBufBundleStateSaver : BundleStateSaver {
         return ProtoBufPmStateSaver(map)
     }
 
+    override fun deletePmStateSaver(key: String) {
+        pmStates.remove(key)
+    }
+
     companion object {
         private const val PM_STATE_KEY = "pm_state"
     }

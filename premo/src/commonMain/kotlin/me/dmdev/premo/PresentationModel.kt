@@ -106,6 +106,7 @@ abstract class PresentationModel(params: PmParams) {
                 ON_DESTROY -> {
                     scope.cancel()
                     parent?.stateHandler?.removeSaver(tag)
+                    pmStateSaverFactory.deletePmStateSaver(tag)
                 }
             }
         }

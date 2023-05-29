@@ -47,6 +47,10 @@ class JsonBundleStateSaver(json: Json) : BundleStateSaver {
         return jsonStateSaver.createPmStateSaver(key)
     }
 
+    override fun deletePmStateSaver(key: String) {
+        jsonStateSaver.deletePmStateSaver(key)
+    }
+
     companion object {
         private const val PM_STATE_KEY = "pm_state"
     }

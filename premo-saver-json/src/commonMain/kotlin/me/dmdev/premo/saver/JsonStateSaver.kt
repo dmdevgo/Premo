@@ -48,4 +48,8 @@ class JsonStateSaver(
         val map = pmStates[key] ?: mutableMapOf<String, String>().also { pmStates[key] = it }
         return JsonPmStateSaver(json, map)
     }
+
+    override fun deletePmStateSaver(key: String) {
+        pmStates.remove(key)
+    }
 }

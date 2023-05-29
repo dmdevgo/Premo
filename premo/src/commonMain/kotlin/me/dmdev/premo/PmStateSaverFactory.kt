@@ -24,6 +24,7 @@
 
 package me.dmdev.premo
 
-fun interface PmStateSaverFactory {
+interface PmStateSaverFactory {
     fun createPmStateSaver(key: String): PmStateSaver
+    fun deletePmStateSaver(key: String)
 }

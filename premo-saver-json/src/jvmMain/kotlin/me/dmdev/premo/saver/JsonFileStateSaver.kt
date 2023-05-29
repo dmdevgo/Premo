@@ -46,4 +46,8 @@ class JsonFileStateSaver(json: Json) : FileStateSaver {
     override fun createPmStateSaver(key: String): PmStateSaver {
         return jsonStateSaver.createPmStateSaver(key)
     }
+
+    override fun deletePmStateSaver(key: String) {
+        jsonStateSaver.deletePmStateSaver(key)
+    }
 }
