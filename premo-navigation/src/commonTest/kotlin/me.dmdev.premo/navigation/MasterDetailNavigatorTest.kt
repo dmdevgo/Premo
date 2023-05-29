@@ -45,9 +45,9 @@ class MasterDetailNavigatorTest {
     fun setUp() {
         parentPm = TestPm()
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        masterPm = parentPm.Child(TestPm.Description)
-        detailPm1 = parentPm.Child(TestPm.Description)
-        detailPm2 = parentPm.Child(TestPm.Description)
+        masterPm = parentPm.Child(TestPm.Description())
+        detailPm1 = parentPm.Child(TestPm.Description())
+        detailPm2 = parentPm.Child(TestPm.Description())
         navigator = MasterDetailNavigatorImpl(masterPm)
     }
 

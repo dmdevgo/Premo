@@ -31,8 +31,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     let pmDelegate: IosPmDelegate<MainPm> = IosPmDelegate(
         pmDescription: MainPm.Description(),
         pmFactory: MainPmFactory(),
-        pmStateSaver: JsonNSCoderStateSaver(json: Serializers.shared.json),
-        pmTag: "main"
+        pmStateSaver: JsonNSCoderStateSaver(json: Serializers.shared.json)
     )
     
     func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {

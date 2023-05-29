@@ -49,19 +49,16 @@ fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetai
     key: String = "master_detail_navigator",
     initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit = {}
 ): MasterDetailNavigator<M, D> {
-    val masterKey = "${key}_master_pm"
     val navigator = MasterDetailNavigatorImpl<M, D>(
-        Child(masterPmDescription, masterKey)
+        Child(masterPmDescription)
     )
     val detailKey = "${key}_detail_pm"
-    val savedDetail = stateHandler.getSaved<Pair<PmDescription, String>?>(detailKey)
+    val savedDetail = stateHandler.getSaved<PmDescription?>(detailKey)
     if (savedDetail != null) {
-        navigator.changeDetail(Child(savedDetail.first, savedDetail.second))
+        navigator.changeDetail(Child(savedDetail))
     }
     stateHandler.setSaver(detailKey) {
-        navigator.detail?.let { detailPm ->
-            Pair(detailPm.description, detailPm.tag)
-        }
+        navigator.detail?.description
     }
     messageHandler.initHandlers(navigator)
     messageHandler.handle<BackMessage> {

@@ -30,14 +30,12 @@ class JvmPmDelegate<PM : PresentationModel>(
     pmDescription: PmDescription,
     pmFactory: PmFactory,
     private val pmStateSaver: FileStateSaver,
-    private val pmStateFile: File = File("pm_state.txt"),
-    pmTag: String = "main"
+    private val pmStateFile: File = File("pm_state.txt")
 ) {
 
     private val pmDelegate: PmDelegate<PM> by lazy {
         PmDelegate<PM>(
             pmParams = PmParams(
-                tag = pmTag,
                 description = pmDescription,
                 parent = null,
                 factory = pmFactory,

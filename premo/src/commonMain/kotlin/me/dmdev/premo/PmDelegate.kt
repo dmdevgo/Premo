@@ -53,7 +53,7 @@ class PmDelegate<PM : PresentationModel>(
 
     fun onDestroy() {
         presentationModel.lifecycle.moveTo(DESTROYED)
-        PmStore.remove(pmParams.tag)
+        PmStore.remove(pmParams.description.key)
     }
 
     fun savePm() {

@@ -32,14 +32,12 @@ class AndroidPmDelegate<PM : PresentationModel>(
     private val pmActivity: Activity,
     pmDescription: PmDescription,
     pmFactory: PmFactory,
-    private val pmStateSaver: BundleStateSaver,
-    pmTag: String = "main"
+    private val pmStateSaver: BundleStateSaver
 ) {
 
     private val pmDelegate: PmDelegate<PM> by lazy {
         PmDelegate(
             pmParams = PmParams(
-                tag = pmTag,
                 description = pmDescription,
                 parent = null,
                 factory = pmFactory,

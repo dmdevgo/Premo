@@ -26,17 +26,14 @@ package me.dmdev.premo
 
 class TestPm(
     pmParams: PmParams = PmParams(
-        tag = TAG,
-        description = Description,
+        description = Description(),
         parent = null,
         factory = TestPmFactory(),
         stateSaverFactory = TestStateSaverFactory()
     )
 ) : PresentationModel(pmParams) {
 
-    object Description : PmDescription
-
-    companion object {
-        const val TAG = "test_pm"
-    }
+    data class Description(
+        override val key: String = "test_pm"
+    ) : PmDescription
 }

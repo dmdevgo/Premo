@@ -41,7 +41,9 @@ class TabItemPm(
     class Description(
         val screenTitle: String,
         val tabTitle: String
-    ) : PmDescription
+    ) : PmDescription {
+        override val key: String get() = "$tabTitle/$screenTitle"
+    }
 
     fun nextClick() {
         messageHandler.send(NextClickMessage)

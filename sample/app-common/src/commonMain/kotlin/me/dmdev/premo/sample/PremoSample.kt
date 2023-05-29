@@ -34,7 +34,6 @@ object PremoSample {
         pmStateSaver: PmStateSaverFactory = SimpleJsonPmStateSaverFactory()
     ): PmDelegate<MainPm> = PmDelegate(
         pmParams = PmParams(
-            tag = "main",
             description = MainPm.Description,
             parent = null,
             factory = MainPmFactory(),

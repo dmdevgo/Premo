@@ -43,7 +43,6 @@ interface SetNavigator : SetNavigation {
     fun setValues(pmList: List<PresentationModel>)
 }
 
-@Suppress("FunctionName")
 fun PresentationModel.SetNavigator(
     vararg pmDescriptions: PmDescription,
     key: String = "set_navigator",
@@ -54,14 +53,12 @@ fun PresentationModel.SetNavigator(
     val indexKey = "${key}_index"
 
     val savedValues: List<PresentationModel> =
-        stateHandler.getSaved<List<Pair<PmDescription, String>>>(key)
-            ?.map { (description, tag) -> Child(description, tag) }
-            ?: listOf()
+        stateHandler.getSaved<List<PmDescription>>(key)?.map { Child(it) } ?: listOf()
 
     val navigator = if (savedValues.isNotEmpty()) {
         SetNavigatorImpl(lifecycle, savedValues, onChangeCurrent)
     } else {
-        val pms = pmDescriptions.map { description -> Child<PresentationModel>(description) }
+        val pms = pmDescriptions.map { Child<PresentationModel>(it) }
         SetNavigatorImpl(lifecycle, pms.toList(), onChangeCurrent)
     }
 
@@ -73,7 +70,7 @@ fun PresentationModel.SetNavigator(
         navigator.values.indexOf(navigator.current)
     }
     stateHandler.setSaver(key) {
-        navigator.values.map { pm -> Pair(pm.description, pm.tag) }
+        navigator.values.map { it.description }
     }
     messageHandler.handle<BackMessage> { navigator.handleBack() }
     return navigator

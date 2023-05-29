@@ -46,7 +46,9 @@ class TabPm(
     @Serializable
     class Description(
         val tabTitle: String
-    ) : PmDescription
+    ) : PmDescription {
+        override val key: String get() = tabTitle
+    }
 
     private var number: Int = 1
 

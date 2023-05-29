@@ -103,10 +103,7 @@ class StackNavigationPm(params: PmParams) : PresentationModel(params) {
     private var screenNumber: Int = stateHandler.getSaved(KEY_SCREEN_NUMBER) ?: 0
     private fun nextChild(): PresentationModel {
         val number = screenNumber++
-        return Child(
-            description = SimpleScreenPm.Description(number),
-            key = number.toString()
-        )
+        return Child(SimpleScreenPm.Description(number))
     }
 
     companion object {

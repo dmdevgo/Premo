@@ -30,14 +30,12 @@ import platform.Foundation.NSCoder
 class IosPmDelegate<PM : PresentationModel>(
     pmDescription: PmDescription,
     pmFactory: PmFactory,
-    private val pmStateSaver: NSCoderStateSaver,
-    pmTag: String = "main"
+    private val pmStateSaver: NSCoderStateSaver
 ) {
 
     private val pmDelegate: PmDelegate<PM> by lazy {
         PmDelegate<PM>(
             pmParams = PmParams(
-                tag = pmTag,
                 description = pmDescription,
                 parent = null,
                 factory = pmFactory,

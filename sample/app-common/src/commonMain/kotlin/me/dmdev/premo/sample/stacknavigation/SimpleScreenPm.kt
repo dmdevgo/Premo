@@ -35,7 +35,10 @@ class SimpleScreenPm(
 ) : PresentationModel(params) {
 
     @Serializable
-    class Description(val number: Int) : PmDescription
+    class Description(val number: Int) : PmDescription {
+        override val key: String
+            get() = "${super.key}/$number"
+    }
 
     val numberText = number.toString()
 }

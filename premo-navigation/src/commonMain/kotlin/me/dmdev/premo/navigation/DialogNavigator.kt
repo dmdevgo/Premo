@@ -45,19 +45,18 @@ interface DialogNavigator<D : PresentationModel, R> : DialogNavigation<D> {
     fun dismiss()
 }
 
+@Suppress("FunctionName")
 inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.DialogNavigator(
     key: String = "dialog_navigator",
     noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator -> navigator.dismiss() }
 ): DialogNavigator<D, R> {
     val navigator = DialogNavigatorImpl(onDismissRequest)
-    val savedDialogPm = stateHandler.getSaved<Pair<PmDescription, String>?>(key)
-    if (savedDialogPm != null) {
-        navigator.show(Child(savedDialogPm.first, savedDialogPm.second))
+    val savedDialogPmDescription = stateHandler.getSaved<PmDescription?>(key)
+    if (savedDialogPmDescription != null) {
+        navigator.show(Child(savedDialogPmDescription))
     }
     stateHandler.setSaver(key) {
-        navigator.dialog.value?.let { detailPm ->
-            Pair(detailPm.description, detailPm.tag)
-        }
+        navigator.dialog.value?.description
     }
     messageHandler.onMessage<R> { navigator.sendResult(it) }
     messageHandler.handle<BackMessage> { navigator.handleBack() }

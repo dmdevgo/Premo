@@ -56,7 +56,6 @@ object Stubs {
 
     private fun <PM : PresentationModel> createPm(description: PmDescription): PM {
         val config = PmParams(
-            tag = "",
             parent = null,
             description = description,
             factory = mainPmFactory,

@@ -61,7 +61,6 @@ class PmStateSaverTest {
     private fun createPmDelegate(): PmDelegate<RootPm> {
         return PmDelegate(
             pmParams = PmParams(
-                tag = "Root",
                 parent = null,
                 description = RootPm.Description,
                 factory = MainPmFactory(),
@@ -79,10 +78,7 @@ private class RootPm(params: PmParams) : PresentationModel(params) {
     val keys = listOf("container1", "container2", "container3", "container4", "container5")
 
     val children: List<ContainerPm> = keys.map { key ->
-        Child(
-            description = ContainerPm.Description,
-            key = key
-        )
+        Child(ContainerPm.Description)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -116,10 +112,7 @@ private class ContainerPm(params: PmParams) : PresentationModel(params) {
     val keys = listOf("child1", "child2", "child3", "child4", "child5")
 
     val children: List<ChildPm> = keys.map { key ->
-        Child(
-            description = ChildPm.Description(key),
-            key = key
-        )
+        Child(ChildPm.Description(key))
     }
 
     override fun equals(other: Any?): Boolean {
@@ -150,7 +143,7 @@ private class ChildPm(params: PmParams) : PresentationModel(params) {
     private val state = SaveableFlow<State?>("state", null)
 
     @Serializable
-    class Description(val key: String) : PmDescription
+    class Description(override val key: String) : PmDescription
 
     fun setNumber(number: Int) {
         state.value = State(

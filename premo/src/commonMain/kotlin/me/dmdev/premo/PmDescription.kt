@@ -24,4 +24,6 @@
 
 package me.dmdev.premo
 
-interface PmDescription
+interface PmDescription {
+    val key: String get() = this::class.qualifiedName ?: ""
+}
