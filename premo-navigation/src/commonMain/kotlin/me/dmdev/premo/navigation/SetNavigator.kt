@@ -51,15 +51,29 @@ fun PresentationModel.SetNavigator(
         navigator.changeCurrent(index)
     }
 ): SetNavigator {
-    val pms = pmDescriptions.map { description -> Child<PresentationModel>(description) }
     val indexKey = "${key}_index"
-    val navigator = SetNavigatorImpl(lifecycle, pms.toList(), onChangeCurrent)
+
+    val savedValues: List<PresentationModel> =
+        stateHandler.getSaved<List<Pair<PmDescription, String>>>(key)
+            ?.map { (description, tag) -> Child(description, tag) }
+            ?: listOf()
+
+    val navigator = if (savedValues.isNotEmpty()) {
+        SetNavigatorImpl(lifecycle, savedValues, onChangeCurrent)
+    } else {
+        val pms = pmDescriptions.map { description -> Child<PresentationModel>(description) }
+        SetNavigatorImpl(lifecycle, pms.toList(), onChangeCurrent)
+    }
+
     val savedIndex: Int? = stateHandler.getSaved(indexKey)
     if (savedIndex != null && savedIndex >= 0) {
         navigator.changeCurrent(savedIndex)
     }
     stateHandler.setSaver(indexKey) {
         navigator.values.indexOf(navigator.current)
+    }
+    stateHandler.setSaver(key) {
+        navigator.values.map { pm -> Pair(pm.description, pm.tag) }
     }
     messageHandler.handle<BackMessage> { navigator.handleBack() }
     return navigator
