@@ -22,32 +22,11 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.plugin
+package me.dmdev.premo
 
-import org.gradle.api.Action
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import java.io.File
 
-class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
-
-    override fun apply(target: Project) {
-        target.kotlin {
-            android()
-            ios()
-            iosSimulatorArm64()
-            jvm()
-            js(IR) {
-                browser()
-            }
-            sourceSets.getByName("iosSimulatorArm64Main")
-                .dependsOn(sourceSets.getByName("iosMain"))
-            sourceSets.getByName("androidMain")
-                .dependsOn(sourceSets.getByName("jvmMain"))
-        }
-    }
-}
-
-internal fun Project.kotlin(configure: Action<KotlinMultiplatformExtension>) {
-    extensions.configure("kotlin", configure)
+interface FileStateSaver : PmStateSaverFactory {
+    fun save(file: File)
+    fun restore(file: File?)
 }

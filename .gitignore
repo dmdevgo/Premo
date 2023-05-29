@@ -24,3 +24,6 @@ Pods/
 *.podspec
 *.lock
 *.xcworkspace
+
+# Sample
+pm_state.txt

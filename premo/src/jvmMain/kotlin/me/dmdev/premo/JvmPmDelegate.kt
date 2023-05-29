@@ -22,32 +22,54 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.plugin
+package me.dmdev.premo
 
-import org.gradle.api.Action
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import java.io.File
 
-class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
+class JvmPmDelegate<PM : PresentationModel>(
+    pmDescription: PmDescription,
+    pmFactory: PmFactory,
+    private val pmStateSaver: FileStateSaver,
+    private val pmStateFile: File = File("pm_state.txt"),
+    pmTag: String = "main"
+) {
 
-    override fun apply(target: Project) {
-        target.kotlin {
-            android()
-            ios()
-            iosSimulatorArm64()
-            jvm()
-            js(IR) {
-                browser()
-            }
-            sourceSets.getByName("iosSimulatorArm64Main")
-                .dependsOn(sourceSets.getByName("iosMain"))
-            sourceSets.getByName("androidMain")
-                .dependsOn(sourceSets.getByName("jvmMain"))
-        }
+    private val pmDelegate: PmDelegate<PM> by lazy {
+        PmDelegate<PM>(
+            pmParams = PmParams(
+                tag = pmTag,
+                description = pmDescription,
+                parent = null,
+                factory = pmFactory,
+                stateSaverFactory = pmStateSaver
+            )
+        )
     }
-}
 
-internal fun Project.kotlin(configure: Action<KotlinMultiplatformExtension>) {
-    extensions.configure("kotlin", configure)
+    val presentationModel: PM get() = pmDelegate.presentationModel
+
+    fun onCreate() {
+        if (pmStateFile.exists()) {
+            pmStateSaver.restore(pmStateFile)
+            pmStateFile.delete()
+        }
+        pmDelegate.onCreate()
+    }
+
+    fun onForeground() {
+        pmDelegate.onForeground()
+    }
+
+    fun onBackground() {
+        pmDelegate.onBackground()
+    }
+
+    fun onDestroy() {
+        pmDelegate.onDestroy()
+    }
+
+    fun onSaveState() {
+        pmDelegate.savePm()
+        pmStateSaver.save(pmStateFile)
+    }
 }

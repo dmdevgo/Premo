@@ -31,20 +31,20 @@ import me.dmdev.premo.PmStateSaver
 
 class JsonBundleStateSaver(json: Json) : BundleStateSaver {
 
-    private val jsonStateSaverFactory = JsonStateSaverFactory(json)
+    private val jsonStateSaver = JsonStateSaver(json)
 
     override fun save(outState: Bundle) {
-        outState.putString(PM_STATE_KEY, jsonStateSaverFactory.save())
+        outState.putByteArray(PM_STATE_KEY, jsonStateSaver.save())
     }
 
     override fun restore(savedState: Bundle?) {
-        savedState?.getString(PM_STATE_KEY)?.let { jsonString ->
-            jsonStateSaverFactory.restore(jsonString)
+        savedState?.getByteArray(PM_STATE_KEY)?.let { jsonString ->
+            jsonStateSaver.restore(jsonString)
         }
     }
 
     override fun createPmStateSaver(key: String): PmStateSaver {
-        return jsonStateSaverFactory.createPmStateSaver(key)
+        return jsonStateSaver.createPmStateSaver(key)
     }
 
     companion object {

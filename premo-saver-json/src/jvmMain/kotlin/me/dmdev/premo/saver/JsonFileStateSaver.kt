@@ -22,32 +22,28 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.plugin
+package me.dmdev.premo.saver
 
-import org.gradle.api.Action
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import kotlinx.serialization.json.Json
+import me.dmdev.premo.FileStateSaver
+import me.dmdev.premo.PmStateSaver
+import java.io.File
 
-class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
+class JsonFileStateSaver(json: Json) : FileStateSaver {
 
-    override fun apply(target: Project) {
-        target.kotlin {
-            android()
-            ios()
-            iosSimulatorArm64()
-            jvm()
-            js(IR) {
-                browser()
-            }
-            sourceSets.getByName("iosSimulatorArm64Main")
-                .dependsOn(sourceSets.getByName("iosMain"))
-            sourceSets.getByName("androidMain")
-                .dependsOn(sourceSets.getByName("jvmMain"))
+    private val jsonStateSaver = JsonStateSaver(json)
+
+    override fun save(file: File) {
+        file.writeBytes(jsonStateSaver.save())
+    }
+
+    override fun restore(file: File?) {
+        file?.readBytes()?.let { bytes ->
+            jsonStateSaver.restore(bytes)
         }
     }
-}
 
-internal fun Project.kotlin(configure: Action<KotlinMultiplatformExtension>) {
-    extensions.configure("kotlin", configure)
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        return jsonStateSaver.createPmStateSaver(key)
+    }
 }

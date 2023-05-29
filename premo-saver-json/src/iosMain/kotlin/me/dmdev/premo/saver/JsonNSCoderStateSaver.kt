@@ -30,7 +30,6 @@ import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.reinterpret
-import kotlinx.cinterop.toKString
 import kotlinx.cinterop.usePinned
 import kotlinx.cinterop.value
 import kotlinx.serialization.json.Json
@@ -44,10 +43,10 @@ import platform.posix.memcpy
 
 class JsonNSCoderStateSaver(json: Json) : NSCoderStateSaver {
 
-    private val jsonStateSaverFactory = JsonStateSaverFactory(json)
+    private val jsonStateSaver = JsonStateSaver(json)
 
     override fun save(coder: NSCoder) {
-        jsonStateSaverFactory.save().encodeToByteArray().usePinned {
+        jsonStateSaver.save().usePinned {
             coder.encodeBytes(
                 it.addressOf(0).reinterpret(),
                 it.get().size.toULong(),
@@ -70,12 +69,12 @@ class JsonNSCoderStateSaver(json: Json) : NSCoderStateSaver {
                     length.value.toULong()
                 )
             }
-            jsonStateSaverFactory.restore(bytes.toKString())
+            jsonStateSaver.restore(bytes)
         }
     }
 
     override fun createPmStateSaver(key: String): PmStateSaver {
-        return jsonStateSaverFactory.createPmStateSaver(key)
+        return jsonStateSaver.createPmStateSaver(key)
     }
 
     companion object {
