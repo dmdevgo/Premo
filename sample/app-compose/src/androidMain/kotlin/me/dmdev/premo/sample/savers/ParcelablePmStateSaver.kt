@@ -49,6 +49,8 @@ class ParcelablePmStateSaver(
                 serializer = serializer(kType) as KSerializer<T>,
                 parcelable = parcelable
             )
+        } else {
+            bundle.remove(key)
         }
     }
 

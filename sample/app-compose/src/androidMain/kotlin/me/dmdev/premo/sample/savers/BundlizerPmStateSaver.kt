@@ -42,6 +42,8 @@ class BundlizerPmStateSaver(private val bundle: Bundle) : PmStateSaver {
                 key,
                 Bundlizer.bundle(serializer(kType) as KSerializer<T>, value, Serializers.module)
             )
+        } else {
+            bundle.remove(key)
         }
     }
 

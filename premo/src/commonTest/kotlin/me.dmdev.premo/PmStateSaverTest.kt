@@ -214,6 +214,8 @@ class JsonPmStateSaver(
         @Suppress("UNCHECKED_CAST")
         if (value != null) {
             map[key] = json.encodeToString(serializer(kType) as KSerializer<T>, value)
+        } else {
+            map.remove(key)
         }
     }
 

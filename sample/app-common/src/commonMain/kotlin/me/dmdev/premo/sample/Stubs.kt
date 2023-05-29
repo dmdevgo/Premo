@@ -24,7 +24,6 @@
 
 package me.dmdev.premo.sample
 
-import kotlinx.serialization.json.Json
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
@@ -33,9 +32,10 @@ import me.dmdev.premo.sample.bottomnavigation.TabItemPm
 import me.dmdev.premo.sample.bottomnavigation.TabPm
 import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
 import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm
+import me.dmdev.premo.sample.serialization.Serializers
 import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
-import me.dmdev.premo.saver.JsonPmStateSaver
+import me.dmdev.premo.saver.JsonStateSaver
 
 object Stubs {
 
@@ -59,7 +59,7 @@ object Stubs {
             parent = null,
             description = description,
             factory = mainPmFactory,
-            stateSaverFactory = { JsonPmStateSaver(Json, mutableMapOf()) }
+            stateSaverFactory = JsonStateSaver(Serializers.json)
         )
         @Suppress("UNCHECKED_CAST")
         return mainPmFactory.createPm(config) as PM

@@ -38,6 +38,8 @@ class ProtoBufPmStateSaver(private val map: MutableMap<String, ByteArray>) : PmS
         @Suppress("UNCHECKED_CAST")
         if (value != null) {
             map[key] = protoBuf.encodeToByteArray(serializer(kType) as KSerializer<T>, value)
+        } else {
+            map.remove(key)
         }
     }
 
