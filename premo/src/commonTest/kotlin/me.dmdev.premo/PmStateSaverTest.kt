@@ -204,6 +204,10 @@ class JsonStateSaverFactory : PmStateSaverFactory {
         val map = pmStates[key] ?: mutableMapOf<String, String>().also { pmStates[key] = it }
         return JsonPmStateSaver(map)
     }
+
+    override fun deletePmStateSaver(key: String) {
+        pmStates.remove(key)
+    }
 }
 
 class JsonPmStateSaver(

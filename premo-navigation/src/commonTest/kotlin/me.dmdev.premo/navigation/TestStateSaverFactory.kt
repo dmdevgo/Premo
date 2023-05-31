@@ -31,17 +31,13 @@ import kotlin.reflect.KType
 class TestStateSaverFactory : PmStateSaverFactory {
     override fun createPmStateSaver(key: String): PmStateSaver {
         return object : PmStateSaver {
-            override fun <T> saveState(key: String, kType: KType, value: T?) {
-                TODO("Not yet implemented")
-            }
+            override fun <T> saveState(key: String, kType: KType, value: T?) {}
 
             override fun <T> restoreState(key: String, kType: KType): T? {
-                TODO("Not yet implemented")
+                return null
             }
         }
     }
 
-    override fun deletePmStateSaver(key: String) {
-        TODO("Not yet implemented")
-    }
+    override fun deletePmStateSaver(key: String) {}
 }

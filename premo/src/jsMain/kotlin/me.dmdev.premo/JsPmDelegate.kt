@@ -34,14 +34,12 @@ import org.w3c.dom.set
 class JsPmDelegate<PM : PresentationModel>(
     pmDescription: PmDescription,
     pmFactory: PmFactory,
-    private val pmStateSaver: StringStateSaver,
-    pmTag: String = "main"
+    private val pmStateSaver: StringStateSaver
 ) {
 
     private val pmDelegate: PmDelegate<PM> by lazy {
         PmDelegate<PM>(
             pmParams = PmParams(
-                tag = pmTag,
                 description = pmDescription,
                 parent = null,
                 factory = pmFactory,
