@@ -24,20 +24,24 @@
 
 package me.dmdev.premo.sample
 
+import me.dmdev.premo.JsPmDelegate
 import me.dmdev.premo.sample.component.MainComponent
+import me.dmdev.premo.sample.serialization.Serializers
+import me.dmdev.premo.saver.JsonStateSaver
 import react.create
 import react.dom.client.createRoot
 import web.dom.document
 
 fun main() {
-    val delegate = PremoSample.createPmDelegate().apply {
-        this.onCreate()
-        this.onForeground()
-    }
+    val pmDelegate = JsPmDelegate<MainPm>(
+        pmDescription = MainPm.Description,
+        pmFactory = MainPmFactory(),
+        pmStateSaver = JsonStateSaver(Serializers.json)
+    )
     val container = document.getElementById("root") ?: error("Couldn't find root container!")
     createRoot(container).render(
         MainComponent.create {
-            pm = delegate.presentationModel
+            pm = pmDelegate.presentationModel
         }
     )
 }

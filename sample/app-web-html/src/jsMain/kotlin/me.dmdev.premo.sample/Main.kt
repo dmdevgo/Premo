@@ -24,19 +24,19 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.runtime.*
+import me.dmdev.premo.JsPmDelegate
 import me.dmdev.premo.sample.screen.MainScreen
+import me.dmdev.premo.sample.serialization.Serializers
+import me.dmdev.premo.saver.JsonStateSaver
 import org.jetbrains.compose.web.*
 
 fun main() {
+    val pmDelegate = JsPmDelegate<MainPm>(
+        pmDescription = MainPm.Description,
+        pmFactory = MainPmFactory(),
+        pmStateSaver = JsonStateSaver(Serializers.json)
+    )
     renderComposable(rootElementId = "root") {
-        val pm = remember {
-            PremoSample.createPmDelegate().let { delegate ->
-                delegate.onCreate()
-                delegate.onForeground()
-                delegate.presentationModel
-            }
-        }
-        MainScreen(pm)
+        MainScreen(pmDelegate.presentationModel)
     }
 }
