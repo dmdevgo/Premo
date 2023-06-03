@@ -24,17 +24,14 @@
 
 package me.dmdev.premo.sample.dilaognavigation
 
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.DialogNavigation
+import me.dmdev.premo.navigation.DialogGroupNavigation
 import me.dmdev.premo.navigation.DialogNavigator
+import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm.ResultMessage
 
 class DialogNavigationPm(
     params: PmParams
@@ -43,18 +40,18 @@ class DialogNavigationPm(
     @Serializable
     object Description : PmDescription
 
-    private val _messagesFlow: MutableSharedFlow<String> = MutableSharedFlow(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_LATEST
-    )
-    val messagesFlow: SharedFlow<String> = _messagesFlow.asSharedFlow()
+    private val simpleDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("simple_dialog")
+    private val dialogForResult = DialogNavigator<SimpleDialogPm, ResultMessage>("dialog_for_result")
+    private val showResultDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("shoe_result_dialog")
 
-    private val dialogNavigator = DialogNavigator<SimpleDialogPm, SimpleDialogPm.ResultMessage>()
-    val dialogNavigation: DialogNavigation<SimpleDialogPm> = dialogNavigator
+    val dialogGroupNavigation = DialogGroupNavigation(
+        dialogForResult,
+        simpleDialog,
+        showResultDialog
+    )
 
     fun showSimpleDialogClick() {
-        _messagesFlow.tryEmit("")
-        dialogNavigator.show(
+        simpleDialog.show(
             Child(
                 SimpleDialogPm.Description(
                     title = "Simple dialog",
@@ -68,7 +65,7 @@ class DialogNavigationPm(
 
     fun showSimpleDialogForResultClick() {
         inForegroundScope?.launch {
-            val result = dialogNavigator.showForResult(
+            val result = dialogForResult.showForResult(
                 Child(
                     SimpleDialogPm.Description(
                         title = "Simple result dialog",
@@ -79,11 +76,22 @@ class DialogNavigationPm(
                 )
             )
 
-            when (result) {
-                SimpleDialogPm.Cancel -> _messagesFlow.emit("Cancel clicked")
-                SimpleDialogPm.Ok -> _messagesFlow.emit("Ok clicked")
-                null -> _messagesFlow.emit("Dialog dismissed")
+            val resultMessage = when (result) {
+                SimpleDialogPm.Cancel -> "Cancel"
+                SimpleDialogPm.Ok -> "Ok"
+                null -> "Dismiss"
             }
+
+            showResultDialog.show(
+                Child(
+                    SimpleDialogPm.Description(
+                        title = "Dialog Result",
+                        message = resultMessage,
+                        okButtonText = "Close",
+                        cancelButtonText = ""
+                    )
+                )
+            )
         }
     }
 }

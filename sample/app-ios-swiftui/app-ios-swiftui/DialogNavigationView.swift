@@ -30,28 +30,19 @@ struct DialogNavigationView: View {
     private let pm: DialogNavigationPm
     
     @ObservedObject
-    private var dialogPm: ObservableState<SimpleDialogPm>
-    
-    @ObservedObject
-    private var messages: ObservableState<NSString>
+    private var dialogs: ObservableState<NSArray>
     
     init(pm: DialogNavigationPm) {
         self.pm = pm
-        self.dialogPm = ObservableState(pm.dialogNavigation.dialog)
-        self.messages = ObservableState(initialValue: "", flow: pm.messagesFlow)
+        self.dialogs = ObservableState<NSArray>(pm.dialogGroupNavigation.dialogsFlow)
     }
     
     var body: some View {
         
-        let alertIsShowingBinding = Binding<Bool>(get: { self.dialogPm.value != nil }, set: { _ in })
+        let alertIsShowingBinding = Binding<Bool>(get: { self.dialogs.value?.count ?? 0 > 0 }, set: { _ in })
         
         NavigationView {
             VStack {
-                
-                Spacer()
-                
-                Text("\(messages.value ?? "")")
-                    .padding()
                 
                 Spacer()
                 
@@ -76,15 +67,16 @@ struct DialogNavigationView: View {
                 Image(systemName: "arrow.left")
             })
             .alert(isPresented: alertIsShowingBinding) {
-                Alert(
-                    title: Text(dialogPm.value?.title ?? ""),
-                    message: Text(dialogPm.value?.message ?? ""),
-                    primaryButton: .default(Text(dialogPm.value?.cancelButtonText ?? ""), action: {
-                        dialogPm.value?.onCancelClick()
-                        
+                let dialogPm = dialogs.value?.lastObject as? SimpleDialogPm
+                return Alert(
+                    title: Text(dialogPm?.title ?? ""),
+                    message: Text(dialogPm?.message ?? ""),
+                    primaryButton: .default(Text(dialogPm?.cancelButtonText ?? ""), action: {
+                        dialogPm?.onCancelClick()
+
                     }),
-                    secondaryButton: .default(Text(dialogPm.value?.okButtonText ?? ""), action: {
-                        dialogPm.value?.onOkClick()
+                    secondaryButton: .default(Text(dialogPm?.okButtonText ?? ""), action: {
+                        dialogPm?.onOkClick()
                     })
                 )
             }

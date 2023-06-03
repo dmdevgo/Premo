@@ -26,9 +26,7 @@ package me.dmdev.premo.sample.component
 
 import me.dmdev.premo.sample.collectAsState
 import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
-import mui.material.Alert
-import mui.material.AlertColor
-import mui.material.AlertVariant
+import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm
 import mui.material.Button
 import mui.material.ButtonVariant
 import mui.material.Dialog
@@ -51,8 +49,7 @@ external interface DialogNavigationComponentProps : Props {
 val DialogNavigationComponent = FC<DialogNavigationComponentProps> { props ->
 
     val pm = props.pm
-    val message = pm.messagesFlow.collectAsState("")
-    val dialogPm = pm.dialogNavigation.dialog.collectAsState()
+    val dialogs = pm.dialogGroupNavigation.dialogsFlow.collectAsState()
 
     Stack {
 
@@ -80,21 +77,15 @@ val DialogNavigationComponent = FC<DialogNavigationComponentProps> { props ->
             +"Show dialog for result"
         }
 
-        if (message.isNotEmpty()) {
-            Alert {
-                severity = AlertColor.info
-                variant = AlertVariant.outlined
-                +message
-            }
-        }
+        val dialogPm = dialogs.firstOrNull()
 
-        if (dialogPm != null) {
+        if (dialogPm is SimpleDialogPm) {
             Dialog {
 
                 open = true
 
                 onClose = { _, _ ->
-                    pm.dialogNavigation.onDismissRequest()
+                    pm.dialogGroupNavigation.onDismissRequest()
                 }
 
                 if (dialogPm.title.isNotEmpty()) {

@@ -35,6 +35,7 @@ import me.dmdev.premo.sample.DialogContainer
 import me.dmdev.premo.sample.ScreenBox
 import me.dmdev.premo.sample.bind
 import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
+import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm
 
 @Composable
 fun DialogNavigationScreen(
@@ -44,16 +45,12 @@ fun DialogNavigationScreen(
         title = "Dialog Navigation",
         backHandler = { pm.back() }
     ) {
-        val message = pm.messagesFlow.bind("")
-
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.weight(0.5f))
-            Text(message)
-            Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = { pm.showSimpleDialogClick() }) {
                 Text("Show simple dialog")
             }
@@ -64,9 +61,10 @@ fun DialogNavigationScreen(
             Spacer(Modifier.weight(0.5f))
         }
 
-        pm.dialogNavigation.dialog.bind().let { dialogPm ->
+        pm.dialogGroupNavigation.dialogsFlow.bind().let { dialogs ->
+            val dialogPm = dialogs.lastOrNull()
             DialogContainer(isVisible = dialogPm != null) {
-                if (dialogPm != null) {
+                if (dialogPm is SimpleDialogPm) {
                     CommonDialog(
                         title = dialogPm.title,
                         message = dialogPm.message,
@@ -74,7 +72,7 @@ fun DialogNavigationScreen(
                         cancelButtonText = dialogPm.cancelButtonText,
                         onOkButtonClick = dialogPm::onOkClick,
                         onCancelButtonClick = dialogPm::onCancelClick,
-                        onDismissRequest = pm.dialogNavigation::onDismissRequest
+                        onDismissRequest = pm.dialogGroupNavigation::onDismissRequest
                     )
                 }
             }

@@ -35,7 +35,6 @@ import me.dmdev.premo.attachToParent
 import me.dmdev.premo.detachFromParent
 import me.dmdev.premo.getSaved
 import me.dmdev.premo.handle
-import me.dmdev.premo.onMessage
 import me.dmdev.premo.setSaver
 
 interface DialogNavigator<D : PresentationModel, R> : DialogNavigation<D> {
@@ -47,7 +46,7 @@ interface DialogNavigator<D : PresentationModel, R> : DialogNavigation<D> {
 
 @Suppress("FunctionName")
 inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.DialogNavigator(
-    key: String = "dialog_navigator",
+    key: String,
     noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator -> navigator.dismiss() }
 ): DialogNavigator<D, R> {
     val navigator = DialogNavigatorImpl(onDismissRequest)
@@ -56,10 +55,23 @@ inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.Dial
         navigator.show(Child(savedDialogPmDescription))
     }
     stateHandler.setSaver(key) {
-        navigator.dialog.value?.description
+        navigator.dialogFlow.value?.description
     }
-    messageHandler.onMessage<R> { navigator.sendResult(it) }
-    messageHandler.handle<BackMessage> { navigator.handleBack() }
+    messageHandler.handle<R> {
+        if (navigator.isShowing) {
+            navigator.sendResult(it)
+            true
+        } else {
+            false
+        }
+    }
+    messageHandler.handle<BackMessage> {
+        if (navigator.isShowing) {
+            navigator.handleBack()
+        } else {
+            false
+        }
+    }
     return navigator
 }
 
@@ -68,7 +80,7 @@ class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
 ) : DialogNavigator<D, R> {
 
     private val _dialog: MutableStateFlow<D?> = MutableStateFlow(null)
-    override val dialog: StateFlow<D?> = _dialog.asStateFlow()
+    override val dialogFlow: StateFlow<D?> = _dialog.asStateFlow()
 
     private val resultChannel = Channel<R?>()
 
