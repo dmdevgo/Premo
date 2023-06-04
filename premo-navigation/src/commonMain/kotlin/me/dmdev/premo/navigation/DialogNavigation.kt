@@ -29,7 +29,8 @@ import me.dmdev.premo.PresentationModel
 
 interface DialogNavigation<D : PresentationModel> {
     val dialogFlow: StateFlow<D?>
+    val dialog: D? get() = dialogFlow.value
     fun onDismissRequest()
 }
 
-val <D : PresentationModel> DialogNavigation<D>.isShowing: Boolean get() = dialogFlow.value != null
+val DialogNavigation<*>.isShowing: Boolean get() = dialogFlow.value != null

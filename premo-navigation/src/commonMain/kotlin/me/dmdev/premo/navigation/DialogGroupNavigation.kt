@@ -24,31 +24,61 @@
 
 package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.SaveableFlow
+import me.dmdev.premo.handle
 
 interface DialogGroupNavigation {
     val dialogsFlow: StateFlow<List<PresentationModel>>
+    val dialogs: List<PresentationModel> get() = dialogsFlow.value
     fun onDismissRequest()
 }
 
 fun PresentationModel.DialogGroupNavigation(
-    vararg dialogNavigators: DialogNavigator<*, *>
+    vararg dialogNavigators: DialogNavigator<*, *>,
+    key: String = "dialog_group",
+    backHandler: (DialogGroupNavigation) -> Boolean = { it.handleBack() }
 ): DialogGroupNavigation {
-    return DialogGroupNavigator(scope, dialogNavigators.asList())
+    val navigator = DialogGroupNavigatorImpl(
+        hostPm = this,
+        dialogNavigators = dialogNavigators.asList(),
+        key = key
+    )
+    messageHandler.handle<BackMessage> { backHandler.invoke(navigator) }
+    return navigator
 }
 
-class DialogGroupNavigator(
-    scope: CoroutineScope,
-    private val dialogNavigators: List<DialogNavigator<*, *>>
+fun DialogGroupNavigation.handleBack(): Boolean {
+    return if (dialogs.isNotEmpty()) {
+        onDismissRequest()
+        true
+    } else {
+        false
+    }
+}
+
+internal class DialogGroupNavigatorImpl(
+    private val hostPm: PresentationModel,
+    private val dialogNavigators: List<DialogNavigator<*, *>>,
+    key: String
 ) : DialogGroupNavigation {
 
     private val _dialogsFlow: MutableStateFlow<List<PresentationModel>> =
-        MutableStateFlow(listOf())
+        hostPm.SaveableFlow(
+            key = "${key}_dialogs",
+            initialValueProvider = { listOf() },
+            saveTypeMapper = { dialogs -> dialogs.map { it.description } },
+            restoreTypeMapper = { descriptions ->
+                descriptions.mapNotNull { description ->
+                    dialogNavigators.find { it.dialog?.description == description }?.dialog
+                }
+            }
+        )
+
     override val dialogsFlow: StateFlow<List<PresentationModel>> =
         _dialogsFlow.asStateFlow()
 
@@ -59,7 +89,7 @@ class DialogGroupNavigator(
 
     init {
         dialogNavigators.forEach { dialogNavigator ->
-            scope.launch {
+            hostPm.scope.launch {
                 dialogNavigator.dialogFlow.collect { pm ->
                     if (pm != null) {
                         _dialogsFlow.value = _dialogsFlow.value
@@ -67,7 +97,7 @@ class DialogGroupNavigator(
                             .plus(pm)
                     } else {
                         _dialogsFlow.value =
-                            _dialogsFlow.value.filter { it == dialogNavigator.dialogFlow }
+                            _dialogsFlow.value.filter { it == dialogNavigator.dialog }
                     }
                 }
             }

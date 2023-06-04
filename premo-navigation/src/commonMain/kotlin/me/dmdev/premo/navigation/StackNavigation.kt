@@ -32,21 +32,53 @@ import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
 
 interface StackNavigation {
-    val currentTop: PresentationModel?
     val currentTopFlow: StateFlow<PresentationModel?>
-    val backStack: List<PresentationModel>
+    val currentTop: PresentationModel? get() = backStack.lastOrNull()
     val backStackFlow: StateFlow<List<PresentationModel>>
+    val backStack: List<PresentationModel> get() = backStackFlow.value
 
     @ExperimentalPremoApi
     val backStackChangesFlow: Flow<BackStackChange>
 }
 
 fun PresentationModel.StackNavigation(
-    initialDescription: PmDescription,
-    initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit
+    initialDescription: PmDescription? = null,
+    key: String = DEFAULT_STACK_NAVIGATOR_KEY,
+    backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
+    initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
 ): StackNavigation {
     return StackNavigator(
-        initialDescription = initialDescription,
+        initialBackStack = initialDescription?.let { listOf(it) } ?: listOf(),
+        key = key,
+        backHandler = backHandler,
+        initHandlers = initHandlers
+    )
+}
+
+fun PresentationModel.StackNavigation(
+    vararg initialDescriptions: PmDescription,
+    key: String = DEFAULT_STACK_NAVIGATOR_KEY,
+    backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
+    initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
+): StackNavigation {
+    return StackNavigator(
+        initialBackStack = initialDescriptions.asList(),
+        key = key,
+        backHandler = backHandler,
+        initHandlers = initHandlers
+    )
+}
+
+fun PresentationModel.StackNavigation(
+    initialBackStack: List<PmDescription>,
+    key: String = DEFAULT_STACK_NAVIGATOR_KEY,
+    backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
+    initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
+): StackNavigation {
+    return StackNavigator(
+        initialBackStack = initialBackStack,
+        key = key,
+        backHandler = backHandler,
         initHandlers = initHandlers
     )
 }

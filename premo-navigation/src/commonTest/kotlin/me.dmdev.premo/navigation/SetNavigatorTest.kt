@@ -116,7 +116,7 @@ class SetNavigatorTest {
         val pm2 = TestPm()
         val pm3 = TestPm()
 
-        navigator.setValues(listOf(pm1, pm2, pm3))
+        navigator.changeValues(listOf(pm1, pm2, pm3))
 
         assertEquals(listOf(pm1, pm2, pm3), navigator.values)
         assertEquals(navigator.current, pm1)
@@ -131,7 +131,7 @@ class SetNavigatorTest {
         val pm5 = TestPm()
         val pm6 = TestPm()
 
-        navigator.setValues(listOf(pm4, pm5, pm6))
+        navigator.changeValues(listOf(pm4, pm5, pm6))
 
         assertEquals(listOf(pm4, pm5, pm6), navigator.values)
         assertEquals(navigator.current, pm4)
@@ -148,7 +148,7 @@ class SetNavigatorTest {
         val pm4 = TestPm()
         val pm5 = TestPm()
 
-        navigator.setValues(listOf(pm2, pm4, pm5))
+        navigator.changeValues(listOf(pm2, pm4, pm5))
 
         assertEquals(listOf(pm2, pm4, pm5), navigator.values)
         assertEquals(navigator.current, pm2)

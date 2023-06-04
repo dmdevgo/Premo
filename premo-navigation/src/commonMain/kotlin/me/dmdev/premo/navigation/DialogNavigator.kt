@@ -28,14 +28,14 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import me.dmdev.premo.PmDescription
+import kotlinx.coroutines.launch
+import me.dmdev.premo.AttachedChild
 import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.attachToParent
 import me.dmdev.premo.detachFromParent
-import me.dmdev.premo.getSaved
-import me.dmdev.premo.handle
-import me.dmdev.premo.setSaver
+import kotlin.reflect.KClass
 
 interface DialogNavigator<D : PresentationModel, R> : DialogNavigation<D> {
     fun show(pm: D)
@@ -44,45 +44,63 @@ interface DialogNavigator<D : PresentationModel, R> : DialogNavigation<D> {
     fun dismiss()
 }
 
+fun DialogNavigator<*, *>.handleBack(): Boolean {
+    return if (isShowing) {
+        dismiss()
+        true
+    } else {
+        false
+    }
+}
+
 @Suppress("FunctionName")
 inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.DialogNavigator(
     key: String,
-    noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator -> navigator.dismiss() }
+    noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator ->
+        navigator.dismiss()
+    }
 ): DialogNavigator<D, R> {
-    val navigator = DialogNavigatorImpl(onDismissRequest)
-    val savedDialogPmDescription = stateHandler.getSaved<PmDescription?>(key)
-    if (savedDialogPmDescription != null) {
-        navigator.show(Child(savedDialogPmDescription))
-    }
-    stateHandler.setSaver(key) {
-        navigator.dialogFlow.value?.description
-    }
-    messageHandler.handle<R> {
-        if (navigator.isShowing) {
-            navigator.sendResult(it)
-            true
-        } else {
-            false
-        }
-    }
-    messageHandler.handle<BackMessage> {
-        if (navigator.isShowing) {
-            navigator.handleBack()
-        } else {
-            false
-        }
-    }
-    return navigator
+    return DialogNavigator(
+        key = key,
+        messageClass = R::class,
+        onDismissRequest = onDismissRequest
+    )
 }
 
-class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
-    private val onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit
+@Suppress("FunctionName")
+fun <D : PresentationModel, R : PmMessage> PresentationModel.DialogNavigator(
+    key: String,
+    messageClass: KClass<R>,
+    onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit
+): DialogNavigator<D, R> {
+    return DialogNavigatorImpl(
+        hostPm = this,
+        onDismissRequest = onDismissRequest,
+        key = key,
+        messageClass = messageClass
+    )
+}
+
+internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
+    private val hostPm: PresentationModel,
+    private val onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit,
+    private val messageClass: KClass<R>,
+    key: String
 ) : DialogNavigator<D, R> {
 
-    private val _dialog: MutableStateFlow<D?> = MutableStateFlow(null)
+    private val _dialog: MutableStateFlow<D?> = hostPm.SaveableFlow(
+        key = "${key}_dialog",
+        initialValueProvider = { null },
+        saveTypeMapper = { it?.description },
+        restoreTypeMapper = { it?.let { hostPm.AttachedChild(it) as D } }
+    )
     override val dialogFlow: StateFlow<D?> = _dialog.asStateFlow()
 
     private val resultChannel = Channel<R?>()
+
+    init {
+        subscribeToMessages()
+    }
 
     override fun show(pm: D) {
         if (isShowing) dismiss()
@@ -109,5 +127,21 @@ class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
 
     override fun onDismissRequest() {
         onDismissRequest(this)
+    }
+
+    private fun subscribeToMessages() {
+        hostPm.scope.launch {
+            dialogFlow.collect {
+                it?.messageHandler?.addHandler { message ->
+                    if (messageClass.isInstance(message)) {
+                        @Suppress("UNCHECKED_CAST")
+                        sendResult(message as R)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+        }
     }
 }

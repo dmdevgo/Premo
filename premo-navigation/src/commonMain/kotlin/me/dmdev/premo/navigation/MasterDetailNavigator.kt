@@ -27,14 +27,15 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import me.dmdev.premo.AttachedChild
 import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.attachToParent
 import me.dmdev.premo.detachFromParent
-import me.dmdev.premo.getSaved
 import me.dmdev.premo.handle
-import me.dmdev.premo.setSaver
+import kotlin.reflect.typeOf
 
 interface MasterDetailNavigator<M, D> : MasterDetailNavigation<M, D>
         where M : PresentationModel,
@@ -43,45 +44,57 @@ interface MasterDetailNavigator<M, D> : MasterDetailNavigation<M, D>
     fun changeDetail(detail: D?)
 }
 
+fun MasterDetailNavigator<*, *>.handleBack(): Boolean {
+    var handled = detail?.handleBack() ?: false
+    if (!handled && detail != null) {
+        changeDetail(null)
+        handled = true
+    }
+    if (!handled) {
+        handled = master.handleBack()
+    }
+    return handled
+}
+
 @Suppress("FunctionName")
 fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigator(
-    masterPmDescription: PmDescription,
-    key: String = "master_detail_navigator",
+    masterDescription: PmDescription,
+    key: String = DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY,
+    backHandler: (MasterDetailNavigator<M, D>) -> Boolean = DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER,
     initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit = {}
 ): MasterDetailNavigator<M, D> {
     val navigator = MasterDetailNavigatorImpl<M, D>(
-        Child(masterPmDescription)
+        hostPm = this,
+        masterDescription = masterDescription,
+        key = key
     )
-    val detailKey = "${key}_detail_pm"
-    val savedDetail = stateHandler.getSaved<PmDescription?>(detailKey)
-    if (savedDetail != null) {
-        navigator.changeDetail(Child(savedDetail))
-    }
-    stateHandler.setSaver(detailKey) {
-        navigator.detail?.description
-    }
-    messageHandler.initHandlers(navigator)
-    messageHandler.handle<BackMessage> {
-        navigator.handleBack()
-    }
+    messageHandler.handle<BackMessage> { backHandler.invoke(navigator) }
     messageHandler.initHandlers(navigator)
     return navigator
 }
 
+internal const val DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY = "master_detail_navigator"
+internal val DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER: (MasterDetailNavigator<*, *>) -> Boolean =
+    { it.handleBack() }
+
 internal class MasterDetailNavigatorImpl<M, D>(
-    override val master: M
+    private val hostPm: PresentationModel,
+    masterDescription: PmDescription,
+    key: String
 ) : MasterDetailNavigator<M, D>
         where M : PresentationModel,
               D : PresentationModel {
 
-    init {
-        master.attachToParent()
-    }
+    override val master: M = hostPm.AttachedChild(masterDescription)
 
-    private val _detailFlow: MutableStateFlow<D?> = MutableStateFlow(null)
+    private val _detailFlow: MutableStateFlow<D?> = hostPm.SaveableFlow(
+        key = "${key}_detail_pm",
+        initialValueProvider = { null },
+        saveType = typeOf<PmDescription>(),
+        saveTypeMapper = { it?.description },
+        restoreTypeMapper = { it?.let { hostPm.AttachedChild(it) as D } }
+    )
     override val detailFlow: StateFlow<D?> = _detailFlow.asStateFlow()
-
-    override val detail: D? get() = detailFlow.value
 
     override fun changeDetail(detail: D?) {
         this.detail?.detachFromParent()

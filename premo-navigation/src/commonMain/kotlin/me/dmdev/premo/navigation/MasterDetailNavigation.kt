@@ -34,17 +34,21 @@ interface MasterDetailNavigation<M, D>
               D : PresentationModel {
 
     val master: M
-    val detail: D?
     val detailFlow: StateFlow<D?>
+    val detail: D? get() = detailFlow.value
 }
 
 @Suppress("FunctionName")
 fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigation(
-    masterPmDescription: PmDescription,
-    initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit
+    masterDescription: PmDescription,
+    key: String = DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY,
+    backHandler: (MasterDetailNavigator<M, D>) -> Boolean = DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER,
+    initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit = {}
 ): MasterDetailNavigation<M, D> {
     return MasterDetailNavigator(
-        masterPmDescription = masterPmDescription,
+        masterDescription = masterDescription,
+        key = key,
+        backHandler = backHandler,
         initHandlers = initHandlers
     )
 }

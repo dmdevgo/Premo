@@ -28,68 +28,75 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.getSaved
+import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.handle
-import me.dmdev.premo.setSaver
 
 interface SetNavigator : SetNavigation {
     fun changeCurrent(index: Int)
     fun changeCurrent(pm: PresentationModel)
-    fun setValues(pmList: List<PresentationModel>)
+    fun changeValues(values: List<PresentationModel>)
+}
+
+fun SetNavigator.handleBack(): Boolean {
+    return if (current?.handleBack() == true) {
+        true
+    } else if (values.indexOf(current) > 0) {
+        changeCurrent(0)
+        true
+    } else {
+        false
+    }
 }
 
 fun PresentationModel.SetNavigator(
-    vararg pmDescriptions: PmDescription,
-    key: String = "set_navigator",
-    onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit = { index, navigator ->
-        navigator.changeCurrent(index)
-    }
+    vararg initialDescriptions: PmDescription,
+    key: String = DEFAULT_SET_NAVIGATOR_KEY,
+    backHandler: (SetNavigator) -> Boolean = DEFAULT_SET_NAVIGATOR_BACK_HANDLER,
+    onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit = DEFAULT_SET_NAVIGATOR_ON_CHANGE_CURRENT
 ): SetNavigator {
-    val indexKey = "${key}_index"
-
-    val savedValues: List<PresentationModel> =
-        stateHandler.getSaved<List<PmDescription>>(key)?.map { Child(it) } ?: listOf()
-
-    val navigator = if (savedValues.isNotEmpty()) {
-        SetNavigatorImpl(lifecycle, savedValues, onChangeCurrent)
-    } else {
-        val pms = pmDescriptions.map { Child<PresentationModel>(it) }
-        SetNavigatorImpl(lifecycle, pms.toList(), onChangeCurrent)
-    }
-
-    val savedIndex: Int? = stateHandler.getSaved(indexKey)
-    if (savedIndex != null && savedIndex >= 0) {
-        navigator.changeCurrent(savedIndex)
-    }
-    stateHandler.setSaver(indexKey) {
-        navigator.values.indexOf(navigator.current)
-    }
-    stateHandler.setSaver(key) {
-        navigator.values.map { it.description }
-    }
-    messageHandler.handle<BackMessage> { navigator.handleBack() }
+    val navigator = SetNavigatorImpl(
+        hostPm = this,
+        initialValues = initialDescriptions.asList(),
+        key = key,
+        onChangeCurrent = onChangeCurrent
+    )
+    messageHandler.handle<BackMessage> { backHandler.invoke(navigator) }
     return navigator
 }
 
-class SetNavigatorImpl(
-    private val lifecycle: PmLifecycle,
-    values: List<PresentationModel>,
+internal const val DEFAULT_SET_NAVIGATOR_KEY = "set_navigator"
+internal val DEFAULT_SET_NAVIGATOR_BACK_HANDLER: (SetNavigator) -> Boolean = { it.handleBack() }
+internal val DEFAULT_SET_NAVIGATOR_ON_CHANGE_CURRENT: (index: Int, navigator: SetNavigator) -> Unit =
+    { index, navigator ->
+        navigator.changeCurrent(index)
+    }
+
+internal class SetNavigatorImpl(
+    private val hostPm: PresentationModel,
+    initialValues: List<PmDescription>,
+    key: String,
     private val onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit
 ) : SetNavigator {
 
-    private val _valuesFlow = MutableStateFlow(values)
+    private val _valuesFlow: MutableStateFlow<List<PresentationModel>> = hostPm.SaveableFlow(
+        key = "${key}_values",
+        initialValueProvider = { initialValues.map { hostPm.Child(it) } },
+        saveTypeMapper = { values -> values.map { it.description } },
+        restoreTypeMapper = { descriptions -> descriptions.map { hostPm.Child(it) } }
+    )
     override val valuesFlow: StateFlow<List<PresentationModel>> = _valuesFlow.asStateFlow()
-    override val values: List<PresentationModel> get() = valuesFlow.value
 
-    private val _currentFlow = MutableStateFlow(values.firstOrNull())
-    override val currentFlow = _currentFlow.asStateFlow()
-
-    override val current: PresentationModel? get() = currentFlow.value
+    private val _currentFlow: MutableStateFlow<PresentationModel?> = hostPm.SaveableFlow(
+        key = "${key}_current_index",
+        initialValueProvider = { values.firstOrNull() },
+        saveTypeMapper = { values.indexOf(it) },
+        restoreTypeMapper = { values[it] }
+    )
+    override val currentFlow: StateFlow<PresentationModel?> = _currentFlow.asStateFlow()
 
     init {
         subscribeToLifecycle()
@@ -99,7 +106,7 @@ class SetNavigatorImpl(
         val pm = values[index]
         if (pm === _currentFlow.value) return
         _currentFlow.value?.lifecycle?.moveTo(CREATED)
-        pm.lifecycle.moveTo(lifecycle.state)
+        pm.lifecycle.moveTo(hostPm.lifecycle.state)
         _currentFlow.value = pm
     }
 
@@ -107,20 +114,20 @@ class SetNavigatorImpl(
         changeCurrent(values.indexOf(pm))
     }
 
-    override fun setValues(pmList: List<PresentationModel>) {
-        val iterator = pmList.listIterator()
+    override fun changeValues(values: List<PresentationModel>) {
+        val iterator = values.listIterator()
         while (iterator.hasNext()) {
             val pm = iterator.next()
             pm.lifecycle.moveTo(CREATED)
         }
-        values.forEach { pm ->
-            if (pmList.contains(pm).not()) {
+        this.values.forEach { pm ->
+            if (values.contains(pm).not()) {
                 pm.lifecycle.moveTo(DESTROYED)
             }
         }
-        _currentFlow.value = if (pmList.contains(current)) current else pmList.first()
-        current?.lifecycle?.moveTo(lifecycle.state)
-        _valuesFlow.value = pmList
+        _currentFlow.value = if (values.contains(current)) current else values.first()
+        current?.lifecycle?.moveTo(hostPm.lifecycle.state)
+        _valuesFlow.value = values
     }
 
     override fun onChangeCurrent(index: Int) {
@@ -132,8 +139,8 @@ class SetNavigatorImpl(
     }
 
     private fun subscribeToLifecycle() {
-        current?.lifecycle?.moveTo(lifecycle.state)
-        lifecycle.addObserver { lifecycle, _ ->
+        current?.lifecycle?.moveTo(hostPm.lifecycle.state)
+        hostPm.lifecycle.addObserver { lifecycle, _ ->
             when (lifecycle.state) {
                 CREATED,
                 DESTROYED -> {
@@ -141,6 +148,7 @@ class SetNavigatorImpl(
                         pm.lifecycle.moveTo(lifecycle.state)
                     }
                 }
+
                 IN_FOREGROUND -> {
                     current?.lifecycle?.moveTo(lifecycle.state)
                 }

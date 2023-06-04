@@ -24,7 +24,6 @@
 
 package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,18 +33,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.getSaved
+import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.handle
-import me.dmdev.premo.setSaver
 
 interface StackNavigator : StackNavigation {
-    fun changeBackStack(pmList: List<PresentationModel>)
+    fun changeBackStack(pms: List<PresentationModel>)
 }
 
 fun StackNavigator.push(pm: PresentationModel) {
@@ -76,33 +73,62 @@ fun StackNavigator.replaceAll(pm: PresentationModel) {
     changeBackStack(listOf(pm))
 }
 
+fun StackNavigator.handleBack(): Boolean {
+    var handled = currentTop?.handleBack() ?: false
+    if (!handled && backStack.size > 1) {
+        pop()
+        handled = true
+    }
+    return handled
+}
+
 fun PresentationModel.StackNavigator(
-    initialDescription: PmDescription? = null,
-    key: String = "stack_navigator",
+    vararg initialDescriptions: PmDescription,
+    key: String = DEFAULT_STACK_NAVIGATOR_KEY,
+    backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
     initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
 ): StackNavigator {
-    val navigator = StackNavigatorImpl(lifecycle, scope)
-    val savedBackStack: List<PresentationModel> =
-        stateHandler.getSaved<List<PmDescription>>(key)?.map { Child(it) } ?: listOf()
-    if (savedBackStack.isNotEmpty()) {
-        navigator.changeBackStack(savedBackStack)
-    } else if (initialDescription != null) {
-        navigator.push(Child(initialDescription))
-    }
-    stateHandler.setSaver(key) {
-        navigator.backStack.map { it.description }
-    }
-    messageHandler.handle<BackMessage> { navigator.handleBack() }
+    return StackNavigator(
+        initialBackStack = initialDescriptions.asList(),
+        key = key,
+        backHandler = backHandler,
+        initHandlers = initHandlers
+    )
+}
+
+fun PresentationModel.StackNavigator(
+    initialBackStack: List<PmDescription>,
+    key: String = DEFAULT_STACK_NAVIGATOR_KEY,
+    backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
+    initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
+): StackNavigator {
+    val navigator = StackNavigatorImpl(
+        hostPm = this,
+        initialBackStack = initialBackStack,
+        key = key
+    )
+    messageHandler.handle<BackMessage> { backHandler.invoke(navigator) }
     messageHandler.initHandlers(navigator)
     return navigator
 }
 
+internal const val DEFAULT_STACK_NAVIGATOR_KEY = "stack_navigator"
+internal val DEFAULT_STACK_NAVIGATOR_BACK_HANDLER: (StackNavigator) -> Boolean = { it.handleBack() }
+
 internal class StackNavigatorImpl(
-    private val lifecycle: PmLifecycle,
-    private val scope: CoroutineScope
+    private val hostPm: PresentationModel,
+    initialBackStack: List<PmDescription>,
+    key: String
 ) : StackNavigator {
 
-    private val _backStackFlow = MutableStateFlow<List<PresentationModel>>(listOf())
+    private val _backStackFlow: MutableStateFlow<List<PresentationModel>> =
+        hostPm.stateHandler.SaveableFlow(
+            key = "${key}_backstack",
+            initialValueProvider = { initialBackStack.map { hostPm.Child(it) } },
+            saveTypeMapper = { backStack -> backStack.map { it.description } },
+            restoreTypeMapper = { descriptions -> descriptions.map { hostPm.Child(it) } }
+        )
+
     override val backStackFlow: StateFlow<List<PresentationModel>> = _backStackFlow
 
     override var backStack: List<PresentationModel>
@@ -111,14 +137,11 @@ internal class StackNavigatorImpl(
             _backStackFlow.value = value
         }
 
-    override val currentTop: PresentationModel?
-        get() = backStack.lastOrNull()
-
     override val currentTopFlow: StateFlow<PresentationModel?> =
         backStackFlow
             .map { it.lastOrNull() }
             .stateIn(
-                scope = scope,
+                scope = hostPm.scope,
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = null
             )
@@ -141,9 +164,11 @@ internal class StackNavigatorImpl(
                     oldTopPm === newTopPm -> {
                         BackStackChange.Set(newTopPm, removedPms)
                     }
+
                     oldPmStack.any { it === newTopPm } -> {
                         BackStackChange.Pop(newTopPm, oldTopPm, removedPms)
                     }
+
                     else -> {
                         BackStackChange.Push(newTopPm, oldTopPm, removedPms)
                     }
@@ -159,26 +184,26 @@ internal class StackNavigatorImpl(
         }
     }
 
-    override fun changeBackStack(pmList: List<PresentationModel>) {
-        val iterator = pmList.listIterator()
+    override fun changeBackStack(pms: List<PresentationModel>) {
+        val iterator = pms.listIterator()
         while (iterator.hasNext()) {
             val pm = iterator.next()
             if (iterator.hasNext()) {
                 pm.lifecycle.moveTo(CREATED)
             } else {
-                pm.lifecycle.moveTo(lifecycle.state)
+                pm.lifecycle.moveTo(hostPm.lifecycle.state)
             }
         }
         backStack.forEach { pm ->
-            if (pmList.contains(pm).not()) {
+            if (pms.contains(pm).not()) {
                 pm.lifecycle.moveTo(DESTROYED)
             }
         }
-        backStack = pmList
+        backStack = pms
     }
 
     private fun subscribeToLifecycle() {
-        lifecycle.addObserver { lifecycle, _ ->
+        hostPm.lifecycle.addObserver { lifecycle, _ ->
             when (lifecycle.state) {
                 CREATED,
                 DESTROYED -> {

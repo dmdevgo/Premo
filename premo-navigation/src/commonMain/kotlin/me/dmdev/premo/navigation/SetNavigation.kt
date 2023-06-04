@@ -29,16 +29,24 @@ import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PresentationModel
 
 interface SetNavigation {
-    val values: List<PresentationModel>
-    val current: PresentationModel?
+    val valuesFlow: StateFlow<List<PresentationModel>>
+    val values: List<PresentationModel> get() = valuesFlow.value
     val currentFlow: StateFlow<PresentationModel?>
+    val current: PresentationModel? get() = currentFlow.value
     fun onChangeCurrent(index: Int)
     fun onChangeCurrent(pm: PresentationModel)
-    val valuesFlow: StateFlow<List<PresentationModel>>
 }
 
 fun PresentationModel.SetNavigation(
-    vararg pms: PmDescription
+    vararg initialDescriptions: PmDescription,
+    key: String = DEFAULT_SET_NAVIGATOR_KEY,
+    backHandler: (SetNavigator) -> Boolean = DEFAULT_SET_NAVIGATOR_BACK_HANDLER,
+    onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit = DEFAULT_SET_NAVIGATOR_ON_CHANGE_CURRENT
 ): SetNavigation {
-    return SetNavigator(*pms)
+    return SetNavigator(
+        initialDescriptions = initialDescriptions,
+        key = key,
+        backHandler = backHandler,
+        onChangeCurrent = onChangeCurrent
+    )
 }

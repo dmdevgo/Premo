@@ -32,6 +32,7 @@ import me.dmdev.premo.PmLifecycle.Event.ON_BACKGROUND
 import me.dmdev.premo.PmLifecycle.Event.ON_DESTROY
 import me.dmdev.premo.PmLifecycle.Event.ON_FOREGROUND
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
 abstract class PresentationModel(params: PmParams) {
@@ -128,6 +129,41 @@ inline fun <reified T> PresentationModel.SaveableFlow(
     key: String,
     initialValue: T
 ): MutableStateFlow<T> {
-    return stateHandler.SaveableFlow(key, initialValue, typeOf<T>())
+    return stateHandler.SaveableFlow(
+        key = key,
+        initialValue = initialValue
+    )
 }
 
+@Suppress("FunctionName")
+inline fun <T, reified S> PresentationModel.SaveableFlow(
+    key: String,
+    noinline initialValueProvider: () -> T,
+    noinline saveTypeMapper: (T) -> S,
+    noinline restoreTypeMapper: (S) -> T
+): MutableStateFlow<T> {
+    return stateHandler.SaveableFlow(
+        key = key,
+        initialValueProvider = initialValueProvider,
+        saveType = typeOf<S>(),
+        saveTypeMapper = saveTypeMapper,
+        restoreTypeMapper = restoreTypeMapper
+    )
+}
+
+@Suppress("FunctionName")
+fun <T, S> PresentationModel.SaveableFlow(
+    key: String,
+    initialValueProvider: () -> T,
+    saveType: KType,
+    saveTypeMapper: (T) -> S,
+    restoreTypeMapper: (S) -> T
+): MutableStateFlow<T> {
+    return stateHandler.SaveableFlow(
+        key = key,
+        initialValueProvider = initialValueProvider,
+        saveType = saveType,
+        saveTypeMapper = saveTypeMapper,
+        restoreTypeMapper = restoreTypeMapper
+    )
+}

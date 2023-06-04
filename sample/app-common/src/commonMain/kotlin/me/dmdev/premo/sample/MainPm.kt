@@ -40,7 +40,7 @@ class MainPm(params: PmParams) : PresentationModel(params) {
     object Description : PmDescription
 
     val navigation = MasterDetailNavigation<SamplesPm, PresentationModel>(
-        masterPmDescription = SamplesPm.Description
+        masterDescription = SamplesPm.Description
     ) { navigator ->
         onMessage<CounterSampleMessage> {
             navigator.changeDetail(Child(CounterPm.Description(10)))

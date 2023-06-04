@@ -72,21 +72,45 @@ inline fun <reified T> PmStateHandler.SaveableFlow(
     key: String,
     initialValue: T
 ): MutableStateFlow<T> {
-    return SaveableFlow(key, initialValue, typeOf<T>())
+    return SaveableFlow(
+        key = key,
+        initialValueProvider = { initialValue },
+        saveType = typeOf<T>(),
+        saveTypeMapper = { it },
+        restoreTypeMapper = { it }
+    )
 }
 
 @Suppress("FunctionName")
-fun <T> PmStateHandler.SaveableFlow(
+inline fun <T, reified S> PmStateHandler.SaveableFlow(
     key: String,
-    initialValue: T,
-    kType: KType
+    noinline initialValueProvider: () -> T,
+    noinline saveTypeMapper: (T) -> S,
+    noinline restoreTypeMapper: (S) -> T
 ): MutableStateFlow<T> {
-    val savedState = getSaved<T>(key, kType)
+    return SaveableFlow(
+        key = key,
+        initialValueProvider = initialValueProvider,
+        saveType = typeOf<S>(),
+        saveTypeMapper = saveTypeMapper,
+        restoreTypeMapper = restoreTypeMapper
+    )
+}
+
+@Suppress("FunctionName")
+fun <T, S> PmStateHandler.SaveableFlow(
+    key: String,
+    initialValueProvider: () -> T,
+    saveType: KType,
+    saveTypeMapper: (T) -> S,
+    restoreTypeMapper: (S) -> T
+): MutableStateFlow<T> {
+    val savedState = getSaved<S>(key, saveType)
     val state: MutableStateFlow<T> = if (savedState != null) {
-        MutableStateFlow(savedState)
+        MutableStateFlow(restoreTypeMapper(savedState))
     } else {
-        MutableStateFlow(initialValue)
+        MutableStateFlow(initialValueProvider())
     }
-    setSaver(key, kType) { state.value }
+    setSaver(key, saveType) { saveTypeMapper(state.value) }
     return state
 }
