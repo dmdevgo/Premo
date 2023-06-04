@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.saver
 
-interface StringStateSaver : PmStateSaverFactory {
-    fun save(): String
-    fun restore(string: String?)
+interface PmStateSaverFactory {
+    fun createPmStateSaver(key: String): PmStateSaver
+    fun deletePmStateSaver(key: String)
 }

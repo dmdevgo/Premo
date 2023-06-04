@@ -27,10 +27,10 @@ package me.dmdev.premo.sample.savers
 import android.os.Bundle
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.serializer
-import me.dmdev.premo.BundleStateSaver
-import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.sample.serialization.ProtoBufPmStateSaver
 import me.dmdev.premo.sample.serialization.Serializers.protoBuf
+import me.dmdev.premo.saver.BundleStateSaver
+import me.dmdev.premo.saver.PmStateSaver
 
 class ProtoBufBundleStateSaver : BundleStateSaver {
 

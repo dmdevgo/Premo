@@ -22,11 +22,9 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.saver
 
-import java.io.File
-
-interface FileStateSaver : PmStateSaverFactory {
-    fun save(file: File)
-    fun restore(file: File?)
+interface StringStateSaver : PmStateSaverFactory {
+    fun save(): String
+    fun restore(string: String?)
 }

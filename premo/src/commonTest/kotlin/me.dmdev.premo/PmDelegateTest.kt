@@ -55,7 +55,7 @@ class PmDelegateTest {
     fun testNoInteractions() {
         val pm = delegate.presentationModel
         assertNotNull(pm)
-        assertEquals(pm, PmStore.get(pm.tag))
+        assertEquals(pm, PmStore[pm.tag])
     }
 
     @Test
@@ -63,7 +63,7 @@ class PmDelegateTest {
         val pm = delegate.presentationModel
         delegate.onCreate()
         assertEquals(pm.lifecycle.state, CREATED)
-        assertNotNull(PmStore.get(pm.tag))
+        assertNotNull(PmStore[pm.tag])
     }
 
     @Test
@@ -73,7 +73,7 @@ class PmDelegateTest {
         delegate.onForeground()
 
         assertEquals(pm.lifecycle.state, IN_FOREGROUND)
-        assertNotNull(PmStore.get(pm.tag))
+        assertNotNull(PmStore[pm.tag])
     }
 
     @Test
@@ -84,7 +84,7 @@ class PmDelegateTest {
         delegate.onBackground()
 
         assertEquals(pm.lifecycle.state, CREATED)
-        assertNotNull(PmStore.get(pm.tag))
+        assertNotNull(PmStore[pm.tag])
     }
 
     @Test
@@ -96,6 +96,6 @@ class PmDelegateTest {
         delegate.onDestroy()
 
         assertEquals(pm.lifecycle.state, DESTROYED)
-        assertNull(PmStore.get(pm.tag))
+        assertNull(PmStore[pm.tag])
     }
 }

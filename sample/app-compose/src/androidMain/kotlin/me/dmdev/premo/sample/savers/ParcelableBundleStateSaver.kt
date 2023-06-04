@@ -25,8 +25,8 @@
 package me.dmdev.premo.sample.savers
 
 import android.os.Bundle
-import me.dmdev.premo.BundleStateSaver
-import me.dmdev.premo.PmStateSaver
+import me.dmdev.premo.saver.BundleStateSaver
+import me.dmdev.premo.saver.PmStateSaver
 
 class ParcelableBundleStateSaver : BundleStateSaver {
 

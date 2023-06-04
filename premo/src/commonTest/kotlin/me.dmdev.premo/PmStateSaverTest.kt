@@ -29,6 +29,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
+import me.dmdev.premo.saver.PmStateSaver
+import me.dmdev.premo.saver.PmStateSaverFactory
 import kotlin.reflect.KType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -48,7 +50,7 @@ class PmStateSaverTest {
             }
         }
 
-        delegate.savePm()
+        delegate.onSave()
         delegate.onDestroy()
 
         val delegateForRestoredPm = createPmDelegate()

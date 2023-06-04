@@ -178,7 +178,7 @@ internal class StackNavigatorImpl(
     }
 
     private fun subscribeToLifecycle() {
-        lifecycle.addObserver { lifecycle, event ->
+        lifecycle.addObserver { lifecycle, _ ->
             when (lifecycle.state) {
                 CREATED,
                 DESTROYED -> {

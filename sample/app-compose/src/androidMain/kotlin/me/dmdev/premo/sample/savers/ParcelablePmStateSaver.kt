@@ -31,8 +31,8 @@ import com.chrynan.parcelable.core.putParcelable
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
-import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.sample.serialization.Serializers
+import me.dmdev.premo.saver.PmStateSaver
 import kotlin.reflect.KType
 
 class ParcelablePmStateSaver(

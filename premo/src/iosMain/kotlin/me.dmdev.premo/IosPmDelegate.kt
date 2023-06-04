@@ -24,6 +24,7 @@
 
 package me.dmdev.premo
 
+import me.dmdev.premo.saver.NSCoderStateSaver
 import platform.Foundation.NSCoder
 
 @Suppress("unused")
@@ -64,7 +65,7 @@ class IosPmDelegate<PM : PresentationModel>(
     }
 
     fun onSaveState(coder: NSCoder) {
-        pmDelegate.savePm()
+        pmDelegate.onSave()
         pmStateSaver.save(coder)
     }
 }

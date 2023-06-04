@@ -25,8 +25,6 @@
 package me.dmdev.premo.saver
 
 import kotlinx.serialization.json.Json
-import me.dmdev.premo.FileStateSaver
-import me.dmdev.premo.PmStateSaver
 import java.io.File
 
 class JsonFileStateSaver(json: Json) : FileStateSaver {

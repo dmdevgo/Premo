@@ -27,6 +27,7 @@ package me.dmdev.premo
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
+import me.dmdev.premo.saver.StringStateSaver
 import org.w3c.dom.Document
 import org.w3c.dom.get
 import org.w3c.dom.set
@@ -82,7 +83,7 @@ class JsPmDelegate<PM : PresentationModel>(
     }
 
     private fun onSaveState() {
-        pmDelegate.savePm()
+        pmDelegate.onSave()
         localStorage[PM_STATE_KEY] = pmStateSaver.save()
     }
 

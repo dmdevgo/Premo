@@ -27,10 +27,12 @@ package me.dmdev.premo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
 import me.dmdev.premo.PmLifecycle.Event.ON_BACKGROUND
 import me.dmdev.premo.PmLifecycle.Event.ON_DESTROY
 import me.dmdev.premo.PmLifecycle.Event.ON_FOREGROUND
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import kotlin.reflect.typeOf
 
 abstract class PresentationModel(params: PmParams) {
 
@@ -76,13 +78,6 @@ abstract class PresentationModel(params: PmParams) {
         return pmFactory.createPm(config) as PM
     }
 
-    @Suppress("FunctionName")
-    fun <PM : PresentationModel> AttachedChild(description: PmDescription): PM {
-        return Child<PM>(description).also {
-            attachChild(it)
-        }
-    }
-
     private fun initSaver() {
         parent?.stateHandler?.setSaver(tag) {
             stateHandler.saveState()
@@ -120,3 +115,19 @@ fun PresentationModel.attachToParent() {
 fun PresentationModel.detachFromParent() {
     parent?.detachChild(this)
 }
+
+@Suppress("FunctionName")
+fun <PM : PresentationModel> PresentationModel.AttachedChild(description: PmDescription): PM {
+    return Child<PM>(description).also {
+        attachChild(it)
+    }
+}
+
+@Suppress("FunctionName")
+inline fun <reified T> PresentationModel.SaveableFlow(
+    key: String,
+    initialValue: T
+): MutableStateFlow<T> {
+    return stateHandler.SaveableFlow(key, initialValue, typeOf<T>())
+}
+

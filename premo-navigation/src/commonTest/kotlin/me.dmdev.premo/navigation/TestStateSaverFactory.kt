@@ -24,8 +24,8 @@
 
 package me.dmdev.premo.navigation
 
-import me.dmdev.premo.PmStateSaver
-import me.dmdev.premo.PmStateSaverFactory
+import me.dmdev.premo.saver.PmStateSaver
+import me.dmdev.premo.saver.PmStateSaverFactory
 import kotlin.reflect.KType
 
 class TestStateSaverFactory : PmStateSaverFactory {

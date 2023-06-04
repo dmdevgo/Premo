@@ -31,11 +31,11 @@ internal object PmStore {
 
     private val pmMap = mutableMapOf<String, PresentationModel>()
 
-    fun get(key: String): PresentationModel? {
+    operator fun get(key: String): PresentationModel? {
         return pmMap[key]
     }
 
-    fun put(key: String, pm: PresentationModel) {
+    operator fun set(key: String, pm: PresentationModel) {
         pmMap[key] = pm
     }
 

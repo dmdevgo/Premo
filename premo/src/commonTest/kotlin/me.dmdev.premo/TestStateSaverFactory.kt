@@ -24,6 +24,8 @@
 
 package me.dmdev.premo
 
+import me.dmdev.premo.saver.PmStateSaver
+import me.dmdev.premo.saver.PmStateSaverFactory
 import kotlin.reflect.KType
 
 class TestStateSaverFactory : PmStateSaverFactory {

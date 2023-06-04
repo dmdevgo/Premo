@@ -24,6 +24,7 @@
 
 package me.dmdev.premo
 
+import me.dmdev.premo.saver.FileStateSaver
 import java.io.File
 
 class JvmPmDelegate<PM : PresentationModel>(
@@ -67,7 +68,7 @@ class JvmPmDelegate<PM : PresentationModel>(
     }
 
     fun onSaveState() {
-        pmDelegate.savePm()
+        pmDelegate.onSave()
         pmStateSaver.save(pmStateFile)
     }
 }

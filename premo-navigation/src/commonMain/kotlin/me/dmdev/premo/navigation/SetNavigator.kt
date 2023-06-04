@@ -133,7 +133,7 @@ class SetNavigatorImpl(
 
     private fun subscribeToLifecycle() {
         current?.lifecycle?.moveTo(lifecycle.state)
-        lifecycle.addObserver { lifecycle, event ->
+        lifecycle.addObserver { lifecycle, _ ->
             when (lifecycle.state) {
                 CREATED,
                 DESTROYED -> {

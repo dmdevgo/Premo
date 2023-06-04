@@ -26,8 +26,8 @@ package me.dmdev.premo.sample
 
 import me.dmdev.premo.PmDelegate
 import me.dmdev.premo.PmParams
-import me.dmdev.premo.PmStateSaverFactory
 import me.dmdev.premo.sample.serialization.SimpleJsonPmStateSaverFactory
+import me.dmdev.premo.saver.PmStateSaverFactory
 
 object PremoSample {
     fun createPmDelegate(

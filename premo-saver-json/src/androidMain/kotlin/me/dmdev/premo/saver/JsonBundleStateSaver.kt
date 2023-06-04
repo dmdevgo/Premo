@@ -26,8 +26,6 @@ package me.dmdev.premo.saver
 
 import android.os.Bundle
 import kotlinx.serialization.json.Json
-import me.dmdev.premo.BundleStateSaver
-import me.dmdev.premo.PmStateSaver
 
 class JsonBundleStateSaver(json: Json) : BundleStateSaver {
 

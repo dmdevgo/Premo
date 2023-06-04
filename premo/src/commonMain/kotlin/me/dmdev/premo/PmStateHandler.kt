@@ -25,6 +25,7 @@
 package me.dmdev.premo
 
 import kotlinx.coroutines.flow.MutableStateFlow
+import me.dmdev.premo.saver.PmStateSaver
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
@@ -64,14 +65,6 @@ inline fun <reified T> PmStateHandler.getSaved(key: String): T? {
 
 inline fun <reified T> PmStateHandler.setSaver(key: String, noinline saveValue: () -> T) {
     setSaver(key, typeOf<T>(), saveValue)
-}
-
-@Suppress("FunctionName")
-inline fun <reified T> PresentationModel.SaveableFlow(
-    key: String,
-    initialValue: T
-): MutableStateFlow<T> {
-    return stateHandler.SaveableFlow(key, initialValue, typeOf<T>())
 }
 
 @Suppress("FunctionName")

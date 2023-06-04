@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.saver
 
-import platform.Foundation.NSCoder
+import java.io.File
 
-interface NSCoderStateSaver : PmStateSaverFactory {
-    fun save(coder: NSCoder)
-    fun restore(coder: NSCoder?)
+interface FileStateSaver : PmStateSaverFactory {
+    fun save(file: File)
+    fun restore(file: File?)
 }

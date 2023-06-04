@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.saver
 
 import android.os.Bundle
 

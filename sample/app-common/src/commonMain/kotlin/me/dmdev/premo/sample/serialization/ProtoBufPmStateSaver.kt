@@ -27,8 +27,8 @@ package me.dmdev.premo.sample.serialization
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
-import me.dmdev.premo.PmStateSaver
 import me.dmdev.premo.sample.serialization.Serializers.protoBuf
+import me.dmdev.premo.saver.PmStateSaver
 import kotlin.reflect.KType
 
 class ProtoBufPmStateSaver(private val map: MutableMap<String, ByteArray>) : PmStateSaver {

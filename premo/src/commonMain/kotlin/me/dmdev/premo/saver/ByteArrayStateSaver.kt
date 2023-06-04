@@ -22,20 +22,9 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.saver
 
-import kotlin.reflect.KType
-import kotlin.reflect.typeOf
-
-interface PmStateSaver {
-    fun <T> saveState(key: String, kType: KType, value: T?)
-    fun <T> restoreState(key: String, kType: KType): T?
-}
-
-internal inline fun <reified T> PmStateSaver.saveState(key: String, value: T) {
-    saveState(key, typeOf<T>(), value)
-}
-
-internal inline fun <reified T> PmStateSaver.restoreState(key: String): T? {
-    return restoreState(key, typeOf<T>())
+interface ByteArrayStateSaver : PmStateSaverFactory {
+    fun save(): ByteArray
+    fun restore(byteArray: ByteArray?)
 }

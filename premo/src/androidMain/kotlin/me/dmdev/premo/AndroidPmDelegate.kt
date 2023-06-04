@@ -27,6 +27,7 @@ package me.dmdev.premo
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import me.dmdev.premo.saver.BundleStateSaver
 
 class AndroidPmDelegate<PM : PresentationModel>(
     private val pmActivity: Activity,
@@ -75,7 +76,7 @@ class AndroidPmDelegate<PM : PresentationModel>(
 
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
             if (activity === pmActivity) {
-                pmDelegate.savePm()
+                pmDelegate.onSave()
                 pmStateSaver.save(outState)
             }
         }
