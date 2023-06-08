@@ -24,9 +24,6 @@
 
 package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
@@ -40,6 +37,7 @@ import kotlin.test.assertTrue
 
 class StackNavigatorTest {
 
+    private lateinit var parentPm: TestPm
     private lateinit var lifecycle: PmLifecycle
     private lateinit var navigator: StackNavigator
     private lateinit var pm1: TestPm
@@ -48,15 +46,13 @@ class StackNavigatorTest {
 
     @BeforeTest
     fun setUp() {
-        lifecycle = PmLifecycle()
+        parentPm = TestPm()
+        lifecycle = parentPm.lifecycle
         lifecycle.moveTo(IN_FOREGROUND)
-        pm1 = TestPm()
-        pm2 = TestPm()
-        pm3 = TestPm()
-        navigator = StackNavigatorImpl(
-            lifecycle = lifecycle,
-            scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-        )
+        pm1 = parentPm.Child(TestPm.Description())
+        pm2 = parentPm.Child(TestPm.Description())
+        pm3 = parentPm.Child(TestPm.Description())
+        navigator = parentPm.StackNavigator()
     }
 
     @Test

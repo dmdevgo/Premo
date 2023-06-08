@@ -34,6 +34,7 @@ import kotlin.test.assertEquals
 
 class SetNavigatorTest {
 
+    private lateinit var parentPm: TestPm
     private lateinit var lifecycle: PmLifecycle
     private lateinit var navigator: SetNavigator
     private lateinit var pm1: TestPm
@@ -42,16 +43,14 @@ class SetNavigatorTest {
 
     @BeforeTest
     fun setUp() {
-        lifecycle = PmLifecycle()
+        parentPm = TestPm()
+        lifecycle = parentPm.lifecycle
         lifecycle.moveTo(IN_FOREGROUND)
-        pm1 = TestPm()
-        pm2 = TestPm()
-        pm3 = TestPm()
-        navigator = SetNavigatorImpl(
-            lifecycle = lifecycle,
-            values = listOf(pm1, pm2, pm3),
-            onChangeCurrent = { index, navigator -> navigator.changeCurrent(index) }
-        )
+        pm1 = parentPm.Child(TestPm.Description())
+        pm2 = parentPm.Child(TestPm.Description())
+        pm3 = parentPm.Child(TestPm.Description())
+        navigator = parentPm.SetNavigator()
+        navigator.changeValues(listOf(pm1, pm2, pm3))
     }
 
     @Test
@@ -94,11 +93,7 @@ class SetNavigatorTest {
 
     @Test
     fun testEmptySetNavigator() {
-        navigator = SetNavigatorImpl(
-            lifecycle = lifecycle,
-            values = listOf(),
-            onChangeCurrent = { index, navigator -> navigator.changeCurrent(index) }
-        )
+        val navigator = parentPm.SetNavigator()
 
         assertEquals(listOf(), navigator.values)
         assertEquals(null, navigator.current)
@@ -106,15 +101,7 @@ class SetNavigatorTest {
 
     @Test
     fun testSetValuesToEmptyNavigator() {
-        navigator = SetNavigatorImpl(
-            lifecycle = lifecycle,
-            values = listOf(),
-            onChangeCurrent = { index, navigator -> navigator.changeCurrent(index) }
-        )
-
-        val pm1 = TestPm()
-        val pm2 = TestPm()
-        val pm3 = TestPm()
+        val navigator = parentPm.SetNavigator()
 
         navigator.changeValues(listOf(pm1, pm2, pm3))
 
@@ -127,9 +114,9 @@ class SetNavigatorTest {
 
     @Test
     fun testReplaceValues() {
-        val pm4 = TestPm()
-        val pm5 = TestPm()
-        val pm6 = TestPm()
+        val pm4: TestPm = parentPm.Child(TestPm.Description())
+        val pm5: TestPm = parentPm.Child(TestPm.Description())
+        val pm6: TestPm = parentPm.Child(TestPm.Description())
 
         navigator.changeValues(listOf(pm4, pm5, pm6))
 
@@ -145,8 +132,8 @@ class SetNavigatorTest {
 
     @Test
     fun testPartlyReplaceValues() {
-        val pm4 = TestPm()
-        val pm5 = TestPm()
+        val pm4: TestPm = parentPm.Child(TestPm.Description())
+        val pm5: TestPm = parentPm.Child(TestPm.Description())
 
         navigator.changeValues(listOf(pm2, pm4, pm5))
 
