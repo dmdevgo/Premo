@@ -24,9 +24,6 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.PmLifecycle.Event.ON_BACKGROUND
-import me.dmdev.premo.PmLifecycle.Event.ON_DESTROY
-import me.dmdev.premo.PmLifecycle.Event.ON_FOREGROUND
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
@@ -40,6 +37,7 @@ class PmLifecycle {
 
     fun addObserver(observer: Observer) {
         observers.add(observer)
+        observer.onLifecycleChange(state)
     }
 
     fun removeObserver(observer: Observer) {
@@ -53,7 +51,7 @@ class PmLifecycle {
             CREATED -> {
                 when (state) {
                     IN_FOREGROUND -> {
-                        notifyChange(CREATED, ON_BACKGROUND)
+                        notifyChange(CREATED)
                     }
                     else -> { /*do nothing */
                     }
@@ -62,7 +60,7 @@ class PmLifecycle {
             IN_FOREGROUND -> {
                 when (state) {
                     CREATED -> {
-                        notifyChange(IN_FOREGROUND, ON_FOREGROUND)
+                        notifyChange(IN_FOREGROUND)
                     }
                     else -> { /*do nothing */
                     }
@@ -71,11 +69,11 @@ class PmLifecycle {
             DESTROYED -> {
                 when (state) {
                     CREATED -> {
-                        notifyChange(DESTROYED, ON_DESTROY)
+                        notifyChange(DESTROYED)
                     }
                     IN_FOREGROUND -> {
-                        notifyChange(CREATED, ON_BACKGROUND)
-                        notifyChange(DESTROYED, ON_DESTROY)
+                        notifyChange(CREATED)
+                        notifyChange(DESTROYED)
                     }
                     DESTROYED -> { /*do nothing */
                     }
@@ -90,24 +88,18 @@ class PmLifecycle {
         DESTROYED
     }
 
-    enum class Event {
-        ON_FOREGROUND,
-        ON_BACKGROUND,
-        ON_DESTROY
-    }
-
     fun interface Observer {
-        fun onLifecycleChange(lifecycle: PmLifecycle, event: Event)
+        fun onLifecycleChange(state: State)
     }
 
-    private fun notifyChange(state: State, event: Event) {
+    private fun notifyChange(state: State) {
         this.state = state
 
         observers.forEach { observer ->
-            observer.onLifecycleChange(this, event)
+            observer.onLifecycleChange(state)
         }
 
-        if (event == ON_DESTROY) {
+        if (state == DESTROYED) {
             observers.clear()
         }
     }

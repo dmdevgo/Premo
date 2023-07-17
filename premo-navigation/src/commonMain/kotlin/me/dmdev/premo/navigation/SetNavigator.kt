@@ -143,17 +143,17 @@ internal class SetNavigatorImpl(
 
     private fun subscribeToLifecycle() {
         current?.lifecycle?.moveTo(hostPm.lifecycle.state)
-        hostPm.lifecycle.addObserver { lifecycle, _ ->
-            when (lifecycle.state) {
+        hostPm.lifecycle.addObserver { state ->
+            when (state) {
                 CREATED,
                 DESTROYED -> {
                     values.forEach { pm ->
-                        pm.lifecycle.moveTo(lifecycle.state)
+                        pm.lifecycle.moveTo(state)
                     }
                 }
 
                 IN_FOREGROUND -> {
-                    current?.lifecycle?.moveTo(lifecycle.state)
+                    current?.lifecycle?.moveTo(state)
                 }
             }
         }

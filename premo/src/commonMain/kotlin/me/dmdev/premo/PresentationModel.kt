@@ -28,10 +28,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
-import me.dmdev.premo.PmLifecycle.Event.ON_BACKGROUND
-import me.dmdev.premo.PmLifecycle.Event.ON_DESTROY
-import me.dmdev.premo.PmLifecycle.Event.ON_FOREGROUND
+import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
@@ -86,20 +85,20 @@ abstract class PresentationModel(params: PmParams) {
     }
 
     private fun subscribeToLifecycle() {
-        lifecycle.addObserver { lifecycle, event ->
+        lifecycle.addObserver { state ->
             attachedChildren.forEach { pm ->
                 pm.lifecycle.moveTo(lifecycle.state)
             }
 
-            when (event) {
-                ON_FOREGROUND -> {
+            when (state) {
+                IN_FOREGROUND -> {
                     inForegroundScope = MainScope()
                 }
-                ON_BACKGROUND -> {
+                CREATED -> {
                     inForegroundScope?.cancel()
                     inForegroundScope = null
                 }
-                ON_DESTROY -> {
+                DESTROYED -> {
                     scope.cancel()
                     parent?.stateHandler?.removeSaver(tag)
                     pmStateSaverFactory.deletePmStateSaver(tag)

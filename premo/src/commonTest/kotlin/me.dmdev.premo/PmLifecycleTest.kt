@@ -24,9 +24,6 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.PmLifecycle.Event.ON_BACKGROUND
-import me.dmdev.premo.PmLifecycle.Event.ON_DESTROY
-import me.dmdev.premo.PmLifecycle.Event.ON_FOREGROUND
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
@@ -49,43 +46,39 @@ class PmLifecycleTest {
     @Test
     fun testInitialState() {
         assertEquals(lifecycle.state, CREATED)
+        assertEquals(listOf(CREATED), observer.states)
     }
 
     @Test
     fun testMoveToCreated() {
         lifecycle.moveTo(CREATED)
-        assertEquals(listOf(), observer.states)
-        assertEquals(listOf(), observer.events)
+        assertEquals(listOf(CREATED), observer.states)
     }
 
     @Test
     fun testMoveToInForeground() {
         lifecycle.moveTo(IN_FOREGROUND)
-        assertEquals(listOf(IN_FOREGROUND), observer.states)
-        assertEquals(listOf(ON_FOREGROUND), observer.events)
+        assertEquals(listOf(CREATED, IN_FOREGROUND), observer.states)
     }
 
     @Test
     fun testMoveToCreatedFromInForeground() {
         lifecycle.moveTo(IN_FOREGROUND)
         lifecycle.moveTo(CREATED)
-        assertEquals(listOf(IN_FOREGROUND, CREATED), observer.states)
-        assertEquals(listOf(ON_FOREGROUND, ON_BACKGROUND), observer.events)
+        assertEquals(listOf(CREATED, IN_FOREGROUND, CREATED), observer.states)
     }
 
     @Test
     fun testMoveToDestroyedFromCreated() {
         lifecycle.moveTo(DESTROYED)
-        assertEquals(listOf(DESTROYED), observer.states)
-        assertEquals(listOf(ON_DESTROY), observer.events)
+        assertEquals(listOf(CREATED, DESTROYED), observer.states)
     }
 
     @Test
     fun testMoveToDestroyedFromInForeground() {
         lifecycle.moveTo(IN_FOREGROUND)
         lifecycle.moveTo(DESTROYED)
-        assertEquals(listOf(IN_FOREGROUND, CREATED, DESTROYED), observer.states)
-        assertEquals(listOf(ON_FOREGROUND, ON_BACKGROUND, ON_DESTROY), observer.events)
+        assertEquals(listOf(CREATED, IN_FOREGROUND, CREATED, DESTROYED), observer.states)
     }
 
     @Test
@@ -95,17 +88,14 @@ class PmLifecycleTest {
         lifecycle.addObserver(observer1)
         lifecycle.addObserver(observer2)
         lifecycle.moveTo(IN_FOREGROUND)
-        assertEquals(listOf(IN_FOREGROUND), observer1.states)
-        assertEquals(listOf(IN_FOREGROUND), observer2.states)
-        assertEquals(listOf(ON_FOREGROUND), observer1.events)
-        assertEquals(listOf(ON_FOREGROUND), observer2.events)
+        assertEquals(listOf(CREATED, IN_FOREGROUND), observer1.states)
+        assertEquals(listOf(CREATED, IN_FOREGROUND), observer2.states)
     }
 
     @Test
     fun testRemoveLifecycleObserver() {
         lifecycle.removeObserver(observer)
         lifecycle.moveTo(IN_FOREGROUND)
-        assertEquals(listOf(), observer.states)
-        assertEquals(listOf(), observer.events)
+        assertEquals(listOf(CREATED), observer.states)
     }
 }

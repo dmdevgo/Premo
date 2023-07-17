@@ -27,10 +27,8 @@ package me.dmdev.premo
 class PmLifecycleTestObserver : PmLifecycle.Observer {
 
     val states = mutableListOf<PmLifecycle.State>()
-    val events = mutableListOf<PmLifecycle.Event>()
 
-    override fun onLifecycleChange(lifecycle: PmLifecycle, event: PmLifecycle.Event) {
-        states.add(lifecycle.state)
-        events.add(event)
+    override fun onLifecycleChange(state: PmLifecycle.State) {
+        states.add(state)
     }
 }

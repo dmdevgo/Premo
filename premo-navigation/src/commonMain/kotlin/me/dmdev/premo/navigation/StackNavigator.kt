@@ -205,17 +205,17 @@ internal class StackNavigatorImpl(
     }
 
     private fun subscribeToLifecycle() {
-        hostPm.lifecycle.addObserver { lifecycle, _ ->
-            when (lifecycle.state) {
+        hostPm.lifecycle.addObserver { state ->
+            when (state) {
                 CREATED,
                 DESTROYED -> {
                     backStack.forEach { pm ->
-                        pm.lifecycle.moveTo(lifecycle.state)
+                        pm.lifecycle.moveTo(state)
                     }
                 }
 
                 IN_FOREGROUND -> {
-                    currentTop?.lifecycle?.moveTo(lifecycle.state)
+                    currentTop?.lifecycle?.moveTo(state)
                 }
             }
         }
