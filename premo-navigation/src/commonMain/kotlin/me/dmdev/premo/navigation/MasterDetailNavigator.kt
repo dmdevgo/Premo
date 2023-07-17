@@ -74,6 +74,8 @@ fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetai
 }
 
 internal const val DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY = "master_detail_navigator"
+internal const val DEFAULT_MASTER_DETAIL_NAVIGATOR_DETAIL_STATE_KEY =
+    "${DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY}_detail_pm"
 internal val DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER: (MasterDetailNavigator<*, *>) -> Boolean =
     { it.handleBack() }
 

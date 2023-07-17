@@ -69,6 +69,9 @@ fun PresentationModel.SetNavigator(
 }
 
 internal const val DEFAULT_SET_NAVIGATOR_KEY = "set_navigator"
+internal const val DEFAULT_SET_NAVIGATOR_STATE_VALUES_KEY = "${DEFAULT_SET_NAVIGATOR_KEY}_values"
+internal const val DEFAULT_SET_NAVIGATOR_STATE_CURRENT_INDEX_KEY =
+    "${DEFAULT_SET_NAVIGATOR_KEY}_current_index"
 internal val DEFAULT_SET_NAVIGATOR_BACK_HANDLER: (SetNavigator) -> Boolean = { it.handleBack() }
 internal val DEFAULT_SET_NAVIGATOR_ON_CHANGE_CURRENT: (index: Int, navigator: SetNavigator) -> Unit =
     { index, navigator ->

@@ -24,17 +24,23 @@
 
 package me.dmdev.premo.navigation
 
-import me.dmdev.premo.PmFactory
-import me.dmdev.premo.PmParams
-import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.saver.PmStateSaver
+import kotlin.reflect.KType
 
-class TestPmFactory : PmFactory {
-    override fun createPm(params: PmParams): PresentationModel {
-        return when (params.description) {
-            is TestPm.Description -> TestPm(params)
-            else -> throw IllegalArgumentException(
-                "Not handled instance creation for pm description ${params.description}"
-            )
+@Suppress("UNCHECKED_CAST")
+class TestPmStateSaver(
+    private val map: MutableMap<String, Any> = mutableMapOf()
+) : PmStateSaver {
+
+    override fun <T> saveState(key: String, kType: KType, value: T?) {
+        if (value != null) {
+            map[key] = value
+        } else {
+            map.remove(key)
         }
+    }
+
+    override fun <T> restoreState(key: String, kType: KType): T? {
+        return map[key] as T?
     }
 }

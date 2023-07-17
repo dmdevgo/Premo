@@ -113,6 +113,8 @@ fun PresentationModel.StackNavigator(
 }
 
 internal const val DEFAULT_STACK_NAVIGATOR_KEY = "stack_navigator"
+internal const val DEFAULT_STACK_NAVIGATOR_BACKSTACK_STATE_KEY =
+    "${DEFAULT_STACK_NAVIGATOR_KEY}_backstack"
 internal val DEFAULT_STACK_NAVIGATOR_BACK_HANDLER: (StackNavigator) -> Boolean = { it.handleBack() }
 
 internal class StackNavigatorImpl(

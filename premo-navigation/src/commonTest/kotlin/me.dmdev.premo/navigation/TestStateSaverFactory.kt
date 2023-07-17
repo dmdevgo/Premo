@@ -26,18 +26,20 @@ package me.dmdev.premo.navigation
 
 import me.dmdev.premo.saver.PmStateSaver
 import me.dmdev.premo.saver.PmStateSaverFactory
-import kotlin.reflect.KType
 
-class TestStateSaverFactory : PmStateSaverFactory {
+class TestStateSaverFactory(
+    initialState: MutableMap<String, MutableMap<String, Any>> = mutableMapOf()
+) : PmStateSaverFactory {
+
+    var pmStates: MutableMap<String, MutableMap<String, Any>> = initialState
+        private set
+
     override fun createPmStateSaver(key: String): PmStateSaver {
-        return object : PmStateSaver {
-            override fun <T> saveState(key: String, kType: KType, value: T?) {}
-
-            override fun <T> restoreState(key: String, kType: KType): T? {
-                return null
-            }
-        }
+        val map = pmStates[key] ?: mutableMapOf<String, Any>().also { pmStates[key] = it }
+        return TestPmStateSaver(map)
     }
 
-    override fun deletePmStateSaver(key: String) {}
+    override fun deletePmStateSaver(key: String) {
+        pmStates.remove(key)
+    }
 }

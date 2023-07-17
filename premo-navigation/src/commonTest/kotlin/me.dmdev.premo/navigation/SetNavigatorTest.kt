@@ -24,10 +24,15 @@
 
 package me.dmdev.premo.navigation
 
-import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
+import me.dmdev.premo.navigation.TestPm.Companion.PM1_DESCRIPTION
+import me.dmdev.premo.navigation.TestPm.Companion.PM2_DESCRIPTION
+import me.dmdev.premo.navigation.TestPm.Companion.PM3_DESCRIPTION
+import me.dmdev.premo.navigation.TestPm.Companion.PM4_DESCRIPTION
+import me.dmdev.premo.navigation.TestPm.Companion.PM5_DESCRIPTION
+import me.dmdev.premo.navigation.TestPm.Companion.PM6_DESCRIPTION
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -35,20 +40,24 @@ import kotlin.test.assertEquals
 class SetNavigatorTest {
 
     private lateinit var parentPm: TestPm
-    private lateinit var lifecycle: PmLifecycle
     private lateinit var navigator: SetNavigator
     private lateinit var pm1: TestPm
     private lateinit var pm2: TestPm
     private lateinit var pm3: TestPm
+    private lateinit var pm4: TestPm
+    private lateinit var pm5: TestPm
+    private lateinit var pm6: TestPm
 
     @BeforeTest
     fun setUp() {
         parentPm = TestPm()
-        lifecycle = parentPm.lifecycle
-        lifecycle.moveTo(IN_FOREGROUND)
-        pm1 = parentPm.Child(TestPm.Description())
-        pm2 = parentPm.Child(TestPm.Description())
-        pm3 = parentPm.Child(TestPm.Description())
+        parentPm.lifecycle.moveTo(IN_FOREGROUND)
+        pm1 = parentPm.Child(PM1_DESCRIPTION)
+        pm2 = parentPm.Child(PM2_DESCRIPTION)
+        pm3 = parentPm.Child(PM3_DESCRIPTION)
+        pm4 = parentPm.Child(PM4_DESCRIPTION)
+        pm5 = parentPm.Child(PM5_DESCRIPTION)
+        pm6 = parentPm.Child(PM6_DESCRIPTION)
         navigator = parentPm.SetNavigator()
         navigator.changeValues(listOf(pm1, pm2, pm3))
     }
@@ -74,7 +83,7 @@ class SetNavigatorTest {
 
     @Test
     fun testMoveParentLifecycleToCreated() {
-        lifecycle.moveTo(CREATED)
+        parentPm.lifecycle.moveTo(CREATED)
 
         assertEquals(pm1.lifecycle.state, CREATED)
         assertEquals(pm2.lifecycle.state, CREATED)
@@ -83,8 +92,8 @@ class SetNavigatorTest {
 
     @Test
     fun testMoveParentLifecycleToCreatedAndThenInForeground() {
-        lifecycle.moveTo(CREATED)
-        lifecycle.moveTo(IN_FOREGROUND)
+        parentPm.lifecycle.moveTo(CREATED)
+        parentPm.lifecycle.moveTo(IN_FOREGROUND)
 
         assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
         assertEquals(pm2.lifecycle.state, CREATED)
@@ -114,10 +123,6 @@ class SetNavigatorTest {
 
     @Test
     fun testReplaceValues() {
-        val pm4: TestPm = parentPm.Child(TestPm.Description())
-        val pm5: TestPm = parentPm.Child(TestPm.Description())
-        val pm6: TestPm = parentPm.Child(TestPm.Description())
-
         navigator.changeValues(listOf(pm4, pm5, pm6))
 
         assertEquals(listOf(pm4, pm5, pm6), navigator.values)
@@ -132,9 +137,6 @@ class SetNavigatorTest {
 
     @Test
     fun testPartlyReplaceValues() {
-        val pm4: TestPm = parentPm.Child(TestPm.Description())
-        val pm5: TestPm = parentPm.Child(TestPm.Description())
-
         navigator.changeValues(listOf(pm2, pm4, pm5))
 
         assertEquals(listOf(pm2, pm4, pm5), navigator.values)
@@ -144,5 +146,64 @@ class SetNavigatorTest {
         assertEquals(DESTROYED, pm3.lifecycle.state)
         assertEquals(CREATED, pm4.lifecycle.state)
         assertEquals(CREATED, pm5.lifecycle.state)
+    }
+
+    @Test
+    fun testRestoreState() {
+        val stateSaverFactory = TestStateSaverFactory(
+            initialState = mutableMapOf(
+                TestPm.ROOT_PM_KEY to mutableMapOf(
+                    DEFAULT_SET_NAVIGATOR_STATE_VALUES_KEY to listOf(
+                        PM1_DESCRIPTION,
+                        PM2_DESCRIPTION,
+                        PM3_DESCRIPTION
+                    ),
+                    DEFAULT_SET_NAVIGATOR_STATE_CURRENT_INDEX_KEY to 0
+                )
+            )
+        )
+
+        val parentPm = TestPm.buildRootPm(stateSaverFactory)
+        parentPm.lifecycle.moveTo(IN_FOREGROUND)
+        val navigator = parentPm.SetNavigator()
+
+        assertEquals(
+            listOf(IN_FOREGROUND, CREATED, CREATED),
+            navigator.values.map { it.lifecycle.state }
+        )
+
+        assertEquals(
+            listOf(PM1_DESCRIPTION, PM2_DESCRIPTION, PM3_DESCRIPTION),
+            navigator.values.map { it.description }
+        )
+    }
+
+    @Test
+    fun testSaveState() {
+        val stateSaverFactory = TestStateSaverFactory()
+
+        val parentPm = TestPm.buildRootPm(stateSaverFactory)
+        parentPm.lifecycle.moveTo(IN_FOREGROUND)
+        val navigator = parentPm.SetNavigator(PM1_DESCRIPTION, PM2_DESCRIPTION, PM3_DESCRIPTION)
+        navigator.changeCurrent(1)
+
+        parentPm.stateHandler.saveState()
+
+        assertEquals(
+            mutableMapOf(
+                TestPm.ROOT_PM_KEY to mutableMapOf(
+                    DEFAULT_SET_NAVIGATOR_STATE_VALUES_KEY to listOf(
+                        PM1_DESCRIPTION,
+                        PM2_DESCRIPTION,
+                        PM3_DESCRIPTION
+                    ),
+                    DEFAULT_SET_NAVIGATOR_STATE_CURRENT_INDEX_KEY to 1
+                ),
+                "${TestPm.ROOT_PM_KEY}/${PM1_DESCRIPTION.key}" to mutableMapOf(),
+                "${TestPm.ROOT_PM_KEY}/${PM2_DESCRIPTION.key}" to mutableMapOf(),
+                "${TestPm.ROOT_PM_KEY}/${PM3_DESCRIPTION.key}" to mutableMapOf()
+            ),
+            stateSaverFactory.pmStates
+        )
     }
 }

@@ -31,7 +31,7 @@ import me.dmdev.premo.PresentationModel
 class TestPm(
     pmParams: PmParams = PmParams(
         parent = null,
-        description = Description(),
+        description = ROOT_PM_DESCRIPTION,
         factory = TestPmFactory(),
         stateSaverFactory = TestStateSaverFactory()
     )
@@ -40,4 +40,27 @@ class TestPm(
     data class Description(
         override val key: String = "test_pm"
     ) : PmDescription
+
+    companion object {
+        val ROOT_PM_KEY = "root_pm"
+        val ROOT_PM_DESCRIPTION = Description(ROOT_PM_KEY)
+
+        val PM1_DESCRIPTION = Description("pm1")
+        val PM2_DESCRIPTION = Description("pm2")
+        val PM3_DESCRIPTION = Description("pm3")
+        val PM4_DESCRIPTION = Description("pm4")
+        val PM5_DESCRIPTION = Description("pm5")
+        val PM6_DESCRIPTION = Description("pm6")
+
+        fun buildRootPm(stateSaverFactory: TestStateSaverFactory = TestStateSaverFactory()): TestPm {
+            return TestPm(
+                pmParams = PmParams(
+                    description = ROOT_PM_DESCRIPTION,
+                    parent = null,
+                    factory = TestPmFactory(),
+                    stateSaverFactory = stateSaverFactory
+                )
+            )
+        }
+    }
 }
