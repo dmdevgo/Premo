@@ -57,6 +57,6 @@ class PmDelegate<PM : PresentationModel>(
     }
 
     fun onSave() {
-        return presentationModel.stateHandler.saveState()
+        return presentationModel.saveState()
     }
 }

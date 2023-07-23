@@ -49,10 +49,10 @@ abstract class PresentationModel(params: PmParams) {
     val messageHandler: PmMessageHandler = PmMessageHandler(parent?.messageHandler)
     val stateHandler: PmStateHandler = PmStateHandler(pmStateSaverFactory.createPmStateSaver(tag))
 
+    private val allChildren = mutableListOf<PresentationModel>()
     private val attachedChildren = mutableListOf<PresentationModel>()
 
     init {
-        initSaver()
         subscribeToLifecycle()
     }
 
@@ -75,13 +75,18 @@ abstract class PresentationModel(params: PmParams) {
             stateSaverFactory = pmStateSaverFactory
         )
 
-        return pmFactory.createPm(config) as PM
+        val childPm = pmFactory.createPm(config) as PM
+        allChildren.add(childPm)
+        return childPm
     }
 
-    private fun initSaver() {
-        parent?.stateHandler?.setSaver(tag) {
-            stateHandler.saveState()
-        }
+    fun saveState() {
+        stateHandler.saveState()
+        allChildren.forEach { it.saveState() }
+    }
+
+    private fun removeChild(childPm: PresentationModel) {
+        allChildren.remove(childPm)
     }
 
     private fun subscribeToLifecycle() {
@@ -100,7 +105,7 @@ abstract class PresentationModel(params: PmParams) {
                 }
                 DESTROYED -> {
                     scope.cancel()
-                    parent?.stateHandler?.removeSaver(tag)
+                    parent?.removeChild(this)
                     pmStateSaverFactory.deletePmStateSaver(tag)
                 }
             }
