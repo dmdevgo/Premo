@@ -34,8 +34,8 @@ class PmDelegate<PM : PresentationModel>(
 
     @Suppress("UNCHECKED_CAST")
     val presentationModel: PM by lazy {
-        val pm = PmStore[pmParams.tag] as? PM ?: pmParams.factory.createPm(pmParams) as PM
-        PmStore[pmParams.tag] = pm
+        val pm = PmStore[pmParams.description.key] as? PM ?: pmParams.factory.createPm(pmParams) as PM
+        PmStore[pmParams.description.key] = pm
         pm
     }
 

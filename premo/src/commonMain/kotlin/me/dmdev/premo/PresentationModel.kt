@@ -39,13 +39,18 @@ abstract class PresentationModel(params: PmParams) {
     private val pmFactory: PmFactory = params.factory
     private val pmStateSaverFactory = params.stateSaverFactory
 
-    val tag: String = params.tag
     val description: PmDescription = params.description
     val parent: PresentationModel? = params.parent
+    val tag: String = if (parent != null) {
+        "${parent.tag}/${description.key}"
+    } else {
+        description.key
+    }
     val lifecycle: PmLifecycle = PmLifecycle()
     val scope: CoroutineScope = MainScope()
     var inForegroundScope: CoroutineScope? = null
         private set
+
     val messageHandler: PmMessageHandler = PmMessageHandler(parent?.messageHandler)
     val stateHandler: PmStateHandler = PmStateHandler(pmStateSaverFactory.createPmStateSaver(tag))
 

@@ -31,10 +31,4 @@ class PmParams(
     val parent: PresentationModel?,
     val factory: PmFactory,
     val stateSaverFactory: PmStateSaverFactory
-) {
-    val tag: String get() = if (parent != null) {
-        "${parent.tag}/${description.key}"
-    } else {
-        description.key
-    }
-}
+)
