@@ -24,6 +24,7 @@
 
 package me.dmdev.premo.navigation
 
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -89,14 +90,17 @@ internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
 ) : DialogNavigator<D, R> {
 
     private val _dialog: MutableStateFlow<D?> = hostPm.SaveableFlow(
-        key = "${key}_dialog",
+        key = key,
         initialValueProvider = { null },
         saveTypeMapper = { it?.description },
         restoreTypeMapper = { it?.let { hostPm.AttachedChild(it) as D } }
     )
     override val dialogFlow: StateFlow<D?> = _dialog.asStateFlow()
 
-    private val resultChannel = Channel<R?>()
+    private val resultChannel = Channel<R?>(
+        capacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_LATEST
+    )
 
     init {
         subscribeToMessages()

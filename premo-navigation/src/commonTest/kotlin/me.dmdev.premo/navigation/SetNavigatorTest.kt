@@ -50,7 +50,7 @@ class SetNavigatorTest {
 
     @BeforeTest
     fun setUp() {
-        parentPm = TestPm()
+        parentPm = TestPm.buildRootPm()
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
         pm1 = parentPm.Child(PM1_DESCRIPTION)
         pm2 = parentPm.Child(PM2_DESCRIPTION)

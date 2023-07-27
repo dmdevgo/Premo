@@ -45,6 +45,7 @@ kotlin {
             dependencies {
                 implementation(project(":premo"))
                 implementation(libs.kotlin.test)
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
     }

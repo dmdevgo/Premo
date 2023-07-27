@@ -25,21 +25,20 @@
 package me.dmdev.premo.navigation
 
 import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 
-class TestPm(
-    pmParams: PmParams = PmParams(
-        parent = null,
-        description = ROOT_PM_DESCRIPTION,
-        factory = TestPmFactory(),
-        stateSaverFactory = TestStateSaverFactory()
-    )
-) : PresentationModel(pmParams) {
+class TestPm(pmParams: PmParams) : PresentationModel(pmParams) {
 
     data class Description(
         override val key: String = "test_pm"
     ) : PmDescription
+
+    sealed class ResultMessage : PmMessage {
+        object Ok : ResultMessage()
+        object Cancel : ResultMessage()
+    }
 
     companion object {
         val ROOT_PM_KEY = "root_pm"

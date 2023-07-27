@@ -42,7 +42,7 @@ class DialogNavigationPm(
 
     private val simpleDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("simple_dialog")
     private val dialogForResult = DialogNavigator<SimpleDialogPm, ResultMessage>("dialog_for_result")
-    private val showResultDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("shoe_result_dialog")
+    private val showResultDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("show_result_dialog")
 
     val dialogGroupNavigation = DialogGroupNavigation(
         dialogForResult,

@@ -27,6 +27,7 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
@@ -40,7 +41,7 @@ interface DialogGroupNavigation {
 
 fun PresentationModel.DialogGroupNavigation(
     vararg dialogNavigators: DialogNavigator<*, *>,
-    key: String = "dialog_group",
+    key: String = DEFAULT_DIALOG_GROUP_NAVIGATION_KEY,
     backHandler: (DialogGroupNavigation) -> Boolean = { it.handleBack() }
 ): DialogGroupNavigation {
     val navigator = DialogGroupNavigatorImpl(
@@ -61,6 +62,8 @@ fun DialogGroupNavigation.handleBack(): Boolean {
     }
 }
 
+internal const val DEFAULT_DIALOG_GROUP_NAVIGATION_KEY = "dialog_group"
+
 internal class DialogGroupNavigatorImpl(
     private val hostPm: PresentationModel,
     private val dialogNavigators: List<DialogNavigator<*, *>>,
@@ -69,7 +72,7 @@ internal class DialogGroupNavigatorImpl(
 
     private val _dialogsFlow: MutableStateFlow<List<PresentationModel>> =
         hostPm.SaveableFlow(
-            key = "${key}_dialogs",
+            key = key,
             initialValueProvider = { listOf() },
             saveTypeMapper = { dialogs -> dialogs.map { it.description } },
             restoreTypeMapper = { descriptions ->
@@ -90,14 +93,15 @@ internal class DialogGroupNavigatorImpl(
     init {
         dialogNavigators.forEach { dialogNavigator ->
             hostPm.scope.launch {
-                dialogNavigator.dialogFlow.collect { pm ->
+                dialogNavigator.dialogFlow.drop(1).collect { pm ->
                     if (pm != null) {
                         _dialogsFlow.value = _dialogsFlow.value
-                            .filter { it != pm }
+                            .filter { it !== pm }
                             .plus(pm)
                     } else {
-                        _dialogsFlow.value =
-                            _dialogsFlow.value.filter { it == dialogNavigator.dialog }
+                        _dialogsFlow.value = _dialogsFlow.value.filter { pm ->
+                            dialogNavigators.find { it.dialog === pm } != null
+                        }
                     }
                 }
             }
