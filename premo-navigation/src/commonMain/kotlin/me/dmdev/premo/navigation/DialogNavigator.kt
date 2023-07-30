@@ -59,12 +59,14 @@ inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.Dial
     key: String,
     noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator ->
         navigator.dismiss()
-    }
+    },
+    noinline resultHandler: (R?) -> Unit = {}
 ): DialogNavigator<D, R> {
     return DialogNavigator(
         key = key,
         messageClass = R::class,
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        resultHandler = resultHandler
     )
 }
 
@@ -72,11 +74,13 @@ inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.Dial
 fun <D : PresentationModel, R : PmMessage> PresentationModel.DialogNavigator(
     key: String,
     messageClass: KClass<R>,
-    onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit
+    onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit,
+    resultHandler: (R?) -> Unit
 ): DialogNavigator<D, R> {
     return DialogNavigatorImpl(
         hostPm = this,
         onDismissRequest = onDismissRequest,
+        resultHandler = resultHandler,
         key = key,
         messageClass = messageClass
     )
@@ -85,6 +89,7 @@ fun <D : PresentationModel, R : PmMessage> PresentationModel.DialogNavigator(
 internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
     private val hostPm: PresentationModel,
     private val onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit,
+    private val resultHandler: (R?) -> Unit,
     private val messageClass: KClass<R>,
     key: String
 ) : DialogNavigator<D, R> {
@@ -118,12 +123,14 @@ internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
     }
 
     override fun sendResult(result: R) {
+        resultHandler(result)
         _dialog.value?.detachFromParent()
         _dialog.value = null
         resultChannel.trySend(result)
     }
 
     override fun dismiss() {
+        resultHandler(null)
         _dialog.value?.detachFromParent()
         _dialog.value = null
         resultChannel.trySend(null)

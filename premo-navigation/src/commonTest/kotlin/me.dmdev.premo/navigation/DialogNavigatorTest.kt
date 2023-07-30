@@ -104,12 +104,20 @@ class DialogNavigatorTest {
     @Test
     fun testResultDialog() = runTest(UnconfinedTestDispatcher()) {
         var result: ResultMessage? = null
+        var resultFromHandler: ResultMessage? = null
+        val navigator: DialogNavigator<TestPm, ResultMessage> =
+            parentPm.DialogNavigator(DIALOG_KEY) { resultMessage ->
+                resultFromHandler = resultMessage
+            }
+
         launch {
             result = navigator.showForResult(dialogPm)
         }
+
         navigator.sendResult(ResultMessage.Ok)
 
         assertEquals(ResultMessage.Ok, result)
+        assertEquals(ResultMessage.Ok, resultFromHandler)
         assertEquals(null, navigator.dialog)
         assertEquals(null, navigator.dialogFlow.value)
         assertEquals(DESTROYED, dialogPm.lifecycle.state)

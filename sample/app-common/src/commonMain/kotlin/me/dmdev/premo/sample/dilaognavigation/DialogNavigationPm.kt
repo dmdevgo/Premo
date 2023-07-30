@@ -41,7 +41,24 @@ class DialogNavigationPm(
     object Description : PmDescription
 
     private val simpleDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("simple_dialog")
-    private val dialogForResult = DialogNavigator<SimpleDialogPm, ResultMessage>("dialog_for_result")
+    private val dialogForResult = DialogNavigator<SimpleDialogPm, ResultMessage>("dialog_for_result") { result ->
+        val resultMessage = when (result) {
+            SimpleDialogPm.Cancel -> "Cancel"
+            SimpleDialogPm.Ok -> "Ok"
+            null -> "Dismiss"
+        }
+
+        showResultDialog.show(
+            Child(
+                SimpleDialogPm.Description(
+                    title = "Dialog Result",
+                    message = resultMessage,
+                    okButtonText = "Close",
+                    cancelButtonText = ""
+                )
+            )
+        )
+    }
     private val showResultDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("show_result_dialog")
 
     val dialogGroupNavigation = DialogGroupNavigation(
@@ -65,30 +82,13 @@ class DialogNavigationPm(
 
     fun showSimpleDialogForResultClick() {
         inForegroundScope?.launch {
-            val result = dialogForResult.showForResult(
+            dialogForResult.showForResult(
                 Child(
                     SimpleDialogPm.Description(
                         title = "Simple result dialog",
                         message = "This is a simple dialog that sends a result message to show which button is clicked.",
                         okButtonText = "Ok",
                         cancelButtonText = "Cancel"
-                    )
-                )
-            )
-
-            val resultMessage = when (result) {
-                SimpleDialogPm.Cancel -> "Cancel"
-                SimpleDialogPm.Ok -> "Ok"
-                null -> "Dismiss"
-            }
-
-            showResultDialog.show(
-                Child(
-                    SimpleDialogPm.Description(
-                        title = "Dialog Result",
-                        message = resultMessage,
-                        okButtonText = "Close",
-                        cancelButtonText = ""
                     )
                 )
             )
