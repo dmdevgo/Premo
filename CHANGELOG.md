@@ -1,3 +1,11 @@
+# 1.0.0-alpha.10 / 30.07.2023
+- Published new module: `premo-saver-json`.
+- Implemented `DialogGroupNavigation` for showing a group of dialogs.
+- Implemented new PM delegates: `IosPmDelegate`, `JvmPmDelegate`, `JsPmDelegate`, `AndroidPmDelegate`.
+- Removed `PmActivityDelegate` and `Premo`. Use `AndroidPmDelegate` directly in the Activity.
+- Removed `PmLifecycle.Event`.
+- Lots of improvements in navigators and state savers.
+
 # 1.0.0-alpha.09 / 18.05.2023
 - `PmActivity` is interface now. You need to call `Premo.init()` in the Android app's `onCreate`.
 - Added list of removed PMs to `BackStackChange`.

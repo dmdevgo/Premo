@@ -64,13 +64,12 @@ kotlin {
             dependencies {
                 api("me.dmdev.premo:premo:<latest_version>")
                 api("me.dmdev.premo:premo-navigation:<latest_version>")
+                api("me.dmdev.premo:premo-saver-json:<latest_version>")
             }
         } 
     }
 }
 ```
-
-You will also need [kotlinx serialization](https://github.com/Kotlin/kotlinx.serialization) to implement the `PmStateSaver`. See [sample](#sample) for more details.
 
 > Attention! The library is in the pre-release alpha version. Stable work and backward compatibility are not guaranteed. API may be changed in the future.
 
