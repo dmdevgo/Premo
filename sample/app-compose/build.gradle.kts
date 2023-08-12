@@ -136,7 +136,7 @@ compose.experimental {
 
 compose.desktop {
     application {
-        mainClass = "PremoSampleKt"
+        mainClass = "me.dmdev.premo.sample.MainKt"
         nativeDistributions {
             targetFormats(
                 org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,
