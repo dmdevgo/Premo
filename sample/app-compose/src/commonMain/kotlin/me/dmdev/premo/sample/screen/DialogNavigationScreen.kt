@@ -30,8 +30,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import me.dmdev.premo.navigation.back
-import me.dmdev.premo.sample.CommonDialog
-import me.dmdev.premo.sample.DialogContainer
 import me.dmdev.premo.sample.ScreenBox
 import me.dmdev.premo.sample.bind
 import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
@@ -63,18 +61,37 @@ fun DialogNavigationScreen(
 
         pm.dialogGroupNavigation.dialogsFlow.bind().let { dialogs ->
             val dialogPm = dialogs.lastOrNull()
-            DialogContainer(isVisible = dialogPm != null) {
-                if (dialogPm is SimpleDialogPm) {
-                    CommonDialog(
-                        title = dialogPm.title,
-                        message = dialogPm.message,
-                        okButtonText = dialogPm.okButtonText,
-                        cancelButtonText = dialogPm.cancelButtonText,
-                        onOkButtonClick = dialogPm::onOkClick,
-                        onCancelButtonClick = dialogPm::onCancelClick,
-                        onDismissRequest = pm.dialogGroupNavigation::onDismissRequest
-                    )
-                }
+            if (dialogPm is SimpleDialogPm) {
+                AlertDialog(
+                    title = { Text(dialogPm.title) },
+                    text = { Text(dialogPm.message) },
+                    buttons = {
+                        val okButtonText = dialogPm.okButtonText
+                        val cancelButtonText = dialogPm.cancelButtonText
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            if (cancelButtonText.isNotEmpty()) {
+                                Button(
+                                    onClick = dialogPm::onCancelClick
+                                ) {
+                                    Text(cancelButtonText)
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            if (okButtonText.isNotEmpty()) {
+                                Button(
+                                    onClick = dialogPm::onOkClick
+                                ) {
+                                    Text(okButtonText)
+                                }
+                            }
+                        }
+                    },
+                    onDismissRequest = pm.dialogGroupNavigation::onDismissRequest
+                )
             }
         }
     }
