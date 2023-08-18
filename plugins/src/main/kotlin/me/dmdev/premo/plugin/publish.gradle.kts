@@ -64,7 +64,7 @@ val javadocJar by tasks.registering(Jar::class) {
 }
 
 kotlin {
-    android {
+    androidTarget {
         publishLibraryVariants("release")
     }
 }

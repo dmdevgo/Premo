@@ -26,7 +26,6 @@ package me.dmdev.premo.plugin
 
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.Action
-import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -43,11 +42,6 @@ class AndroidConfigurationPlugin : Plugin<Project> {
                 minSdk = ANDROID_SDK_MIN
             }
 
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_1_8
-                targetCompatibility = JavaVersion.VERSION_1_8
-            }
-
             sourceSets.getByName("main").apply {
                 manifest.srcFile("src/androidMain/AndroidManifest.xml")
                 res.srcDirs("src/androidMain/res")
@@ -57,8 +51,8 @@ class AndroidConfigurationPlugin : Plugin<Project> {
 
     companion object {
         private const val ANDROID_SDK_MIN = 21
-        private const val ANDROID_SDK_COMPILE = 33
-        private const val ANDROID_SDK_TARGET = 33
+        private const val ANDROID_SDK_COMPILE = 34
+        private const val ANDROID_SDK_TARGET = 34
     }
 }
 

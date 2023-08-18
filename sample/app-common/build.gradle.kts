@@ -52,7 +52,7 @@ kotlin {
     js(IR) {
         browser()
     }
-    android()
+    androidTarget()
 
     sourceSets {
 

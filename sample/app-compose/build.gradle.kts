@@ -33,7 +33,7 @@ plugins {
 
 kotlin {
 
-    android()
+    androidTarget()
     jvm("desktop") {
         compilations.all {
             kotlinOptions.jvmTarget = "11"
@@ -123,10 +123,6 @@ android {
         minSdk = 23
         versionCode = 1
         versionName = "1.0"
-    }
-
-    kotlin {
-        jvmToolchain(11)
     }
 }
 

@@ -111,7 +111,7 @@ fun NavigationBox(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalPremoApi::class)
+@OptIn(ExperimentalPremoApi::class)
 @Composable
 fun AnimatedNavigationBox(
     backStackChange: BackStackChange,
@@ -134,18 +134,21 @@ fun AnimatedNavigationBox(
         transitionSpec = {
             when (backStackChange) {
                 is BackStackChange.Push -> {
-                    enterTransition(backStackChange.exitPm, backStackChange.enterPm) with
+                    enterTransition(backStackChange.exitPm, backStackChange.enterPm) togetherWith
                         exitTransition(backStackChange.exitPm, backStackChange.enterPm)
                 }
+
                 is BackStackChange.Pop -> {
-                    popEnterTransition(backStackChange.exitPm, backStackChange.enterPm) with
+                    popEnterTransition(backStackChange.exitPm, backStackChange.enterPm) togetherWith
                         popExitTransition(backStackChange.exitPm, backStackChange.enterPm)
                 }
+
                 is BackStackChange.Set -> {
-                    setTransition(backStackChange.pm) with ExitTransition.None
+                    setTransition(backStackChange.pm) togetherWith ExitTransition.None
                 }
+
                 else -> {
-                    defaultTransition() with ExitTransition.None
+                    defaultTransition() togetherWith ExitTransition.None
                 }
             }
         }

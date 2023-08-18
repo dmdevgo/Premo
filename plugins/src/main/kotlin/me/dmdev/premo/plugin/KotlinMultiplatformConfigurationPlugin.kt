@@ -33,7 +33,7 @@ class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         target.kotlin {
-            android()
+            androidTarget()
             ios()
             iosSimulatorArm64()
             jvm()

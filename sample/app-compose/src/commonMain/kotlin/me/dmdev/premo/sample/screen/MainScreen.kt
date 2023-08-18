@@ -51,7 +51,6 @@ fun MainScreen(mainPm: MainPm) {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun CompactMainScreen(
     mainPm: MainPm = Stubs.mainPm,
@@ -61,10 +60,10 @@ fun CompactMainScreen(
         targetState = detailPm,
         transitionSpec = {
             if (targetState != null) {
-                slideInHorizontally { height -> height } with
+                slideInHorizontally { height -> height } togetherWith
                     slideOutHorizontally { height -> -height }
             } else {
-                slideInHorizontally { height -> -height } with
+                slideInHorizontally { height -> -height } togetherWith
                     slideOutHorizontally { height -> height }
             }
         }
