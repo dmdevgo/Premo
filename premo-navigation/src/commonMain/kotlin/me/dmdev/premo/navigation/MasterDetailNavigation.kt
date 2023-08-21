@@ -38,7 +38,6 @@ interface MasterDetailNavigation<M, D>
     val detail: D? get() = detailFlow.value
 }
 
-@Suppress("FunctionName")
 fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigation(
     masterDescription: PmDescription,
     key: String = DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY,

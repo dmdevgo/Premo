@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import me.dmdev.premo.PresentationModel
 
-@Suppress("FunctionName")
 fun <T> PresentationModel.StateFlow(
     initialValue: T,
     stateSource: (() -> Flow<T>)

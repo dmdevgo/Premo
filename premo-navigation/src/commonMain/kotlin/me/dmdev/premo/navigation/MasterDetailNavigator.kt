@@ -56,7 +56,6 @@ fun MasterDetailNavigator<*, *>.handleBack(): Boolean {
     return handled
 }
 
-@Suppress("FunctionName")
 fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigator(
     masterDescription: PmDescription,
     key: String = DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY,

@@ -47,8 +47,8 @@ class SimpleDialogPm(
     ) : PmDescription
 
     sealed interface ResultMessage : PmMessage
-    object Ok : ResultMessage
-    object Cancel : ResultMessage
+    data object Ok : ResultMessage
+    data object Cancel : ResultMessage
 
     fun onOkClick() {
         messageHandler.send(Ok)

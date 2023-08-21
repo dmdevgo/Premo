@@ -46,5 +46,5 @@ sealed class BackStackChange {
         val removedPms: List<PresentationModel>
     ) : BackStackChange()
 
-    object Nothing : BackStackChange()
+    data object Nothing : BackStackChange()
 }

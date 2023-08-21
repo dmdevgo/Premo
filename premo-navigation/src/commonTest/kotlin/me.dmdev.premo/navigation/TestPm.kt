@@ -36,8 +36,8 @@ class TestPm(pmParams: PmParams) : PresentationModel(pmParams) {
     ) : PmDescription
 
     sealed class ResultMessage : PmMessage {
-        object Ok : ResultMessage()
-        object Cancel : ResultMessage()
+        data object Ok : ResultMessage()
+        data object Cancel : ResultMessage()
     }
 
     fun sendResultMessage(resultMessage: ResultMessage) {
@@ -45,8 +45,8 @@ class TestPm(pmParams: PmParams) : PresentationModel(pmParams) {
     }
 
     companion object {
-        val ROOT_PM_KEY = "root_pm"
-        val ROOT_PM_DESCRIPTION = Description(ROOT_PM_KEY)
+        const val ROOT_PM_KEY = "root_pm"
+        private val ROOT_PM_DESCRIPTION = Description(ROOT_PM_KEY)
 
         val PM1_DESCRIPTION = Description("pm1")
         val PM2_DESCRIPTION = Description("pm2")
