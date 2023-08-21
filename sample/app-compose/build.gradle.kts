@@ -24,7 +24,6 @@
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.native.cocoapods)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.android.application)
     alias(libs.plugins.ktlint)
@@ -40,28 +39,22 @@ kotlin {
         }
     }
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries {
+            framework {
+                baseName = "CommonUI"
+                isStatic = true
+            }
+        }
+    }
 
     js(IR) {
         browser()
         binaries.executable()
-    }
-
-    cocoapods {
-        version = "1.0.0"
-        summary = "Some description for the Shared Module"
-        homepage = "Link to the Shared Module homepage"
-        ios.deploymentTarget = "14.1"
-        podfile = project.file("../app-ios-compose/Podfile")
-        name = "CommonUIPod"
-        framework {
-            baseName = "CommonUI"
-            isStatic = true
-        }
-        extraSpecAttributes["resources"] =
-            "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
     }
 
     sourceSets {

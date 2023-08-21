@@ -25,6 +25,7 @@
 package me.dmdev.premo.saver
 
 import kotlinx.cinterop.CPointed
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
@@ -39,6 +40,7 @@ import platform.Foundation.encodeBytes
 import platform.darwin.NSUIntegerVar
 import platform.posix.memcpy
 
+@OptIn(ExperimentalForeignApi::class)
 class JsonNSCoderStateSaver(json: Json) : NSCoderStateSaver {
 
     private val jsonStateSaver = JsonStateSaver(json)
