@@ -82,7 +82,7 @@ class DialogNavigationPm(
 
     fun showSimpleDialogForResultClick() {
         inForegroundScope?.launch {
-            dialogForResult.showForResult(
+            dialogForResult.show(
                 Child(
                     SimpleDialogPm.Description(
                         title = "Simple result dialog",

@@ -26,10 +26,7 @@ package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
@@ -102,22 +99,17 @@ class DialogNavigatorTest {
     }
 
     @Test
-    fun testResultDialog() = runTest(UnconfinedTestDispatcher()) {
+    fun testResultDialog() {
         var result: ResultMessage? = null
-        var resultFromHandler: ResultMessage? = null
         val navigator: DialogNavigator<TestPm, ResultMessage> =
             parentPm.DialogNavigator(DIALOG_KEY) { resultMessage ->
-                resultFromHandler = resultMessage
+                result = resultMessage
             }
 
-        launch {
-            result = navigator.showForResult(dialogPm)
-        }
-
-        navigator.sendResult(ResultMessage.Ok)
+        navigator.show(dialogPm)
+        dialogPm.sendResultMessage(ResultMessage.Ok)
 
         assertEquals(ResultMessage.Ok, result)
-        assertEquals(ResultMessage.Ok, resultFromHandler)
         assertEquals(null, navigator.dialog)
         assertEquals(null, navigator.dialogFlow.value)
         assertEquals(DESTROYED, dialogPm.lifecycle.state)

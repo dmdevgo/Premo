@@ -40,6 +40,10 @@ class TestPm(pmParams: PmParams) : PresentationModel(pmParams) {
         object Cancel : ResultMessage()
     }
 
+    fun sendResultMessage(resultMessage: ResultMessage) {
+        messageHandler.send(resultMessage)
+    }
+
     companion object {
         val ROOT_PM_KEY = "root_pm"
         val ROOT_PM_DESCRIPTION = Description(ROOT_PM_KEY)

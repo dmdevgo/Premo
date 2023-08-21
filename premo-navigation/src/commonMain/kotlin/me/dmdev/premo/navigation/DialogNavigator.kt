@@ -24,8 +24,6 @@
 
 package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,8 +38,6 @@ import kotlin.reflect.KClass
 
 interface DialogNavigator<D : PresentationModel, R> : DialogNavigation<D> {
     fun show(pm: D)
-    suspend fun showForResult(pm: D): R?
-    fun sendResult(result: R)
     fun dismiss()
 }
 
@@ -54,7 +50,6 @@ fun DialogNavigator<*, *>.handleBack(): Boolean {
     }
 }
 
-@Suppress("FunctionName")
 inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.DialogNavigator(
     key: String,
     noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator ->
@@ -70,7 +65,6 @@ inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.Dial
     )
 }
 
-@Suppress("FunctionName")
 fun <D : PresentationModel, R : PmMessage> PresentationModel.DialogNavigator(
     key: String,
     messageClass: KClass<R>,
@@ -102,11 +96,6 @@ internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
     )
     override val dialogFlow: StateFlow<D?> = _dialog.asStateFlow()
 
-    private val resultChannel = Channel<R?>(
-        capacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_LATEST
-    )
-
     init {
         subscribeToMessages()
     }
@@ -117,27 +106,18 @@ internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
         pm.attachToParent()
     }
 
-    override suspend fun showForResult(pm: D): R? {
-        show(pm)
-        return resultChannel.receive()
-    }
-
-    override fun sendResult(result: R) {
-        resultHandler(result)
-        _dialog.value?.detachFromParent()
-        _dialog.value = null
-        resultChannel.trySend(result)
-    }
-
     override fun dismiss() {
-        resultHandler(null)
-        _dialog.value?.detachFromParent()
-        _dialog.value = null
-        resultChannel.trySend(null)
+        handleResult(null)
     }
 
     override fun onDismissRequest() {
         onDismissRequest(this)
+    }
+
+    private fun handleResult(result: R?) {
+        resultHandler(result)
+        _dialog.value?.detachFromParent()
+        _dialog.value = null
     }
 
     private fun subscribeToMessages() {
@@ -146,7 +126,7 @@ internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
                 it?.messageHandler?.addHandler { message ->
                     if (messageClass.isInstance(message)) {
                         @Suppress("UNCHECKED_CAST")
-                        sendResult(message as R)
+                        handleResult(message as R)
                         true
                     } else {
                         false
