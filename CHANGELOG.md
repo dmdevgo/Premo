@@ -1,3 +1,9 @@
+# 1.0.0-alpha.11 / 29.08.2023
+- Published new module: `premo-navigation-compose`.
+- Removed `showForResult` from `DialogNavigator` because this way of waiting the result is not persistent.
+- Removed `sendResult` from `DialogNavigator`. The right way to send a result is using PM messages.
+- Kotlin is updated to 1.9.0.
+
 # 1.0.0-alpha.10 / 30.07.2023
 - Published new module: `premo-saver-json`.
 - Implemented `DialogGroupNavigation` for showing a group of dialogs.
