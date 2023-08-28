@@ -29,11 +29,13 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
+import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.navigation.back
 import me.dmdev.premo.sample.CounterPm
 import me.dmdev.premo.sample.ScreenBox
 import me.dmdev.premo.sample.bind
 
+@OptIn(ExperimentalPremoApi::class)
 @Composable
 fun CounterScreen(
     pm: CounterPm

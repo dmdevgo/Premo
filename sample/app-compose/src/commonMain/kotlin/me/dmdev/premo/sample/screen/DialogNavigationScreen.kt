@@ -29,12 +29,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
+import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.navigation.back
 import me.dmdev.premo.sample.ScreenBox
 import me.dmdev.premo.sample.bind
 import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
 import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm
 
+@OptIn(ExperimentalPremoApi::class)
 @Composable
 fun DialogNavigationScreen(
     pm: DialogNavigationPm

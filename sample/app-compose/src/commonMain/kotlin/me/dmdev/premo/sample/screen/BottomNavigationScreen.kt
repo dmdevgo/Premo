@@ -34,14 +34,13 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import me.dmdev.premo.ExperimentalPremoApi
+import me.dmdev.premo.compose.AnimatedNavigationBox
 import me.dmdev.premo.navigation.back
-import me.dmdev.premo.sample.AnimatedNavigationBox
 import me.dmdev.premo.sample.CardBox
 import me.dmdev.premo.sample.EmptyBox
 import me.dmdev.premo.sample.ScreenBox
 import me.dmdev.premo.sample.Stubs
 import me.dmdev.premo.sample.bind
-import me.dmdev.premo.sample.bindNavigation
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottomnavigation.TabItemPm
 import me.dmdev.premo.sample.bottomnavigation.TabPm
@@ -80,7 +79,7 @@ fun BottomNavigationScreen(
         ) {
             if (currentTabPm is TabPm) {
                 AnimatedNavigationBox(
-                    backStackChange = currentTabPm.navigation.bindNavigation(),
+                    navigation = currentTabPm.navigation,
                     enterTransition = { _, _ -> slideInHorizontally { height -> height } },
                     exitTransition = { _, _ -> slideOutHorizontally { height -> -height } },
                     popEnterTransition = { _, _ -> slideInHorizontally { height -> -height } },

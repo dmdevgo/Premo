@@ -66,6 +66,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":sample:app-common"))
+                api(project(":premo-navigation-compose"))
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
