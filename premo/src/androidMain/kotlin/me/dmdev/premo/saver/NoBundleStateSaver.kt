@@ -22,20 +22,19 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.saver
 
-import me.dmdev.premo.saver.NoPmStateSaverFactory
+import android.os.Bundle
 
-class TestPm(
-    pmParams: PmParams = PmParams(
-        description = Description(),
-        parent = null,
-        factory = TestPmFactory(),
-        stateSaverFactory = NoPmStateSaverFactory
-    )
-) : PresentationModel(pmParams) {
+object NoBundleStateSaver : BundleStateSaver {
 
-    data class Description(
-        override val key: String = "test_pm"
-    ) : PmDescription
+    override fun save(outState: Bundle) {}
+
+    override fun restore(savedState: Bundle?) {}
+
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        return NoPmStateSaver
+    }
+
+    override fun deletePmStateSaver(key: String) {}
 }

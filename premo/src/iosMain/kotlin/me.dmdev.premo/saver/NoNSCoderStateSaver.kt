@@ -22,20 +22,19 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.saver
 
-import me.dmdev.premo.saver.NoPmStateSaverFactory
+import platform.Foundation.NSCoder
 
-class TestPm(
-    pmParams: PmParams = PmParams(
-        description = Description(),
-        parent = null,
-        factory = TestPmFactory(),
-        stateSaverFactory = NoPmStateSaverFactory
-    )
-) : PresentationModel(pmParams) {
+object NoNSCoderStateSaver : NSCoderStateSaver {
 
-    data class Description(
-        override val key: String = "test_pm"
-    ) : PmDescription
+    override fun save(coder: NSCoder) {}
+
+    override fun restore(coder: NSCoder?) {}
+
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        return NoPmStateSaver
+    }
+
+    override fun deletePmStateSaver(key: String) {}
 }

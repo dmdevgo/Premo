@@ -22,20 +22,19 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.saver
 
-import me.dmdev.premo.saver.NoPmStateSaverFactory
+import java.io.File
 
-class TestPm(
-    pmParams: PmParams = PmParams(
-        description = Description(),
-        parent = null,
-        factory = TestPmFactory(),
-        stateSaverFactory = NoPmStateSaverFactory
-    )
-) : PresentationModel(pmParams) {
+object NoFileStateSaver : FileStateSaver {
 
-    data class Description(
-        override val key: String = "test_pm"
-    ) : PmDescription
+    override fun save(file: File) {}
+
+    override fun restore(file: File?) {}
+
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        return NoPmStateSaver
+    }
+
+    override fun deletePmStateSaver(key: String) {}
 }

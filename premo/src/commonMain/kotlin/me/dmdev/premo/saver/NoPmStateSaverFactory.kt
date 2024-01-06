@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,12 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.saver
 
-import me.dmdev.premo.saver.PmStateSaver
-import me.dmdev.premo.saver.PmStateSaverFactory
-import kotlin.reflect.KType
+object NoPmStateSaverFactory : PmStateSaverFactory {
 
-class TestStateSaverFactory : PmStateSaverFactory {
     override fun createPmStateSaver(key: String): PmStateSaver {
-        return object : PmStateSaver {
-            override fun <T> saveState(key: String, kType: KType, value: T?) {}
-
-            override fun <T> restoreState(key: String, kType: KType): T? {
-                return null
-            }
-        }
+        return NoPmStateSaver
     }
 
     override fun deletePmStateSaver(key: String) {}

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ package me.dmdev.premo
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
+import me.dmdev.premo.saver.NoPmStateSaverFactory
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -46,7 +47,7 @@ class PmDelegateTest {
                 parent = null,
                 description = TestPm.Description(),
                 factory = pmFactory,
-                stateSaverFactory = TestStateSaverFactory()
+                stateSaverFactory = NoPmStateSaverFactory
             )
         )
     }

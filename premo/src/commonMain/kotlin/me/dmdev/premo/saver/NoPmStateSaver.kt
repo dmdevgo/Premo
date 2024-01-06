@@ -22,20 +22,15 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.saver
 
-import me.dmdev.premo.saver.NoPmStateSaverFactory
+import kotlin.reflect.KType
 
-class TestPm(
-    pmParams: PmParams = PmParams(
-        description = Description(),
-        parent = null,
-        factory = TestPmFactory(),
-        stateSaverFactory = NoPmStateSaverFactory
-    )
-) : PresentationModel(pmParams) {
+object NoPmStateSaver : PmStateSaver {
 
-    data class Description(
-        override val key: String = "test_pm"
-    ) : PmDescription
+    override fun <T> saveState(key: String, kType: KType, value: T?) {}
+
+    override fun <T> restoreState(key: String, kType: KType): T? {
+        return null
+    }
 }
