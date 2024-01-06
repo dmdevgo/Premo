@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -205,17 +205,17 @@ internal class StackNavigatorImpl(
     }
 
     private fun subscribeToLifecycle() {
-        hostPm.lifecycle.addObserver { state ->
-            when (state) {
+        hostPm.lifecycle.addObserver { _, newState ->
+            when (newState) {
                 CREATED,
                 DESTROYED -> {
                     backStack.forEach { pm ->
-                        pm.lifecycle.moveTo(state)
+                        pm.lifecycle.moveTo(newState)
                     }
                 }
 
                 IN_FOREGROUND -> {
-                    currentTop?.lifecycle?.moveTo(state)
+                    currentTop?.lifecycle?.moveTo(newState)
                 }
             }
         }

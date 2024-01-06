@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ class PmLifecycle {
 
     fun addObserver(observer: Observer) {
         observers.add(observer)
-        observer.onLifecycleChange(state)
+        observer.onLifecycleChange(state, state)
     }
 
     fun removeObserver(observer: Observer) {
@@ -89,17 +89,18 @@ class PmLifecycle {
     }
 
     fun interface Observer {
-        fun onLifecycleChange(state: State)
+        fun onLifecycleChange(oldState: State, newState: State)
     }
 
-    private fun notifyChange(state: State) {
-        this.state = state
+    private fun notifyChange(newState: State) {
+        val oldState = state
+        state = newState
 
         observers.forEach { observer ->
-            observer.onLifecycleChange(state)
+            observer.onLifecycleChange(oldState, newState)
         }
 
-        if (state == DESTROYED) {
+        if (newState == DESTROYED) {
             observers.clear()
         }
     }

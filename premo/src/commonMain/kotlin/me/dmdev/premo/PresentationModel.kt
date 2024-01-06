@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -95,12 +95,13 @@ abstract class PresentationModel(params: PmParams) {
     }
 
     private fun subscribeToLifecycle() {
-        lifecycle.addObserver { state ->
+        lifecycle.addObserver { _, newState ->
+
             attachedChildren.forEach { pm ->
-                pm.lifecycle.moveTo(lifecycle.state)
+                pm.lifecycle.moveTo(newState)
             }
 
-            when (state) {
+            when (newState) {
                 IN_FOREGROUND -> {
                     inForegroundScope = MainScope()
                 }
