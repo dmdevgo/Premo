@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,23 +60,13 @@ kotlin {
             languageSettings.optIn("kotlin.RequiresOptIn")
         }
 
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(project(":premo"))
                 api(project(":premo-navigation"))
                 api(project(":premo-saver-json"))
                 api(libs.kotlinx.serialization.protobuf)
             }
-        }
-
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
         }
     }
 }

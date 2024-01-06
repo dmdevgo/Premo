@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,11 @@
 
 package me.dmdev.premo.plugin
 
+import com.android.build.api.dsl.LibraryPublishing
 import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Action
+import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -42,9 +45,16 @@ class AndroidConfigurationPlugin : Plugin<Project> {
                 minSdk = ANDROID_SDK_MIN
             }
 
-            sourceSets.getByName("main").apply {
-                manifest.srcFile("src/androidMain/AndroidManifest.xml")
-                res.srcDirs("src/androidMain/res")
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_17
+                targetCompatibility = JavaVersion.VERSION_17
+            }
+
+            publishing {
+                singleVariant("release") {
+                    withJavadocJar()
+                    withSourcesJar()
+                }
             }
         }
     }
@@ -59,3 +69,8 @@ class AndroidConfigurationPlugin : Plugin<Project> {
 private fun <T : BaseExtension> Project.android(configure: Action<T>) {
     extensions.configure("android", configure)
 }
+
+private fun BaseExtension.publishing(configure: LibraryPublishing.() -> Unit) {
+    (this as? LibraryExtension)?.publishing?.configure()
+}
+

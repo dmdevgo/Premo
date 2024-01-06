@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,16 +34,14 @@ class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.kotlin {
             androidTarget()
-            ios()
+            iosX64()
+            iosArm64()
             iosSimulatorArm64()
             jvm()
             js(IR) {
                 browser()
             }
-            sourceSets.getByName("iosSimulatorArm64Main")
-                .dependsOn(sourceSets.getByName("iosMain"))
-            sourceSets.getByName("androidMain")
-                .dependsOn(sourceSets.getByName("jvmMain"))
+            applyDefaultHierarchyTemplate()
         }
     }
 }

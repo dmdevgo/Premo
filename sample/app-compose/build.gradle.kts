@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,11 +33,7 @@ plugins {
 kotlin {
 
     androidTarget()
-    jvm("desktop") {
-        compilations.all {
-            kotlinOptions.jvmTarget = "11"
-        }
-    }
+    jvm()
 
     listOf(
         iosX64(),
@@ -54,7 +50,6 @@ kotlin {
 
     js(IR) {
         browser()
-        binaries.executable()
     }
 
     sourceSets {
@@ -63,7 +58,7 @@ kotlin {
             languageSettings.optIn("kotlin.RequiresOptIn")
         }
 
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(project(":sample:app-common"))
                 api(project(":premo-navigation-compose"))
@@ -77,7 +72,7 @@ kotlin {
             }
         }
 
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 implementation(libs.androidx.appcompat)
                 implementation(libs.androidx.activity.compose)
@@ -88,29 +83,18 @@ kotlin {
             }
         }
 
-        val desktopMain by getting {
+        jvmMain {
             dependencies {
                 implementation(compose.preview)
                 implementation(libs.kotlinx.coroutines.swing)
                 implementation(compose.desktop.currentOs)
             }
         }
-
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-        }
     }
 }
 
 android {
     namespace = "me.dmdev.premo.sample"
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
         applicationId = "me.dmdev.premo.sample"

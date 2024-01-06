@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -121,4 +121,12 @@ publishing {
 
 signing {
     sign(publishing.publications)
+}
+
+afterEvaluate {
+    // FIXME - workaround for https://github.com/gradle/gradle/issues/26091
+    val signingTasks = tasks.withType<Sign>()
+    tasks.withType<AbstractPublishToMaven>().configureEach {
+        mustRunAfter(signingTasks)
+    }
 }
