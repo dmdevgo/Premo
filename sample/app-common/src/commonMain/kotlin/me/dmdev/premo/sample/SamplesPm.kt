@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,14 +25,13 @@
 package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 
-class SamplesPm(params: PmParams) : PresentationModel(params) {
+class SamplesPm(args: Args) : PresentationModel(args) {
 
     @Serializable
-    object Description : PmDescription
+    object Args : PmArgs()
 
     fun counterSample() {
         messageHandler.send(CounterSampleMessage)

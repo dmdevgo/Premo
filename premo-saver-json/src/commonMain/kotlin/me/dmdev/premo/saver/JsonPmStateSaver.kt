@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
-import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmArgs
 import kotlin.reflect.KType
 
 @Suppress("UNCHECKED_CAST")
@@ -47,7 +47,7 @@ class JsonPmStateSaver(
             } catch (e: SerializationException) {
                 // Workaround for JS and Native https://github.com/Kotlin/kotlinx.serialization/issues/1077
                 try {
-                    val serializer = polymorphicPmDescriptionSerializer as KSerializer<T>
+                    val serializer = polymorphicPmArgsSerializer as KSerializer<T>
                     map[key] = json.encodeToString(serializer, value)
                     return
                 } catch (_: Throwable) {}
@@ -73,7 +73,7 @@ class JsonPmStateSaver(
             } catch (e: SerializationException) {
                 // Workaround for JS and Native https://github.com/Kotlin/kotlinx.serialization/issues/1077
                 try {
-                    val serializer = polymorphicPmDescriptionSerializer as KSerializer<T>
+                    val serializer = polymorphicPmArgsSerializer as KSerializer<T>
                     return json.decodeFromString(serializer, jsonString)
                 } catch (_: Throwable) {}
 
@@ -87,9 +87,9 @@ class JsonPmStateSaver(
         }
     }
 
-    private val polymorphicPmDescriptionSerializer = PolymorphicSerializer(PmDescription::class)
+    private val polymorphicPmArgsSerializer = PolymorphicSerializer(PmArgs::class)
 
     private val polymorphicListSerializer = ListSerializer(
-        PolymorphicSerializer(PmDescription::class)
+        PolymorphicSerializer(PmArgs::class)
     )
 }

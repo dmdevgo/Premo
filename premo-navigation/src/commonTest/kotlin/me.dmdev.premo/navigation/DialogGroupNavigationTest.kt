@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,9 +60,9 @@ class DialogGroupNavigationTest {
         stateSaverFactory = TestStateSaverFactory()
         parentPm = TestPm.buildRootPm(stateSaverFactory)
         parentPm.lifecycle.moveTo(PmLifecycle.State.IN_FOREGROUND)
-        dialogPm1 = parentPm.Child(TestPm.PM1_DESCRIPTION)
-        dialogPm2 = parentPm.Child(TestPm.PM2_DESCRIPTION)
-        dialogPm3 = parentPm.Child(TestPm.PM3_DESCRIPTION)
+        dialogPm1 = parentPm.Child(TestPm.PM1_ARGS)
+        dialogPm2 = parentPm.Child(TestPm.PM2_ARGS)
+        dialogPm3 = parentPm.Child(TestPm.PM3_ARGS)
         navigator1 = parentPm.DialogNavigator(DIALOG_KEY1)
         navigator2 = parentPm.DialogNavigator(DIALOG_KEY2)
         navigator3 = parentPm.DialogNavigator(DIALOG_KEY3)
@@ -122,18 +122,18 @@ class DialogGroupNavigationTest {
         val stateSaverFactory = TestStateSaverFactory(
             initialState = mutableMapOf(
                 TestPm.ROOT_PM_KEY to mutableMapOf(
-                    DIALOG_KEY1 to TestPm.PM1_DESCRIPTION,
-                    DIALOG_KEY2 to TestPm.PM2_DESCRIPTION,
-                    DIALOG_KEY3 to TestPm.PM3_DESCRIPTION,
+                    DIALOG_KEY1 to TestPm.PM1_ARGS,
+                    DIALOG_KEY2 to TestPm.PM2_ARGS,
+                    DIALOG_KEY3 to TestPm.PM3_ARGS,
                     DEFAULT_DIALOG_GROUP_NAVIGATION_KEY to listOf(
-                        TestPm.PM1_DESCRIPTION,
-                        TestPm.PM3_DESCRIPTION,
-                        TestPm.PM2_DESCRIPTION
+                        TestPm.PM1_ARGS,
+                        TestPm.PM3_ARGS,
+                        TestPm.PM2_ARGS
                     )
                 ),
-                "${TestPm.ROOT_PM_KEY}/${TestPm.PM1_DESCRIPTION.key}" to mutableMapOf(),
-                "${TestPm.ROOT_PM_KEY}/${TestPm.PM2_DESCRIPTION.key}" to mutableMapOf(),
-                "${TestPm.ROOT_PM_KEY}/${TestPm.PM3_DESCRIPTION.key}" to mutableMapOf()
+                "${TestPm.ROOT_PM_KEY}/${TestPm.PM1_ARGS.key}" to mutableMapOf(),
+                "${TestPm.ROOT_PM_KEY}/${TestPm.PM2_ARGS.key}" to mutableMapOf(),
+                "${TestPm.ROOT_PM_KEY}/${TestPm.PM3_ARGS.key}" to mutableMapOf()
             )
         )
 
@@ -170,18 +170,18 @@ class DialogGroupNavigationTest {
         assertEquals(
             mutableMapOf(
                 TestPm.ROOT_PM_KEY to mutableMapOf(
-                    DIALOG_KEY1 to TestPm.PM1_DESCRIPTION,
-                    DIALOG_KEY2 to TestPm.PM2_DESCRIPTION,
-                    DIALOG_KEY3 to TestPm.PM3_DESCRIPTION,
+                    DIALOG_KEY1 to TestPm.PM1_ARGS,
+                    DIALOG_KEY2 to TestPm.PM2_ARGS,
+                    DIALOG_KEY3 to TestPm.PM3_ARGS,
                     DEFAULT_DIALOG_GROUP_NAVIGATION_KEY to listOf(
-                        TestPm.PM1_DESCRIPTION,
-                        TestPm.PM3_DESCRIPTION,
-                        TestPm.PM2_DESCRIPTION
+                        TestPm.PM1_ARGS,
+                        TestPm.PM3_ARGS,
+                        TestPm.PM2_ARGS
                     )
                 ),
-                "${TestPm.ROOT_PM_KEY}/${TestPm.PM1_DESCRIPTION.key}" to mutableMapOf(),
-                "${TestPm.ROOT_PM_KEY}/${TestPm.PM2_DESCRIPTION.key}" to mutableMapOf(),
-                "${TestPm.ROOT_PM_KEY}/${TestPm.PM3_DESCRIPTION.key}" to mutableMapOf()
+                "${TestPm.ROOT_PM_KEY}/${TestPm.PM1_ARGS.key}" to mutableMapOf(),
+                "${TestPm.ROOT_PM_KEY}/${TestPm.PM2_ARGS.key}" to mutableMapOf(),
+                "${TestPm.ROOT_PM_KEY}/${TestPm.PM3_ARGS.key}" to mutableMapOf()
             ),
             stateSaverFactory.pmStates
         )

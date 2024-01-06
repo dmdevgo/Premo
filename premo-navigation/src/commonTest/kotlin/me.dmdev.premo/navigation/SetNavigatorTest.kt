@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,12 +27,13 @@ package me.dmdev.premo.navigation
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
-import me.dmdev.premo.navigation.TestPm.Companion.PM1_DESCRIPTION
-import me.dmdev.premo.navigation.TestPm.Companion.PM2_DESCRIPTION
-import me.dmdev.premo.navigation.TestPm.Companion.PM3_DESCRIPTION
-import me.dmdev.premo.navigation.TestPm.Companion.PM4_DESCRIPTION
-import me.dmdev.premo.navigation.TestPm.Companion.PM5_DESCRIPTION
-import me.dmdev.premo.navigation.TestPm.Companion.PM6_DESCRIPTION
+import me.dmdev.premo.childrenOf
+import me.dmdev.premo.navigation.TestPm.Companion.PM1_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.PM2_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.PM3_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.PM4_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.PM5_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.PM6_ARGS
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -52,13 +53,15 @@ class SetNavigatorTest {
     fun setUp() {
         parentPm = TestPm.buildRootPm()
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        pm1 = parentPm.Child(PM1_DESCRIPTION)
-        pm2 = parentPm.Child(PM2_DESCRIPTION)
-        pm3 = parentPm.Child(PM3_DESCRIPTION)
-        pm4 = parentPm.Child(PM4_DESCRIPTION)
-        pm5 = parentPm.Child(PM5_DESCRIPTION)
-        pm6 = parentPm.Child(PM6_DESCRIPTION)
-        navigator = parentPm.SetNavigator()
+        pm1 = parentPm.Child(PM1_ARGS)
+        pm2 = parentPm.Child(PM2_ARGS)
+        pm3 = parentPm.Child(PM3_ARGS)
+        pm4 = parentPm.Child(PM4_ARGS)
+        pm5 = parentPm.Child(PM5_ARGS)
+        pm6 = parentPm.Child(PM6_ARGS)
+        navigator = parentPm.SetNavigator(
+            initValues = { listOf() }
+        )
         navigator.changeValues(listOf(pm1, pm2, pm3))
     }
 
@@ -102,7 +105,9 @@ class SetNavigatorTest {
 
     @Test
     fun testEmptySetNavigator() {
-        val navigator = parentPm.SetNavigator()
+        val navigator = parentPm.SetNavigator(
+            initValues = { listOf() }
+        )
 
         assertEquals(listOf(), navigator.values)
         assertEquals(null, navigator.current)
@@ -110,7 +115,9 @@ class SetNavigatorTest {
 
     @Test
     fun testSetValuesToEmptyNavigator() {
-        val navigator = parentPm.SetNavigator()
+        val navigator = parentPm.SetNavigator(
+            initValues = { listOf() }
+        )
 
         navigator.changeValues(listOf(pm1, pm2, pm3))
 
@@ -154,9 +161,9 @@ class SetNavigatorTest {
             initialState = mutableMapOf(
                 TestPm.ROOT_PM_KEY to mutableMapOf(
                     DEFAULT_SET_NAVIGATOR_STATE_VALUES_KEY to listOf(
-                        PM1_DESCRIPTION,
-                        PM2_DESCRIPTION,
-                        PM3_DESCRIPTION
+                        PM1_ARGS,
+                        PM2_ARGS,
+                        PM3_ARGS
                     ),
                     DEFAULT_SET_NAVIGATOR_STATE_CURRENT_INDEX_KEY to 0
                 )
@@ -165,7 +172,9 @@ class SetNavigatorTest {
 
         val parentPm = TestPm.buildRootPm(stateSaverFactory)
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        val navigator = parentPm.SetNavigator()
+        val navigator = parentPm.SetNavigator(
+            initValues = { listOf() }
+        )
 
         assertEquals(
             listOf(IN_FOREGROUND, CREATED, CREATED),
@@ -173,8 +182,8 @@ class SetNavigatorTest {
         )
 
         assertEquals(
-            listOf(PM1_DESCRIPTION, PM2_DESCRIPTION, PM3_DESCRIPTION),
-            navigator.values.map { it.description }
+            listOf(PM1_ARGS, PM2_ARGS, PM3_ARGS),
+            navigator.values.map { it.pmArgs }
         )
     }
 
@@ -184,7 +193,15 @@ class SetNavigatorTest {
 
         val parentPm = TestPm.buildRootPm(stateSaverFactory)
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        val navigator = parentPm.SetNavigator(PM1_DESCRIPTION, PM2_DESCRIPTION, PM3_DESCRIPTION)
+        val navigator = parentPm.SetNavigator(
+            initValues = {
+                parentPm.childrenOf(
+                    PM1_ARGS,
+                    PM2_ARGS,
+                    PM3_ARGS
+                )
+            }
+        )
         navigator.changeCurrent(1)
 
         parentPm.stateHandler.saveState()
@@ -193,15 +210,15 @@ class SetNavigatorTest {
             mutableMapOf(
                 TestPm.ROOT_PM_KEY to mutableMapOf(
                     DEFAULT_SET_NAVIGATOR_STATE_VALUES_KEY to listOf(
-                        PM1_DESCRIPTION,
-                        PM2_DESCRIPTION,
-                        PM3_DESCRIPTION
+                        PM1_ARGS,
+                        PM2_ARGS,
+                        PM3_ARGS
                     ),
                     DEFAULT_SET_NAVIGATOR_STATE_CURRENT_INDEX_KEY to 1
                 ),
-                "${TestPm.ROOT_PM_KEY}/${PM1_DESCRIPTION.key}" to mutableMapOf(),
-                "${TestPm.ROOT_PM_KEY}/${PM2_DESCRIPTION.key}" to mutableMapOf(),
-                "${TestPm.ROOT_PM_KEY}/${PM3_DESCRIPTION.key}" to mutableMapOf()
+                "${TestPm.ROOT_PM_KEY}/${PM1_ARGS.key}" to mutableMapOf(),
+                "${TestPm.ROOT_PM_KEY}/${PM2_ARGS.key}" to mutableMapOf(),
+                "${TestPm.ROOT_PM_KEY}/${PM3_ARGS.key}" to mutableMapOf()
             ),
             stateSaverFactory.pmStates
         )

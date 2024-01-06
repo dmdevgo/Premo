@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,9 +36,9 @@ import kotlin.test.assertTrue
 class MasterDetailNavigatorTest {
 
     companion object {
-        private val MASTER_PM_DESCRIPTION = TestPm.Description("master_pm")
-        private val DETAIL_PM1_DESCRIPTION = TestPm.Description("detail_pm1")
-        private val DETAIL_PM2_DESCRIPTION = TestPm.Description("detail_pm2")
+        private val MASTER_PM_ARGS = TestPm.Args("master_pm")
+        private val DETAIL_PM1_ARGS = TestPm.Args("detail_pm1")
+        private val DETAIL_PM2_ARGS = TestPm.Args("detail_pm2")
     }
 
     private lateinit var navigator: MasterDetailNavigator<TestPm, TestPm>
@@ -50,16 +50,16 @@ class MasterDetailNavigatorTest {
     fun setUp() {
         parentPm = TestPm.buildRootPm()
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        detailPm1 = parentPm.Child(DETAIL_PM1_DESCRIPTION)
-        detailPm2 = parentPm.Child(DETAIL_PM2_DESCRIPTION)
+        detailPm1 = parentPm.Child(DETAIL_PM1_ARGS)
+        detailPm2 = parentPm.Child(DETAIL_PM2_ARGS)
         navigator = parentPm.MasterDetailNavigator(
-            masterDescription = MASTER_PM_DESCRIPTION
+            masterPm = parentPm.Child(MASTER_PM_ARGS)
         )
     }
 
     @Test
     fun testInitialState() {
-        assertEquals(MASTER_PM_DESCRIPTION, navigator.master.description)
+        assertEquals(MASTER_PM_ARGS, navigator.master.pmArgs)
         assertEquals(IN_FOREGROUND, navigator.master.lifecycle.state)
         assertNull(navigator.detail)
     }
@@ -115,13 +115,13 @@ class MasterDetailNavigatorTest {
 
     @Test
     fun testRestoreState() {
-        val masterPmDescription = TestPm.Description("master_pm")
-        val detailPmDescription = TestPm.Description("detail_pm")
+        val masterPmArgs = TestPm.Args("master_pm")
+        val detailPmArgs = TestPm.Args("detail_pm")
 
         val stateSaverFactory = TestStateSaverFactory(
             initialState = mutableMapOf(
                 TestPm.ROOT_PM_KEY to mutableMapOf(
-                    DEFAULT_MASTER_DETAIL_NAVIGATOR_DETAIL_STATE_KEY to detailPmDescription
+                    DEFAULT_MASTER_DETAIL_NAVIGATOR_DETAIL_STATE_KEY to detailPmArgs
                 )
             )
         )
@@ -129,38 +129,38 @@ class MasterDetailNavigatorTest {
         val parentPm = TestPm.buildRootPm(stateSaverFactory)
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
         val navigator: MasterDetailNavigator<TestPm, TestPm> = parentPm.MasterDetailNavigator(
-            masterDescription = masterPmDescription
+            masterPm = parentPm.Child(masterPmArgs)
         )
 
-        assertEquals(masterPmDescription, navigator.master.description)
-        assertEquals(detailPmDescription, navigator.detail?.description)
+        assertEquals(masterPmArgs, navigator.master.pmArgs)
+        assertEquals(detailPmArgs, navigator.detail?.pmArgs)
         assertEquals(IN_FOREGROUND, navigator.master.lifecycle.state)
         assertEquals(IN_FOREGROUND, navigator.detail?.lifecycle?.state)
     }
 
     @Test
     fun testSaveState() {
-        val masterPmDescription = TestPm.Description("master_pm")
-        val detailPmDescription = TestPm.Description("detail_pm")
+        val masterPmArgs = TestPm.Args("master_pm")
+        val detailPmArgs = TestPm.Args("detail_pm")
 
         val stateSaverFactory = TestStateSaverFactory()
 
         val parentPm = TestPm.buildRootPm(stateSaverFactory)
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
         val navigator: MasterDetailNavigator<TestPm, TestPm> = parentPm.MasterDetailNavigator(
-            masterDescription = masterPmDescription
+            masterPm = parentPm.Child(masterPmArgs)
         )
-        navigator.changeDetail(parentPm.Child(detailPmDescription))
+        navigator.changeDetail(parentPm.Child(detailPmArgs))
 
         parentPm.stateHandler.saveState()
 
         assertEquals(
             mutableMapOf(
                 TestPm.ROOT_PM_KEY to mutableMapOf<String, Any>(
-                    DEFAULT_MASTER_DETAIL_NAVIGATOR_DETAIL_STATE_KEY to detailPmDescription
+                    DEFAULT_MASTER_DETAIL_NAVIGATOR_DETAIL_STATE_KEY to detailPmArgs
                 ),
-                "${TestPm.ROOT_PM_KEY}/${masterPmDescription.key}" to mutableMapOf(),
-                "${TestPm.ROOT_PM_KEY}/${detailPmDescription.key}" to mutableMapOf()
+                "${TestPm.ROOT_PM_KEY}/${masterPmArgs.key}" to mutableMapOf(),
+                "${TestPm.ROOT_PM_KEY}/${detailPmArgs.key}" to mutableMapOf()
             ),
             stateSaverFactory.pmStates
         )

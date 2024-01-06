@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.protobuf.ProtoBuf
-import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.sample.CounterPm
 import me.dmdev.premo.sample.MainPm
 import me.dmdev.premo.sample.SamplesPm
@@ -46,7 +46,7 @@ import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 object Serializers {
 
     val module = SerializersModule {
-        polymorphic(PmDescription::class) { registerPmDescriptionSubclasses() }
+        polymorphic(PmArgs::class) { registerPmArgsSubclasses() }
     }
 
     val json = Json {
@@ -58,16 +58,16 @@ object Serializers {
         serializersModule = module
     }
 
-    private fun PolymorphicModuleBuilder<PmDescription>.registerPmDescriptionSubclasses() {
-        subclass(MainPm.Description::class)
-        subclass(SamplesPm.Description::class)
-        subclass(CounterPm.Description::class)
-        subclass(StackNavigationPm.Description::class)
-        subclass(SimpleScreenPm.Description::class)
-        subclass(BottomNavigationPm.Description::class)
-        subclass(TabPm.Description::class)
-        subclass(TabItemPm.Description::class)
-        subclass(DialogNavigationPm.Description::class)
-        subclass(SimpleDialogPm.Description::class)
+    private fun PolymorphicModuleBuilder<PmArgs>.registerPmArgsSubclasses() {
+        subclass(MainPm.Args::class)
+        subclass(SamplesPm.Args::class)
+        subclass(CounterPm.Args::class)
+        subclass(StackNavigationPm.Args::class)
+        subclass(SimpleScreenPm.Args::class)
+        subclass(BottomNavigationPm.Args::class)
+        subclass(TabPm.Args::class)
+        subclass(TabItemPm.Args::class)
+        subclass(DialogNavigationPm.Args::class)
+        subclass(SimpleDialogPm.Args::class)
     }
 }

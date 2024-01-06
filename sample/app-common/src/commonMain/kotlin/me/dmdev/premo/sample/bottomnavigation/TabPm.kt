@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,9 @@
 package me.dmdev.premo.sample.bottomnavigation
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.childrenOf
 import me.dmdev.premo.handle
 import me.dmdev.premo.navigation.BackMessage
 import me.dmdev.premo.navigation.StackNavigation
@@ -39,28 +39,33 @@ import me.dmdev.premo.sample.NextClickMessage
 import me.dmdev.premo.sample.PreviousClickMessage
 
 class TabPm(
-    val tabTitle: String,
-    params: PmParams
-) : PresentationModel(params) {
+    args: Args
+) : PresentationModel(args) {
+
+    val title: String = args.tabTitle
 
     @Serializable
-    class Description(
+    data class Args(
         val tabTitle: String
-    ) : PmDescription {
+    ) : PmArgs() {
         override val key: String get() = tabTitle
     }
 
     private var number: Int = 1
 
     val navigation = StackNavigation(
-        initialDescription = TabItemPm.Description(nextScreenTitle(), tabTitle)
+        initBackStack = {
+            childrenOf(
+                TabItemPm.Args(nextScreenTitle(), args.tabTitle)
+            )
+        }
     ) { navigator ->
         onMessage<NextClickMessage> {
             navigator.push(
                 Child(
-                    TabItemPm.Description(
+                    TabItemPm.Args(
                         screenTitle = nextScreenTitle(),
-                        tabTitle = tabTitle
+                        tabTitle = args.tabTitle
                     )
                 )
             )

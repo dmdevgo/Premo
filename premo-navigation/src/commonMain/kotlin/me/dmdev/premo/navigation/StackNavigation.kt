@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import me.dmdev.premo.ExperimentalPremoApi
-import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
 
@@ -42,41 +41,13 @@ interface StackNavigation {
 }
 
 fun PresentationModel.StackNavigation(
-    initialDescription: PmDescription? = null,
+    initBackStack: () -> List<PresentationModel>,
     key: String = DEFAULT_STACK_NAVIGATOR_KEY,
     backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
     initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
 ): StackNavigation {
     return StackNavigator(
-        initialBackStack = initialDescription?.let { listOf(it) } ?: listOf(),
-        key = key,
-        backHandler = backHandler,
-        initHandlers = initHandlers
-    )
-}
-
-fun PresentationModel.StackNavigation(
-    vararg initialDescriptions: PmDescription,
-    key: String = DEFAULT_STACK_NAVIGATOR_KEY,
-    backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
-    initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
-): StackNavigation {
-    return StackNavigator(
-        initialBackStack = initialDescriptions.asList(),
-        key = key,
-        backHandler = backHandler,
-        initHandlers = initHandlers
-    )
-}
-
-fun PresentationModel.StackNavigation(
-    initialBackStack: List<PmDescription>,
-    key: String = DEFAULT_STACK_NAVIGATOR_KEY,
-    backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
-    initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
-): StackNavigation {
-    return StackNavigator(
-        initialBackStack = initialBackStack,
+        initBackStack = initBackStack,
         key = key,
         backHandler = backHandler,
         initHandlers = initHandlers

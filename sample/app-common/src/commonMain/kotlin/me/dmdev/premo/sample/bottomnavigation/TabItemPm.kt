@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,23 +25,22 @@
 package me.dmdev.premo.sample.bottomnavigation
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.NextClickMessage
 import me.dmdev.premo.sample.PreviousClickMessage
 
 class TabItemPm(
-    val screenTitle: String,
-    val tabTitle: String,
-    params: PmParams
-) : PresentationModel(params) {
+    args: Args
+) : PresentationModel(args) {
+
+    val title: String = args.screenTitle
 
     @Serializable
-    class Description(
+    class Args(
         val screenTitle: String,
         val tabTitle: String
-    ) : PmDescription {
+    ) : PmArgs() {
         override val key: String get() = "$tabTitle/$screenTitle"
     }
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import me.dmdev.premo.AttachedChild
-import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
@@ -57,14 +57,14 @@ fun MasterDetailNavigator<*, *>.handleBack(): Boolean {
 }
 
 fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigator(
-    masterDescription: PmDescription,
+    masterPm: M,
     key: String = DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY,
     backHandler: (MasterDetailNavigator<M, D>) -> Boolean = DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER,
     initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit = {}
 ): MasterDetailNavigator<M, D> {
     val navigator = MasterDetailNavigatorImpl<M, D>(
         hostPm = this,
-        masterDescription = masterDescription,
+        masterPm = masterPm,
         key = key
     )
     messageHandler.handle<BackMessage> { backHandler.invoke(navigator) }
@@ -80,19 +80,23 @@ internal val DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER: (MasterDetailNavigato
 
 internal class MasterDetailNavigatorImpl<M, D>(
     private val hostPm: PresentationModel,
-    masterDescription: PmDescription,
+    masterPm: M,
     key: String
 ) : MasterDetailNavigator<M, D>
         where M : PresentationModel,
               D : PresentationModel {
 
-    override val master: M = hostPm.AttachedChild(masterDescription)
+    override val master: M = masterPm
+
+    init {
+        masterPm.attachToParent()
+    }
 
     private val _detailFlow: MutableStateFlow<D?> = hostPm.SaveableFlow(
         key = "${key}_detail_pm",
         initialValueProvider = { null },
-        saveType = typeOf<PmDescription>(),
-        saveTypeMapper = { it?.description },
+        saveType = typeOf<PmArgs>(),
+        saveTypeMapper = { it?.pmArgs },
         restoreTypeMapper = { it?.let { hostPm.AttachedChild(it) as D } }
     )
     override val detailFlow: StateFlow<D?> = _detailFlow.asStateFlow()

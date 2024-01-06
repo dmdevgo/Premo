@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -74,10 +74,10 @@ internal class DialogGroupNavigatorImpl(
         hostPm.SaveableFlow(
             key = key,
             initialValueProvider = { listOf() },
-            saveTypeMapper = { dialogs -> dialogs.map { it.description } },
-            restoreTypeMapper = { descriptions ->
-                descriptions.mapNotNull { description ->
-                    dialogNavigators.find { it.dialog?.description == description }?.dialog
+            saveTypeMapper = { dialogs -> dialogs.map { it.pmArgs } },
+            restoreTypeMapper = { pmArgsList ->
+                pmArgsList.mapNotNull { pmArgs ->
+                    dialogNavigators.find { it.dialog?.pmArgs == pmArgs }?.dialog
                 }
             }
         )

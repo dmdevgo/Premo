@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -62,25 +62,22 @@ class PmStateSaverTest {
 
     private fun createPmDelegate(): PmDelegate<RootPm> {
         return PmDelegate(
-            pmParams = PmParams(
-                parent = null,
-                description = RootPm.Description,
-                factory = MainPmFactory(),
-                stateSaverFactory = stateSaverFactory
-            )
+            pmArgs = RootPm.Args,
+            pmFactory = MainPmFactory(),
+            pmStateSaverFactory = stateSaverFactory
         )
     }
 }
 
-private class RootPm(params: PmParams) : PresentationModel(params) {
+private class RootPm(args: Args) : PresentationModel(args) {
 
     @Serializable
-    object Description : PmDescription
+    object Args : PmArgs()
 
     val keys = listOf("container1", "container2", "container3", "container4", "container5")
 
     val children: List<ContainerPm> = keys.map { key ->
-        Child(ContainerPm.Description)
+        Child(ContainerPm.Args)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -106,15 +103,15 @@ private class RootPm(params: PmParams) : PresentationModel(params) {
     }
 }
 
-private class ContainerPm(params: PmParams) : PresentationModel(params) {
+private class ContainerPm(args: Args) : PresentationModel(args) {
 
     @Serializable
-    object Description : PmDescription
+    object Args : PmArgs()
 
     val keys = listOf("child1", "child2", "child3", "child4", "child5")
 
     val children: List<ChildPm> = keys.map { key ->
-        Child(ChildPm.Description(key))
+        Child(ChildPm.Args(key))
     }
 
     override fun equals(other: Any?): Boolean {
@@ -140,12 +137,12 @@ private class ContainerPm(params: PmParams) : PresentationModel(params) {
     }
 }
 
-private class ChildPm(params: PmParams) : PresentationModel(params) {
+private class ChildPm(args: Args) : PresentationModel(args) {
 
     private val state = SaveableFlow<State?>("state", null)
 
     @Serializable
-    class Description(override val key: String) : PmDescription
+    class Args(override val key: String) : PmArgs()
 
     fun setNumber(number: Int) {
         state.value = State(
@@ -187,12 +184,12 @@ private class ChildPm(params: PmParams) : PresentationModel(params) {
 }
 
 private class MainPmFactory : PmFactory {
-    override fun createPm(params: PmParams): PresentationModel {
-        return when (val description = params.description) {
-            is RootPm.Description -> RootPm(params)
-            is ContainerPm.Description -> ContainerPm(params)
-            is ChildPm.Description -> ChildPm(params)
-            else -> throw IllegalArgumentException("Not handled instance creation for pm description $description")
+    override fun createPm(args: PmArgs): PresentationModel {
+        return when (args) {
+            is RootPm.Args -> RootPm(args)
+            is ContainerPm.Args -> ContainerPm(args)
+            is ChildPm.Args -> ChildPm(args)
+            else -> throw IllegalArgumentException("Not handled instance creation for pm args $args")
         }
     }
 }
@@ -236,19 +233,19 @@ class JsonPmStateSaver(
         val json = Json {
             serializersModule = SerializersModule {
                 polymorphic(
-                    PmDescription::class,
-                    RootPm.Description::class,
-                    RootPm.Description.serializer()
+                    PmArgs::class,
+                    RootPm.Args::class,
+                    RootPm.Args.serializer()
                 )
                 polymorphic(
-                    PmDescription::class,
-                    ContainerPm.Description::class,
-                    ContainerPm.Description.serializer()
+                    PmArgs::class,
+                    ContainerPm.Args::class,
+                    ContainerPm.Args.serializer()
                 )
                 polymorphic(
-                    PmDescription::class,
-                    ChildPm.Description::class,
-                    ChildPm.Description.serializer()
+                    PmArgs::class,
+                    ChildPm.Args::class,
+                    ChildPm.Args.serializer()
                 )
                 polymorphic(
                     ChildPm.State::class,

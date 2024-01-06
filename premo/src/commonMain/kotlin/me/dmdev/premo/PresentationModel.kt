@@ -31,20 +31,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
+import me.dmdev.premo.saver.PmStateSaverFactory
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
-abstract class PresentationModel(params: PmParams) {
+abstract class PresentationModel(
+    val pmArgs: PmArgs
+) {
 
-    private val pmFactory: PmFactory = params.factory
-    private val pmStateSaverFactory = params.stateSaverFactory
+    private val pmFactory: PmFactory = pmArgs.pmFactory
+    private val pmStateSaverFactory: PmStateSaverFactory = pmArgs.pmStateSaverFactory
 
-    val description: PmDescription = params.description
-    val parent: PresentationModel? = params.parent
+    val parent: PresentationModel? = pmArgs.parent
     val tag: String = if (parent != null) {
-        "${parent.tag}/${description.key}"
+        "${parent.tag}/${pmArgs.key}"
     } else {
-        description.key
+        pmArgs.key
     }
     val lifecycle: PmLifecycle = PmLifecycle()
     val scope: CoroutineScope = MainScope()
@@ -72,15 +74,12 @@ abstract class PresentationModel(params: PmParams) {
     }
 
     @Suppress("FunctionName", "UNCHECKED_CAST")
-    fun <PM : PresentationModel> Child(description: PmDescription): PM {
-        val config = PmParams(
-            parent = this,
-            description = description,
-            factory = pmFactory,
-            stateSaverFactory = pmStateSaverFactory
-        )
+    fun <PM : PresentationModel> Child(args: PmArgs): PM {
+        args.pmFactory = pmFactory
+        args.pmStateSaverFactory = pmStateSaverFactory
+        args.parent = this
 
-        val childPm = pmFactory.createPm(config) as PM
+        val childPm = pmFactory.createPm(args) as PM
         allChildren.add(childPm)
         return childPm
     }
@@ -119,6 +118,12 @@ abstract class PresentationModel(params: PmParams) {
     }
 }
 
+fun PresentationModel.childrenOf(
+    vararg args: PmArgs
+): List<PresentationModel> {
+    return args.map { Child(it) }
+}
+
 fun PresentationModel.attachToParent() {
     parent?.attachChild(this)
 }
@@ -128,8 +133,8 @@ fun PresentationModel.detachFromParent() {
 }
 
 @Suppress("FunctionName")
-fun <PM : PresentationModel> PresentationModel.AttachedChild(description: PmDescription): PM {
-    return Child<PM>(description).also {
+fun <PM : PresentationModel> PresentationModel.AttachedChild(args: PmArgs): PM {
+    return Child<PM>(args).also {
         attachChild(it)
     }
 }

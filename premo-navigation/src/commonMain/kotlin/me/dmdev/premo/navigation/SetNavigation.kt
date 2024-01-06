@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.flow.StateFlow
-import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PresentationModel
 
 interface SetNavigation {
@@ -38,13 +37,13 @@ interface SetNavigation {
 }
 
 fun PresentationModel.SetNavigation(
-    vararg initialDescriptions: PmDescription,
+    initValues: () -> List<PresentationModel>,
     key: String = DEFAULT_SET_NAVIGATOR_KEY,
     backHandler: (SetNavigator) -> Boolean = DEFAULT_SET_NAVIGATOR_BACK_HANDLER,
     onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit = DEFAULT_SET_NAVIGATOR_ON_CHANGE_CURRENT
 ): SetNavigation {
     return SetNavigator(
-        initialDescriptions = initialDescriptions,
+        initValues = initValues,
         key = key,
         backHandler = backHandler,
         onChangeCurrent = onChangeCurrent

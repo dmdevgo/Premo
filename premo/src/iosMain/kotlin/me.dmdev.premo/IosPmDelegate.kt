@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,19 +29,16 @@ import platform.Foundation.NSCoder
 
 @Suppress("unused")
 class IosPmDelegate<PM : PresentationModel>(
-    pmDescription: PmDescription,
+    pmArgs: PmArgs,
     pmFactory: PmFactory,
     private val pmStateSaver: NSCoderStateSaver
 ) {
 
     private val pmDelegate: PmDelegate<PM> by lazy {
         PmDelegate<PM>(
-            pmParams = PmParams(
-                description = pmDescription,
-                parent = null,
-                factory = pmFactory,
-                stateSaverFactory = pmStateSaver
-            )
+            pmArgs = pmArgs,
+            pmFactory = pmFactory,
+            pmStateSaverFactory = pmStateSaver
         )
     }
 

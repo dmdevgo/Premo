@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -77,8 +77,8 @@ class PresentationModelTest {
 
     @Test
     fun testNotAttachedChildrenLifecycle() {
-        val pm1 = pm.Child<TestPm>(TestPm.Description())
-        val pm2 = pm.Child<TestPm>(TestPm.Description())
+        val pm1 = pm.Child<TestPm>(TestPm.Args())
+        val pm2 = pm.Child<TestPm>(TestPm.Args())
 
         pm.lifecycle.moveTo(IN_FOREGROUND)
 
@@ -88,8 +88,8 @@ class PresentationModelTest {
 
     @Test
     fun testAttachedChildrenLifecycle() {
-        val pm1 = pm.AttachedChild<TestPm>(TestPm.Description("pm1"))
-        val pm2 = pm.AttachedChild<TestPm>(TestPm.Description("pm2"))
+        val pm1 = pm.AttachedChild<TestPm>(TestPm.Args("pm1"))
+        val pm2 = pm.AttachedChild<TestPm>(TestPm.Args("pm2"))
 
         pm.lifecycle.moveTo(IN_FOREGROUND)
 

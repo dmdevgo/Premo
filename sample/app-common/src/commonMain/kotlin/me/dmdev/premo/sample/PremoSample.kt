@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@
 package me.dmdev.premo.sample
 
 import me.dmdev.premo.PmDelegate
-import me.dmdev.premo.PmParams
 import me.dmdev.premo.sample.serialization.SimpleJsonPmStateSaverFactory
 import me.dmdev.premo.saver.PmStateSaverFactory
 
@@ -33,11 +32,8 @@ object PremoSample {
     fun createPmDelegate(
         pmStateSaver: PmStateSaverFactory = SimpleJsonPmStateSaverFactory()
     ): PmDelegate<MainPm> = PmDelegate(
-        pmParams = PmParams(
-            description = MainPm.Description,
-            parent = null,
-            factory = MainPmFactory(),
-            stateSaverFactory = pmStateSaver
-        )
+        pmArgs = MainPm.Args,
+        pmFactory = MainPmFactory(),
+        pmStateSaverFactory = pmStateSaver
     )
 }

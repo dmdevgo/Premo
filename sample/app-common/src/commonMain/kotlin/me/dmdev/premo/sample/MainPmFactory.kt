@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,8 @@
 
 package me.dmdev.premo.sample
 
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PmFactory
-import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottomnavigation.TabItemPm
@@ -36,25 +36,19 @@ import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
 class MainPmFactory : PmFactory {
-    override fun createPm(params: PmParams): PresentationModel {
-        return when (val description = params.description) {
-            is MainPm.Description -> MainPm(params)
-            is SamplesPm.Description -> SamplesPm(params)
-            is CounterPm.Description -> CounterPm(description.maxCount, params)
-            is StackNavigationPm.Description -> StackNavigationPm(params)
-            is SimpleScreenPm.Description -> SimpleScreenPm(description.number, params)
-            is BottomNavigationPm.Description -> BottomNavigationPm(params)
-            is TabPm.Description -> TabPm(description.tabTitle, params)
-            is TabItemPm.Description -> TabItemPm(description.screenTitle, description.tabTitle, params)
-            is DialogNavigationPm.Description -> DialogNavigationPm(params)
-            is SimpleDialogPm.Description -> SimpleDialogPm(
-                description.title,
-                description.message,
-                description.okButtonText,
-                description.cancelButtonText,
-                params
-            )
-            else -> throw IllegalArgumentException("Not handled instance creation for pm description $description")
+    override fun createPm(args: PmArgs): PresentationModel {
+        return when (args) {
+            is MainPm.Args -> MainPm(args)
+            is SamplesPm.Args -> SamplesPm(args)
+            is CounterPm.Args -> CounterPm(args)
+            is StackNavigationPm.Args -> StackNavigationPm(args)
+            is SimpleScreenPm.Args -> SimpleScreenPm(args)
+            is BottomNavigationPm.Args -> BottomNavigationPm(args)
+            is TabPm.Args -> TabPm(args)
+            is TabItemPm.Args -> TabItemPm(args)
+            is DialogNavigationPm.Args -> DialogNavigationPm(args)
+            is SimpleDialogPm.Args -> SimpleDialogPm(args)
+            else -> throw IllegalArgumentException("Not handled instance creation for pm args $args")
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,15 @@
 
 package me.dmdev.premo.navigation
 
-import me.dmdev.premo.PmDescription
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PmMessage
-import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 
-class TestPm(pmParams: PmParams) : PresentationModel(pmParams) {
+class TestPm(args: Args) : PresentationModel(args) {
 
-    data class Description(
+    data class Args(
         override val key: String = "test_pm"
-    ) : PmDescription
+    ) : PmArgs()
 
     sealed class ResultMessage : PmMessage {
         data object Ok : ResultMessage()
@@ -46,23 +45,20 @@ class TestPm(pmParams: PmParams) : PresentationModel(pmParams) {
 
     companion object {
         const val ROOT_PM_KEY = "root_pm"
-        private val ROOT_PM_DESCRIPTION = Description(ROOT_PM_KEY)
 
-        val PM1_DESCRIPTION = Description("pm1")
-        val PM2_DESCRIPTION = Description("pm2")
-        val PM3_DESCRIPTION = Description("pm3")
-        val PM4_DESCRIPTION = Description("pm4")
-        val PM5_DESCRIPTION = Description("pm5")
-        val PM6_DESCRIPTION = Description("pm6")
+        val PM1_ARGS = Args("pm1")
+        val PM2_ARGS = Args("pm2")
+        val PM3_ARGS = Args("pm3")
+        val PM4_ARGS = Args("pm4")
+        val PM5_ARGS = Args("pm5")
+        val PM6_ARGS = Args("pm6")
 
-        fun buildRootPm(stateSaverFactory: TestStateSaverFactory = TestStateSaverFactory()): TestPm {
+        fun buildRootPm(pmStateSaverFactory: TestStateSaverFactory = TestStateSaverFactory()): TestPm {
             return TestPm(
-                pmParams = PmParams(
-                    description = ROOT_PM_DESCRIPTION,
-                    parent = null,
-                    factory = TestPmFactory(),
-                    stateSaverFactory = stateSaverFactory
-                )
+                Args(ROOT_PM_KEY).apply {
+                    overridePmFactory(TestPmFactory())
+                    overridePmStateSaverFactory(pmStateSaverFactory)
+                }
             )
         }
     }

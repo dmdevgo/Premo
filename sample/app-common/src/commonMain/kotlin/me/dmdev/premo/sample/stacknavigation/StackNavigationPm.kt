@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,7 @@ package me.dmdev.premo.sample.stacknavigation
 
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.getSaved
 import me.dmdev.premo.handle
@@ -42,10 +41,10 @@ import me.dmdev.premo.navigation.replaceTop
 import me.dmdev.premo.sample.StateFlow
 import me.dmdev.premo.setSaver
 
-class StackNavigationPm(params: PmParams) : PresentationModel(params) {
+class StackNavigationPm(args: Args) : PresentationModel(args) {
 
     @Serializable
-    object Description : PmDescription
+    object Args : PmArgs()
 
     private val navigator = StackNavigator()
     val navigation: StackNavigation = navigator
@@ -103,7 +102,7 @@ class StackNavigationPm(params: PmParams) : PresentationModel(params) {
     private var screenNumber: Int = stateHandler.getSaved(KEY_SCREEN_NUMBER) ?: 0
     private fun nextChild(): PresentationModel {
         val number = screenNumber++
-        return Child(SimpleScreenPm.Description(number))
+        return Child(SimpleScreenPm.Args(number))
     }
 
     companion object {

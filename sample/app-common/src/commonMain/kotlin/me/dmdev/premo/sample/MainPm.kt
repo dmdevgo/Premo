@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,7 @@
 package me.dmdev.premo.sample
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.MasterDetailNavigation
 import me.dmdev.premo.onMessage
@@ -34,25 +33,25 @@ import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
-class MainPm(params: PmParams) : PresentationModel(params) {
+class MainPm(args: PmArgs) : PresentationModel(args) {
 
     @Serializable
-    object Description : PmDescription
+    object Args : PmArgs()
 
     val navigation = MasterDetailNavigation<SamplesPm, PresentationModel>(
-        masterDescription = SamplesPm.Description
+        masterPm = Child(SamplesPm.Args)
     ) { navigator ->
         onMessage<CounterSampleMessage> {
-            navigator.changeDetail(Child(CounterPm.Description(10)))
+            navigator.changeDetail(Child(CounterPm.Args(10)))
         }
         onMessage<StackNavigationSampleMessage> {
-            navigator.changeDetail(Child(StackNavigationPm.Description))
+            navigator.changeDetail(Child(StackNavigationPm.Args))
         }
         onMessage<BottomNavigationSampleMessage> {
-            navigator.changeDetail(Child(BottomNavigationPm.Description))
+            navigator.changeDetail(Child(BottomNavigationPm.Args))
         }
         onMessage<DialogNavigationSampleMessage> {
-            navigator.changeDetail(Child(DialogNavigationPm.Description))
+            navigator.changeDetail(Child(DialogNavigationPm.Args))
         }
     }
 }

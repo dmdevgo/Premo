@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,19 +26,18 @@ package me.dmdev.premo.sample.dilaognavigation
 
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.DialogGroupNavigation
 import me.dmdev.premo.navigation.DialogNavigator
 import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm.ResultMessage
 
 class DialogNavigationPm(
-    params: PmParams
-) : PresentationModel(params) {
+    args: Args
+) : PresentationModel(args) {
 
     @Serializable
-    object Description : PmDescription
+    object Args : PmArgs()
 
     private val simpleDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("simple_dialog")
     private val dialogForResult = DialogNavigator<SimpleDialogPm, ResultMessage>("dialog_for_result") { result ->
@@ -50,7 +49,7 @@ class DialogNavigationPm(
 
         showResultDialog.show(
             Child(
-                SimpleDialogPm.Description(
+                SimpleDialogPm.Args(
                     title = "Dialog Result",
                     message = resultMessage,
                     okButtonText = "Close",
@@ -70,7 +69,7 @@ class DialogNavigationPm(
     fun showSimpleDialogClick() {
         simpleDialog.show(
             Child(
-                SimpleDialogPm.Description(
+                SimpleDialogPm.Args(
                     title = "Simple dialog",
                     message = "This is a simple dialog, click ok to close.",
                     okButtonText = "Ok",
@@ -84,7 +83,7 @@ class DialogNavigationPm(
         inForegroundScope?.launch {
             dialogForResult.show(
                 Child(
-                    SimpleDialogPm.Description(
+                    SimpleDialogPm.Args(
                         title = "Simple result dialog",
                         message = "This is a simple dialog that sends a result message to show which button is clicked.",
                         okButtonText = "Ok",

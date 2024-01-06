@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,18 +27,16 @@ package me.dmdev.premo.sample
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
 
 class CounterPm(
-    maxCount: Int,
-    params: PmParams
-) : PresentationModel(params) {
+    args: Args
+) : PresentationModel(args) {
 
     @Serializable
-    data class Description(val maxCount: Int) : PmDescription
+    data class Args(val maxCount: Int) : PmArgs()
 
     @Serializable
     data class State(
@@ -51,7 +49,7 @@ class CounterPm(
 
     private val _stateFlow = SaveableFlow(
         key = "count",
-        initialValue = State(maxCount = maxCount, count = 0)
+        initialValue = State(maxCount = args.maxCount, count = 0)
     )
     val stateFlow: StateFlow<State> = _stateFlow.asStateFlow()
     val state: State get() = stateFlow.value

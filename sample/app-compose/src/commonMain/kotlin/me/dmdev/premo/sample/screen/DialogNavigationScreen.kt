@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -65,11 +65,11 @@ fun DialogNavigationScreen(
             val dialogPm = dialogs.lastOrNull()
             if (dialogPm is SimpleDialogPm) {
                 AlertDialog(
-                    title = { Text(dialogPm.title) },
-                    text = { Text(dialogPm.message) },
+                    title = { Text(dialogPm.args.title) },
+                    text = { Text(dialogPm.args.message) },
                     buttons = {
-                        val okButtonText = dialogPm.okButtonText
-                        val cancelButtonText = dialogPm.cancelButtonText
+                        val okButtonText = dialogPm.args.okButtonText
+                        val cancelButtonText = dialogPm.args.cancelButtonText
 
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(8.dp),

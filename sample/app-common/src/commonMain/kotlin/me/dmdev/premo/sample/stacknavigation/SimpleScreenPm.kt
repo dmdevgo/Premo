@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,20 +25,18 @@
 package me.dmdev.premo.sample.stacknavigation
 
 import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmDescription
-import me.dmdev.premo.PmParams
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 
 class SimpleScreenPm(
-    number: Int,
-    params: PmParams
-) : PresentationModel(params) {
+    args: Args
+) : PresentationModel(args) {
 
     @Serializable
-    class Description(val number: Int) : PmDescription {
+    class Args(val number: Int) : PmArgs() {
         override val key: String
             get() = "${super.key}/$number"
     }
 
-    val numberText = number.toString()
+    val numberText = args.number.toString()
 }

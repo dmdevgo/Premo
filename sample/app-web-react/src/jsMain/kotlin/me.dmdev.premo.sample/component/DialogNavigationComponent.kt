@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -88,20 +88,20 @@ val DialogNavigationComponent = FC<DialogNavigationComponentProps> { props ->
                     pm.dialogGroupNavigation.onDismissRequest()
                 }
 
-                if (dialogPm.title.isNotEmpty()) {
+                if (dialogPm.args.title.isNotEmpty()) {
                     DialogTitle {
-                        +dialogPm.title
+                        +dialogPm.args.title
                     }
                 }
 
-                if (dialogPm.message.isNotEmpty()) {
+                if (dialogPm.args.message.isNotEmpty()) {
                     DialogContent {
-                        +dialogPm.message
+                        +dialogPm.args.message
                     }
                 }
 
                 DialogActions {
-                    if (dialogPm.cancelButtonText.isNotEmpty()) {
+                    if (dialogPm.args.cancelButtonText.isNotEmpty()) {
                         Button {
                             onClick = {
                                 dialogPm.onCancelClick()
@@ -110,7 +110,7 @@ val DialogNavigationComponent = FC<DialogNavigationComponentProps> { props ->
                             +"Cancel"
                         }
                     }
-                    if (dialogPm.okButtonText.isNotEmpty()) {
+                    if (dialogPm.args.okButtonText.isNotEmpty()) {
                         Button {
                             onClick = {
                                 dialogPm.onOkClick()

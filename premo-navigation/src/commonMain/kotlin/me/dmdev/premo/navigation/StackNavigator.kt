@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import me.dmdev.premo.ExperimentalPremoApi
-import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
@@ -83,28 +82,14 @@ fun StackNavigator.handleBack(): Boolean {
 }
 
 fun PresentationModel.StackNavigator(
-    vararg initialDescriptions: PmDescription,
-    key: String = DEFAULT_STACK_NAVIGATOR_KEY,
-    backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
-    initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
-): StackNavigator {
-    return StackNavigator(
-        initialBackStack = initialDescriptions.asList(),
-        key = key,
-        backHandler = backHandler,
-        initHandlers = initHandlers
-    )
-}
-
-fun PresentationModel.StackNavigator(
-    initialBackStack: List<PmDescription>,
+    initBackStack: () -> List<PresentationModel> = { listOf() },
     key: String = DEFAULT_STACK_NAVIGATOR_KEY,
     backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
     initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
 ): StackNavigator {
     val navigator = StackNavigatorImpl(
         hostPm = this,
-        initialBackStack = initialBackStack,
+        initBackStack = initBackStack,
         key = key
     )
     messageHandler.handle<BackMessage> { backHandler.invoke(navigator) }
@@ -119,16 +104,16 @@ internal val DEFAULT_STACK_NAVIGATOR_BACK_HANDLER: (StackNavigator) -> Boolean =
 
 internal class StackNavigatorImpl(
     private val hostPm: PresentationModel,
-    initialBackStack: List<PmDescription>,
+    initBackStack: () -> List<PresentationModel> = { listOf() },
     key: String
 ) : StackNavigator {
 
     private val _backStackFlow: MutableStateFlow<List<PresentationModel>> =
         hostPm.stateHandler.SaveableFlow(
             key = "${key}_backstack",
-            initialValueProvider = { initialBackStack.map { hostPm.Child(it) } },
-            saveTypeMapper = { backStack -> backStack.map { it.description } },
-            restoreTypeMapper = { descriptions -> descriptions.map { hostPm.Child(it) } }
+            initialValueProvider = { initBackStack() },
+            saveTypeMapper = { backStack -> backStack.map { it.pmArgs } },
+            restoreTypeMapper = { backStack -> backStack.map { hostPm.Child(it) } }
         )
 
     override val backStackFlow: StateFlow<List<PresentationModel>> = _backStackFlow

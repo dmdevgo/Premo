@@ -34,7 +34,7 @@ import me.dmdev.premo.saver.JsonFileStateSaver
 @Preview
 fun main() {
     val pmDelegate = JvmPmDelegate<MainPm>(
-        pmDescription = MainPm.Description,
+        pmArgs = MainPm.Args,
         pmFactory = MainPmFactory(),
         pmStateSaver = JsonFileStateSaver(Serializers.json)
     )

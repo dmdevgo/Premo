@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,15 +27,20 @@ package me.dmdev.premo
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
+import me.dmdev.premo.saver.PmStateSaverFactory
 
 class PmDelegate<PM : PresentationModel>(
-    private val pmParams: PmParams
+    private val pmArgs: PmArgs,
+    private val pmFactory: PmFactory,
+    private val pmStateSaverFactory: PmStateSaverFactory
 ) {
 
     @Suppress("UNCHECKED_CAST")
     val presentationModel: PM by lazy {
-        val pm = PmStore[pmParams.description.key] as? PM ?: pmParams.factory.createPm(pmParams) as PM
-        PmStore[pmParams.description.key] = pm
+        pmArgs.pmFactory = pmFactory
+        pmArgs.pmStateSaverFactory = pmStateSaverFactory
+        val pm = PmStore[pmArgs.key] as? PM ?: pmArgs.pmFactory.createPm(pmArgs) as PM
+        PmStore[pmArgs.key] = pm
         pm
     }
 
@@ -53,7 +58,7 @@ class PmDelegate<PM : PresentationModel>(
 
     fun onDestroy() {
         presentationModel.lifecycle.moveTo(DESTROYED)
-        PmStore.remove(pmParams.description.key)
+        PmStore.remove(pmArgs.key)
     }
 
     fun onSave() {

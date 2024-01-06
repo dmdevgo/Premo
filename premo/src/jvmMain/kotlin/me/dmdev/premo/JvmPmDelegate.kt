@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,20 +28,17 @@ import me.dmdev.premo.saver.FileStateSaver
 import java.io.File
 
 class JvmPmDelegate<PM : PresentationModel>(
-    pmDescription: PmDescription,
+    pmArgs: PmArgs,
     pmFactory: PmFactory,
     private val pmStateSaver: FileStateSaver,
     private val pmStateFile: File = File("pm_state.txt")
 ) {
 
     private val pmDelegate: PmDelegate<PM> by lazy {
-        PmDelegate<PM>(
-            pmParams = PmParams(
-                description = pmDescription,
-                parent = null,
-                factory = pmFactory,
-                stateSaverFactory = pmStateSaver
-            )
+        PmDelegate(
+            pmArgs = pmArgs,
+            pmFactory = pmFactory,
+            pmStateSaverFactory = pmStateSaver
         )
     }
 

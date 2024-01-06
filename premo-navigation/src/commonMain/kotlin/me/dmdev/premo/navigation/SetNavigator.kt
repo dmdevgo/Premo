@@ -27,7 +27,6 @@ package me.dmdev.premo.navigation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
@@ -53,14 +52,14 @@ fun SetNavigator.handleBack(): Boolean {
 }
 
 fun PresentationModel.SetNavigator(
-    vararg initialDescriptions: PmDescription,
+    initValues: () -> List<PresentationModel>,
     key: String = DEFAULT_SET_NAVIGATOR_KEY,
     backHandler: (SetNavigator) -> Boolean = DEFAULT_SET_NAVIGATOR_BACK_HANDLER,
     onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit = DEFAULT_SET_NAVIGATOR_ON_CHANGE_CURRENT
 ): SetNavigator {
     val navigator = SetNavigatorImpl(
         hostPm = this,
-        initialValues = initialDescriptions.asList(),
+        initValues = initValues,
         key = key,
         onChangeCurrent = onChangeCurrent
     )
@@ -80,16 +79,16 @@ internal val DEFAULT_SET_NAVIGATOR_ON_CHANGE_CURRENT: (index: Int, navigator: Se
 
 internal class SetNavigatorImpl(
     private val hostPm: PresentationModel,
-    initialValues: List<PmDescription>,
+    initValues: () -> List<PresentationModel>,
     key: String,
     private val onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit
 ) : SetNavigator {
 
     private val _valuesFlow: MutableStateFlow<List<PresentationModel>> = hostPm.SaveableFlow(
         key = "${key}_values",
-        initialValueProvider = { initialValues.map { hostPm.Child(it) } },
-        saveTypeMapper = { values -> values.map { it.description } },
-        restoreTypeMapper = { descriptions -> descriptions.map { hostPm.Child(it) } }
+        initialValueProvider = { initValues() },
+        saveTypeMapper = { values -> values.map { it.pmArgs } },
+        restoreTypeMapper = { pmArgs -> pmArgs.map { hostPm.Child(it) } }
     )
     override val valuesFlow: StateFlow<List<PresentationModel>> = _valuesFlow.asStateFlow()
 

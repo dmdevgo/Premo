@@ -69,13 +69,13 @@ struct DialogNavigationView: View {
             .alert(isPresented: alertIsShowingBinding) {
                 let dialogPm = dialogs.value?.lastObject as? SimpleDialogPm
                 return Alert(
-                    title: Text(dialogPm?.title ?? ""),
-                    message: Text(dialogPm?.message ?? ""),
-                    primaryButton: .default(Text(dialogPm?.cancelButtonText ?? ""), action: {
+                    title: Text(dialogPm?.args.title ?? ""),
+                    message: Text(dialogPm?.args.message ?? ""),
+                    primaryButton: .default(Text(dialogPm?.args.cancelButtonText ?? ""), action: {
                         dialogPm?.onCancelClick()
 
                     }),
-                    secondaryButton: .default(Text(dialogPm?.okButtonText ?? ""), action: {
+                    secondaryButton: .default(Text(dialogPm?.args.okButtonText ?? ""), action: {
                         dialogPm?.onOkClick()
                     })
                 )

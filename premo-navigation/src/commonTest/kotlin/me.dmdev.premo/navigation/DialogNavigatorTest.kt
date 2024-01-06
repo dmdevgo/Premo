@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,8 +53,8 @@ class DialogNavigatorTest {
         Dispatchers.setMain(Dispatchers.Unconfined)
         parentPm = TestPm.buildRootPm()
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        dialogPm = parentPm.Child(TestPm.PM1_DESCRIPTION)
-        dialogPm2 = parentPm.Child(TestPm.PM2_DESCRIPTION)
+        dialogPm = parentPm.Child(TestPm.PM1_ARGS)
+        dialogPm2 = parentPm.Child(TestPm.PM2_ARGS)
         navigator = parentPm.DialogNavigator(DIALOG_KEY)
     }
 
@@ -120,9 +120,9 @@ class DialogNavigatorTest {
         val stateSaverFactory = TestStateSaverFactory(
             initialState = mutableMapOf(
                 TestPm.ROOT_PM_KEY to mutableMapOf(
-                    DIALOG_KEY to TestPm.PM1_DESCRIPTION
+                    DIALOG_KEY to TestPm.PM1_ARGS
                 ),
-                "${TestPm.ROOT_PM_KEY}/${TestPm.PM1_DESCRIPTION.key}" to mutableMapOf()
+                "${TestPm.ROOT_PM_KEY}/${TestPm.PM1_ARGS.key}" to mutableMapOf()
             )
         )
 
@@ -130,8 +130,8 @@ class DialogNavigatorTest {
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
         val navigator = parentPm.DialogNavigator<TestPm, ResultMessage>(DIALOG_KEY)
 
-        assertEquals(TestPm.PM1_DESCRIPTION, navigator.dialog?.description)
-        assertEquals(TestPm.PM1_DESCRIPTION, navigator.dialogFlow.value?.description)
+        assertEquals(TestPm.PM1_ARGS, navigator.dialog?.pmArgs)
+        assertEquals(TestPm.PM1_ARGS, navigator.dialogFlow.value?.pmArgs)
         assertEquals(IN_FOREGROUND, navigator.dialog?.lifecycle?.state)
     }
 
@@ -140,7 +140,7 @@ class DialogNavigatorTest {
         val stateSaverFactory = TestStateSaverFactory()
 
         val parentPm = TestPm.buildRootPm(stateSaverFactory)
-        val dialogPm = parentPm.Child<TestPm>(TestPm.PM1_DESCRIPTION)
+        val dialogPm = parentPm.Child<TestPm>(TestPm.PM1_ARGS)
         val navigator = parentPm.DialogNavigator<TestPm, ResultMessage>(DIALOG_KEY)
 
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
@@ -150,9 +150,9 @@ class DialogNavigatorTest {
         assertEquals(
             mutableMapOf(
                 TestPm.ROOT_PM_KEY to mutableMapOf<String, Any>(
-                    DIALOG_KEY to TestPm.PM1_DESCRIPTION
+                    DIALOG_KEY to TestPm.PM1_ARGS
                 ),
-                "${TestPm.ROOT_PM_KEY}/${TestPm.PM1_DESCRIPTION.key}" to mutableMapOf()
+                "${TestPm.ROOT_PM_KEY}/${TestPm.PM1_ARGS.key}" to mutableMapOf()
             ),
             stateSaverFactory.pmStates
         )

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,7 @@ fun BottomNavigationScreen(
             bottomBar = {
                 BottomNavigation {
                     pm.navigation.values.forEachIndexed { index, tabPm ->
-                        val title = (tabPm as? TabPm)?.tabTitle ?: ""
+                        val title = (tabPm as? TabPm)?.title ?: ""
                         BottomNavigationItem(
                             selected = tabPm == currentTabPm,
                             onClick = { pm.navigation.onChangeCurrent(index) },
@@ -105,7 +105,7 @@ fun ItemScreen(pmTab: TabItemPm = Stubs.tabItemPm) {
         ) {
             Text(
                 fontSize = 24.sp,
-                text = pmTab.screenTitle
+                text = pmTab.title
             )
             Spacer(modifier = Modifier.height(32.dp))
             Row {

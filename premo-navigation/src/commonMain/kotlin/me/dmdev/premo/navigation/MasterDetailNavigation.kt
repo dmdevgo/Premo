@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.flow.StateFlow
-import me.dmdev.premo.PmDescription
 import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
 
@@ -39,13 +38,13 @@ interface MasterDetailNavigation<M, D>
 }
 
 fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigation(
-    masterDescription: PmDescription,
+    masterPm: M,
     key: String = DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY,
     backHandler: (MasterDetailNavigator<M, D>) -> Boolean = DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER,
     initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit = {}
 ): MasterDetailNavigation<M, D> {
     return MasterDetailNavigator(
-        masterDescription = masterDescription,
+        masterPm = masterPm,
         key = key,
         backHandler = backHandler,
         initHandlers = initHandlers

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,16 @@
 
 package me.dmdev.premo.navigation
 
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PmFactory
-import me.dmdev.premo.PmParams
 import me.dmdev.premo.PresentationModel
 
 class TestPmFactory : PmFactory {
-    override fun createPm(params: PmParams): PresentationModel {
-        return when (params.description) {
-            is TestPm.Description -> TestPm(params)
+    override fun createPm(args: PmArgs): PresentationModel {
+        return when (args) {
+            is TestPm.Args -> TestPm(args)
             else -> throw IllegalArgumentException(
-                "Not handled instance creation for pm description ${params.description}"
+                "Not handled instance creation for pm args $args"
             )
         }
     }

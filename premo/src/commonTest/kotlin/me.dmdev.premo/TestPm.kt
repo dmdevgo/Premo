@@ -27,15 +27,13 @@ package me.dmdev.premo
 import me.dmdev.premo.saver.NoPmStateSaverFactory
 
 class TestPm(
-    pmParams: PmParams = PmParams(
-        description = Description(),
-        parent = null,
-        factory = TestPmFactory(),
-        stateSaverFactory = NoPmStateSaverFactory
-    )
-) : PresentationModel(pmParams) {
+    args: Args = Args().apply {
+        overridePmFactory(TestPmFactory())
+        overridePmStateSaverFactory(NoPmStateSaverFactory)
+    }
+) : PresentationModel(args) {
 
-    data class Description(
+    data class Args(
         override val key: String = "test_pm"
-    ) : PmDescription
+    ) : PmArgs()
 }
