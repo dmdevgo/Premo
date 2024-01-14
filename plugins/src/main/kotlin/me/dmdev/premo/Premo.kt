@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package me.dmdev.premo
 object Premo {
 
     const val groupId = "me.dmdev.premo"
-    const val version = "1.0.0-alpha.11"
+    const val version = "1.0.0-alpha.12"
     const val description = "Premo helps to implement the presentation layer and share it on Android, iOS, Desktop and Web."
     const val url = "https://github.com/dmdevgo/Premo"
 

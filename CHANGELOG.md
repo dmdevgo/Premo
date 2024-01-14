@@ -1,3 +1,9 @@
+# 1.0.0-alpha.12 / 15.01.2024
+- Removed `PmDescription` and `PmParams`. Instead, use `PmArgs` to pass serializable arguments to the `PresentationModel`.
+- Added `NoPmStateSaver` and `NoPmStateSaverFactory`.
+- Added `oldState` parameter to `PmLifecycle.Observer`
+- Kotlin is updated to 1.9.21.
+
 # 1.0.0-alpha.11 / 29.08.2023
 - Published new module: `premo-navigation-compose`.
 - Removed `showForResult` from `DialogNavigator` because this way of waiting the result is not persistent.
