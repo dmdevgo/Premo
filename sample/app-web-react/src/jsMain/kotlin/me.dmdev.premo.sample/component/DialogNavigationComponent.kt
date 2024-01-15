@@ -25,8 +25,8 @@
 package me.dmdev.premo.sample.component
 
 import me.dmdev.premo.sample.collectAsState
-import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
-import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm
+import me.dmdev.premo.sample.dialognavigation.DialogNavigationPm
+import me.dmdev.premo.sample.dialognavigation.SimpleDialogPm
 import mui.material.Button
 import mui.material.ButtonVariant
 import mui.material.Dialog

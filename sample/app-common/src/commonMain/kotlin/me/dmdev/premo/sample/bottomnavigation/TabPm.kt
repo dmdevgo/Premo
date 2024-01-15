@@ -28,8 +28,6 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.childrenOf
-import me.dmdev.premo.handle
-import me.dmdev.premo.navigation.BackMessage
 import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.StackNavigator
 import me.dmdev.premo.navigation.handleBack
@@ -58,7 +56,8 @@ class TabPm(
             childrenOf(
                 TabItemPm.Args(nextScreenTitle(), args.tabTitle)
             )
-        }
+        },
+        backHandler = { navigator -> handleBack(navigator) }
     ) { navigator ->
         onMessage<NextClickMessage> {
             navigator.push(
@@ -71,9 +70,6 @@ class TabPm(
             )
         }
         onMessage<PreviousClickMessage> {
-            handleBack(navigator)
-        }
-        handle<BackMessage> {
             handleBack(navigator)
         }
     }

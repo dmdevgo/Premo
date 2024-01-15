@@ -33,8 +33,8 @@ import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.navigation.back
 import me.dmdev.premo.sample.ScreenBox
 import me.dmdev.premo.sample.bind
-import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
-import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm
+import me.dmdev.premo.sample.dialognavigation.DialogNavigationPm
+import me.dmdev.premo.sample.dialognavigation.SimpleDialogPm
 
 @OptIn(ExperimentalPremoApi::class)
 @Composable

@@ -29,8 +29,6 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.getSaved
-import me.dmdev.premo.handle
-import me.dmdev.premo.navigation.BackMessage
 import me.dmdev.premo.navigation.StackNavigation
 import me.dmdev.premo.navigation.StackNavigator
 import me.dmdev.premo.navigation.pop
@@ -46,7 +44,9 @@ class StackNavigationPm(args: Args) : PresentationModel(args) {
     @Serializable
     object Args : PmArgs()
 
-    private val navigator = StackNavigator()
+    private val navigator = StackNavigator(
+        backHandler = { navigator -> navigator.pop() }
+    )
     val navigation: StackNavigation = navigator
 
     val backstackAsStringState = StateFlow("") {
@@ -61,9 +61,6 @@ class StackNavigationPm(args: Args) : PresentationModel(args) {
     }
 
     init {
-        messageHandler.handle<BackMessage> {
-            navigator.pop()
-        }
         stateHandler.setSaver(KEY_SCREEN_NUMBER) {
             screenNumber
         }

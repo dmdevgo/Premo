@@ -45,15 +45,11 @@ interface MasterDetailNavigator<M, D> : MasterDetailNavigation<M, D>
 }
 
 fun MasterDetailNavigator<*, *>.handleBack(): Boolean {
-    var handled = detail?.handleBack() ?: false
-    if (!handled && detail != null) {
+    if (detail != null) {
         changeDetail(null)
-        handled = true
+        return true
     }
-    if (!handled) {
-        handled = master.handleBack()
-    }
-    return handled
+    return false
 }
 
 fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigator(

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample.dilaognavigation
+package me.dmdev.premo.sample.dialognavigation
 
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs

@@ -41,9 +41,7 @@ interface SetNavigator : SetNavigation {
 }
 
 fun SetNavigator.handleBack(): Boolean {
-    return if (current?.handleBack() == true) {
-        true
-    } else if (values.indexOf(current) > 0) {
+    return if (values.indexOf(current) > 0) {
         changeCurrent(0)
         true
     } else {

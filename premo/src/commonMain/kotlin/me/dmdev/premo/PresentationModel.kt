@@ -53,10 +53,10 @@ abstract class PresentationModel(
     var inForegroundScope: CoroutineScope? = null
         private set
 
-    val messageHandler: PmMessageHandler = PmMessageHandler(parent?.messageHandler)
+    val messageHandler: PmMessageHandler = PmMessageHandler(this)
     val stateHandler: PmStateHandler = PmStateHandler(pmStateSaverFactory.createPmStateSaver(tag))
 
-    private val allChildren = mutableListOf<PresentationModel>()
+    internal val allChildren = mutableListOf<PresentationModel>()
     private val attachedChildren = mutableListOf<PresentationModel>()
 
     init {

@@ -73,12 +73,11 @@ fun StackNavigator.replaceAll(pm: PresentationModel) {
 }
 
 fun StackNavigator.handleBack(): Boolean {
-    var handled = currentTop?.handleBack() ?: false
-    if (!handled && backStack.size > 1) {
+    if (backStack.size > 1) {
         pop()
-        handled = true
+        return true
     }
-    return handled
+    return false
 }
 
 fun PresentationModel.StackNavigator(

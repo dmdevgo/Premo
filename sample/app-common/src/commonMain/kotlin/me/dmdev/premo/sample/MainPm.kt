@@ -30,7 +30,7 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.MasterDetailNavigation
 import me.dmdev.premo.onMessage
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
-import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
+import me.dmdev.premo.sample.dialognavigation.DialogNavigationPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
 class MainPm(args: PmArgs) : PresentationModel(args) {

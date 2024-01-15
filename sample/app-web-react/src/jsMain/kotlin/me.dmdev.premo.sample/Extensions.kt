@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import me.dmdev.premo.sample.component.DialogNavigationComponent
 import me.dmdev.premo.sample.component.SamplesComponent
 import me.dmdev.premo.sample.component.SimpleComponent
 import me.dmdev.premo.sample.component.StackNavigationComponent
-import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
+import me.dmdev.premo.sample.dialognavigation.DialogNavigationPm
 import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 import react.ChildrenBuilder

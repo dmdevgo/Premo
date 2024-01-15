@@ -29,8 +29,8 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottomnavigation.TabItemPm
 import me.dmdev.premo.sample.bottomnavigation.TabPm
-import me.dmdev.premo.sample.dilaognavigation.DialogNavigationPm
-import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm
+import me.dmdev.premo.sample.dialognavigation.DialogNavigationPm
+import me.dmdev.premo.sample.dialognavigation.SimpleDialogPm
 import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 

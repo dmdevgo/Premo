@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample.dilaognavigation
+package me.dmdev.premo.sample.dialognavigation
 
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -30,7 +30,7 @@ import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.DialogGroupNavigation
 import me.dmdev.premo.navigation.DialogNavigator
-import me.dmdev.premo.sample.dilaognavigation.SimpleDialogPm.ResultMessage
+import me.dmdev.premo.sample.dialognavigation.SimpleDialogPm.ResultMessage
 
 class DialogNavigationPm(
     args: Args

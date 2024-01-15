@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@
 package me.dmdev.premo
 
 class PmMessageHandler(
-    private val parentHandler: PmMessageHandler?
+    private val hostPm: PresentationModel
 ) {
 
     private val handlers = mutableListOf<(message: PmMessage) -> Boolean>()
@@ -44,10 +44,30 @@ class PmMessageHandler(
         }
     }
 
+    /**
+     * Sends a message towards the root. Any parent can intercept the message and process it.
+     */
     fun send(message: PmMessage) {
-        if (!handlers.any { it.invoke(message) }) {
-            parentHandler?.send(message)
+        if (handle(message).not()) {
+            hostPm.parent?.messageHandler?.handle(message)
         }
+    }
+
+    /**
+     * Sends a message to its children.
+     * First, the message is delivered to the active leaves, if the message is not processed, it can be intercepted by the parent.
+     * If the message is not processed by any child, the message will be intercepted by the sender.
+     */
+    fun sendToChildren(message: PmMessage): Boolean {
+        hostPm.allChildren.reversed().forEach { pm ->
+            if (pm.messageHandler.sendToChildren(message)) {
+                return true
+            }
+        }
+        if (hostPm.lifecycle.state == PmLifecycle.State.IN_FOREGROUND) {
+            return hostPm.messageHandler.handle(message)
+        }
+        return false
     }
 }
 

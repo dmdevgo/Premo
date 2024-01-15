@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 package me.dmdev.premo
 
+import me.dmdev.premo.saver.NoPmStateSaverFactory
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -38,8 +39,16 @@ class PmMessageHandlerTest {
 
     @BeforeTest
     fun setUp() {
-        parentHandler = PmMessageHandler(null)
-        handler = PmMessageHandler(parentHandler)
+        val parentPm = TestPm()
+        val childPm = TestPm(
+            TestPm.Args().apply {
+                parent = parentPm
+                overridePmFactory(TestPmFactory())
+                overridePmStateSaverFactory(NoPmStateSaverFactory)
+            }
+        )
+        parentHandler = parentPm.messageHandler
+        handler = PmMessageHandler(childPm)
     }
 
     @Test
