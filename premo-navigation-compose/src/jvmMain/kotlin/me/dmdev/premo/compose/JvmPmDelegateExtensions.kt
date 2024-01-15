@@ -22,41 +22,28 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo.compose
 
-import androidx.compose.desktop.ui.tooling.preview.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.window.*
 import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.JvmPmDelegate
-import me.dmdev.premo.compose.attachWindowLifecycle
-import me.dmdev.premo.sample.serialization.Serializers
-import me.dmdev.premo.saver.JsonFileStateSaver
 
-@OptIn(ExperimentalPremoApi::class)
-@Preview
-fun main() {
-    val pmDelegate = JvmPmDelegate<MainPm>(
-        pmArgs = MainPm.Args,
-        pmFactory = MainPmFactory(),
-        pmStateSaver = JsonFileStateSaver(Serializers.json)
-    )
-
-    application {
-        val windowState = rememberWindowState()
-        val windowSizes = windowSizes(windowState.size.width, windowState.size.height)
-        pmDelegate.attachWindowLifecycle(windowState)
-
-        fun ApplicationScope.onCloseWindow() {
-            pmDelegate.onSaveState()
-            exitApplication()
+@ExperimentalPremoApi
+@Composable
+fun JvmPmDelegate<*>.attachWindowLifecycle(windowState: WindowState) {
+    LaunchedEffect(this, windowState) {
+        snapshotFlow(windowState::isMinimized).collect { isMinimized ->
+            if (isMinimized) {
+                onBackground()
+            } else {
+                onForeground()
+            }
         }
+    }
 
-        Window(
-            onCloseRequest = ::onCloseWindow,
-            title = "Premo",
-            state = windowState
-        ) {
-            App(pmDelegate.presentationModel, windowSizes)
-        }
+    DisposableEffect(this) {
+        onCreate()
+        onDispose(::onDestroy)
     }
 }
