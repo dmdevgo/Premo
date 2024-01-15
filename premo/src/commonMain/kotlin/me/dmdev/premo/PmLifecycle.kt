@@ -53,28 +53,34 @@ class PmLifecycle {
                     IN_FOREGROUND -> {
                         notifyChange(CREATED)
                     }
+
                     else -> { /*do nothing */
                     }
                 }
             }
+
             IN_FOREGROUND -> {
                 when (state) {
                     CREATED -> {
                         notifyChange(IN_FOREGROUND)
                     }
+
                     else -> { /*do nothing */
                     }
                 }
             }
+
             DESTROYED -> {
                 when (state) {
                     CREATED -> {
                         notifyChange(DESTROYED)
                     }
+
                     IN_FOREGROUND -> {
                         notifyChange(CREATED)
                         notifyChange(DESTROYED)
                     }
+
                     DESTROYED -> { /*do nothing */
                     }
                 }
@@ -102,6 +108,38 @@ class PmLifecycle {
 
         if (newState == DESTROYED) {
             observers.clear()
+        }
+    }
+}
+
+fun PmLifecycle.doOnCreate(callback: () -> Unit) {
+    addObserver { oldState, newState ->
+        if (newState == CREATED && oldState == CREATED) {
+            callback()
+        }
+    }
+}
+
+fun PmLifecycle.doOnForeground(callback: () -> Unit) {
+    addObserver { _, newState ->
+        if (newState == IN_FOREGROUND) {
+            callback()
+        }
+    }
+}
+
+fun PmLifecycle.doOnBackground(callback: () -> Unit) {
+    addObserver { oldState, newState ->
+        if (newState == CREATED && oldState == IN_FOREGROUND) {
+            callback()
+        }
+    }
+}
+
+fun PmLifecycle.doOnDestroy(callback: () -> Unit) {
+    addObserver { _, newState ->
+        if (newState == DESTROYED) {
+            callback()
         }
     }
 }
