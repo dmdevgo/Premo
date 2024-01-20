@@ -31,13 +31,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
+import me.dmdev.premo.annotation.ExperimentalPremoApi
 import me.dmdev.premo.handle
 
 interface StackNavigator : StackNavigation {

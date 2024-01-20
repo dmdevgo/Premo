@@ -26,8 +26,8 @@ package me.dmdev.premo.compose
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.window.*
-import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.JvmPmDelegate
+import me.dmdev.premo.annotation.ExperimentalPremoApi
 
 @ExperimentalPremoApi
 @Composable

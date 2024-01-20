@@ -26,8 +26,8 @@ package me.dmdev.premo.sample
 
 import androidx.compose.desktop.ui.tooling.preview.*
 import androidx.compose.ui.window.*
-import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.JvmPmDelegate
+import me.dmdev.premo.annotation.ExperimentalPremoApi
 import me.dmdev.premo.compose.attachWindowLifecycle
 import me.dmdev.premo.sample.serialization.Serializers
 import me.dmdev.premo.saver.JsonFileStateSaver

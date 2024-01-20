@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
+import me.dmdev.premo.annotation.DelicatePremoApi
 import me.dmdev.premo.saver.PmStateSaverFactory
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
@@ -84,6 +85,7 @@ abstract class PresentationModel(
         return childPm
     }
 
+    @DelicatePremoApi
     fun saveState() {
         stateHandler.saveState()
         allChildren.forEach { it.saveState() }

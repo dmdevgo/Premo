@@ -36,6 +36,10 @@ kotlin {
 
     sourceSets {
 
+        all {
+            languageSettings.optIn("me.dmdev.premo.annotation.DelicatePremoApi")
+        }
+
         commonMain {
             dependencies {
                 api(libs.kotlinx.serialization.core)

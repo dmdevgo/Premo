@@ -22,18 +22,25 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo
+package me.dmdev.premo.annotation
 
-import me.dmdev.premo.saver.NoPmStateSaverFactory
-
-class TestPm(
-    args: Args = Args().apply {
-        pmFactory = TestPmFactory()
-        pmStateSaverFactory = NoPmStateSaverFactory
-    }
-) : PresentationModel(args) {
-
-    data class Args(
-        override val key: String = "test_pm"
-    ) : PmArgs()
-}
+@RequiresOptIn(
+    message = "This is a delicate API that should not be used outside the library in normal case." +
+        " Typically this API is used to implement custom navigators or extend the library.",
+    level = RequiresOptIn.Level.ERROR
+)
+@Retention(AnnotationRetention.BINARY)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.ANNOTATION_CLASS,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.LOCAL_VARIABLE,
+    AnnotationTarget.VALUE_PARAMETER,
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER,
+    AnnotationTarget.TYPEALIAS
+)
+annotation class DelicatePremoApi

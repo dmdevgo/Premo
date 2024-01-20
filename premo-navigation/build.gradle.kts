@@ -35,6 +35,10 @@ kotlin {
 
     sourceSets {
 
+        all {
+            languageSettings.optIn("me.dmdev.premo.annotation.DelicatePremoApi")
+        }
+
         commonMain {
             dependencies {
                 api(project(":premo"))

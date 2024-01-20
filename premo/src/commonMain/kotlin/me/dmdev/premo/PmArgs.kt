@@ -26,26 +26,22 @@ package me.dmdev.premo
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import me.dmdev.premo.annotation.DelicatePremoApi
 import me.dmdev.premo.saver.PmStateSaverFactory
 
 @Serializable
 abstract class PmArgs {
     open val key: String get() = this::class.simpleName ?: ""
 
+    @DelicatePremoApi
     @Transient
     internal var parent: PresentationModel? = null
 
+    @DelicatePremoApi
     @Transient
-    internal lateinit var pmFactory: PmFactory
+    lateinit var pmFactory: PmFactory
 
+    @DelicatePremoApi
     @Transient
-    internal lateinit var pmStateSaverFactory: PmStateSaverFactory
-
-    fun overridePmFactory(pmFactory: PmFactory) {
-        this.pmFactory = pmFactory
-    }
-
-    fun overridePmStateSaverFactory(pmStateSaverFactory: PmStateSaverFactory) {
-        this.pmStateSaverFactory = pmStateSaverFactory
-    }
+    lateinit var pmStateSaverFactory: PmStateSaverFactory
 }

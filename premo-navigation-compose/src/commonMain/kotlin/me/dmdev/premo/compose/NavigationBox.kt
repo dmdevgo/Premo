@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.*
-import me.dmdev.premo.ExperimentalPremoApi
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.annotation.ExperimentalPremoApi
 import me.dmdev.premo.navigation.BackStackChange
 import me.dmdev.premo.navigation.StackNavigation
 

@@ -56,8 +56,8 @@ class TestPm(args: Args) : PresentationModel(args) {
         fun buildRootPm(pmStateSaverFactory: TestStateSaverFactory = TestStateSaverFactory()): TestPm {
             return TestPm(
                 Args(ROOT_PM_KEY).apply {
-                    overridePmFactory(TestPmFactory())
-                    overridePmStateSaverFactory(pmStateSaverFactory)
+                    this.pmFactory = TestPmFactory()
+                    this.pmStateSaverFactory = pmStateSaverFactory
                 }
             )
         }

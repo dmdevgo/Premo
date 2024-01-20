@@ -27,6 +27,7 @@ package me.dmdev.premo
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
+import me.dmdev.premo.annotation.DelicatePremoApi
 
 class PmLifecycle {
 
@@ -44,6 +45,7 @@ class PmLifecycle {
         observers.remove(observer)
     }
 
+    @DelicatePremoApi
     fun moveTo(targetState: State) {
         if (targetState == state) return
 
