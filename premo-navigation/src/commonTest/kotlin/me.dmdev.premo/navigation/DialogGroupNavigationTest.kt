@@ -30,6 +30,9 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.navigation.dialog.DEFAULT_DIALOG_GROUP_NAVIGATION_KEY
+import me.dmdev.premo.navigation.dialog.DialogGroupNavigation
+import me.dmdev.premo.navigation.dialog.DialogNavigator
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test

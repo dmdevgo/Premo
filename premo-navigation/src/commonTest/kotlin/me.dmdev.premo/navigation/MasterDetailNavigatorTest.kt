@@ -26,6 +26,9 @@ package me.dmdev.premo.navigation
 
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
+import me.dmdev.premo.navigation.master.DEFAULT_MASTER_DETAIL_NAVIGATOR_DETAIL_STATE_KEY
+import me.dmdev.premo.navigation.master.MasterDetailNavigator
+import me.dmdev.premo.navigation.master.handleBack
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

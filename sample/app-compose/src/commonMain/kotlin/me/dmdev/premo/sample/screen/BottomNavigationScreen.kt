@@ -50,7 +50,7 @@ import me.dmdev.premo.sample.bottomnavigation.TabPm
 fun BottomNavigationScreen(
     pm: BottomNavigationPm
 ) {
-    val currentTabPm = pm.navigation.currentFlow.bind()
+    val currentTabPm = pm.setNavigation.currentFlow.bind()
 
     ScreenBox(
         title = "Bottom Navigation",
@@ -60,11 +60,11 @@ fun BottomNavigationScreen(
             backgroundColor = Color.Transparent,
             bottomBar = {
                 BottomNavigation {
-                    pm.navigation.values.forEachIndexed { index, tabPm ->
+                    pm.setNavigation.values.forEachIndexed { index, tabPm ->
                         val title = (tabPm as? TabPm)?.title ?: ""
                         BottomNavigationItem(
                             selected = tabPm == currentTabPm,
-                            onClick = { pm.navigation.onChangeCurrent(index) },
+                            onClick = { pm.setNavigation.onChangeCurrent(index) },
                             label = { Text(title) },
                             icon = {
                                 Icon(
@@ -79,7 +79,7 @@ fun BottomNavigationScreen(
         ) {
             if (currentTabPm is TabPm) {
                 AnimatedNavigationBox(
-                    navigation = currentTabPm.navigation,
+                    navigation = currentTabPm.stackNavigation,
                     enterTransition = { _, _ -> slideInHorizontally { height -> height } },
                     exitTransition = { _, _ -> slideOutHorizontally { height -> -height } },
                     popEnterTransition = { _, _ -> slideInHorizontally { height -> -height } },

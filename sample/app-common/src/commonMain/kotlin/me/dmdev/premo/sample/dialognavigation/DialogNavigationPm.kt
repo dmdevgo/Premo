@@ -28,13 +28,14 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.DialogGroupNavigation
-import me.dmdev.premo.navigation.DialogNavigator
+import me.dmdev.premo.navigation.dialog.DialogGroupNavigation
+import me.dmdev.premo.navigation.dialog.DialogGroupNavigationHost
+import me.dmdev.premo.navigation.dialog.DialogNavigator
 import me.dmdev.premo.sample.dialognavigation.SimpleDialogPm.ResultMessage
 
 class DialogNavigationPm(
     args: Args
-) : PresentationModel(args) {
+) : PresentationModel(args), DialogGroupNavigationHost {
 
     @Serializable
     object Args : PmArgs()
@@ -60,7 +61,7 @@ class DialogNavigationPm(
     }
     private val showResultDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("show_result_dialog")
 
-    val dialogGroupNavigation = DialogGroupNavigation(
+    override val dialogGroupNavigation = DialogGroupNavigation(
         dialogForResult,
         simpleDialog,
         showResultDialog

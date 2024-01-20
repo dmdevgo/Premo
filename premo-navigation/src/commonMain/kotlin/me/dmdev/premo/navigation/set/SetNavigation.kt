@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +22,30 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo.navigation.set
 
 import kotlinx.coroutines.flow.StateFlow
 import me.dmdev.premo.PresentationModel
 
-interface DialogNavigation<D : PresentationModel> {
-    val dialogFlow: StateFlow<D?>
-    val dialog: D? get() = dialogFlow.value
-    fun onDismissRequest()
+interface SetNavigation {
+    val valuesFlow: StateFlow<List<PresentationModel>>
+    val values: List<PresentationModel> get() = valuesFlow.value
+    val currentFlow: StateFlow<PresentationModel?>
+    val current: PresentationModel? get() = currentFlow.value
+    fun onChangeCurrent(index: Int)
+    fun onChangeCurrent(pm: PresentationModel)
 }
 
-val DialogNavigation<*>.isShowing: Boolean get() = dialogFlow.value != null
+fun PresentationModel.SetNavigation(
+    initValues: () -> List<PresentationModel>,
+    key: String = DEFAULT_SET_NAVIGATOR_KEY,
+    backHandler: (SetNavigator) -> Boolean = DEFAULT_SET_NAVIGATOR_BACK_HANDLER,
+    onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit = DEFAULT_SET_NAVIGATOR_ON_CHANGE_CURRENT
+): SetNavigation {
+    return SetNavigator(
+        initValues = initValues,
+        key = key,
+        backHandler = backHandler,
+        onChangeCurrent = onChangeCurrent
+    )
+}

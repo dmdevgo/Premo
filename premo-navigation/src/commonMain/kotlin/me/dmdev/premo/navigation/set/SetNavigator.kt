@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo.navigation.set
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +33,7 @@ import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.handle
+import me.dmdev.premo.navigation.BackMessage
 
 interface SetNavigator : SetNavigation {
     fun changeCurrent(index: Int)

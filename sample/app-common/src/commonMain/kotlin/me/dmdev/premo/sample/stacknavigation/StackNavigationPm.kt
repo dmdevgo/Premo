@@ -29,17 +29,17 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.getSaved
-import me.dmdev.premo.navigation.StackNavigation
-import me.dmdev.premo.navigation.StackNavigator
-import me.dmdev.premo.navigation.pop
-import me.dmdev.premo.navigation.popToRoot
-import me.dmdev.premo.navigation.push
-import me.dmdev.premo.navigation.replaceAll
-import me.dmdev.premo.navigation.replaceTop
+import me.dmdev.premo.navigation.stack.StackNavigationHost
+import me.dmdev.premo.navigation.stack.StackNavigator
+import me.dmdev.premo.navigation.stack.pop
+import me.dmdev.premo.navigation.stack.popToRoot
+import me.dmdev.premo.navigation.stack.push
+import me.dmdev.premo.navigation.stack.replaceAll
+import me.dmdev.premo.navigation.stack.replaceTop
 import me.dmdev.premo.sample.StateFlow
 import me.dmdev.premo.setSaver
 
-class StackNavigationPm(args: Args) : PresentationModel(args) {
+class StackNavigationPm(args: Args) : PresentationModel(args), StackNavigationHost {
 
     @Serializable
     object Args : PmArgs()
@@ -47,10 +47,11 @@ class StackNavigationPm(args: Args) : PresentationModel(args) {
     private val navigator = StackNavigator(
         backHandler = { navigator -> navigator.pop() }
     )
-    val navigation: StackNavigation = navigator
+
+    override val stackNavigation = navigator
 
     val backstackAsStringState = StateFlow("") {
-        navigation.backStackFlow
+        stackNavigation.backStackFlow
             .map { backstack ->
                 backstack.joinToString(
                     separator = " - ",

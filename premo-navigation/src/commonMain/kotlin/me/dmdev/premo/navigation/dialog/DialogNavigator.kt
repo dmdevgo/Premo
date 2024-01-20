@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo.navigation.dialog
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

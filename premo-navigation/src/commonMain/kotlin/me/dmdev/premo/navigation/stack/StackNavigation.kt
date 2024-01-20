@@ -22,39 +22,34 @@
  * SOFTWARE.
  */
 
-import SwiftUI
-import Common
+package me.dmdev.premo.navigation.stack
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import me.dmdev.premo.PmMessageHandler
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.annotation.ExperimentalPremoApi
 
-struct TabItemView: View {
-    
-    private let pm: TabItemPm
-    
-    init(pm: TabItemPm) {
-        self.pm = pm
-    }
-    
-    var body: some View {
-        VStack {
-            
-            Text(pm.title)
-                .padding()
-            
-            HStack {
-                Button("Previous", action: {
-                    pm.previousClick()
-                }).padding()
-                
-                Button("Next", action: {
-                    pm.nextClick()
-                }).padding()
-            }
-        }
-    }
+interface StackNavigation {
+    val currentTopFlow: StateFlow<PresentationModel?>
+    val currentTop: PresentationModel? get() = backStack.lastOrNull()
+    val backStackFlow: StateFlow<List<PresentationModel>>
+    val backStack: List<PresentationModel> get() = backStackFlow.value
+
+    @ExperimentalPremoApi
+    val backStackChangesFlow: Flow<BackStackChange>
 }
 
-struct TabItemView_Previews: PreviewProvider {
-    static var previews: some View {
-        TabItemView(pm: Stubs.init().tabItemPm)
-    }
+fun PresentationModel.StackNavigation(
+    initBackStack: () -> List<PresentationModel>,
+    key: String = DEFAULT_STACK_NAVIGATOR_KEY,
+    backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
+    initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
+): StackNavigation {
+    return StackNavigator(
+        initBackStack = initBackStack,
+        key = key,
+        backHandler = backHandler,
+        initHandlers = initHandlers
+    )
 }

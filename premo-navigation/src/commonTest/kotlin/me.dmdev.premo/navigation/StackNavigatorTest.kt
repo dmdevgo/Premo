@@ -31,6 +31,15 @@ import me.dmdev.premo.childrenOf
 import me.dmdev.premo.navigation.TestPm.Companion.PM1_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM2_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM3_ARGS
+import me.dmdev.premo.navigation.stack.DEFAULT_STACK_NAVIGATOR_BACKSTACK_STATE_KEY
+import me.dmdev.premo.navigation.stack.StackNavigator
+import me.dmdev.premo.navigation.stack.handleBack
+import me.dmdev.premo.navigation.stack.pop
+import me.dmdev.premo.navigation.stack.popToRoot
+import me.dmdev.premo.navigation.stack.popUntil
+import me.dmdev.premo.navigation.stack.push
+import me.dmdev.premo.navigation.stack.replaceAll
+import me.dmdev.premo.navigation.stack.replaceTop
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,13 +34,13 @@ struct BottomNavigationView: View {
     
     init(pm: BottomNavigationPm) {
         self.pm = pm
-        self.currentPm = ObservableState(pm.navigation.currentFlow)
+        self.currentPm = ObservableState(pm.setNavigation.currentFlow)
     }
     
     var body: some View {
         NavigationView {
             TabView {
-                ForEach(pm.navigation.values, id: \.self) { itemPm in
+                ForEach(pm.setNavigation.values, id: \.self) { itemPm in
                     if (itemPm is TabPm) {
                         let tabPm = itemPm as! TabPm
                         TabContainerView(pm: tabPm)

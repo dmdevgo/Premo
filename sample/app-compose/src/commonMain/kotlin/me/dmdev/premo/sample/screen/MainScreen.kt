@@ -44,7 +44,7 @@ import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 @OptIn(ExperimentalPremoApi::class)
 @Composable
 fun MainScreen(mainPm: MainPm) {
-    val detailPm = mainPm.navigation.detailFlow.bind()
+    val detailPm = mainPm.masterDetailNavigation.detailFlow.bind()
 
     if (LocalWindowSizes.current.value.widthSizeClass >= Medium) {
         ExpandedMainScreen(mainPm, detailPm)
@@ -71,7 +71,7 @@ fun CompactMainScreen(
         }
     ) { pm ->
         if (pm == null) {
-            SamplesScreen(mainPm.navigation.master)
+            SamplesScreen(mainPm.masterDetailNavigation.master)
         } else {
             pm.mapToComposable()
         }
@@ -92,7 +92,7 @@ fun ExpandedMainScreen(
                 .fillMaxSize()
                 .weight(0.5f)
         ) {
-            SamplesScreen(mainPm.navigation.master)
+            SamplesScreen(mainPm.masterDetailNavigation.master)
         }
 
         Box(

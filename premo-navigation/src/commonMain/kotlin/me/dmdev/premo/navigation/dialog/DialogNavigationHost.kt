@@ -22,39 +22,8 @@
  * SOFTWARE.
  */
 
-import SwiftUI
-import Common
+package me.dmdev.premo.navigation.dialog
 
-
-struct TabItemView: View {
-    
-    private let pm: TabItemPm
-    
-    init(pm: TabItemPm) {
-        self.pm = pm
-    }
-    
-    var body: some View {
-        VStack {
-            
-            Text(pm.title)
-                .padding()
-            
-            HStack {
-                Button("Previous", action: {
-                    pm.previousClick()
-                }).padding()
-                
-                Button("Next", action: {
-                    pm.nextClick()
-                }).padding()
-            }
-        }
-    }
-}
-
-struct TabItemView_Previews: PreviewProvider {
-    static var previews: some View {
-        TabItemView(pm: Stubs.init().tabItemPm)
-    }
+interface DialogNavigationHost {
+    val dialogNavigation: DialogNavigation<*>
 }

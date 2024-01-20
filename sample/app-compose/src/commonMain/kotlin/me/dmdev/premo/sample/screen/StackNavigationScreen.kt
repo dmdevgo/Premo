@@ -56,7 +56,7 @@ fun StackNavigationScreen(
         ) {
             Spacer(Modifier.weight(0.5f))
             AnimatedNavigationBox(
-                navigation = pm.navigation,
+                navigation = pm.stackNavigation,
                 modifier = Modifier.size(100.dp),
                 enterTransition = { _, _ -> slideInHorizontally { height -> height } },
                 exitTransition = { _, _ -> slideOutHorizontally { height -> -height } },

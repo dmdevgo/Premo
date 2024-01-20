@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ struct StackNavigationView: View {
     init(pm: StackNavigationPm) {
         self.pm = pm
         backstack = ObservableState(pm.backstackAsStringState)
-        currentPm = ObservableState(pm.navigation.currentTopFlow)
+        currentPm = ObservableState(pm.stackNavigation.currentTopFlow)
     }
     
     var body: some View {

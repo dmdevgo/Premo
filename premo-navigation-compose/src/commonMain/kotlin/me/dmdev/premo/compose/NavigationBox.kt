@@ -31,8 +31,8 @@ import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.*
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.annotation.ExperimentalPremoApi
-import me.dmdev.premo.navigation.BackStackChange
-import me.dmdev.premo.navigation.StackNavigation
+import me.dmdev.premo.navigation.stack.BackStackChange
+import me.dmdev.premo.navigation.stack.StackNavigation
 
 @ExperimentalPremoApi
 @Composable

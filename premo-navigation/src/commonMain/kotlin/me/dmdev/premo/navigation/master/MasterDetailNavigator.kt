@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo.navigation.master
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +35,7 @@ import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.attachToParent
 import me.dmdev.premo.detachFromParent
 import me.dmdev.premo.handle
+import me.dmdev.premo.navigation.BackMessage
 import kotlin.reflect.typeOf
 
 interface MasterDetailNavigator<M, D> : MasterDetailNavigation<M, D>

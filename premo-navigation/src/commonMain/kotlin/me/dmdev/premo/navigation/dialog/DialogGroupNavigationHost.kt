@@ -22,30 +22,8 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo.navigation.dialog
 
-import kotlinx.coroutines.flow.StateFlow
-import me.dmdev.premo.PresentationModel
-
-interface SetNavigation {
-    val valuesFlow: StateFlow<List<PresentationModel>>
-    val values: List<PresentationModel> get() = valuesFlow.value
-    val currentFlow: StateFlow<PresentationModel?>
-    val current: PresentationModel? get() = currentFlow.value
-    fun onChangeCurrent(index: Int)
-    fun onChangeCurrent(pm: PresentationModel)
-}
-
-fun PresentationModel.SetNavigation(
-    initValues: () -> List<PresentationModel>,
-    key: String = DEFAULT_SET_NAVIGATOR_KEY,
-    backHandler: (SetNavigator) -> Boolean = DEFAULT_SET_NAVIGATOR_BACK_HANDLER,
-    onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit = DEFAULT_SET_NAVIGATOR_ON_CHANGE_CURRENT
-): SetNavigation {
-    return SetNavigator(
-        initValues = initValues,
-        key = key,
-        backHandler = backHandler,
-        onChangeCurrent = onChangeCurrent
-    )
+interface DialogGroupNavigationHost {
+    val dialogGroupNavigation: DialogGroupNavigation
 }

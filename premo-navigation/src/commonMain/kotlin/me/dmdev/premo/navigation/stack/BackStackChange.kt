@@ -22,39 +22,29 @@
  * SOFTWARE.
  */
 
-import SwiftUI
-import Common
+package me.dmdev.premo.navigation.stack
 
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.annotation.ExperimentalPremoApi
 
-struct TabItemView: View {
-    
-    private let pm: TabItemPm
-    
-    init(pm: TabItemPm) {
-        self.pm = pm
-    }
-    
-    var body: some View {
-        VStack {
-            
-            Text(pm.title)
-                .padding()
-            
-            HStack {
-                Button("Previous", action: {
-                    pm.previousClick()
-                }).padding()
-                
-                Button("Next", action: {
-                    pm.nextClick()
-                }).padding()
-            }
-        }
-    }
-}
+@ExperimentalPremoApi
+sealed class BackStackChange {
+    data class Push(
+        val enterPm: PresentationModel,
+        val exitPm: PresentationModel,
+        val removedPms: List<PresentationModel>
+    ) : BackStackChange()
 
-struct TabItemView_Previews: PreviewProvider {
-    static var previews: some View {
-        TabItemView(pm: Stubs.init().tabItemPm)
-    }
+    data class Pop(
+        val enterPm: PresentationModel,
+        val exitPm: PresentationModel,
+        val removedPms: List<PresentationModel>
+    ) : BackStackChange()
+
+    data class Set(
+        val pm: PresentationModel,
+        val removedPms: List<PresentationModel>
+    ) : BackStackChange()
+
+    data object Nothing : BackStackChange()
 }

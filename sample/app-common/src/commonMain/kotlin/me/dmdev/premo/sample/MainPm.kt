@@ -27,31 +27,35 @@ package me.dmdev.premo.sample
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.navigation.MasterDetailNavigation
+import me.dmdev.premo.navigation.master.MasterDetailNavigation
+import me.dmdev.premo.navigation.master.MasterDetailNavigationHost
 import me.dmdev.premo.onMessage
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.dialognavigation.DialogNavigationPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
-class MainPm(args: PmArgs) : PresentationModel(args) {
+class MainPm(args: PmArgs) :
+    PresentationModel(args),
+    MasterDetailNavigationHost<SamplesPm, PresentationModel> {
 
     @Serializable
     object Args : PmArgs()
 
-    val navigation = MasterDetailNavigation<SamplesPm, PresentationModel>(
-        masterPm = Child(SamplesPm.Args)
-    ) { navigator ->
-        onMessage<CounterSampleMessage> {
-            navigator.changeDetail(Child(CounterPm.Args(10)))
+    override val masterDetailNavigation: MasterDetailNavigation<SamplesPm, PresentationModel> =
+        MasterDetailNavigation(
+            masterPm = Child(SamplesPm.Args)
+        ) { navigator ->
+            onMessage<CounterSampleMessage> {
+                navigator.changeDetail(Child(CounterPm.Args(10)))
+            }
+            onMessage<StackNavigationSampleMessage> {
+                navigator.changeDetail(Child(StackNavigationPm.Args))
+            }
+            onMessage<BottomNavigationSampleMessage> {
+                navigator.changeDetail(Child(BottomNavigationPm.Args))
+            }
+            onMessage<DialogNavigationSampleMessage> {
+                navigator.changeDetail(Child(DialogNavigationPm.Args))
+            }
         }
-        onMessage<StackNavigationSampleMessage> {
-            navigator.changeDetail(Child(StackNavigationPm.Args))
-        }
-        onMessage<BottomNavigationSampleMessage> {
-            navigator.changeDetail(Child(BottomNavigationPm.Args))
-        }
-        onMessage<DialogNavigationSampleMessage> {
-            navigator.changeDetail(Child(DialogNavigationPm.Args))
-        }
-    }
 }

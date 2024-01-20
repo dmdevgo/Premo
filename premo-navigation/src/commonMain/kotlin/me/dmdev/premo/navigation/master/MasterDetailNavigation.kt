@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo.navigation.master
 
 import kotlinx.coroutines.flow.StateFlow
 import me.dmdev.premo.PmMessageHandler

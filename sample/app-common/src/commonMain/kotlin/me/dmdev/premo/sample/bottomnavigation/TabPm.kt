@@ -28,17 +28,18 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.childrenOf
-import me.dmdev.premo.navigation.StackNavigation
-import me.dmdev.premo.navigation.StackNavigator
-import me.dmdev.premo.navigation.handleBack
-import me.dmdev.premo.navigation.push
+import me.dmdev.premo.navigation.stack.StackNavigation
+import me.dmdev.premo.navigation.stack.StackNavigationHost
+import me.dmdev.premo.navigation.stack.StackNavigator
+import me.dmdev.premo.navigation.stack.handleBack
+import me.dmdev.premo.navigation.stack.push
 import me.dmdev.premo.onMessage
 import me.dmdev.premo.sample.NextClickMessage
 import me.dmdev.premo.sample.PreviousClickMessage
 
 class TabPm(
     args: Args
-) : PresentationModel(args) {
+) : PresentationModel(args), StackNavigationHost {
 
     val title: String = args.tabTitle
 
@@ -51,7 +52,7 @@ class TabPm(
 
     private var number: Int = 1
 
-    val navigation = StackNavigation(
+    override val stackNavigation = StackNavigation(
         initBackStack = {
             childrenOf(
                 TabItemPm.Args(nextScreenTitle(), args.tabTitle)

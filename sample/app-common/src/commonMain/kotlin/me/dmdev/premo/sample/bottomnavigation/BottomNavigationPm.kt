@@ -28,14 +28,15 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.childrenOf
-import me.dmdev.premo.navigation.SetNavigation
+import me.dmdev.premo.navigation.set.SetNavigation
+import me.dmdev.premo.navigation.set.SetNavigationHost
 
-class BottomNavigationPm(args: Args) : PresentationModel(args) {
+class BottomNavigationPm(args: Args) : PresentationModel(args), SetNavigationHost {
 
     @Serializable
     object Args : PmArgs()
 
-    val navigation = SetNavigation(
+    override val setNavigation: SetNavigation = SetNavigation(
         initValues = {
             childrenOf(
                 TabPm.Args("Tab #1"),

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo.navigation.stack
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,6 +39,7 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.annotation.ExperimentalPremoApi
 import me.dmdev.premo.handle
+import me.dmdev.premo.navigation.BackMessage
 
 interface StackNavigator : StackNavigation {
     fun changeBackStack(pms: List<PresentationModel>)

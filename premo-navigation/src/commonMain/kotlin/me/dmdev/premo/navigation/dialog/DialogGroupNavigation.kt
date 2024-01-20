@@ -22,21 +22,24 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo.navigation.dialog
 
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.handle
+import me.dmdev.premo.navigation.BackMessage
 
-interface DialogGroupNavigation {
+interface DialogGroupNavigation : DialogNavigation<PresentationModel> {
     val dialogsFlow: StateFlow<List<PresentationModel>>
     val dialogs: List<PresentationModel> get() = dialogsFlow.value
-    fun onDismissRequest()
 }
 
 fun PresentationModel.DialogGroupNavigation(
@@ -84,6 +87,15 @@ internal class DialogGroupNavigatorImpl(
 
     override val dialogsFlow: StateFlow<List<PresentationModel>> =
         _dialogsFlow.asStateFlow()
+
+    override val dialogFlow: StateFlow<PresentationModel?> =
+        _dialogsFlow.map {
+            it.lastOrNull()
+        }.stateIn(
+            scope = hostPm.scope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = _dialogsFlow.value.lastOrNull()
+        )
 
     override fun onDismissRequest() {
         val topPm = _dialogsFlow.value.lastOrNull() ?: return

@@ -22,29 +22,12 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.navigation
+package me.dmdev.premo.navigation.master
 
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.annotation.ExperimentalPremoApi
 
-@ExperimentalPremoApi
-sealed class BackStackChange {
-    data class Push(
-        val enterPm: PresentationModel,
-        val exitPm: PresentationModel,
-        val removedPms: List<PresentationModel>
-    ) : BackStackChange()
-
-    data class Pop(
-        val enterPm: PresentationModel,
-        val exitPm: PresentationModel,
-        val removedPms: List<PresentationModel>
-    ) : BackStackChange()
-
-    data class Set(
-        val pm: PresentationModel,
-        val removedPms: List<PresentationModel>
-    ) : BackStackChange()
-
-    data object Nothing : BackStackChange()
+interface MasterDetailNavigationHost<M, D>
+        where M : PresentationModel,
+              D : PresentationModel {
+    val masterDetailNavigation: MasterDetailNavigation<M, D>
 }

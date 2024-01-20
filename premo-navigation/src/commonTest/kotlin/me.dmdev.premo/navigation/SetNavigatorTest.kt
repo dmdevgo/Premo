@@ -34,6 +34,9 @@ import me.dmdev.premo.navigation.TestPm.Companion.PM3_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM4_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM5_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM6_ARGS
+import me.dmdev.premo.navigation.set.DEFAULT_SET_NAVIGATOR_STATE_CURRENT_INDEX_KEY
+import me.dmdev.premo.navigation.set.DEFAULT_SET_NAVIGATOR_STATE_VALUES_KEY
+import me.dmdev.premo.navigation.set.SetNavigator
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -31,6 +31,7 @@ import kotlinx.coroutines.test.setMain
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.navigation.TestPm.ResultMessage
+import me.dmdev.premo.navigation.dialog.DialogNavigator
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test

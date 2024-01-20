@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ struct TabContainerView: View {
     
     init(pm: TabPm) {
         self.pm = pm
-        currentPm = ObservableState(pm.navigation.currentTopFlow)
+        currentPm = ObservableState(pm.stackNavigation.currentTopFlow)
     }
     
     var body: some View {
