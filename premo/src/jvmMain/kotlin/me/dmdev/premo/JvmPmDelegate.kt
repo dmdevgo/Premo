@@ -31,7 +31,8 @@ class JvmPmDelegate<PM : PresentationModel>(
     pmArgs: PmArgs,
     pmFactory: PmFactory,
     private val pmStateSaver: FileStateSaver,
-    private val pmStateFile: File = File("pm_state.txt")
+    private val pmStateFile: File = File("pm_state.txt"),
+    private val onSaveOrRestoreStateError: (e: Throwable) -> Unit = { throw it }
 ) {
 
     private val pmDelegate: PmDelegate<PM> by lazy {
@@ -46,7 +47,11 @@ class JvmPmDelegate<PM : PresentationModel>(
 
     fun onCreate() {
         if (pmStateFile.exists()) {
-            pmStateSaver.restore(pmStateFile)
+            try {
+                pmStateSaver.restore(pmStateFile)
+            } catch (e: Throwable) {
+                onSaveOrRestoreStateError(e)
+            }
             pmStateFile.delete()
         }
         pmDelegate.onCreate()
@@ -65,7 +70,11 @@ class JvmPmDelegate<PM : PresentationModel>(
     }
 
     fun onSaveState() {
-        pmDelegate.onSave()
-        pmStateSaver.save(pmStateFile)
+        try {
+            pmDelegate.onSave()
+            pmStateSaver.save(pmStateFile)
+        } catch (e: Throwable) {
+            onSaveOrRestoreStateError(e)
+        }
     }
 }

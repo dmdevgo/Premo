@@ -31,8 +31,15 @@ import platform.Foundation.NSCoder
 class IosPmDelegate<PM : PresentationModel>(
     pmArgs: PmArgs,
     pmFactory: PmFactory,
-    private val pmStateSaver: NSCoderStateSaver
+    private val pmStateSaver: NSCoderStateSaver,
+    private val onSaveOrRestoreStateError: (e: Throwable) -> Unit
 ) {
+
+    constructor(
+        pmArgs: PmArgs,
+        pmFactory: PmFactory,
+        pmStateSaver: NSCoderStateSaver
+    ) : this(pmArgs, pmFactory, pmStateSaver, { throw it })
 
     private val pmDelegate: PmDelegate<PM> by lazy {
         PmDelegate<PM>(
@@ -45,7 +52,11 @@ class IosPmDelegate<PM : PresentationModel>(
     val presentationModel: PM get() = pmDelegate.presentationModel
 
     fun onCreate(coder: NSCoder?) {
-        pmStateSaver.restore(coder)
+        try {
+            pmStateSaver.restore(coder)
+        } catch (e: Throwable) {
+            onSaveOrRestoreStateError(e)
+        }
         pmDelegate.onCreate()
     }
 
@@ -62,7 +73,11 @@ class IosPmDelegate<PM : PresentationModel>(
     }
 
     fun onSaveState(coder: NSCoder) {
-        pmDelegate.onSave()
-        pmStateSaver.save(coder)
+        try {
+            pmDelegate.onSave()
+            pmStateSaver.save(coder)
+        } catch (e: Throwable) {
+            onSaveOrRestoreStateError(e)
+        }
     }
 }

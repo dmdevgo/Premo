@@ -33,7 +33,8 @@ class AndroidPmDelegate<PM : PresentationModel>(
     private val pmActivity: Activity,
     pmArgs: PmArgs,
     pmFactory: PmFactory,
-    private val pmStateSaver: BundleStateSaver
+    private val pmStateSaver: BundleStateSaver,
+    private val onSaveOrRestoreStateError: (e: Throwable) -> Unit = { throw it }
 ) {
 
     private val pmDelegate: PmDelegate<PM> by lazy {
@@ -48,7 +49,11 @@ class AndroidPmDelegate<PM : PresentationModel>(
 
     fun onCreate(savedInstanceState: Bundle?) {
         pmActivity.application.registerActivityLifecycleCallbacks(activityCallbacksListener)
-        pmStateSaver.restore(savedInstanceState)
+        try {
+            pmStateSaver.restore(savedInstanceState)
+        } catch (e: Throwable) {
+            onSaveOrRestoreStateError(e)
+        }
         pmDelegate.onCreate()
     }
 
@@ -73,8 +78,12 @@ class AndroidPmDelegate<PM : PresentationModel>(
 
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
             if (activity === pmActivity) {
-                pmDelegate.onSave()
-                pmStateSaver.save(outState)
+                try {
+                    pmDelegate.onSave()
+                    pmStateSaver.save(outState)
+                } catch (e: Throwable) {
+                    onSaveOrRestoreStateError(e)
+                }
             }
         }
 

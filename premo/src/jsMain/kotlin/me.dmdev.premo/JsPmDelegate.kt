@@ -35,7 +35,8 @@ import org.w3c.dom.set
 class JsPmDelegate<PM : PresentationModel>(
     pmArgs: PmArgs,
     pmFactory: PmFactory,
-    private val pmStateSaver: StringStateSaver
+    private val pmStateSaver: StringStateSaver,
+    private val onSaveOrRestoreStateError: (e: Throwable) -> Unit = { throw it }
 ) {
 
     private val pmDelegate: PmDelegate<PM> by lazy {
@@ -75,13 +76,21 @@ class JsPmDelegate<PM : PresentationModel>(
         }
 
     private fun onCreate() {
-        pmStateSaver.restore(localStorage[PM_STATE_KEY])
+        try {
+            pmStateSaver.restore(localStorage[PM_STATE_KEY])
+        } catch (e: Throwable) {
+            onSaveOrRestoreStateError(e)
+        }
         pmDelegate.onCreate()
     }
 
     private fun onSaveState() {
-        pmDelegate.onSave()
-        localStorage[PM_STATE_KEY] = pmStateSaver.save()
+        try {
+            pmDelegate.onSave()
+            localStorage[PM_STATE_KEY] = pmStateSaver.save()
+        } catch (e: Throwable) {
+            onSaveOrRestoreStateError(e)
+        }
     }
 
     companion object {
