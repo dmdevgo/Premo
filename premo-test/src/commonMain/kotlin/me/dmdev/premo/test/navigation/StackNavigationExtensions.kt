@@ -22,41 +22,35 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
+package me.dmdev.premo.test.navigation
+
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.navigation.stack.StackNavigation
+import me.dmdev.premo.navigation.stack.StackNavigationHost
+import me.dmdev.premo.test.onPm
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+
+inline fun <reified PM : PresentationModel> StackNavigationHost.onCurrentTop(block: PM.() -> Unit = {}) {
+    stackNavigation.onCurrentTop<PM>(block)
 }
 
-dependencyResolutionManagement {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        google()
-        maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
-        mavenLocal()
-    }
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
-        }
-    }
+inline fun <reified PM : PresentationModel> StackNavigation.onCurrentTop(block: PM.() -> Unit = {}) {
+    currentTop.onPm<PM>(block)
 }
-rootProject.name = "Premo"
 
-includeBuild("plugins")
+fun StackNavigationHost.assertCurrentTopNull() {
+    stackNavigation.assertCurrentTopNull()
+}
 
-include(":premo")
-include(":premo-test")
-include(":premo-saver-json")
-include(":premo-navigation")
-include(":premo-navigation-compose")
-include(":sample:app-common")
-include(":sample:app-compose")
-include(":sample:app-web-html")
-include(":sample:app-web-react")
+fun StackNavigation.assertCurrentTopNull() {
+    assertNull(currentTop)
+}
+
+fun StackNavigationHost.assertCurrentTopNotNull() {
+    stackNavigation.assertCurrentTopNotNull()
+}
+
+fun StackNavigation.assertCurrentTopNotNull() {
+    assertNotNull(currentTop)
+}

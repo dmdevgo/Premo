@@ -22,41 +22,29 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
-}
+package me.dmdev.premo.sample
 
-dependencyResolutionManagement {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        google()
-        maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
-        mavenLocal()
-    }
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
+import kotlinx.coroutines.test.runTest
+import me.dmdev.premo.annotation.ExperimentalPremoApi
+import me.dmdev.premo.test.navigation.assertDetailNotNull
+import me.dmdev.premo.test.navigation.assertDetailNull
+import me.dmdev.premo.test.navigation.onDetail
+import me.dmdev.premo.test.runPmTest
+import kotlin.test.Test
+
+@OptIn(ExperimentalPremoApi::class)
+class MainPmTest {
+
+    @Test
+    fun testOpenCounterSample() = runTest {
+        runPmTest<MainPm>(
+            pmArgs = MainPm.Args,
+            pmFactory = MainPmFactory()
+        ) {
+            pm.assertDetailNull()
+            pm.masterDetailNavigation.master.counterSample()
+            pm.assertDetailNotNull()
+            pm.masterDetailNavigation.onDetail<CounterPm> {}
         }
     }
 }
-rootProject.name = "Premo"
-
-includeBuild("plugins")
-
-include(":premo")
-include(":premo-test")
-include(":premo-saver-json")
-include(":premo-navigation")
-include(":premo-navigation-compose")
-include(":sample:app-common")
-include(":sample:app-compose")
-include(":sample:app-web-html")
-include(":sample:app-web-react")

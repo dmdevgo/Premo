@@ -22,41 +22,27 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
+plugins {
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.ktlint)
+    id("me.dmdev.premo.plugin.android")
+    id("me.dmdev.premo.plugin.kmp")
+    id("me.dmdev.premo.plugin.publish")
 }
 
-dependencyResolutionManagement {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        google()
-        maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
-        mavenLocal()
-    }
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                api(project(":premo-navigation"))
+                api(libs.kotlin.test)
+                api(libs.kotlinx.coroutines.test)
+            }
         }
     }
 }
-rootProject.name = "Premo"
 
-includeBuild("plugins")
-
-include(":premo")
-include(":premo-test")
-include(":premo-saver-json")
-include(":premo-navigation")
-include(":premo-navigation-compose")
-include(":sample:app-common")
-include(":sample:app-compose")
-include(":sample:app-web-html")
-include(":sample:app-web-react")
+android {
+    namespace = "me.dmdev.premo.test"
+}

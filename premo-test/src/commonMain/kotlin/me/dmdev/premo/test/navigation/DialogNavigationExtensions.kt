@@ -22,41 +22,35 @@
  * SOFTWARE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        gradlePluginPortal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
+package me.dmdev.premo.test.navigation
+
+import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.navigation.dialog.DialogNavigation
+import me.dmdev.premo.navigation.dialog.DialogNavigationHost
+import me.dmdev.premo.test.onPm
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+
+inline fun <reified PM : PresentationModel> DialogNavigationHost.onDialog(block: PM.() -> Unit = {}) {
+    dialogNavigation.onDialog<PM>(block)
 }
 
-dependencyResolutionManagement {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        google()
-        maven { url = uri("https://repo.repsy.io/mvn/chrynan/public") }
-        mavenLocal()
-    }
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
-        }
-    }
+inline fun <reified PM : PresentationModel> DialogNavigation<*>.onDialog(block: PM.() -> Unit = {}) {
+    dialog.onPm<PM>(block)
 }
-rootProject.name = "Premo"
 
-includeBuild("plugins")
+fun DialogNavigationHost.assertDialogNull() {
+    dialogNavigation.assertDialogNull()
+}
 
-include(":premo")
-include(":premo-test")
-include(":premo-saver-json")
-include(":premo-navigation")
-include(":premo-navigation-compose")
-include(":sample:app-common")
-include(":sample:app-compose")
-include(":sample:app-web-html")
-include(":sample:app-web-react")
+fun DialogNavigation<*>.assertDialogNull() {
+    assertNull(dialog)
+}
+
+fun DialogNavigationHost.assertDialogNotNull() {
+    dialogNavigation.assertDialogNotNull()
+}
+
+fun DialogNavigation<*>.assertDialogNotNull() {
+    assertNotNull(dialog)
+}

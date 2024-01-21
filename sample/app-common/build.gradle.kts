@@ -68,6 +68,13 @@ kotlin {
                 api(libs.kotlinx.serialization.protobuf)
             }
         }
+
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(project(":premo-test"))
+            }
+        }
     }
 }
 
