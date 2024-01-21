@@ -27,10 +27,10 @@ package me.dmdev.premo.navigation
 import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PresentationModel
 
-object BackMessage : PmMessage
+object BackMessage : PmMessage()
 
 fun PresentationModel.handleBack(): Boolean {
-    return messageHandler.sendToChildren(BackMessage)
+    return messageHandler.sendToChild(BackMessage)
 }
 
 fun PresentationModel.back() {

@@ -47,10 +47,29 @@ class PmMessageHandler(
     /**
      * Sends a message towards the root. Any parent can intercept the message and process it.
      */
-    fun send(message: PmMessage) {
-        if (handle(message).not()) {
-            hostPm.parent?.messageHandler?.handle(message)
+    fun send(message: PmMessage): Boolean {
+        message.senderTag = hostPm.tag
+        return if (handle(message).not()) {
+            hostPm.parent?.messageHandler?.handle(message) ?: false
+        } else {
+            true
         }
+    }
+
+    /**
+     * Sends a message to the target presentation model with related tag.
+     */
+    fun sendToTarget(message: PmMessage, tag: String): Boolean {
+        message.senderTag = hostPm.tag
+        fun PresentationModel.handle(message: PmMessage, tag: String): Boolean {
+            if (this.tag == tag) return true
+            allChildren.forEach { pm ->
+                if (pm.handle(message, tag)) return true
+            }
+            return false
+        }
+
+        return findRootPm().handle(message, tag)
     }
 
     /**
@@ -58,9 +77,10 @@ class PmMessageHandler(
      * First, the message is delivered to the active leaves, if the message is not processed, it can be intercepted by the parent.
      * If the message is not processed by any child, the message will be intercepted by the sender.
      */
-    fun sendToChildren(message: PmMessage): Boolean {
+    fun sendToChild(message: PmMessage): Boolean {
+        message.senderTag = hostPm.tag
         hostPm.allChildren.reversed().forEach { pm ->
-            if (pm.messageHandler.sendToChildren(message)) {
+            if (pm.messageHandler.sendToChild(message)) {
                 return true
             }
         }
@@ -68,6 +88,18 @@ class PmMessageHandler(
             return hostPm.messageHandler.handle(message)
         }
         return false
+    }
+
+    private fun findRootPm(): PresentationModel {
+        var root = hostPm
+        while (true) {
+            if (hostPm.parent != null) {
+                root = hostPm.parent
+            } else {
+                break
+            }
+        }
+        return root
     }
 }
 

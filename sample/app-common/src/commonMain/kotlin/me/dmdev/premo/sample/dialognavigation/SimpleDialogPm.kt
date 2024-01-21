@@ -41,9 +41,9 @@ class SimpleDialogPm(
         val cancelButtonText: String
     ) : PmArgs()
 
-    sealed interface ResultMessage : PmMessage
-    data object Ok : ResultMessage
-    data object Cancel : ResultMessage
+    sealed class ResultMessage : PmMessage()
+    data object Ok : ResultMessage()
+    data object Cancel : ResultMessage()
 
     fun onOkClick() {
         messageHandler.send(Ok)
