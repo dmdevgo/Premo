@@ -24,18 +24,8 @@
 
 package me.dmdev.premo.navigation.dialog
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import me.dmdev.premo.PresentationModel
-import me.dmdev.premo.SaveableFlow
-import me.dmdev.premo.handle
-import me.dmdev.premo.navigation.BackMessage
 
 interface DialogGroupNavigation : DialogNavigation<PresentationModel> {
     val dialogsFlow: StateFlow<List<PresentationModel>>
@@ -47,76 +37,9 @@ fun PresentationModel.DialogGroupNavigation(
     key: String = DEFAULT_DIALOG_GROUP_NAVIGATION_KEY,
     backHandler: (DialogGroupNavigation) -> Boolean = { it.handleBack() }
 ): DialogGroupNavigation {
-    val navigator = DialogGroupNavigatorImpl(
-        hostPm = this,
+    return DialogGroupNavigator(
         dialogNavigators = dialogNavigators.asList(),
-        key = key
+        key = key,
+        backHandler = backHandler
     )
-    messageHandler.handle<BackMessage> { backHandler.invoke(navigator) }
-    return navigator
-}
-
-fun DialogGroupNavigation.handleBack(): Boolean {
-    return if (dialogs.isNotEmpty()) {
-        onDismissRequest()
-        true
-    } else {
-        false
-    }
-}
-
-internal const val DEFAULT_DIALOG_GROUP_NAVIGATION_KEY = "dialog_group"
-
-internal class DialogGroupNavigatorImpl(
-    private val hostPm: PresentationModel,
-    private val dialogNavigators: List<DialogNavigator<*, *>>,
-    key: String
-) : DialogGroupNavigation {
-
-    private val _dialogsFlow: MutableStateFlow<List<PresentationModel>> =
-        hostPm.SaveableFlow(
-            key = key,
-            initialValueProvider = { listOf() },
-            saveTypeMapper = { dialogs -> dialogs.map { it.pmArgs } },
-            restoreTypeMapper = { pmArgsList ->
-                pmArgsList.mapNotNull { pmArgs ->
-                    dialogNavigators.find { it.dialog?.pmArgs == pmArgs }?.dialog
-                }
-            }
-        )
-
-    override val dialogsFlow: StateFlow<List<PresentationModel>> =
-        _dialogsFlow.asStateFlow()
-
-    override val dialogFlow: StateFlow<PresentationModel?> =
-        _dialogsFlow.map {
-            it.lastOrNull()
-        }.stateIn(
-            scope = hostPm.scope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = _dialogsFlow.value.lastOrNull()
-        )
-
-    override fun onDismissRequest() {
-        val topPm = _dialogsFlow.value.lastOrNull() ?: return
-        dialogNavigators.find { it.dialogFlow.value === topPm }?.onDismissRequest()
-    }
-
-    init {
-        dialogNavigators.forEach { dialogNavigator ->
-            hostPm.scope.launch {
-                dialogNavigator.dialogFlow.drop(1).collect { pm ->
-                    if (pm != null) {
-                        _dialogsFlow.value = _dialogsFlow.value
-                            .filter { it !== pm }
-                            .plus(pm)
-                    } else {
-                        _dialogsFlow.value = _dialogsFlow.value.filter { pm ->
-                            dialogNavigators.find { it.dialog === pm } != null
-                        }
-                    }
-                }
-            }
-        }
-    }
 }

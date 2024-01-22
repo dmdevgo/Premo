@@ -32,6 +32,7 @@ import me.dmdev.premo.PmLifecycle
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.dialog.DEFAULT_DIALOG_GROUP_NAVIGATION_KEY
 import me.dmdev.premo.navigation.dialog.DialogGroupNavigation
+import me.dmdev.premo.navigation.dialog.DialogGroupNavigator
 import me.dmdev.premo.navigation.dialog.DialogNavigator
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -39,7 +40,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DialogGroupNavigationTest {
+class DialogGroupNavigatorTest {
 
     companion object {
         private const val DIALOG_KEY1 = "dialog1"
@@ -55,7 +56,7 @@ class DialogGroupNavigationTest {
     private lateinit var navigator1: DialogNavigator<TestPm, TestPm.ResultMessage>
     private lateinit var navigator2: DialogNavigator<TestPm, TestPm.ResultMessage>
     private lateinit var navigator3: DialogNavigator<TestPm, TestPm.ResultMessage>
-    private lateinit var dialogGroupNavigation: DialogGroupNavigation
+    private lateinit var dialogGroupNavigator: DialogGroupNavigation
 
     @BeforeTest
     fun setUp() {
@@ -69,7 +70,9 @@ class DialogGroupNavigationTest {
         navigator1 = parentPm.DialogNavigator(DIALOG_KEY1)
         navigator2 = parentPm.DialogNavigator(DIALOG_KEY2)
         navigator3 = parentPm.DialogNavigator(DIALOG_KEY3)
-        dialogGroupNavigation = parentPm.DialogGroupNavigation(navigator1, navigator2, navigator3)
+        dialogGroupNavigator = parentPm.DialogGroupNavigator(
+            listOf(navigator1, navigator2, navigator3)
+        )
     }
 
     @AfterTest
@@ -80,8 +83,8 @@ class DialogGroupNavigationTest {
     @Test
     fun testInitialState() {
         val expectedDialogs = listOf<TestPm>()
-        assertEquals(expectedDialogs, dialogGroupNavigation.dialogs)
-        assertEquals(expectedDialogs, dialogGroupNavigation.dialogsFlow.value)
+        assertEquals(expectedDialogs, dialogGroupNavigator.dialogs)
+        assertEquals(expectedDialogs, dialogGroupNavigator.dialogsFlow.value)
     }
 
     @Test
@@ -91,8 +94,8 @@ class DialogGroupNavigationTest {
         navigator3.show(dialogPm3)
 
         val expectedDialogs = listOf(dialogPm1, dialogPm2, dialogPm3)
-        assertEquals(expectedDialogs, dialogGroupNavigation.dialogs)
-        assertEquals(expectedDialogs, dialogGroupNavigation.dialogsFlow.value)
+        assertEquals(expectedDialogs, dialogGroupNavigator.dialogs)
+        assertEquals(expectedDialogs, dialogGroupNavigator.dialogsFlow.value)
     }
 
     @Test
@@ -103,8 +106,20 @@ class DialogGroupNavigationTest {
         navigator2.dismiss()
 
         val expectedDialogs = listOf(dialogPm1, dialogPm3)
-        assertEquals(expectedDialogs, dialogGroupNavigation.dialogs)
-        assertEquals(expectedDialogs, dialogGroupNavigation.dialogsFlow.value)
+        assertEquals(expectedDialogs, dialogGroupNavigator.dialogs)
+        assertEquals(expectedDialogs, dialogGroupNavigator.dialogsFlow.value)
+    }
+
+    @Test
+    fun testDismissAllDialogs() {
+        navigator1.show(dialogPm1)
+        navigator2.show(dialogPm2)
+        navigator3.show(dialogPm3)
+        navigator2.dismiss()
+
+        val expectedDialogs = listOf(dialogPm1, dialogPm3)
+        assertEquals(expectedDialogs, dialogGroupNavigator.dialogs)
+        assertEquals(expectedDialogs, dialogGroupNavigator.dialogsFlow.value)
     }
 
     @Test
@@ -116,8 +131,8 @@ class DialogGroupNavigationTest {
 
         val expectedDialogs = listOf(dialogPm1, dialogPm2)
         assertEquals(null, navigator3.dialog)
-        assertEquals(expectedDialogs, dialogGroupNavigation.dialogs)
-        assertEquals(expectedDialogs, dialogGroupNavigation.dialogsFlow.value)
+        assertEquals(expectedDialogs, dialogGroupNavigator.dialogs)
+        assertEquals(expectedDialogs, dialogGroupNavigator.dialogsFlow.value)
     }
 
     @Test

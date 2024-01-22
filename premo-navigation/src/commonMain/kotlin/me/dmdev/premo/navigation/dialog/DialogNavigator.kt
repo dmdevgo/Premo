@@ -36,7 +36,7 @@ import me.dmdev.premo.attachToParent
 import me.dmdev.premo.detachFromParent
 import kotlin.reflect.KClass
 
-interface DialogNavigator<D : PresentationModel, R> : DialogNavigation<D> {
+interface DialogNavigator<D : PresentationModel, R : PmMessage> : DialogNavigation<D> {
     fun show(pm: D)
     fun dismiss()
 }
