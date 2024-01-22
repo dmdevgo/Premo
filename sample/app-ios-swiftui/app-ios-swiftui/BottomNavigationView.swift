@@ -46,11 +46,11 @@ struct BottomNavigationView: View {
                         TabContainerView(pm: tabPm)
                             .tabItem {
                                 Image(systemName: "star.fill")
-                                Text(tabPm.tabTitle)
+                                Text(tabPm.title)
                             }
                             .tag(tabPm.tag)
                             .onTapGesture {
-                                pm.navigation.onChangeCurrent(pm: tabPm)
+                                pm.setNavigation.onChangeCurrent(pm: tabPm)
                             }
                     }
                 }
