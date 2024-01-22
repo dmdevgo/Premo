@@ -34,7 +34,7 @@ class TestPm(args: Args) : PresentationModel(args) {
         override val key: String = "test_pm"
     ) : PmArgs()
 
-    sealed class ResultMessage : PmMessage {
+    sealed class ResultMessage : PmMessage() {
         data object Ok : ResultMessage()
         data object Cancel : ResultMessage()
     }

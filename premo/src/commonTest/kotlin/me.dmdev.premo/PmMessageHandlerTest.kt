@@ -35,7 +35,7 @@ class PmMessageHandlerTest {
     private lateinit var parentHandler: PmMessageHandler
     private lateinit var handler: PmMessageHandler
 
-    private object TestPmMessage : PmMessage
+    private object TestPmMessage : PmMessage()
 
     @BeforeTest
     fun setUp() {
