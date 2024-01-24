@@ -55,7 +55,7 @@ inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.Dial
     noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator ->
         navigator.dismiss()
     },
-    noinline onResult: (R?) -> Unit = {}
+    noinline onResult: (R) -> Unit = {}
 ): DialogNavigator<D, R> {
     return DialogNavigator(
         key = key,
@@ -125,7 +125,7 @@ internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
         hostPm.scope.launch {
             dialogFlow.collect {
                 it?.messageHandler?.addHandler { message ->
-                    if (messageClass.isInstance(message)) {
+                    if (messageClass.isInstance(message) && message.sender == dialog?.tag) {
                         @Suppress("UNCHECKED_CAST")
                         handleResult(message as R)
                         true

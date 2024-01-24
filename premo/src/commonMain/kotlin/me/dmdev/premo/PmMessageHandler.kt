@@ -52,7 +52,7 @@ class PmMessageHandler(
     fun send(message: PmMessage): Boolean {
         if (hostPm.lifecycle.isDestroyed) return false
 
-        message.senderTag = hostPm.tag
+        message.sender = hostPm.tag
         return if (handle(message).not()) {
             hostPm.parent?.messageHandler?.handle(message) ?: false
         } else {
@@ -66,7 +66,7 @@ class PmMessageHandler(
     fun sendToTarget(message: PmMessage, tag: String): Boolean {
         if (hostPm.lifecycle.isDestroyed) return false
 
-        message.senderTag = hostPm.tag
+        message.sender = hostPm.tag
         fun PresentationModel.handle(message: PmMessage, tag: String): Boolean {
             if (this.tag == tag) return true
             allChildren.forEach { pm ->
@@ -86,7 +86,7 @@ class PmMessageHandler(
     fun sendToChild(message: PmMessage): Boolean {
         if (hostPm.lifecycle.isDestroyed) return false
 
-        message.senderTag = hostPm.tag
+        message.sender = hostPm.tag
         hostPm.allChildren.reversed().forEach { pm ->
             if (pm.messageHandler.sendToChild(message)) {
                 return true

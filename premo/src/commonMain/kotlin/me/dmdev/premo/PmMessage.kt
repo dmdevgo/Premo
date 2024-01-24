@@ -25,6 +25,6 @@
 package me.dmdev.premo
 
 abstract class PmMessage {
-    var senderTag: String = ""
+    var sender: String = ""
         internal set
 }
