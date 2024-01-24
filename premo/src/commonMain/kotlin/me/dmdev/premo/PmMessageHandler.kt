@@ -39,6 +39,8 @@ class PmMessageHandler(
     }
 
     fun handle(message: PmMessage): Boolean {
+        if (hostPm.lifecycle.isDestroyed) return false
+
         return handlers.any {
             it.invoke(message)
         }
@@ -48,6 +50,8 @@ class PmMessageHandler(
      * Sends a message towards the root. Any parent can intercept the message and process it.
      */
     fun send(message: PmMessage): Boolean {
+        if (hostPm.lifecycle.isDestroyed) return false
+
         message.senderTag = hostPm.tag
         return if (handle(message).not()) {
             hostPm.parent?.messageHandler?.handle(message) ?: false
@@ -60,6 +64,8 @@ class PmMessageHandler(
      * Sends a message to the target presentation model with related tag.
      */
     fun sendToTarget(message: PmMessage, tag: String): Boolean {
+        if (hostPm.lifecycle.isDestroyed) return false
+
         message.senderTag = hostPm.tag
         fun PresentationModel.handle(message: PmMessage, tag: String): Boolean {
             if (this.tag == tag) return true
@@ -78,6 +84,8 @@ class PmMessageHandler(
      * If the message is not processed by any child, the message will be intercepted by the sender.
      */
     fun sendToChild(message: PmMessage): Boolean {
+        if (hostPm.lifecycle.isDestroyed) return false
+
         message.senderTag = hostPm.tag
         hostPm.allChildren.reversed().forEach { pm ->
             if (pm.messageHandler.sendToChild(message)) {
@@ -91,15 +99,20 @@ class PmMessageHandler(
     }
 
     private fun findRootPm(): PresentationModel {
-        var root = hostPm
+        var root: PresentationModel = hostPm
         while (true) {
-            if (hostPm.parent != null) {
-                root = hostPm.parent
+            val parent = root.parent
+            if (parent != null) {
+                root = parent
             } else {
                 break
             }
         }
         return root
+    }
+
+    internal fun release() {
+        handlers.clear()
     }
 }
 

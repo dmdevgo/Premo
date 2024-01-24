@@ -48,6 +48,7 @@ class PmLifecycle {
     @DelicatePremoApi
     fun moveTo(targetState: State) {
         if (targetState == state) return
+        if (isDestroyed) return
 
         when (targetState) {
             CREATED -> {
@@ -113,6 +114,12 @@ class PmLifecycle {
         }
     }
 }
+
+val PmLifecycle.isCreated: Boolean get() = this.state == CREATED
+
+val PmLifecycle.isInForeground: Boolean get() = this.state == IN_FOREGROUND
+
+val PmLifecycle.isDestroyed: Boolean get() = this.state == DESTROYED
 
 fun PmLifecycle.doOnCreate(callback: () -> Unit) {
     addObserver { oldState, newState ->

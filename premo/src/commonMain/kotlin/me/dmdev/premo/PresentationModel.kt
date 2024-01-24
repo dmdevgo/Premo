@@ -41,21 +41,29 @@ abstract class PresentationModel(
 ) {
 
     private val pmFactory: PmFactory = pmArgs.pmFactory
-    private val pmStateSaverFactory: PmStateSaverFactory = pmArgs.pmStateSaverFactory
+    internal val pmStateSaverFactory: PmStateSaverFactory = pmArgs.pmStateSaverFactory
 
-    val parent: PresentationModel? = pmArgs.parent
-    val tag: String = if (parent != null) {
-        "${parent.tag}/${pmArgs.key}"
-    } else {
-        pmArgs.key
+    var parent: PresentationModel? = pmArgs.parent
+        private set
+
+    val tag: String = pmArgs.parent.let { parent ->
+        if (parent != null) {
+            "${parent.tag}/${pmArgs.key}"
+        } else {
+            pmArgs.key
+        }
     }
+
     val lifecycle: PmLifecycle = PmLifecycle()
     val scope: CoroutineScope = MainScope()
     var inForegroundScope: CoroutineScope? = null
         private set
 
+    @Suppress("LeakingThis")
     val messageHandler: PmMessageHandler = PmMessageHandler(this)
-    val stateHandler: PmStateHandler = PmStateHandler(pmStateSaverFactory.createPmStateSaver(tag))
+
+    @Suppress("LeakingThis")
+    val stateHandler: PmStateHandler = PmStateHandler(this)
 
     internal val allChildren = mutableListOf<PresentationModel>()
     private val attachedChildren = mutableListOf<PresentationModel>()
@@ -65,17 +73,26 @@ abstract class PresentationModel(
     }
 
     fun attachChild(pm: PresentationModel) {
+        if (pm.lifecycle.isDestroyed) {
+            throw IllegalArgumentException("Destroyed presentation model cannot be attached to the parent.")
+        }
+
         pm.lifecycle.moveTo(lifecycle.state)
         attachedChildren.add(pm)
     }
 
     fun detachChild(pm: PresentationModel) {
         pm.lifecycle.moveTo(DESTROYED)
-        attachedChildren.remove(pm)
+        removeChild(pm)
     }
 
     @Suppress("FunctionName", "UNCHECKED_CAST")
     fun <PM : PresentationModel> Child(args: PmArgs): PM {
+
+        if (lifecycle.isDestroyed) {
+            throw IllegalArgumentException("A child can not be created for a destroyed presentation model.")
+        }
+
         args.pmFactory = pmFactory
         args.pmStateSaverFactory = pmStateSaverFactory
         args.parent = this
@@ -87,12 +104,26 @@ abstract class PresentationModel(
 
     @DelicatePremoApi
     fun saveState() {
+        if (lifecycle.isDestroyed) return
+
         stateHandler.saveState()
         allChildren.forEach { it.saveState() }
     }
 
     private fun removeChild(childPm: PresentationModel) {
         allChildren.remove(childPm)
+        attachedChildren.remove(childPm)
+    }
+
+    private fun release() {
+        scope.cancel()
+        inForegroundScope?.cancel()
+        inForegroundScope = null
+        messageHandler.release()
+        stateHandler.release()
+        parent?.removeChild(this)
+        parent = null
+        pmArgs.parent = null
     }
 
     private fun subscribeToLifecycle() {
@@ -106,14 +137,14 @@ abstract class PresentationModel(
                 IN_FOREGROUND -> {
                     inForegroundScope = MainScope()
                 }
+
                 CREATED -> {
                     inForegroundScope?.cancel()
                     inForegroundScope = null
                 }
+
                 DESTROYED -> {
-                    scope.cancel()
-                    parent?.removeChild(this)
-                    pmStateSaverFactory.deletePmStateSaver(tag)
+                    release()
                 }
             }
         }

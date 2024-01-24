@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,10 @@ import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
 class PmStateHandler(
-    private val stateSaver: PmStateSaver
+    private val hostPm: PresentationModel
 ) {
+
+    private val stateSaver: PmStateSaver = hostPm.pmStateSaverFactory.createPmStateSaver(hostPm.tag)
 
     private class Saver<T>(
         val kType: KType,
@@ -56,6 +58,11 @@ class PmStateHandler(
         savers.mapValues { entry ->
             stateSaver.saveState(entry.key, entry.value.kType, entry.value.saveValue())
         }
+    }
+
+    internal fun release() {
+        savers.clear()
+        hostPm.pmStateSaverFactory.deletePmStateSaver(hostPm.tag)
     }
 }
 
