@@ -22,45 +22,18 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample
+package me.dmdev.premo
 
-import kotlinx.serialization.Serializable
-import me.dmdev.premo.PmArgs
-import me.dmdev.premo.SaveableFlow
-import me.dmdev.premo.SingleStatePresentationModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-class CounterPm(
-    args: Args
-) : SingleStatePresentationModel<CounterPm.State>(args) {
+abstract class SingleStatePresentationModel<S>(pmArgs: PmArgs) : PresentationModel(pmArgs) {
 
-    @Serializable
-    data class Args(val maxCount: Int) : PmArgs()
+    protected abstract val mutableStateFlow: MutableStateFlow<S>
+    val stateFlow: StateFlow<S> get() = mutableStateFlow
 
-    @Serializable
-    data class State(
-        val count: Int,
-        val maxCount: Int
-    ) {
-        val plusEnabled: Boolean get() = count < maxCount
-        val minusEnabled: Boolean get() = count > 0
-    }
-
-    override val mutableStateFlow = SaveableFlow(
-        key = "count",
-        initialValue = State(maxCount = args.maxCount, count = 0)
-    )
-
-    fun plus() {
-        state = state.copy(
-            count = state.count + 1
-        )
-    }
-
-    fun minus() {
-        if (state.count > 0) {
-            mutableStateFlow.value = state.copy(
-                count = state.count - 1
-            )
+    var state: S get() = stateFlow.value
+        protected set(value) {
+            mutableStateFlow.value = value
         }
-    }
 }
