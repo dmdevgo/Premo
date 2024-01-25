@@ -31,7 +31,8 @@ import me.dmdev.premo.saver.PmStateSaverFactory
 
 @Serializable
 abstract class PmArgs {
-    open val key: String get() = this::class.simpleName ?: ""
+
+    abstract val key: String
 
     @DelicatePremoApi
     @Transient

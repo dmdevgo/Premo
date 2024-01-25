@@ -29,7 +29,7 @@ import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.annotation.DelicatePremoApi
 
-class PmLifecycle {
+class PmLifecycle internal constructor() {
 
     private val observers: MutableList<Observer> = mutableListOf()
 

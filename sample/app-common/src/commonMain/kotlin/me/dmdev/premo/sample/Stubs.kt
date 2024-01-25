@@ -53,6 +53,6 @@ object Stubs {
 
     private fun <PM : PresentationModel> createPm(args: PmArgs): PM {
         @Suppress("UNCHECKED_CAST")
-        return mainPmFactory.createPm(args) as PM
+        return mainPmFactory.createPresentationModel(args) as PM
     }
 }

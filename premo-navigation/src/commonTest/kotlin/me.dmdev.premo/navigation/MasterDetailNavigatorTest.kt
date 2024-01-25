@@ -56,7 +56,7 @@ class MasterDetailNavigatorTest {
         detailPm1 = parentPm.Child(DETAIL_PM1_ARGS)
         detailPm2 = parentPm.Child(DETAIL_PM2_ARGS)
         navigator = parentPm.MasterDetailNavigator(
-            masterPm = parentPm.Child(MASTER_PM_ARGS)
+            master = parentPm.Child(MASTER_PM_ARGS)
         )
     }
 
@@ -132,7 +132,7 @@ class MasterDetailNavigatorTest {
         val parentPm = TestPm.buildRootPm(stateSaverFactory)
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
         val navigator: MasterDetailNavigator<TestPm, TestPm> = parentPm.MasterDetailNavigator(
-            masterPm = parentPm.Child(masterPmArgs)
+            master = parentPm.Child(masterPmArgs)
         )
 
         assertEquals(masterPmArgs, navigator.master.pmArgs)
@@ -151,7 +151,7 @@ class MasterDetailNavigatorTest {
         val parentPm = TestPm.buildRootPm(stateSaverFactory)
         parentPm.lifecycle.moveTo(IN_FOREGROUND)
         val navigator: MasterDetailNavigator<TestPm, TestPm> = parentPm.MasterDetailNavigator(
-            masterPm = parentPm.Child(masterPmArgs)
+            master = parentPm.Child(masterPmArgs)
         )
         navigator.changeDetail(parentPm.Child(detailPmArgs))
 

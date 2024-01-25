@@ -36,7 +36,7 @@ import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
 class MainPmFactory : PmFactory {
-    override fun createPm(args: PmArgs): PresentationModel {
+    override fun createPresentationModel(args: PmArgs): PresentationModel {
         return when (args) {
             is MainPm.Args -> MainPm(args)
             is SamplesPm.Args -> SamplesPm(args)

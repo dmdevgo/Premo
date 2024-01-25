@@ -28,13 +28,16 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
 import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.SingleStatePresentationModel
+import me.dmdev.premo.sample.CounterPm.State
 
 class CounterPm(
     args: Args
-) : SingleStatePresentationModel<CounterPm.State>(args) {
+) : SingleStatePresentationModel<State>(args) {
 
     @Serializable
-    data class Args(val maxCount: Int) : PmArgs()
+    data class Args(val maxCount: Int) : PmArgs() {
+        override val key: String get() = "counter_$maxCount"
+    }
 
     @Serializable
     data class State(

@@ -34,7 +34,9 @@ import me.dmdev.premo.navigation.set.SetNavigationHost
 class BottomNavigationPm(args: Args) : PresentationModel(args), SetNavigationHost {
 
     @Serializable
-    object Args : PmArgs()
+    object Args : PmArgs() {
+        override val key: String get() = "bottom_navigation"
+    }
 
     override val setNavigation: SetNavigation = SetNavigation(
         initValues = {

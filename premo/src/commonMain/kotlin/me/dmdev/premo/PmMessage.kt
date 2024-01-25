@@ -24,6 +24,9 @@
 
 package me.dmdev.premo
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 abstract class PmMessage {
     var sender: String = ""
         internal set

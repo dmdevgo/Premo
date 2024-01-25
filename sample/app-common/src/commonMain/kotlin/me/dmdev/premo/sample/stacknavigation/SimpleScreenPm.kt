@@ -34,8 +34,7 @@ class SimpleScreenPm(
 
     @Serializable
     class Args(val number: Int) : PmArgs() {
-        override val key: String
-            get() = "${super.key}/$number"
+        override val key: String get() = "simple_screen_$number"
     }
 
     val numberText = args.number.toString()

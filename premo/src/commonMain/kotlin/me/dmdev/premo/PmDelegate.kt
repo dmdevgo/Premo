@@ -39,7 +39,7 @@ class PmDelegate<PM : PresentationModel>(
     val presentationModel: PM by lazy {
         pmArgs.pmFactory = pmFactory
         pmArgs.pmStateSaverFactory = pmStateSaverFactory
-        val pm = PmStore[pmArgs.key] as? PM ?: pmArgs.pmFactory.createPm(pmArgs) as PM
+        val pm = PmStore[pmArgs.key] as? PM ?: pmArgs.pmFactory.createPresentationModel(pmArgs) as PM
         PmStore[pmArgs.key] = pm
         pm
     }

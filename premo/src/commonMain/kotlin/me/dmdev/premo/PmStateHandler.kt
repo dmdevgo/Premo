@@ -25,11 +25,12 @@
 package me.dmdev.premo
 
 import kotlinx.coroutines.flow.MutableStateFlow
+import me.dmdev.premo.annotation.DelicatePremoApi
 import me.dmdev.premo.saver.PmStateSaver
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
-class PmStateHandler(
+class PmStateHandler internal constructor(
     private val hostPm: PresentationModel
 ) {
 
@@ -47,6 +48,10 @@ class PmStateHandler(
     }
 
     fun <T> setSaver(key: String, kType: KType, saveValue: () -> T) {
+        if (savers.contains(key)) {
+            throw IllegalArgumentException("Saver with for key [$key] already exists")
+        }
+
         savers[key] = Saver(kType, saveValue)
     }
 
@@ -54,6 +59,7 @@ class PmStateHandler(
         savers.remove(key)
     }
 
+    @DelicatePremoApi
     fun saveState() {
         savers.mapValues { entry ->
             stateSaver.saveState(entry.key, entry.value.kType, entry.value.saveValue())

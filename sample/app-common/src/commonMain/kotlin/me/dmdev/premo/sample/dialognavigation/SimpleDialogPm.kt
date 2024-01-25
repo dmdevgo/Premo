@@ -28,6 +28,8 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PresentationModel
+import kotlin.random.Random
+import kotlin.random.nextUInt
 
 class SimpleDialogPm(
     val args: Args
@@ -39,7 +41,9 @@ class SimpleDialogPm(
         val message: String,
         val okButtonText: String,
         val cancelButtonText: String
-    ) : PmArgs()
+    ) : PmArgs() {
+        override val key: String = "simple_dialog_${Random.nextUInt()}"
+    }
 
     sealed class ResultMessage : PmMessage()
     data object Ok : ResultMessage()

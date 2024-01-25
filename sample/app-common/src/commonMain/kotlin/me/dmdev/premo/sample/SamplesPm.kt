@@ -31,7 +31,9 @@ import me.dmdev.premo.PresentationModel
 class SamplesPm(args: Args) : PresentationModel(args) {
 
     @Serializable
-    object Args : PmArgs()
+    object Args : PmArgs() {
+        override val key: String get() = "samples"
+    }
 
     fun counterSample() {
         messageHandler.send(CounterSampleMessage)

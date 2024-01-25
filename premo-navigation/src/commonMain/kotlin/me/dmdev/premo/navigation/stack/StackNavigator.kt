@@ -84,7 +84,7 @@ fun StackNavigator.handleBack(): Boolean {
 fun PresentationModel.StackNavigator(
     initBackStack: () -> List<PresentationModel> = { listOf() },
     key: String = DEFAULT_STACK_NAVIGATOR_KEY,
-    backHandler: (StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
+    backHandler: (navigator: StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
     initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
 ): StackNavigator {
     val navigator = StackNavigatorImpl(

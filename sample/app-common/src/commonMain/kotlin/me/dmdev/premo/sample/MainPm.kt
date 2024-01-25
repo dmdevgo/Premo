@@ -39,11 +39,13 @@ class MainPm(args: PmArgs) :
     MasterDetailNavigationHost<SamplesPm, PresentationModel> {
 
     @Serializable
-    object Args : PmArgs()
+    object Args : PmArgs() {
+        override val key: String get() = "main"
+    }
 
     override val masterDetailNavigation: MasterDetailNavigation<SamplesPm, PresentationModel> =
         MasterDetailNavigation(
-            masterPm = Child(SamplesPm.Args)
+            master = Child(SamplesPm.Args)
         ) { navigator ->
             onMessage<CounterSampleMessage> {
                 navigator.changeDetail(Child(CounterPm.Args(10)))

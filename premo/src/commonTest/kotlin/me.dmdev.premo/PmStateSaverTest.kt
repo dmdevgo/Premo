@@ -184,7 +184,7 @@ private class ChildPm(args: Args) : PresentationModel(args) {
 }
 
 private class MainPmFactory : PmFactory {
-    override fun createPm(args: PmArgs): PresentationModel {
+    override fun createPresentationModel(args: PmArgs): PresentationModel {
         return when (args) {
             is RootPm.Args -> RootPm(args)
             is ContainerPm.Args -> ContainerPm(args)

@@ -24,9 +24,11 @@
 
 package me.dmdev.premo.navigation
 
+import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PresentationModel
 
+@Serializable
 object BackMessage : PmMessage()
 
 fun PresentationModel.handleBack(): Boolean {

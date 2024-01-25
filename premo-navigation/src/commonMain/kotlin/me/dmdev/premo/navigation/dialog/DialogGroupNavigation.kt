@@ -35,7 +35,7 @@ interface DialogGroupNavigation : DialogNavigation<PresentationModel> {
 fun PresentationModel.DialogGroupNavigation(
     vararg dialogNavigators: DialogNavigator<*, *>,
     key: String = DEFAULT_DIALOG_GROUP_NAVIGATION_KEY,
-    backHandler: (DialogGroupNavigation) -> Boolean = { it.handleBack() }
+    backHandler: (navigator: DialogGroupNavigation) -> Boolean = { it.handleBack() }
 ): DialogGroupNavigation {
     return DialogGroupNavigator(
         dialogNavigators = dialogNavigators.asList(),

@@ -54,14 +54,14 @@ fun MasterDetailNavigator<*, *>.handleBack(): Boolean {
 }
 
 fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigator(
-    masterPm: M,
+    master: M,
     key: String = DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY,
-    backHandler: (MasterDetailNavigator<M, D>) -> Boolean = DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER,
+    backHandler: (navigator: MasterDetailNavigator<M, D>) -> Boolean = DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER,
     initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit = {}
 ): MasterDetailNavigator<M, D> {
     val navigator = MasterDetailNavigatorImpl<M, D>(
         hostPm = this,
-        masterPm = masterPm,
+        master = master,
         key = key
     )
     messageHandler.handle<BackMessage> { backHandler.invoke(navigator) }
@@ -77,16 +77,16 @@ internal val DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER: (MasterDetailNavigato
 
 internal class MasterDetailNavigatorImpl<M, D>(
     private val hostPm: PresentationModel,
-    masterPm: M,
+    master: M,
     key: String
 ) : MasterDetailNavigator<M, D>
         where M : PresentationModel,
               D : PresentationModel {
 
-    override val master: M = masterPm
+    override val master: M = master
 
     init {
-        masterPm.attachToParent()
+        master.attachToParent()
     }
 
     private val _detailFlow: MutableStateFlow<D?> = hostPm.SaveableFlow(

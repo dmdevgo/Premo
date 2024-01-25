@@ -55,13 +55,13 @@ inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.Dial
     noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator ->
         navigator.dismiss()
     },
-    noinline onResult: (R) -> Unit = {}
+    noinline messageHandler: (message: R) -> Unit = {}
 ): DialogNavigator<D, R> {
     return DialogNavigator(
         key = key,
         messageClass = R::class,
         onDismissRequest = onDismissRequest,
-        onResult = onResult
+        messageHandler = messageHandler
     )
 }
 
@@ -69,12 +69,12 @@ fun <D : PresentationModel, R : PmMessage> PresentationModel.DialogNavigator(
     key: String,
     messageClass: KClass<R>,
     onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit,
-    onResult: (R) -> Unit
+    messageHandler: (R) -> Unit
 ): DialogNavigator<D, R> {
     return DialogNavigatorImpl(
         hostPm = this,
         onDismissRequest = onDismissRequest,
-        resultHandler = onResult,
+        resultHandler = messageHandler,
         key = key,
         messageClass = messageClass
     )

@@ -88,16 +88,19 @@ abstract class PresentationModel(
 
     @Suppress("FunctionName", "UNCHECKED_CAST")
     fun <PM : PresentationModel> Child(args: PmArgs): PM {
-
         if (lifecycle.isDestroyed) {
             throw IllegalArgumentException("A child can not be created for a destroyed presentation model.")
+        }
+
+        if (allChildren.any { it.pmArgs.key == args.key }) {
+            throw IllegalArgumentException("Child presentation model with the key [${args.key}] already exists. The key from args must be unique.")
         }
 
         args.pmFactory = pmFactory
         args.pmStateSaverFactory = pmStateSaverFactory
         args.parent = this
 
-        val childPm = pmFactory.createPm(args) as PM
+        val childPm = pmFactory.createPresentationModel(args) as PM
         allChildren.add(childPm)
         return childPm
     }
@@ -110,9 +113,9 @@ abstract class PresentationModel(
         allChildren.forEach { it.saveState() }
     }
 
-    private fun removeChild(childPm: PresentationModel) {
-        allChildren.remove(childPm)
-        attachedChildren.remove(childPm)
+    private fun removeChild(pm: PresentationModel) {
+        allChildren.remove(pm)
+        attachedChildren.remove(pm)
     }
 
     private fun release() {

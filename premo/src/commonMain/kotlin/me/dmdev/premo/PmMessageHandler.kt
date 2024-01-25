@@ -24,7 +24,7 @@
 
 package me.dmdev.premo
 
-class PmMessageHandler(
+class PmMessageHandler internal constructor(
     private val hostPm: PresentationModel
 ) {
 

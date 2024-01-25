@@ -38,13 +38,13 @@ interface MasterDetailNavigation<M, D>
 }
 
 fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigation(
-    masterPm: M,
+    master: M,
     key: String = DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY,
-    backHandler: (MasterDetailNavigator<M, D>) -> Boolean = DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER,
+    backHandler: (navigator: MasterDetailNavigator<M, D>) -> Boolean = DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER,
     initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit = {}
 ): MasterDetailNavigation<M, D> {
     return MasterDetailNavigator(
-        masterPm = masterPm,
+        master = master,
         key = key,
         backHandler = backHandler,
         initHandlers = initHandlers

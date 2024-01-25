@@ -38,14 +38,15 @@ class DialogNavigationPm(
 ) : PresentationModel(args), DialogGroupNavigationHost {
 
     @Serializable
-    object Args : PmArgs()
+    object Args : PmArgs() {
+        override val key: String get() = "dialog_navigation"
+    }
 
     private val simpleDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("simple_dialog")
     private val dialogForResult = DialogNavigator<SimpleDialogPm, ResultMessage>("dialog_for_result") { result ->
         val resultMessage = when (result) {
             SimpleDialogPm.Cancel -> "Cancel"
             SimpleDialogPm.Ok -> "Ok"
-            null -> "Dismiss"
         }
 
         showResultDialog.show(

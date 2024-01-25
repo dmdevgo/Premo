@@ -42,7 +42,9 @@ import me.dmdev.premo.setSaver
 class StackNavigationPm(args: Args) : PresentationModel(args), StackNavigationHost {
 
     @Serializable
-    object Args : PmArgs()
+    object Args : PmArgs() {
+        override val key: String get() = "stack_navigation"
+    }
 
     private val navigator = StackNavigator(
         backHandler = { navigator -> navigator.pop() }

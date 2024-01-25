@@ -53,7 +53,7 @@ fun SetNavigator.handleBack(): Boolean {
 fun PresentationModel.SetNavigator(
     initValues: () -> List<PresentationModel>,
     key: String = DEFAULT_SET_NAVIGATOR_KEY,
-    backHandler: (SetNavigator) -> Boolean = DEFAULT_SET_NAVIGATOR_BACK_HANDLER,
+    backHandler: (navigator: SetNavigator) -> Boolean = DEFAULT_SET_NAVIGATOR_BACK_HANDLER,
     onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit = DEFAULT_SET_NAVIGATOR_ON_CHANGE_CURRENT
 ): SetNavigator {
     val navigator = SetNavigatorImpl(

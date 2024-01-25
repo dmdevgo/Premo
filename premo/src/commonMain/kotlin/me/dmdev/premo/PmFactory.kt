@@ -25,5 +25,5 @@
 package me.dmdev.premo
 
 fun interface PmFactory {
-    fun createPm(args: PmArgs): PresentationModel
+    fun createPresentationModel(args: PmArgs): PresentationModel
 }

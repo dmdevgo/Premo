@@ -29,7 +29,7 @@ import me.dmdev.premo.PmFactory
 import me.dmdev.premo.PresentationModel
 
 class TestPmFactory : PmFactory {
-    override fun createPm(args: PmArgs): PresentationModel {
+    override fun createPresentationModel(args: PmArgs): PresentationModel {
         return when (args) {
             is TestPm.Args -> TestPm(args)
             else -> throw IllegalArgumentException(

@@ -24,6 +24,7 @@
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.android.library)
     alias(libs.plugins.ktlint)
     id("me.dmdev.premo.plugin.android")

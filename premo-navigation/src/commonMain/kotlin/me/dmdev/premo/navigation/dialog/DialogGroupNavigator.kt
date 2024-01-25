@@ -54,7 +54,7 @@ fun DialogGroupNavigation.handleBack(): Boolean {
 fun PresentationModel.DialogGroupNavigator(
     dialogNavigators: List<DialogNavigator<*, *>>,
     key: String = DEFAULT_DIALOG_GROUP_NAVIGATION_KEY,
-    backHandler: (DialogGroupNavigator) -> Boolean = { it.handleBack() }
+    backHandler: (navigator: DialogGroupNavigator) -> Boolean = { it.handleBack() }
 ): DialogGroupNavigator {
     val navigator = DialogGroupNavigatorImpl(
         hostPm = this,
