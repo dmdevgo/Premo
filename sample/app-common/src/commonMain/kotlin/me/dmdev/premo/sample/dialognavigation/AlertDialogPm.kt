@@ -28,32 +28,51 @@ import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.navigation.dialog.DialogNavigator
 import kotlin.random.Random
 import kotlin.random.nextUInt
 
-class SimpleDialogPm(
-    val args: Args
+class AlertDialogPm<T : DialogContextData>(
+    val args: Args<T>
 ) : PresentationModel(args) {
 
     @Serializable
-    data class Args(
+    data class Args<T : DialogContextData>(
         val title: String,
         val message: String,
         val okButtonText: String,
-        val cancelButtonText: String
+        val cancelButtonText: String,
+        val contextData: T
     ) : PmArgs() {
         override val key: String = "simple_dialog_${Random.nextUInt()}"
     }
 
-    sealed class ResultMessage : PmMessage()
-    data object Ok : ResultMessage()
-    data object Cancel : ResultMessage()
+    sealed class ResultMessage<T : DialogContextData>(val contextData: T) : PmMessage()
+    inner class Ok(contextData: T) : ResultMessage<T>(contextData)
+    inner class Cancel(contextData: T) : ResultMessage<T>(contextData)
 
     fun onOkClick() {
-        messageHandler.send(Ok)
+        messageHandler.send(Ok(args.contextData))
     }
 
     fun onCancelClick() {
-        messageHandler.send(Cancel)
+        messageHandler.send(Cancel(args.contextData))
     }
+}
+
+@Suppress("FunctionName")
+inline fun <CONTEXT : DialogContextData> PresentationModel.AlertDialogNavigator(
+    key: String,
+    crossinline onOk: (CONTEXT) -> Unit = {},
+    crossinline onCancel: (CONTEXT) -> Unit = {}
+): DialogNavigator<AlertDialogPm<CONTEXT>, AlertDialogPm.ResultMessage<CONTEXT>> {
+    return DialogNavigator<AlertDialogPm<CONTEXT>, AlertDialogPm.ResultMessage<CONTEXT>>(
+        key = key,
+        messageHandler = { message ->
+            when (message) {
+                is AlertDialogPm.Cancel -> onOk(message.contextData)
+                is AlertDialogPm.Ok -> onCancel(message.contextData)
+            }
+        }
+    )
 }

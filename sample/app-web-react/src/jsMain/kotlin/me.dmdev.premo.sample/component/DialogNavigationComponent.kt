@@ -25,8 +25,8 @@
 package me.dmdev.premo.sample.component
 
 import me.dmdev.premo.sample.collectAsState
+import me.dmdev.premo.sample.dialognavigation.AlertDialogPm
 import me.dmdev.premo.sample.dialognavigation.DialogNavigationPm
-import me.dmdev.premo.sample.dialognavigation.SimpleDialogPm
 import mui.material.Button
 import mui.material.ButtonVariant
 import mui.material.Dialog
@@ -49,7 +49,7 @@ external interface DialogNavigationComponentProps : Props {
 val DialogNavigationComponent = FC<DialogNavigationComponentProps> { props ->
 
     val pm = props.pm
-    val dialogs = pm.dialogGroupNavigation.dialogsFlow.collectAsState()
+    val dialogPm = pm.dialogGroupNavigation.dialogsFlow.collectAsState().lastOrNull()
 
     Stack {
 
@@ -63,7 +63,7 @@ val DialogNavigationComponent = FC<DialogNavigationComponentProps> { props ->
 
         Button {
             onClick = {
-                pm.showSimpleDialogClick()
+                pm.onSimpleDialogClick()
             }
             variant = ButtonVariant.contained
             +"Show simple dialog"
@@ -71,15 +71,13 @@ val DialogNavigationComponent = FC<DialogNavigationComponentProps> { props ->
 
         Button {
             onClick = {
-                pm.showSimpleDialogForResultClick()
+                pm.onSimpleDialogForResultClick()
             }
             variant = ButtonVariant.contained
             +"Show dialog for result"
         }
 
-        val dialogPm = dialogs.firstOrNull()
-
-        if (dialogPm is SimpleDialogPm) {
+        if (dialogPm is AlertDialogPm<*>) {
             Dialog {
 
                 open = true

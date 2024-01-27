@@ -30,8 +30,8 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottomnavigation.TabItemPm
 import me.dmdev.premo.sample.bottomnavigation.TabPm
+import me.dmdev.premo.sample.dialognavigation.AlertDialogPm
 import me.dmdev.premo.sample.dialognavigation.DialogNavigationPm
-import me.dmdev.premo.sample.dialognavigation.SimpleDialogPm
 import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
@@ -47,7 +47,7 @@ class MainPmFactory : PmFactory {
             is TabPm.Args -> TabPm(args)
             is TabItemPm.Args -> TabItemPm(args)
             is DialogNavigationPm.Args -> DialogNavigationPm(args)
-            is SimpleDialogPm.Args -> SimpleDialogPm(args)
+            is AlertDialogPm.Args<*> -> AlertDialogPm(args)
             else -> throw IllegalArgumentException("Not handled instance creation for pm args $args")
         }
     }

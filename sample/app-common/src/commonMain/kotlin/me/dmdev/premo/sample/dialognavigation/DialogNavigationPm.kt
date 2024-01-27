@@ -24,14 +24,11 @@
 
 package me.dmdev.premo.sample.dialognavigation
 
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.navigation.dialog.DialogGroupNavigation
 import me.dmdev.premo.navigation.dialog.DialogGroupNavigationHost
-import me.dmdev.premo.navigation.dialog.DialogNavigator
-import me.dmdev.premo.sample.dialognavigation.SimpleDialogPm.ResultMessage
 
 class DialogNavigationPm(
     args: Args
@@ -42,57 +39,64 @@ class DialogNavigationPm(
         override val key: String get() = "dialog_navigation"
     }
 
-    private val simpleDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("simple_dialog")
-    private val dialogForResult = DialogNavigator<SimpleDialogPm, ResultMessage>("dialog_for_result") { result ->
-        val resultMessage = when (result) {
-            SimpleDialogPm.Cancel -> "Cancel"
-            SimpleDialogPm.Ok -> "Ok"
-        }
-
-        showResultDialog.show(
-            Child(
-                SimpleDialogPm.Args(
-                    title = "Dialog Result",
-                    message = resultMessage,
-                    okButtonText = "Close",
-                    cancelButtonText = ""
-                )
-            )
-        )
-    }
-    private val showResultDialog = DialogNavigator<SimpleDialogPm, ResultMessage>("show_result_dialog")
-
-    override val dialogGroupNavigation = DialogGroupNavigation(
-        dialogForResult,
-        simpleDialog,
-        showResultDialog
+    private val alertDialog = AlertDialogNavigator<DialogContextData.Simple>(
+        key = "simple_dialog"
     )
 
-    fun showSimpleDialogClick() {
-        simpleDialog.show(
+    private val alertDialogForResult = AlertDialogNavigator<DialogContextData.ForResult>(
+        key = "simple_dialog_for_result",
+        onOk = {
+            showResult("Ok")
+        },
+        onCancel = {
+            showResult("Cancel")
+        }
+    )
+
+    override val dialogGroupNavigation = DialogGroupNavigation(
+        alertDialog,
+        alertDialogForResult
+    )
+
+    fun onSimpleDialogClick() {
+        alertDialog.show(
             Child(
-                SimpleDialogPm.Args(
+                AlertDialogPm.Args(
                     title = "Simple dialog",
                     message = "This is a simple dialog, click ok to close.",
                     okButtonText = "Ok",
-                    cancelButtonText = ""
+                    cancelButtonText = "",
+                    contextData = DialogContextData.Simple
                 )
             )
         )
     }
 
-    fun showSimpleDialogForResultClick() {
-        inForegroundScope?.launch {
-            dialogForResult.show(
-                Child(
-                    SimpleDialogPm.Args(
-                        title = "Simple result dialog",
-                        message = "This is a simple dialog that sends a result message to show which button is clicked.",
-                        okButtonText = "Ok",
-                        cancelButtonText = "Cancel"
-                    )
+    fun onSimpleDialogForResultClick() {
+        alertDialogForResult.show(
+            Child(
+                AlertDialogPm.Args(
+                    title = "Simple result dialog",
+                    message = "This is a simple dialog that sends a result message to show which button is clicked.",
+                    okButtonText = "Ok",
+                    cancelButtonText = "Cancel",
+                    contextData = DialogContextData.ForResult
                 )
             )
-        }
+        )
+    }
+
+    private fun showResult(resultMessage: String) {
+        alertDialog.show(
+            Child(
+                AlertDialogPm.Args(
+                    title = "Dialog Result",
+                    message = resultMessage,
+                    okButtonText = "Close",
+                    cancelButtonText = "",
+                    contextData = DialogContextData.Simple
+                )
+            )
+        )
     }
 }

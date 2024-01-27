@@ -33,8 +33,8 @@ import me.dmdev.premo.annotation.ExperimentalPremoApi
 import me.dmdev.premo.navigation.back
 import me.dmdev.premo.sample.ScreenBox
 import me.dmdev.premo.sample.bind
+import me.dmdev.premo.sample.dialognavigation.AlertDialogPm
 import me.dmdev.premo.sample.dialognavigation.DialogNavigationPm
-import me.dmdev.premo.sample.dialognavigation.SimpleDialogPm
 
 @OptIn(ExperimentalPremoApi::class)
 @Composable
@@ -51,11 +51,11 @@ fun DialogNavigationScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.weight(0.5f))
-            Button(onClick = { pm.showSimpleDialogClick() }) {
+            Button(onClick = { pm.onSimpleDialogClick() }) {
                 Text("Show simple dialog")
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { pm.showSimpleDialogForResultClick() }) {
+            Button(onClick = { pm.onSimpleDialogForResultClick() }) {
                 Text("Show dialog for result")
             }
             Spacer(Modifier.weight(0.5f))
@@ -63,7 +63,7 @@ fun DialogNavigationScreen(
 
         pm.dialogGroupNavigation.dialogsFlow.bind().let { dialogs ->
             val dialogPm = dialogs.lastOrNull()
-            if (dialogPm is SimpleDialogPm) {
+            if (dialogPm is AlertDialogPm<*>) {
                 AlertDialog(
                     title = { Text(dialogPm.args.title) },
                     text = { Text(dialogPm.args.message) },

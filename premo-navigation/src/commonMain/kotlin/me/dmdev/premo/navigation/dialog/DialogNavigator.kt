@@ -74,7 +74,7 @@ fun <D : PresentationModel, R : PmMessage> PresentationModel.DialogNavigator(
     return DialogNavigatorImpl(
         hostPm = this,
         onDismissRequest = onDismissRequest,
-        resultHandler = messageHandler,
+        messageHandler = messageHandler,
         key = key,
         messageClass = messageClass
     )
@@ -83,7 +83,7 @@ fun <D : PresentationModel, R : PmMessage> PresentationModel.DialogNavigator(
 internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
     private val hostPm: PresentationModel,
     private val onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit,
-    private val resultHandler: (R) -> Unit,
+    private val messageHandler: (R) -> Unit,
     private val messageClass: KClass<R>,
     key: String
 ) : DialogNavigator<D, R> {
@@ -102,8 +102,8 @@ internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
 
     override fun show(pm: D) {
         if (isShowing) dismiss()
-        _dialog.value = pm
         pm.attachToParent()
+        _dialog.value = pm
     }
 
     override fun dismiss() {
@@ -116,9 +116,8 @@ internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
     }
 
     private fun handleResult(result: R) {
-        resultHandler(result)
-        _dialog.value?.detachFromParent()
-        _dialog.value = null
+        dismiss()
+        messageHandler(result)
     }
 
     private fun subscribeToMessages() {

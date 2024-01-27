@@ -38,8 +38,9 @@ import me.dmdev.premo.sample.SamplesPm
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottomnavigation.TabItemPm
 import me.dmdev.premo.sample.bottomnavigation.TabPm
+import me.dmdev.premo.sample.dialognavigation.AlertDialogPm
+import me.dmdev.premo.sample.dialognavigation.DialogContextData
 import me.dmdev.premo.sample.dialognavigation.DialogNavigationPm
-import me.dmdev.premo.sample.dialognavigation.SimpleDialogPm
 import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
@@ -68,6 +69,6 @@ object Serializers {
         subclass(TabPm.Args::class)
         subclass(TabItemPm.Args::class)
         subclass(DialogNavigationPm.Args::class)
-        subclass(SimpleDialogPm.Args::class)
+        subclass(AlertDialogPm.Args.serializer(DialogContextData.serializer()))
     }
 }

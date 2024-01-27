@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,12 +47,12 @@ struct DialogNavigationView: View {
                 Spacer()
                 
                 Button("Show simple dialog", action: {
-                    pm.showSimpleDialogClick()
+                    pm.onSimpleDialogClick()
                 })
                     .padding()
                 
                 Button("Show dialog for result", action: {
-                    pm.showSimpleDialogForResultClick()
+                    pm.onSimpleDialogForResultClick()
                 })
                     .padding()
                 
@@ -67,7 +67,7 @@ struct DialogNavigationView: View {
                 Image(systemName: "arrow.left")
             })
             .alert(isPresented: alertIsShowingBinding) {
-                let dialogPm = dialogs.value?.lastObject as? SimpleDialogPm
+                let dialogPm = dialogs.value?.lastObject as? AlertDialogPm<AnyObject>
                 return Alert(
                     title: Text(dialogPm?.args.title ?? ""),
                     message: Text(dialogPm?.args.message ?? ""),

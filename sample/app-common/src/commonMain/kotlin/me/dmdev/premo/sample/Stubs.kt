@@ -29,8 +29,9 @@ import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottomnavigation.TabItemPm
 import me.dmdev.premo.sample.bottomnavigation.TabPm
+import me.dmdev.premo.sample.dialognavigation.AlertDialogPm
+import me.dmdev.premo.sample.dialognavigation.DialogContextData
 import me.dmdev.premo.sample.dialognavigation.DialogNavigationPm
-import me.dmdev.premo.sample.dialognavigation.SimpleDialogPm
 import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
 
@@ -47,8 +48,8 @@ object Stubs {
     val tabPm = createPm<TabPm>(TabPm.Args("Tab #"))
     val tabItemPm = createPm<TabItemPm>(TabItemPm.Args("Screen #", "Tab #"))
     val dialogNavigationPm = createPm<DialogNavigationPm>(DialogNavigationPm.Args)
-    val simpleDialogPm = createPm<SimpleDialogPm>(
-        SimpleDialogPm.Args("Title", "Text", "Ок", "Cancel")
+    val alertDialogPm = createPm<AlertDialogPm<DialogContextData>>(
+        AlertDialogPm.Args("Title", "Text", "Ок", "Cancel", DialogContextData.Simple)
     )
 
     private fun <PM : PresentationModel> createPm(args: PmArgs): PM {
