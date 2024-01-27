@@ -72,7 +72,9 @@ class PmStateSaverTest {
 private class RootPm(args: Args) : PresentationModel(args) {
 
     @Serializable
-    object Args : PmArgs()
+    object Args : PmArgs() {
+        override val key: String get() = "root"
+    }
 
     val keys = listOf("container1", "container2", "container3", "container4", "container5")
 
@@ -106,7 +108,9 @@ private class RootPm(args: Args) : PresentationModel(args) {
 private class ContainerPm(args: Args) : PresentationModel(args) {
 
     @Serializable
-    object Args : PmArgs()
+    object Args : PmArgs() {
+        override val key: String get() = "container"
+    }
 
     val keys = listOf("child1", "child2", "child3", "child4", "child5")
 
