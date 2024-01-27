@@ -38,11 +38,11 @@ import me.dmdev.premo.handle
 import me.dmdev.premo.navigation.BackMessage
 import kotlin.reflect.typeOf
 
-interface MasterDetailNavigator<M, D> : MasterDetailNavigation<M, D>
-        where M : PresentationModel,
-              D : PresentationModel {
+interface MasterDetailNavigator<MASTER, DETAIL> : MasterDetailNavigation<MASTER, DETAIL>
+        where MASTER : PresentationModel,
+              DETAIL : PresentationModel {
 
-    fun changeDetail(detail: D?)
+    fun changeDetail(detail: DETAIL?)
 }
 
 fun MasterDetailNavigator<*, *>.handleBack(): Boolean {
@@ -53,13 +53,15 @@ fun MasterDetailNavigator<*, *>.handleBack(): Boolean {
     return false
 }
 
-fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigator(
-    master: M,
+fun <MASTER, DETAIL> PresentationModel.MasterDetailNavigator(
+    master: MASTER,
     key: String = DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY,
-    backHandler: (navigator: MasterDetailNavigator<M, D>) -> Boolean = DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER,
-    initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit = {}
-): MasterDetailNavigator<M, D> {
-    val navigator = MasterDetailNavigatorImpl<M, D>(
+    backHandler: (navigator: MasterDetailNavigator<MASTER, DETAIL>) -> Boolean = { it.handleBack() },
+    initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<MASTER, DETAIL>) -> Unit = {}
+): MasterDetailNavigator<MASTER, DETAIL>
+        where MASTER : PresentationModel,
+              DETAIL : PresentationModel {
+    val navigator = MasterDetailNavigatorImpl<MASTER, DETAIL>(
         hostPm = this,
         master = master,
         key = key
@@ -72,33 +74,29 @@ fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetai
 internal const val DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY = "master_detail_navigator"
 internal const val DEFAULT_MASTER_DETAIL_NAVIGATOR_DETAIL_STATE_KEY =
     "${DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY}_detail_pm"
-internal val DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER: (MasterDetailNavigator<*, *>) -> Boolean =
-    { it.handleBack() }
 
-internal class MasterDetailNavigatorImpl<M, D>(
+internal class MasterDetailNavigatorImpl<MASTER, DETAIL>(
     private val hostPm: PresentationModel,
-    master: M,
+    override val master: MASTER,
     key: String
-) : MasterDetailNavigator<M, D>
-        where M : PresentationModel,
-              D : PresentationModel {
-
-    override val master: M = master
+) : MasterDetailNavigator<MASTER, DETAIL>
+        where MASTER : PresentationModel,
+              DETAIL : PresentationModel {
 
     init {
         master.attachToParent()
     }
 
-    private val _detailFlow: MutableStateFlow<D?> = hostPm.SaveableFlow(
+    private val _detailFlow: MutableStateFlow<DETAIL?> = hostPm.SaveableFlow(
         key = "${key}_detail_pm",
         initialValueProvider = { null },
         saveType = typeOf<PmArgs>(),
         saveTypeMapper = { it?.pmArgs },
-        restoreTypeMapper = { it?.let { hostPm.AttachedChild(it) as D } }
+        restoreTypeMapper = { it?.let { hostPm.AttachedChild(it) as DETAIL } }
     )
-    override val detailFlow: StateFlow<D?> = _detailFlow.asStateFlow()
+    override val detailFlow: StateFlow<DETAIL?> = _detailFlow.asStateFlow()
 
-    override fun changeDetail(detail: D?) {
+    override fun changeDetail(detail: DETAIL?) {
         this.detail?.detachFromParent()
         _detailFlow.value = detail
         detail?.attachToParent()

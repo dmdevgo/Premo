@@ -36,8 +36,10 @@ import me.dmdev.premo.attachToParent
 import me.dmdev.premo.detachFromParent
 import kotlin.reflect.KClass
 
-interface DialogNavigator<D : PresentationModel, R : PmMessage> : DialogNavigation<D> {
-    fun show(pm: D)
+interface DialogNavigator<PM, MESSAGE> : DialogNavigation<PM>
+        where PM : PresentationModel,
+              MESSAGE : PmMessage {
+    fun show(pm: PM)
     fun dismiss()
 }
 
@@ -50,27 +52,31 @@ fun DialogNavigator<*, *>.handleBack(): Boolean {
     }
 }
 
-inline fun <D : PresentationModel, reified R : PmMessage> PresentationModel.DialogNavigator(
+inline fun <PM, reified MESSAGE> PresentationModel.DialogNavigator(
     key: String,
-    noinline onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit = { navigator ->
-        navigator.dismiss()
+    noinline onDismissRequest: (navigator: DialogNavigator<PM, MESSAGE>) -> Unit = { navigator ->
+        navigator.handleBack()
     },
-    noinline messageHandler: (message: R) -> Unit = {}
-): DialogNavigator<D, R> {
+    noinline messageHandler: (message: MESSAGE) -> Unit = {}
+): DialogNavigator<PM, MESSAGE>
+        where PM : PresentationModel,
+              MESSAGE : PmMessage {
     return DialogNavigator(
         key = key,
-        messageClass = R::class,
+        messageClass = MESSAGE::class,
         onDismissRequest = onDismissRequest,
         messageHandler = messageHandler
     )
 }
 
-fun <D : PresentationModel, R : PmMessage> PresentationModel.DialogNavigator(
+fun <PM, MESSAGE> PresentationModel.DialogNavigator(
     key: String,
-    messageClass: KClass<R>,
-    onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit,
-    messageHandler: (R) -> Unit
-): DialogNavigator<D, R> {
+    messageClass: KClass<MESSAGE>,
+    onDismissRequest: (navigator: DialogNavigator<PM, MESSAGE>) -> Unit,
+    messageHandler: (message: MESSAGE) -> Unit
+): DialogNavigator<PM, MESSAGE>
+        where PM : PresentationModel,
+              MESSAGE : PmMessage {
     return DialogNavigatorImpl(
         hostPm = this,
         onDismissRequest = onDismissRequest,
@@ -80,27 +86,29 @@ fun <D : PresentationModel, R : PmMessage> PresentationModel.DialogNavigator(
     )
 }
 
-internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
+internal class DialogNavigatorImpl<PM, MESSAGE>(
     private val hostPm: PresentationModel,
-    private val onDismissRequest: (navigator: DialogNavigator<D, R>) -> Unit,
-    private val messageHandler: (R) -> Unit,
-    private val messageClass: KClass<R>,
+    private val onDismissRequest: (navigator: DialogNavigator<PM, MESSAGE>) -> Unit,
+    private val messageHandler: (message: MESSAGE) -> Unit,
+    private val messageClass: KClass<MESSAGE>,
     key: String
-) : DialogNavigator<D, R> {
+) : DialogNavigator<PM, MESSAGE>
+        where PM : PresentationModel,
+              MESSAGE : PmMessage {
 
-    private val _dialog: MutableStateFlow<D?> = hostPm.SaveableFlow(
+    private val _dialog: MutableStateFlow<PM?> = hostPm.SaveableFlow(
         key = key,
         initialValueProvider = { null },
         saveTypeMapper = { it?.pmArgs },
-        restoreTypeMapper = { it?.let { hostPm.AttachedChild(it) as D } }
+        restoreTypeMapper = { it?.let { hostPm.AttachedChild(it) as PM } }
     )
-    override val dialogFlow: StateFlow<D?> = _dialog.asStateFlow()
+    override val dialogFlow: StateFlow<PM?> = _dialog.asStateFlow()
 
     init {
         subscribeToMessages()
     }
 
-    override fun show(pm: D) {
+    override fun show(pm: PM) {
         if (isShowing) dismiss()
         pm.attachToParent()
         _dialog.value = pm
@@ -115,7 +123,7 @@ internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
         onDismissRequest(this)
     }
 
-    private fun handleResult(result: R) {
+    private fun handleResult(result: MESSAGE) {
         dismiss()
         messageHandler(result)
     }
@@ -126,7 +134,7 @@ internal class DialogNavigatorImpl<D : PresentationModel, R : PmMessage>(
                 it?.messageHandler?.addHandler { message ->
                     if (messageClass.isInstance(message) && message.sender == dialog?.tag) {
                         @Suppress("UNCHECKED_CAST")
-                        handleResult(message as R)
+                        handleResult(message as MESSAGE)
                         true
                     } else {
                         false

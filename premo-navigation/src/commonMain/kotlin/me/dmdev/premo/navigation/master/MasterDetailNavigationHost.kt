@@ -26,8 +26,8 @@ package me.dmdev.premo.navigation.master
 
 import me.dmdev.premo.PresentationModel
 
-interface MasterDetailNavigationHost<M, D>
-        where M : PresentationModel,
-              D : PresentationModel {
-    val masterDetailNavigation: MasterDetailNavigation<M, D>
+interface MasterDetailNavigationHost<MASTER, DETAIL>
+        where MASTER : PresentationModel,
+              DETAIL : PresentationModel {
+    val masterDetailNavigation: MasterDetailNavigation<MASTER, DETAIL>
 }

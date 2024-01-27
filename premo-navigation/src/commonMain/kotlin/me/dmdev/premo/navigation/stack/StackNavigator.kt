@@ -84,7 +84,7 @@ fun StackNavigator.handleBack(): Boolean {
 fun PresentationModel.StackNavigator(
     initBackStack: () -> List<PresentationModel> = { listOf() },
     key: String = DEFAULT_STACK_NAVIGATOR_KEY,
-    backHandler: (navigator: StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
+    backHandler: (navigator: StackNavigator) -> Boolean = { it.handleBack() },
     initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
 ): StackNavigator {
     val navigator = StackNavigatorImpl(
@@ -100,7 +100,6 @@ fun PresentationModel.StackNavigator(
 internal const val DEFAULT_STACK_NAVIGATOR_KEY = "stack_navigator"
 internal const val DEFAULT_STACK_NAVIGATOR_BACKSTACK_STATE_KEY =
     "${DEFAULT_STACK_NAVIGATOR_KEY}_backstack"
-internal val DEFAULT_STACK_NAVIGATOR_BACK_HANDLER: (StackNavigator) -> Boolean = { it.handleBack() }
 
 internal class StackNavigatorImpl(
     private val hostPm: PresentationModel,

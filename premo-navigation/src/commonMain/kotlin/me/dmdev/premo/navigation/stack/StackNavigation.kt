@@ -43,7 +43,7 @@ interface StackNavigation {
 fun PresentationModel.StackNavigation(
     initBackStack: () -> List<PresentationModel>,
     key: String = DEFAULT_STACK_NAVIGATOR_KEY,
-    backHandler: (navigator: StackNavigator) -> Boolean = DEFAULT_STACK_NAVIGATOR_BACK_HANDLER,
+    backHandler: (navigator: StackNavigator) -> Boolean = { it.handleBack() },
     initHandlers: PmMessageHandler.(navigator: StackNavigator) -> Unit = {}
 ): StackNavigation {
     return StackNavigator(

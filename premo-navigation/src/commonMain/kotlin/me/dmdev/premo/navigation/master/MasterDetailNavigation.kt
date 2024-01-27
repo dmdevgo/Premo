@@ -28,21 +28,23 @@ import kotlinx.coroutines.flow.StateFlow
 import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
 
-interface MasterDetailNavigation<M, D>
-        where M : PresentationModel,
-              D : PresentationModel {
+interface MasterDetailNavigation<MASTER, DETAIL>
+        where MASTER : PresentationModel,
+              DETAIL : PresentationModel {
 
-    val master: M
-    val detailFlow: StateFlow<D?>
-    val detail: D? get() = detailFlow.value
+    val master: MASTER
+    val detailFlow: StateFlow<DETAIL?>
+    val detail: DETAIL? get() = detailFlow.value
 }
 
-fun <M : PresentationModel, D : PresentationModel> PresentationModel.MasterDetailNavigation(
-    master: M,
+fun <MASTER, DETAIL> PresentationModel.MasterDetailNavigation(
+    master: MASTER,
     key: String = DEFAULT_MASTER_DETAIL_NAVIGATOR_KEY,
-    backHandler: (navigator: MasterDetailNavigator<M, D>) -> Boolean = DEFAULT_MASTER_DETAIL_NAVIGATOR_BACK_HANDLER,
-    initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<M, D>) -> Unit = {}
-): MasterDetailNavigation<M, D> {
+    backHandler: (navigator: MasterDetailNavigator<MASTER, DETAIL>) -> Boolean = { it.handleBack() },
+    initHandlers: PmMessageHandler.(navigator: MasterDetailNavigator<MASTER, DETAIL>) -> Unit = {}
+): MasterDetailNavigation<MASTER, DETAIL>
+        where MASTER : PresentationModel,
+              DETAIL : PresentationModel {
     return MasterDetailNavigator(
         master = master,
         key = key,

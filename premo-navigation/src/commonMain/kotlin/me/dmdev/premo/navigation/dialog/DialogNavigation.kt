@@ -27,9 +27,9 @@ package me.dmdev.premo.navigation.dialog
 import kotlinx.coroutines.flow.StateFlow
 import me.dmdev.premo.PresentationModel
 
-interface DialogNavigation<D : PresentationModel> {
-    val dialogFlow: StateFlow<D?>
-    val dialog: D? get() = dialogFlow.value
+interface DialogNavigation<PM : PresentationModel> {
+    val dialogFlow: StateFlow<PM?>
+    val dialog: PM? get() = dialogFlow.value
     fun onDismissRequest()
 }
 

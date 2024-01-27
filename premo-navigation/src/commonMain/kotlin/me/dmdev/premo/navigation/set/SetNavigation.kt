@@ -39,7 +39,7 @@ interface SetNavigation {
 fun PresentationModel.SetNavigation(
     initValues: () -> List<PresentationModel>,
     key: String = DEFAULT_SET_NAVIGATOR_KEY,
-    backHandler: (navigator: SetNavigator) -> Boolean = DEFAULT_SET_NAVIGATOR_BACK_HANDLER,
+    backHandler: (navigator: SetNavigator) -> Boolean = { it.handleBack() },
     onChangeCurrent: (index: Int, navigator: SetNavigator) -> Unit = DEFAULT_SET_NAVIGATOR_ON_CHANGE_CURRENT
 ): SetNavigation {
     return SetNavigator(
