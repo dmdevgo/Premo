@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -49,8 +49,8 @@ external interface MainComponentProps : Props {
 
 val MainComponent = FC<MainComponentProps> { props ->
 
-    val masterPm = props.pm.navigation.master
-    val detailPm = props.pm.navigation.detailFlow.collectAsState()
+    val masterPm = props.pm.masterDetailNavigation.master
+    val detailPm = props.pm.masterDetailNavigation.detailFlow.collectAsState()
 
     ThemeProvider {
         this.theme = createTheme(

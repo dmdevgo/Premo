@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import org.jetbrains.compose.web.dom.*
 @Composable
 fun StackNavigationScreen(pm: StackNavigationPm) {
     val backStack = pm.backstackAsStringState.bind()
-    val currentPm = pm.navigation.currentTopFlow.bind()
+    val currentPm = pm.stackNavigation.currentTopFlow.bind()
     ScreenBox("Stack Navigation") {
         Div(
             {

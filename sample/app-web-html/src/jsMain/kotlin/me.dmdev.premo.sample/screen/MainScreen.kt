@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import org.jetbrains.compose.web.dom.*
 
 @Composable
 fun MainScreen(pm: MainPm) {
-    val currentPm = pm.navigation.detailFlow.bind()
+    val currentPm = pm.masterDetailNavigation.detailFlow.bind()
     Div(
         {
             style {
@@ -46,7 +46,7 @@ fun MainScreen(pm: MainPm) {
             }
         }
     ) {
-        pm.navigation.master.mapToComposable()
+        pm.masterDetailNavigation.master.mapToComposable()
         currentPm.mapToComposable()
     }
 }
