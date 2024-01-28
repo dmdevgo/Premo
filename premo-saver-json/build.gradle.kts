@@ -36,6 +36,11 @@ kotlin {
 
     sourceSets {
 
+        all {
+            languageSettings.optIn("me.dmdev.premo.annotation.DelicatePremoApi")
+            languageSettings.optIn("me.dmdev.premo.annotation.ExperimentalPremoApi")
+        }
+
         commonMain {
             dependencies {
                 api(project(":premo"))
@@ -45,6 +50,7 @@ kotlin {
 
         commonTest {
             dependencies {
+                implementation(project(":premo-test"))
                 implementation(libs.kotlin.test)
                 implementation(libs.kotlinx.serialization.json)
             }

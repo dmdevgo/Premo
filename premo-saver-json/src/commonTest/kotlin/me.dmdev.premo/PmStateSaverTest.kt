@@ -24,47 +24,49 @@
 
 package me.dmdev.premo
 
+import kotlinx.coroutines.test.runTest
 import me.dmdev.premo.saver.JsonStateSaver
+import me.dmdev.premo.test.runPmTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PmStateSaverTest {
 
     @Test
-    fun testPmStateRestoring() {
+    fun testPmStateRestoring() = runTest {
         val jsonStateSever = JsonStateSaver(Serializer.json)
-        val delegate = createPmDelegate(jsonStateSever)
-        val rootPm = delegate.presentationModel
-
-        delegate.onForeground()
-
-        for (i in 1..5) {
-            rootPm.Child<TestPm>(TestPm.Args("child$i")).apply {
-                for (k in 1..5) {
-                    Child<TestPm>(TestPm.Args("child$i$k"))
-                }
-            }
-        }
-
-        delegate.onSave()
-        val savedState = jsonStateSever.save()
-        delegate.onDestroy()
-
-        val newJsonStateSever = JsonStateSaver(Serializer.json)
-        val delegateForRestoredPm = createPmDelegate(newJsonStateSever)
-        newJsonStateSever.restore(savedState)
-
-        val restoredPm = delegateForRestoredPm.presentationModel
-        delegateForRestoredPm.onForeground()
-
-        assertEquals(rootPm, restoredPm)
-    }
-
-    private fun createPmDelegate(jsonStateSever: JsonStateSaver): PmDelegate<TestPm> {
-        return PmDelegate(
+        runPmTest<TestPm>(
             pmArgs = TestPm.Args("root"),
             pmFactory = TestPmFactory(),
             pmStateSaverFactory = jsonStateSever
-        )
+        ) {
+            val rootPm = pm
+
+            for (i in 1..5) {
+                rootPm.Child<TestPm>(TestPm.Args("child$i")).apply {
+                    for (k in 1..5) {
+                        Child<TestPm>(TestPm.Args("child$i$k"))
+                    }
+                }
+            }
+
+            onSave()
+            val savedState = jsonStateSever.save()
+
+            onDestroy()
+
+            val newJsonStateSever = JsonStateSaver(Serializer.json)
+            newJsonStateSever.restore(savedState)
+
+            runPmTest<TestPm>(
+                pmArgs = TestPm.Args("root"),
+                pmFactory = TestPmFactory(),
+                pmStateSaverFactory = newJsonStateSever
+            ) {
+                val restoredRootPm = pm
+
+                assertEquals(rootPm, restoredRootPm)
+            }
+        }
     }
 }
