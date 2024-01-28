@@ -24,11 +24,24 @@
 
 package me.dmdev.premo
 
-class PmLifecycleTestObserver : PmLifecycle.Observer {
+import kotlin.test.assertEquals
 
-    val states = mutableListOf<Pair<PmLifecycle.State, PmLifecycle.State>>()
+class TestCallback {
+    private var callCounter = 0
 
-    override fun onLifecycleChange(oldState: PmLifecycle.State, newState: PmLifecycle.State) {
-        states.add(oldState to newState)
+    fun call() {
+        callCounter++
+    }
+
+    fun assertNotCalled() {
+        assertEquals(0, callCounter)
+    }
+
+    fun assertCalledOnce() {
+        assertEquals(1, callCounter)
+    }
+
+    fun assertCalledTwice() {
+        assertEquals(2, callCounter)
     }
 }
