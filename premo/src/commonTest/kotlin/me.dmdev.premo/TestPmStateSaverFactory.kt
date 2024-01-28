@@ -22,41 +22,16 @@
  * SOFTWARE.
  */
 
-plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.ktlint)
-    id("me.dmdev.premo.plugin.android")
-    id("me.dmdev.premo.plugin.kmp")
-    id("me.dmdev.premo.plugin.publish")
-}
+package me.dmdev.premo
 
-kotlin {
+import me.dmdev.premo.saver.NoPmStateSaver
+import me.dmdev.premo.saver.PmStateSaver
+import me.dmdev.premo.saver.PmStateSaverFactory
 
-    sourceSets {
-
-        all {
-            languageSettings.optIn("me.dmdev.premo.annotation.DelicatePremoApi")
-            languageSettings.optIn("me.dmdev.premo.annotation.ExperimentalPremoApi")
-        }
-
-        commonMain {
-            dependencies {
-                api(project(":premo"))
-            }
-        }
-
-        commonTest {
-            dependencies {
-                implementation(project(":premo"))
-                implementation(libs.kotlin.test)
-                implementation(libs.kotlinx.coroutines.test)
-            }
-        }
+object TestPmStateSaverFactory : PmStateSaverFactory {
+    override fun createPmStateSaver(key: String): PmStateSaver {
+        return NoPmStateSaver
     }
-}
 
-android {
-    namespace = "me.dmdev.premo.navigation"
+    override fun deletePmStateSaver(key: String) {}
 }

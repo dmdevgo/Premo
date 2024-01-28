@@ -40,7 +40,7 @@ abstract class PresentationModel(
     val pmArgs: PmArgs
 ) {
 
-    private val pmFactory: PmFactory = pmArgs.pmFactory
+    internal val pmFactory: PmFactory = pmArgs.pmFactory
     internal val pmStateSaverFactory: PmStateSaverFactory = pmArgs.pmStateSaverFactory
 
     var parent: PresentationModel? = pmArgs.parent
@@ -68,7 +68,8 @@ abstract class PresentationModel(
     internal val allChildren = mutableListOf<PresentationModel>()
     val children: List<PresentationModel> get() = allChildren.toList()
 
-    private val attachedChildren = mutableListOf<PresentationModel>()
+    private val _attachedChildren = mutableListOf<PresentationModel>()
+    val attachedChildren: List<PresentationModel> get() = _attachedChildren.toList()
 
     init {
         subscribeToLifecycle()
@@ -80,7 +81,7 @@ abstract class PresentationModel(
             throw IllegalArgumentException("Destroyed presentation model cannot be attached to the parent.")
         }
 
-        if (attachedChildren.contains(pm)) {
+        if (_attachedChildren.contains(pm)) {
             throw IllegalArgumentException("${pm::class.qualifiedName} is already attached to the parent it parent.")
         }
 
@@ -89,7 +90,7 @@ abstract class PresentationModel(
         }
 
         pm.lifecycle.moveTo(lifecycle.state)
-        attachedChildren.add(pm)
+        _attachedChildren.add(pm)
     }
 
     @DelicatePremoApi
@@ -127,7 +128,7 @@ abstract class PresentationModel(
 
     private fun removeChild(pm: PresentationModel) {
         allChildren.remove(pm)
-        attachedChildren.remove(pm)
+        _attachedChildren.remove(pm)
     }
 
     private fun release() {
@@ -159,6 +160,9 @@ abstract class PresentationModel(
                 }
 
                 DESTROYED -> {
+                    children.forEach { pm ->
+                        pm.lifecycle.moveTo(DESTROYED)
+                    }
                     release()
                 }
             }
