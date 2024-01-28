@@ -22,36 +22,24 @@
  * SOFTWARE.
  */
 
-plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.ktlint)
-    id("me.dmdev.premo.plugin.android")
-    id("me.dmdev.premo.plugin.kmp")
-    id("me.dmdev.premo.plugin.publish")
-}
+package me.dmdev.premo
 
-kotlin {
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
 
-    sourceSets {
-
-        commonMain {
-            dependencies {
-                api(project(":premo"))
-                api(libs.kotlinx.serialization.json)
-            }
-        }
-
-        commonTest {
-            dependencies {
-                implementation(libs.kotlin.test)
-                implementation(libs.kotlinx.serialization.json)
-            }
+object Serializer {
+    val json = Json {
+        serializersModule = SerializersModule {
+            polymorphic(
+                PmArgs::class,
+                TestPm.Args::class,
+                TestPm.Args.serializer()
+            )
+            polymorphic(
+                TestPm.State::class,
+                TestPm.State::class,
+                TestPm.State.serializer()
+            )
         }
     }
-}
-
-android {
-    namespace = "me.dmdev.premo.saver"
 }

@@ -22,36 +22,36 @@
  * SOFTWARE.
  */
 
-plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.ktlint)
-    id("me.dmdev.premo.plugin.android")
-    id("me.dmdev.premo.plugin.kmp")
-    id("me.dmdev.premo.plugin.publish")
-}
+package me.dmdev.premo
 
-kotlin {
+import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
-    sourceSets {
+class TestPm(args: Args) : PresentationModel(args) {
 
-        commonMain {
-            dependencies {
-                api(project(":premo"))
-                api(libs.kotlinx.serialization.json)
-            }
-        }
+    private val state = SaveableFlow("state", State())
 
-        commonTest {
-            dependencies {
-                implementation(libs.kotlin.test)
-                implementation(libs.kotlinx.serialization.json)
-            }
-        }
+    @Serializable
+    data class Args(override val key: String) : PmArgs()
+
+    @Serializable
+    data class State(val number: Int = Random.nextInt())
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as TestPm
+
+        return pmArgs == other.pmArgs && state.value == other.state.value
+
     }
-}
 
-android {
-    namespace = "me.dmdev.premo.saver"
+    override fun hashCode(): Int {
+        return pmArgs.hashCode()
+    }
+
+    override fun toString(): String {
+        return "TestPm(state=${state.value}, pmArgs=$pmArgs)"
+    }
 }

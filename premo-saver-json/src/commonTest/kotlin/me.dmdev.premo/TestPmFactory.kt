@@ -22,36 +22,13 @@
  * SOFTWARE.
  */
 
-plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.ktlint)
-    id("me.dmdev.premo.plugin.android")
-    id("me.dmdev.premo.plugin.kmp")
-    id("me.dmdev.premo.plugin.publish")
-}
+package me.dmdev.premo
 
-kotlin {
-
-    sourceSets {
-
-        commonMain {
-            dependencies {
-                api(project(":premo"))
-                api(libs.kotlinx.serialization.json)
-            }
-        }
-
-        commonTest {
-            dependencies {
-                implementation(libs.kotlin.test)
-                implementation(libs.kotlinx.serialization.json)
-            }
+class TestPmFactory : PmFactory {
+    override fun createPresentationModel(args: PmArgs): PresentationModel {
+        return when (args) {
+            is TestPm.Args -> TestPm(args)
+            else -> throw IllegalArgumentException("Not handled instance creation for pm args $args")
         }
     }
-}
-
-android {
-    namespace = "me.dmdev.premo.saver"
 }
