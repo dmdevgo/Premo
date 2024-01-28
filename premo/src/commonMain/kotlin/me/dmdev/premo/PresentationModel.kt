@@ -66,21 +66,33 @@ abstract class PresentationModel(
     val stateHandler: PmStateHandler = PmStateHandler(this)
 
     internal val allChildren = mutableListOf<PresentationModel>()
+    val children: List<PresentationModel> get() = allChildren.toList()
+
     private val attachedChildren = mutableListOf<PresentationModel>()
 
     init {
         subscribeToLifecycle()
     }
 
+    @DelicatePremoApi
     fun attachChild(pm: PresentationModel) {
         if (pm.lifecycle.isDestroyed) {
             throw IllegalArgumentException("Destroyed presentation model cannot be attached to the parent.")
+        }
+
+        if (attachedChildren.contains(pm)) {
+            throw IllegalArgumentException("${pm::class.qualifiedName} is already attached to the parent it parent.")
+        }
+
+        if (pm.parent != this) {
+            throw IllegalArgumentException("The presentation model must be attached only to its parent.")
         }
 
         pm.lifecycle.moveTo(lifecycle.state)
         attachedChildren.add(pm)
     }
 
+    @DelicatePremoApi
     fun detachChild(pm: PresentationModel) {
         pm.lifecycle.moveTo(DESTROYED)
         removeChild(pm)
@@ -160,10 +172,12 @@ fun PresentationModel.childrenOf(
     return args.map { Child(it) }
 }
 
+@DelicatePremoApi
 fun PresentationModel.attachToParent() {
     parent?.attachChild(this)
 }
 
+@DelicatePremoApi
 fun PresentationModel.detachFromParent() {
     parent?.detachChild(this)
 }
