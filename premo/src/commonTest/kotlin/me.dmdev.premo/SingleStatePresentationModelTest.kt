@@ -24,12 +24,37 @@
 
 package me.dmdev.premo
 
-object TestPmFactory : PmFactory {
-    override fun createPresentationModel(args: PmArgs): PresentationModel {
-        return when (args) {
-            is TestPm.Args -> TestPm(args)
-            is TestSingleStatePm.Args -> TestSingleStatePm(args)
-            else -> throw IllegalArgumentException("Not handled instance creation for pm args $args")
+import kotlinx.coroutines.test.runTest
+import me.dmdev.premo.test.runPmTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class SingleStatePresentationModelTest {
+
+    @Test
+    fun testInitialState() = runTest {
+        runPmTest<TestSingleStatePm>(
+            pmArgs = TestSingleStatePm.Args,
+            pmFactory = TestPmFactory
+        ) {
+            assertEquals(0, pm.state)
+            assertEquals(0, pm.stateFlow.value)
+        }
+    }
+
+    @Test
+    fun testIncrementState() = runTest {
+        runPmTest<TestSingleStatePm>(
+            pmArgs = TestSingleStatePm.Args,
+            pmFactory = TestPmFactory
+        ) {
+            pm.incrementCounterState()
+            assertEquals(1, pm.state)
+            assertEquals(1, pm.stateFlow.value)
+
+            pm.incrementCounterState()
+            assertEquals(2, pm.state)
+            assertEquals(2, pm.stateFlow.value)
         }
     }
 }

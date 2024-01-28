@@ -24,12 +24,17 @@
 
 package me.dmdev.premo
 
-object TestPmFactory : PmFactory {
-    override fun createPresentationModel(args: PmArgs): PresentationModel {
-        return when (args) {
-            is TestPm.Args -> TestPm(args)
-            is TestSingleStatePm.Args -> TestSingleStatePm(args)
-            else -> throw IllegalArgumentException("Not handled instance creation for pm args $args")
-        }
+import kotlinx.coroutines.flow.MutableStateFlow
+
+class TestSingleStatePm(args: Args) : SingleStatePresentationModel<Int>(args) {
+
+    data object Args : PmArgs() {
+        override val key: String = "test_single_state_pm"
+    }
+
+    override val mutableStateFlow: MutableStateFlow<Int> = MutableStateFlow(0)
+
+    fun incrementCounterState() {
+        state += 1
     }
 }

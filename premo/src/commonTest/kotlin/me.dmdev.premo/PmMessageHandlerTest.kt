@@ -43,7 +43,7 @@ class PmMessageHandlerTest {
         val childPm = TestPm(
             TestPm.Args().apply {
                 parent = parentPm
-                pmFactory = TestPmFactory()
+                pmFactory = TestPmFactory
                 pmStateSaverFactory = NoPmStateSaverFactory
             }
         )

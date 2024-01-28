@@ -28,7 +28,7 @@ import me.dmdev.premo.saver.NoPmStateSaverFactory
 
 class TestPm(
     args: Args = Args().apply {
-        pmFactory = TestPmFactory()
+        pmFactory = TestPmFactory
         pmStateSaverFactory = NoPmStateSaverFactory
     }
 ) : PresentationModel(args) {
