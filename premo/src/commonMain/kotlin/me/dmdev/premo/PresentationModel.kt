@@ -25,7 +25,8 @@
 package me.dmdev.premo
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import me.dmdev.premo.PmLifecycle.State.CREATED
@@ -36,9 +37,7 @@ import me.dmdev.premo.saver.PmStateSaverFactory
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
-abstract class PresentationModel(
-    val pmArgs: PmArgs
-) {
+abstract class PresentationModel(val pmArgs: PmArgs) {
 
     internal val pmFactory: PmFactory = pmArgs.pmFactory
     internal val pmStateSaverFactory: PmStateSaverFactory = pmArgs.pmStateSaverFactory
@@ -55,7 +54,7 @@ abstract class PresentationModel(
     }
 
     val lifecycle: PmLifecycle = PmLifecycle()
-    val scope: CoroutineScope = MainScope()
+    val scope: CoroutineScope = createMainScope()
     var inForegroundScope: CoroutineScope? = null
         private set
 
@@ -126,6 +125,10 @@ abstract class PresentationModel(
         allChildren.forEach { it.saveState() }
     }
 
+    private fun createMainScope(): CoroutineScope {
+        return CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    }
+
     private fun removeChild(pm: PresentationModel) {
         allChildren.remove(pm)
         _attachedChildren.remove(pm)
@@ -151,7 +154,7 @@ abstract class PresentationModel(
 
             when (newState) {
                 IN_FOREGROUND -> {
-                    inForegroundScope = MainScope()
+                    inForegroundScope = createMainScope()
                 }
 
                 CREATED -> {
