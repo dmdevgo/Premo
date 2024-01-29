@@ -24,13 +24,17 @@
 
 package me.dmdev.premo.navigation
 
+import kotlinx.coroutines.test.runTest
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
-import me.dmdev.premo.childrenOf
 import me.dmdev.premo.navigation.TestPm.Companion.PM1_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM2_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM3_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.PM4_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.PM5_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.PM6_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.ROOT_PM_ARGS
 import me.dmdev.premo.navigation.stack.DEFAULT_STACK_NAVIGATOR_BACKSTACK_STATE_KEY
 import me.dmdev.premo.navigation.stack.StackNavigator
 import me.dmdev.premo.navigation.stack.handleBack
@@ -40,7 +44,10 @@ import me.dmdev.premo.navigation.stack.popUntil
 import me.dmdev.premo.navigation.stack.push
 import me.dmdev.premo.navigation.stack.replaceAll
 import me.dmdev.premo.navigation.stack.replaceTop
-import kotlin.test.BeforeTest
+import me.dmdev.premo.saver.NoPmStateSaverFactory
+import me.dmdev.premo.saver.PmStateSaverFactory
+import me.dmdev.premo.test.PmTestContext
+import me.dmdev.premo.test.runPmTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -49,39 +56,20 @@ import kotlin.test.assertTrue
 
 class StackNavigatorTest {
 
-    private lateinit var parentPm: TestPm
-    private lateinit var navigator: StackNavigator
-    private lateinit var pm1: TestPm
-    private lateinit var pm2: TestPm
-    private lateinit var pm3: TestPm
-
-    @BeforeTest
-    fun setUp() {
-        parentPm = TestPm.buildRootPm()
-        parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        pm1 = parentPm.Child(PM1_ARGS)
-        pm2 = parentPm.Child(PM2_ARGS)
-        pm3 = parentPm.Child(PM3_ARGS)
-        navigator = parentPm.StackNavigator()
-    }
-
     @Test
-    fun testEmptyNavigator() {
+    fun testEmptyNavigator() = runStackNavigationTest {
         assertNull(navigator.currentTop)
         assertTrue(navigator.backStack.isEmpty())
         assertTrue(navigator.backStackFlow.value.isEmpty())
     }
 
     @Test
-    fun testInitialPm() {
-        val navigator = parentPm.StackNavigator(
+    fun testInitialPm() = runStackNavigationTest {
+        val navigator = pm.StackNavigator(
             initBackStack = {
-                parentPm.childrenOf(
-                    PM1_ARGS,
-                    PM2_ARGS,
-                    PM3_ARGS
-                )
-            }
+                listOf(pm1, pm2, pm3)
+            },
+            key = "stack_navigator_2"
         )
         assertEquals(
             listOf(CREATED, CREATED, IN_FOREGROUND),
@@ -95,7 +83,7 @@ class StackNavigatorTest {
     }
 
     @Test
-    fun testPushOnePm() {
+    fun testPushOnePm() = runStackNavigationTest {
         navigator.push(pm1)
 
         assertEquals(pm1, navigator.currentTop)
@@ -104,18 +92,18 @@ class StackNavigatorTest {
     }
 
     @Test
-    fun testPushTwoPm() {
+    fun testPushTwoPm() = runStackNavigationTest {
         navigator.push(pm1)
         navigator.push(pm2)
 
         assertEquals(pm2, navigator.currentTop)
-        assertEquals(pm1.lifecycle.state, CREATED)
-        assertEquals(pm2.lifecycle.state, IN_FOREGROUND)
+        assertEquals(CREATED, pm1.lifecycle.state)
+        assertEquals(IN_FOREGROUND, pm2.lifecycle.state)
         assertEquals(listOf(pm1, pm2), navigator.backStack)
     }
 
     @Test
-    fun testPopEmpty() {
+    fun testPopEmpty() = runStackNavigationTest {
         navigator.pop()
 
         assertNull(navigator.currentTop)
@@ -124,187 +112,183 @@ class StackNavigatorTest {
     }
 
     @Test
-    fun testPushOnePmAndThenPop() {
+    fun testPushOnePmAndThenPop() = runStackNavigationTest {
         navigator.push(pm1)
         navigator.pop()
 
         assertNull(navigator.currentTop)
-        assertEquals(pm1.lifecycle.state, DESTROYED)
+        assertEquals(DESTROYED, pm1.lifecycle.state)
         assertTrue(navigator.backStack.isEmpty())
         assertTrue(navigator.backStackFlow.value.isEmpty())
     }
 
     @Test
-    fun testPopSecondPm() {
+    fun testPopSecondPm() = runStackNavigationTest {
         navigator.push(pm1)
         navigator.push(pm2)
         navigator.pop()
 
         assertEquals(pm1, navigator.currentTop)
-        assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
-        assertEquals(pm2.lifecycle.state, DESTROYED)
+        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(DESTROYED, pm2.lifecycle.state)
         assertEquals(listOf(pm1), navigator.backStack)
     }
 
     @Test
-    fun testPopToRoot() {
+    fun testPopToRoot() = runStackNavigationTest {
         navigator.changeBackStack(listOf(pm1, pm2, pm3))
-        val popped = navigator.popToRoot()
 
-        assertEquals(popped, true)
+        assertTrue { navigator.popToRoot() }
         assertEquals(pm1, navigator.currentTop)
-        assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
-        assertEquals(pm2.lifecycle.state, DESTROYED)
-        assertEquals(pm3.lifecycle.state, DESTROYED)
+        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(DESTROYED, pm2.lifecycle.state)
+        assertEquals(DESTROYED, pm3.lifecycle.state)
         assertEquals(listOf(pm1), navigator.backStack)
     }
 
     @Test
-    fun testPopToRootWhenBackstackIsEmpty() {
-        val popped = navigator.popToRoot()
-
-        assertEquals(popped, false)
+    fun testPopToRootWhenBackstackIsEmpty() = runStackNavigationTest {
+        assertFalse { navigator.popToRoot() }
         assertEquals(listOf(), navigator.backStack)
     }
 
     @Test
-    fun testReplaceTop() {
+    fun testReplaceTop() = runStackNavigationTest {
         navigator.changeBackStack(listOf(pm1, pm2))
         navigator.replaceTop(pm3)
 
-        assertEquals(pm1.lifecycle.state, CREATED)
-        assertEquals(pm2.lifecycle.state, DESTROYED)
-        assertEquals(pm3.lifecycle.state, IN_FOREGROUND)
+        assertEquals(CREATED, pm1.lifecycle.state)
+        assertEquals(DESTROYED, pm2.lifecycle.state)
+        assertEquals(IN_FOREGROUND, pm3.lifecycle.state)
         assertEquals(pm3, navigator.currentTop)
         assertEquals(listOf(pm1, pm3), navigator.backStack)
     }
 
     @Test
-    fun testReplaceTopWhenBackstackIsEmpty() {
+    fun testReplaceTopWhenBackstackIsEmpty() = runStackNavigationTest {
         navigator.replaceTop(pm3)
 
         assertEquals(pm3, navigator.currentTop)
-        assertEquals(pm3.lifecycle.state, IN_FOREGROUND)
+        assertEquals(IN_FOREGROUND, pm3.lifecycle.state)
         assertEquals(listOf(pm3), navigator.backStack)
     }
 
     @Test
-    fun testReplaceAll() {
+    fun testReplaceAll() = runStackNavigationTest {
         navigator.changeBackStack(listOf(pm1, pm2))
         navigator.replaceAll(pm3)
 
-        assertEquals(pm1.lifecycle.state, DESTROYED)
-        assertEquals(pm2.lifecycle.state, DESTROYED)
-        assertEquals(pm3.lifecycle.state, IN_FOREGROUND)
+        assertEquals(DESTROYED, pm1.lifecycle.state)
+        assertEquals(DESTROYED, pm2.lifecycle.state)
+        assertEquals(IN_FOREGROUND, pm3.lifecycle.state)
         assertEquals(pm3, navigator.currentTop)
         assertEquals(listOf(pm3), navigator.backStack)
     }
 
     @Test
-    fun testPopUntil() {
-        println(listOf(pm1, pm2, pm3))
+    fun testPopUntil() = runStackNavigationTest {
         navigator.changeBackStack(listOf(pm1, pm2, pm3))
         navigator.popUntil { it === pm1 }
 
         assertEquals(pm1, navigator.currentTop)
-        assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
-        assertEquals(pm2.lifecycle.state, DESTROYED)
-        assertEquals(pm3.lifecycle.state, DESTROYED)
+        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(DESTROYED, pm2.lifecycle.state)
+        assertEquals(DESTROYED, pm3.lifecycle.state)
         assertEquals(listOf(pm1), navigator.backStack)
     }
 
     @Test
-    fun testSetBackstack() {
+    fun testSetBackstack() = runStackNavigationTest {
         val backstack = listOf(pm1, pm2, pm3)
         navigator.changeBackStack(backstack)
 
-        assertEquals(pm1.lifecycle.state, CREATED)
-        assertEquals(pm2.lifecycle.state, CREATED)
-        assertEquals(pm3.lifecycle.state, IN_FOREGROUND)
+        assertEquals(CREATED, pm1.lifecycle.state)
+        assertEquals(CREATED, pm2.lifecycle.state)
+        assertEquals(IN_FOREGROUND, pm3.lifecycle.state)
         assertEquals(backstack, navigator.backStack)
     }
 
     @Test
-    fun testHandleBackWhenTwoPmInBackstack() {
+    fun testHandleBackWhenTwoPmInBackstack() = runStackNavigationTest {
         navigator.push(pm1)
         navigator.push(pm2)
 
-        assertTrue(navigator.handleBack())
+        assertTrue { navigator.handleBack() }
         assertEquals(pm1, navigator.currentTop)
-        assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
-        assertEquals(pm2.lifecycle.state, DESTROYED)
+        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(DESTROYED, pm2.lifecycle.state)
     }
 
     @Test
-    fun testHandleBackWhenOnePmInBackstack() {
+    fun testHandleBackWhenOnePmInBackstack() = runStackNavigationTest {
         navigator.push(pm1)
 
-        assertFalse(navigator.handleBack())
+        assertFalse { navigator.handleBack() }
         assertEquals(pm1, navigator.currentTop)
-        assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
+        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
     }
 
     @Test
-    fun testHandleBackWhenBackstackIsEmpty() {
-        assertFalse(navigator.handleBack())
+    fun testHandleBackWhenBackstackIsEmpty() = runStackNavigationTest {
+        assertFalse { navigator.handleBack() }
     }
 
     @Test
-    fun testMoveTopPmToCreatedWhenLifecycleMoveToCreated() {
+    fun testMoveTopPmToCreatedWhenLifecycleMoveToCreated() = runStackNavigationTest {
         navigator.push(pm1)
         navigator.push(pm2)
-        parentPm.lifecycle.moveTo(CREATED)
+        onBackground()
 
-        assertEquals(pm1.lifecycle.state, CREATED)
-        assertEquals(pm2.lifecycle.state, CREATED)
+        assertEquals(CREATED, pm1.lifecycle.state)
+        assertEquals(CREATED, pm2.lifecycle.state)
     }
 
     @Test
-    fun testMoveTopPmToInForegroundWhenLifecycleMoveToInForeground() {
+    fun testMoveTopPmToInForegroundWhenLifecycleMoveToInForeground() = runStackNavigationTest {
         navigator.push(pm1)
         navigator.push(pm2)
-        parentPm.lifecycle.moveTo(CREATED)
-        parentPm.lifecycle.moveTo(IN_FOREGROUND)
 
-        assertEquals(pm1.lifecycle.state, CREATED)
-        assertEquals(pm2.lifecycle.state, IN_FOREGROUND)
+        assertEquals(CREATED, pm1.lifecycle.state)
+        assertEquals(IN_FOREGROUND, pm2.lifecycle.state)
     }
 
     @Test
-    fun testMoveAllPmToDestroyedWhenLifecycleMoveToDestroyed() {
+    fun testMoveAllPmToDestroyedWhenLifecycleMoveToDestroyed() = runStackNavigationTest {
         navigator.push(pm1)
         navigator.push(pm2)
-        parentPm.lifecycle.moveTo(DESTROYED)
+        onBackground()
+        onDestroy()
 
-        assertEquals(pm1.lifecycle.state, DESTROYED)
-        assertEquals(pm2.lifecycle.state, DESTROYED)
+        assertEquals(DESTROYED, pm1.lifecycle.state)
+        assertEquals(DESTROYED, pm2.lifecycle.state)
     }
 
     @Test
-    fun testRestoreState() {
-        val stateSaverFactory = TestStateSaverFactory(
+    fun testBackStackChangesFlow() {
+        // TODO
+    }
+
+    @Test
+    fun testRestoreState() = runStackNavigationTest(
+        pmStateSaverFactory = TestStateSaverFactory(
             initialState = mutableMapOf(
-                TestPm.ROOT_PM_KEY to mutableMapOf(
+                ROOT_PM_ARGS.key to mutableMapOf(
                     DEFAULT_STACK_NAVIGATOR_BACKSTACK_STATE_KEY to listOf(
-                        PM1_ARGS,
-                        PM2_ARGS,
-                        PM3_ARGS
+                        PM4_ARGS,
+                        PM5_ARGS,
+                        PM6_ARGS
                     )
                 )
             )
         )
-
-        val parentPm = TestPm.buildRootPm(stateSaverFactory)
-        parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        val navigator = parentPm.StackNavigator()
-
+    ) {
         assertEquals(
             listOf(CREATED, CREATED, IN_FOREGROUND),
             navigator.backStack.map { it.lifecycle.state }
         )
 
         assertEquals(
-            listOf(PM1_ARGS, PM2_ARGS, PM3_ARGS),
+            listOf(PM4_ARGS, PM5_ARGS, PM6_ARGS),
             navigator.backStack.map { it.pmArgs }
         )
     }
@@ -313,34 +297,50 @@ class StackNavigatorTest {
     fun testSaveState() {
         val stateSaverFactory = TestStateSaverFactory()
 
-        val parentPm = TestPm.buildRootPm(stateSaverFactory)
-        parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        val navigator = parentPm.StackNavigator(
-            initBackStack = {
-                parentPm.childrenOf(
-                    PM1_ARGS,
-                    PM2_ARGS,
-                    PM3_ARGS
-                )
-            }
-        )
+        runStackNavigationTest(
+            pmStateSaverFactory = stateSaverFactory
+        ) {
+            navigator.changeBackStack(listOf(pm1, pm2, pm3))
+            onSave()
 
-        parentPm.stateHandler.saveState()
-
-        assertEquals(
-            mutableMapOf(
-                TestPm.ROOT_PM_KEY to mutableMapOf<String, Any>(
-                    DEFAULT_STACK_NAVIGATOR_BACKSTACK_STATE_KEY to listOf(
-                        PM1_ARGS,
-                        PM2_ARGS,
-                        PM3_ARGS
-                    )
+            assertEquals(
+                mutableMapOf(
+                    ROOT_PM_ARGS.key to mutableMapOf<String, Any>(
+                        DEFAULT_STACK_NAVIGATOR_BACKSTACK_STATE_KEY to listOf(
+                            PM1_ARGS,
+                            PM2_ARGS,
+                            PM3_ARGS
+                        )
+                    ),
+                    "${ROOT_PM_ARGS.key}/${PM1_ARGS.key}" to mutableMapOf(),
+                    "${ROOT_PM_ARGS.key}/${PM2_ARGS.key}" to mutableMapOf(),
+                    "${ROOT_PM_ARGS.key}/${PM3_ARGS.key}" to mutableMapOf()
                 ),
-                "${TestPm.ROOT_PM_KEY}/${PM1_ARGS.key}" to mutableMapOf(),
-                "${TestPm.ROOT_PM_KEY}/${PM2_ARGS.key}" to mutableMapOf(),
-                "${TestPm.ROOT_PM_KEY}/${PM3_ARGS.key}" to mutableMapOf()
-            ),
-            stateSaverFactory.pmStates
-        )
+                stateSaverFactory.pmStates
+            )
+        }
+    }
+
+    private class StackNavigationTestContext(
+        private val pmTestContext: PmTestContext<TestPm>
+    ) : PmTestContext<TestPm> by pmTestContext {
+        val pm1 = pm.Child<TestPm>(PM1_ARGS)
+        val pm2 = pm.Child<TestPm>(PM2_ARGS)
+        val pm3 = pm.Child<TestPm>(PM3_ARGS)
+        val navigator = pm.StackNavigator()
+    }
+
+    private fun runStackNavigationTest(
+        pmStateSaverFactory: PmStateSaverFactory = NoPmStateSaverFactory,
+        testBody: StackNavigationTestContext.() -> Unit
+    ) = runTest {
+        runPmTest(
+            pmArgs = ROOT_PM_ARGS,
+            pmFactory = TestPmFactory,
+            pmStateSaverFactory = pmStateSaverFactory
+        ) {
+            val testContext = StackNavigationTestContext(this)
+            testBody.invoke(testContext)
+        }
     }
 }

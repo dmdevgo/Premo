@@ -30,9 +30,7 @@ import me.dmdev.premo.PresentationModel
 
 class TestPm(args: Args) : PresentationModel(args) {
 
-    data class Args(
-        override val key: String = "test_pm"
-    ) : PmArgs()
+    data class Args(override val key: String) : PmArgs()
 
     sealed class ResultMessage : PmMessage() {
         data object Ok : ResultMessage()
@@ -44,8 +42,7 @@ class TestPm(args: Args) : PresentationModel(args) {
     }
 
     companion object {
-        const val ROOT_PM_KEY = "root_pm"
-
+        val ROOT_PM_ARGS = Args("root")
         val PM1_ARGS = Args("pm1")
         val PM2_ARGS = Args("pm2")
         val PM3_ARGS = Args("pm3")
@@ -53,13 +50,9 @@ class TestPm(args: Args) : PresentationModel(args) {
         val PM5_ARGS = Args("pm5")
         val PM6_ARGS = Args("pm6")
 
-        fun buildRootPm(pmStateSaverFactory: TestStateSaverFactory = TestStateSaverFactory()): TestPm {
-            return TestPm(
-                Args(ROOT_PM_KEY).apply {
-                    this.pmFactory = TestPmFactory()
-                    this.pmStateSaverFactory = pmStateSaverFactory
-                }
-            )
-        }
+        val MASTER_PM_ARGS get() = Args("master")
+        val DETAIL1_PM_ARGS get() = Args("detail1")
+        val DETAIL2_PM_ARGS get() = Args("detail2")
+        val DETAIL_SAVED_PM_ARGS get() = Args("detail_saved")
     }
 }

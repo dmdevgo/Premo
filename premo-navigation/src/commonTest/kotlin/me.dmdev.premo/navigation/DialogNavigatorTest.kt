@@ -24,62 +24,48 @@
 
 package me.dmdev.premo.navigation
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.test.runTest
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
+import me.dmdev.premo.navigation.TestPm.Companion.PM1_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.PM2_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.PM3_ARGS
+import me.dmdev.premo.navigation.TestPm.Companion.ROOT_PM_ARGS
 import me.dmdev.premo.navigation.TestPm.ResultMessage
 import me.dmdev.premo.navigation.dialog.DialogNavigator
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
+import me.dmdev.premo.navigation.dialog.handleBack
+import me.dmdev.premo.navigation.dialog.isShowing
+import me.dmdev.premo.saver.NoPmStateSaverFactory
+import me.dmdev.premo.saver.PmStateSaverFactory
+import me.dmdev.premo.test.PmTestContext
+import me.dmdev.premo.test.runPmTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class DialogNavigatorTest {
 
-    companion object {
-        private const val DIALOG_KEY = "dialog"
-    }
-
-    private lateinit var parentPm: TestPm
-    private lateinit var dialogPm: TestPm
-    private lateinit var dialogPm2: TestPm
-    private lateinit var navigator: DialogNavigator<TestPm, ResultMessage>
-
-    @BeforeTest
-    fun setUp() {
-        Dispatchers.setMain(Dispatchers.Unconfined)
-        parentPm = TestPm.buildRootPm()
-        parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        dialogPm = parentPm.Child(TestPm.PM1_ARGS)
-        dialogPm2 = parentPm.Child(TestPm.PM2_ARGS)
-        navigator = parentPm.DialogNavigator(DIALOG_KEY)
-    }
-
-    @AfterTest
-    fun tearDown() {
-        Dispatchers.resetMain()
+    @Test
+    fun testInitialState() = runDialogNavigationTest {
+        assertNull(navigator.dialog)
+        assertNull(navigator.dialogFlow.value)
+        assertFalse { navigator.isShowing }
     }
 
     @Test
-    fun testInitialState() {
-        assertEquals(null, navigator.dialog)
-        assertEquals(null, navigator.dialogFlow.value)
-    }
-
-    @Test
-    fun testShowDialog() {
+    fun testShowDialog() = runDialogNavigationTest {
         navigator.show(dialogPm)
+
         assertEquals(dialogPm, navigator.dialog)
         assertEquals(dialogPm, navigator.dialogFlow.value)
         assertEquals(IN_FOREGROUND, dialogPm.lifecycle.state)
+        assertTrue { navigator.isShowing }
     }
 
     @Test
-    fun testReplaceDialog() {
+    fun testReplaceDialog() = runDialogNavigationTest {
         navigator.show(dialogPm)
         navigator.show(dialogPm2)
 
@@ -87,23 +73,42 @@ class DialogNavigatorTest {
         assertEquals(dialogPm2, navigator.dialog)
         assertEquals(dialogPm2, navigator.dialogFlow.value)
         assertEquals(IN_FOREGROUND, dialogPm2.lifecycle.state)
+        assertTrue { navigator.isShowing }
     }
 
     @Test
-    fun testDismissDialog() {
+    fun testDismissDialog() = runDialogNavigationTest {
         navigator.show(dialogPm)
         navigator.dismiss()
 
         assertEquals(DESTROYED, dialogPm.lifecycle.state)
-        assertEquals(null, navigator.dialog)
-        assertEquals(null, navigator.dialogFlow.value)
+        assertNull(navigator.dialog)
+        assertNull(navigator.dialogFlow.value)
+        assertFalse { navigator.isShowing }
     }
 
     @Test
-    fun testResultDialog() {
+    fun testHandleBack() = runDialogNavigationTest {
+        navigator.show(dialogPm)
+
+        assertTrue { navigator.handleBack() }
+
+        assertEquals(DESTROYED, dialogPm.lifecycle.state)
+        assertNull(navigator.dialog)
+        assertNull(navigator.dialogFlow.value)
+        assertFalse { navigator.isShowing }
+    }
+
+    @Test
+    fun testHandleBackForEmptyNavigator() = runDialogNavigationTest {
+        assertFalse { navigator.handleBack() }
+    }
+
+    @Test
+    fun testResultDialog() = runDialogNavigationTest {
         var result: ResultMessage? = null
         val navigator: DialogNavigator<TestPm, ResultMessage> =
-            parentPm.DialogNavigator(DIALOG_KEY) { resultMessage ->
+            pm.DialogNavigator(DIALOG_NAVIGATOR_KEY_2) { resultMessage ->
                 result = resultMessage
             }
 
@@ -111,51 +116,76 @@ class DialogNavigatorTest {
         dialogPm.sendResultMessage(ResultMessage.Ok)
 
         assertEquals(ResultMessage.Ok, result)
-        assertEquals(null, navigator.dialog)
-        assertEquals(null, navigator.dialogFlow.value)
+        assertNull(navigator.dialog)
+        assertNull(navigator.dialogFlow.value)
         assertEquals(DESTROYED, dialogPm.lifecycle.state)
+        assertFalse { navigator.isShowing }
     }
 
     @Test
-    fun testRestoreState() {
-        val stateSaverFactory = TestStateSaverFactory(
+    fun testRestoreState() = runDialogNavigationTest(
+        pmStateSaverFactory = TestStateSaverFactory(
             initialState = mutableMapOf(
-                TestPm.ROOT_PM_KEY to mutableMapOf(
-                    DIALOG_KEY to TestPm.PM1_ARGS
+                ROOT_PM_ARGS.key to mutableMapOf(
+                    DIALOG_NAVIGATOR_KEY to PM3_ARGS
                 ),
-                "${TestPm.ROOT_PM_KEY}/${TestPm.PM1_ARGS.key}" to mutableMapOf()
+                "${ROOT_PM_ARGS.key}/${PM3_ARGS.key}" to mutableMapOf()
             )
         )
-
-        val parentPm = TestPm.buildRootPm(stateSaverFactory)
-        parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        val navigator = parentPm.DialogNavigator<TestPm, ResultMessage>(DIALOG_KEY)
-
-        assertEquals(TestPm.PM1_ARGS, navigator.dialog?.pmArgs)
-        assertEquals(TestPm.PM1_ARGS, navigator.dialogFlow.value?.pmArgs)
+    ) {
+        assertEquals(PM3_ARGS, navigator.dialog?.pmArgs)
+        assertEquals(PM3_ARGS, navigator.dialogFlow.value?.pmArgs)
         assertEquals(IN_FOREGROUND, navigator.dialog?.lifecycle?.state)
+        assertTrue { navigator.isShowing }
     }
 
     @Test
     fun testSaveState() {
         val stateSaverFactory = TestStateSaverFactory()
 
-        val parentPm = TestPm.buildRootPm(stateSaverFactory)
-        val dialogPm = parentPm.Child<TestPm>(TestPm.PM1_ARGS)
-        val navigator = parentPm.DialogNavigator<TestPm, ResultMessage>(DIALOG_KEY)
+        runDialogNavigationTest(
+            pmStateSaverFactory = stateSaverFactory
+        ) {
+            navigator.show(dialogPm)
+            onSave()
 
-        parentPm.lifecycle.moveTo(IN_FOREGROUND)
-        navigator.show(dialogPm)
-        parentPm.stateHandler.saveState()
-
-        assertEquals(
-            mutableMapOf(
-                TestPm.ROOT_PM_KEY to mutableMapOf<String, Any>(
-                    DIALOG_KEY to TestPm.PM1_ARGS
+            assertEquals(
+                mutableMapOf(
+                    ROOT_PM_ARGS.key to mutableMapOf<String, Any>(
+                        DIALOG_NAVIGATOR_KEY to PM1_ARGS
+                    ),
+                    "${ROOT_PM_ARGS.key}/${PM1_ARGS.key}" to mutableMapOf(),
+                    "${ROOT_PM_ARGS.key}/${PM2_ARGS.key}" to mutableMapOf()
                 ),
-                "${TestPm.ROOT_PM_KEY}/${TestPm.PM1_ARGS.key}" to mutableMapOf()
-            ),
-            stateSaverFactory.pmStates
-        )
+                stateSaverFactory.pmStates
+            )
+        }
+    }
+
+    companion object {
+        private const val DIALOG_NAVIGATOR_KEY = "dialog"
+        private const val DIALOG_NAVIGATOR_KEY_2 = "dialog_2"
+    }
+
+    private class DialogNavigationTestContext(
+        private val pmTestContext: PmTestContext<TestPm>
+    ) : PmTestContext<TestPm> by pmTestContext {
+        val dialogPm = pm.Child<TestPm>(PM1_ARGS)
+        val dialogPm2 = pm.Child<TestPm>(PM2_ARGS)
+        val navigator = pm.DialogNavigator<TestPm, ResultMessage>(DIALOG_NAVIGATOR_KEY)
+    }
+
+    private fun runDialogNavigationTest(
+        pmStateSaverFactory: PmStateSaverFactory = NoPmStateSaverFactory,
+        testBody: DialogNavigationTestContext.() -> Unit
+    ) = runTest {
+        runPmTest(
+            pmArgs = ROOT_PM_ARGS,
+            pmFactory = TestPmFactory,
+            pmStateSaverFactory = pmStateSaverFactory
+        ) {
+            val testContext = DialogNavigationTestContext(this)
+            testBody.invoke(testContext)
+        }
     }
 }

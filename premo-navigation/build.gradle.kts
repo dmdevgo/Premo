@@ -49,7 +49,7 @@ kotlin {
 
         commonTest {
             dependencies {
-                implementation(project(":premo"))
+                implementation(project(":premo-test"))
                 implementation(libs.kotlin.test)
                 implementation(libs.kotlinx.coroutines.test)
             }

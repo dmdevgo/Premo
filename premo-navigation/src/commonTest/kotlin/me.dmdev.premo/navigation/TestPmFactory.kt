@@ -28,7 +28,7 @@ import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PmFactory
 import me.dmdev.premo.PresentationModel
 
-class TestPmFactory : PmFactory {
+object TestPmFactory : PmFactory {
     override fun createPresentationModel(args: PmArgs): PresentationModel {
         return when (args) {
             is TestPm.Args -> TestPm(args)
