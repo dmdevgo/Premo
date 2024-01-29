@@ -86,6 +86,6 @@ inline fun <reified PM : PresentationModel> PresentationModel?.onPm(block: PM.()
     (this as? PM)
         ?.block()
         ?: throw IllegalStateException(
-            "Expected type of PM is ${PM::class.qualifiedName} but actual type is ${this?.let { it::class.qualifiedName }}"
+            "Expected type of PM is ${PM::class.simpleName} but actual type is ${this?.let { it::class.simpleName }}"
         )
 }
