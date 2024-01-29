@@ -24,68 +24,279 @@
 
 package me.dmdev.premo
 
-import me.dmdev.premo.saver.NoPmStateSaverFactory
-import kotlin.test.BeforeTest
+import kotlinx.coroutines.test.runTest
+import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import me.dmdev.premo.test.PmTestContext
+import me.dmdev.premo.test.runPmTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class PmMessageHandlerTest {
 
-    private lateinit var parentHandler: PmMessageHandler
-    private lateinit var handler: PmMessageHandler
-
-    private object TestPmMessage : PmMessage()
-
-    @BeforeTest
-    fun setUp() {
-        val parentPm = TestPm()
-        val childPm = TestPm(
-            TestPm.Args().apply {
-                parent = parentPm
-                pmFactory = TestPmFactory
-                pmStateSaverFactory = NoPmStateSaverFactory
-            }
-        )
-        parentHandler = parentPm.messageHandler
-        handler = PmMessageHandler(childPm)
+    @Test
+    fun testEmptyHandler() = runPmMessageHandlerTest {
+        assertFalse { pm.messageHandler.handle(TestPmMessage()) }
     }
 
     @Test
-    fun testEmptyHandler() {
-        assertFalse(handler.handle(TestPmMessage))
+    fun testAddHandler() = runPmMessageHandlerTest {
+        pm.messageHandler.addHandler(handlerTrue::handle)
+
+        assertTrue { pm.messageHandler.handle(TestPmMessage()) }
+        handlerTrue.assertCalledOnce()
     }
 
     @Test
-    fun testHandleMessage() {
-        handler.addHandler { message -> message is TestPmMessage }
-        assertTrue(handler.handle(TestPmMessage))
+    fun testRemoveHandler() = runPmMessageHandlerTest {
+        pm.messageHandler.addHandler(handlerTrue::handle)
+        pm.messageHandler.removeHandler(handlerTrue::handle)
+
+        assertFalse { pm.messageHandler.handle(TestPmMessage()) }
+        handlerTrue.assertNotCalled()
     }
 
     @Test
-    fun testSendMessage() {
-        var handled = false
-        parentHandler.addHandler { message ->
-            if (message is TestPmMessage) handled = true
-            handled
+    fun testOnMessage() = runPmMessageHandlerTest {
+        pm.messageHandler.onMessage<TestPmMessage> { message ->
+            handlerTrue.handle(message)
         }
-        handler.send(TestPmMessage)
-        assertTrue(handled)
+
+        assertTrue { pm.messageHandler.handle(TestPmMessage()) }
+        handlerTrue.assertCalledOnce()
     }
 
     @Test
-    fun testOnMessage() {
-        var handled = false
-        handler.onMessage<TestPmMessage> { handled = true }
-        handler.handle(TestPmMessage)
-        assertTrue(handled)
+    fun testHandleTrue() = runPmMessageHandlerTest {
+        pm.messageHandler.handle<TestPmMessage> { message ->
+            handlerTrue.handle(message)
+        }
+
+        assertTrue { pm.messageHandler.handle(TestPmMessage()) }
+        handlerTrue.assertCalledOnce()
     }
 
     @Test
-    fun testRemoveHandler() {
-        val messageHandler: (message: PmMessage) -> Boolean = { true }
-        handler.addHandler(messageHandler)
-        handler.removeHandler(messageHandler)
-        assertFalse(handler.handle(TestPmMessage))
+    fun testHandleFalse() = runPmMessageHandlerTest {
+        pm.messageHandler.handle<TestPmMessage> { message ->
+            handlerFalse.handle(message)
+        }
+
+        assertFalse { pm.messageHandler.handle(TestPmMessage()) }
+        handlerFalse.assertCalledOnce()
+    }
+
+    @Test
+    fun testFindRoot() = runPmMessageHandlerTest {
+        assertEquals(root, root.messageHandler.findRootPm())
+        assertEquals(root, child11.messageHandler.findRootPm())
+        assertEquals(root, child12.messageHandler.findRootPm())
+        assertEquals(root, parent1.messageHandler.findRootPm())
+        assertEquals(root, child21.messageHandler.findRootPm())
+        assertEquals(root, child22.messageHandler.findRootPm())
+        assertEquals(root, parent2.messageHandler.findRootPm())
+    }
+
+    @Test
+    fun testSendMessageHandleBySenderPm() = runPmMessageHandlerTest {
+        child11.messageHandler.addHandler(handlerTrue::handle)
+        assertTrue { child11.messageHandler.send(TestPmMessage()) }
+
+        child11Handler.assertCalledOnce()
+        parent1Handler.assertNotCalled()
+        rootHandler.assertNotCalled()
+
+        child12Handler.assertNotCalled()
+        parent2Handler.assertNotCalled()
+        child21Handler.assertNotCalled()
+        child22Handler.assertNotCalled()
+    }
+
+    @Test
+    fun testSendMessageHandleByParentPm() = runPmMessageHandlerTest {
+        parent1.messageHandler.addHandler(handlerTrue::handle)
+        assertTrue { child11.messageHandler.send(TestPmMessage()) }
+
+        child11Handler.assertCalledOnce()
+        parent1Handler.assertCalledOnce()
+        rootHandler.assertNotCalled()
+
+        child12Handler.assertNotCalled()
+        parent2Handler.assertNotCalled()
+        child21Handler.assertNotCalled()
+        child22Handler.assertNotCalled()
+    }
+
+    @Test
+    fun testSendMessageHandleByRootPm() = runPmMessageHandlerTest {
+        root.messageHandler.addHandler(handlerTrue::handle)
+        assertTrue { child11.messageHandler.send(TestPmMessage()) }
+
+        child11Handler.assertCalledOnce()
+        parent1Handler.assertCalledOnce()
+        rootHandler.assertCalledOnce()
+
+        child12Handler.assertNotCalled()
+        parent2Handler.assertNotCalled()
+        child21Handler.assertNotCalled()
+        child22Handler.assertNotCalled()
+    }
+
+    @Test
+    fun testSendMessageNotHandledByAnyPm() = runPmMessageHandlerTest {
+        assertFalse { child11.messageHandler.send(TestPmMessage()) }
+
+        child11Handler.assertCalledOnce()
+        parent1Handler.assertCalledOnce()
+        rootHandler.assertCalledOnce()
+
+        child12Handler.assertNotCalled()
+        parent2Handler.assertNotCalled()
+        child21Handler.assertNotCalled()
+        child22Handler.assertNotCalled()
+    }
+
+    @Test
+    fun testSendMessageFromDestroyedPm() = runPmMessageHandlerTest {
+        child11.lifecycle.moveTo(DESTROYED)
+        assertFalse { child11.messageHandler.send(TestPmMessage()) }
+
+        child11Handler.assertNotCalled()
+        parent1Handler.assertNotCalled()
+        rootHandler.assertNotCalled()
+        child12Handler.assertNotCalled()
+        parent2Handler.assertNotCalled()
+        child21Handler.assertNotCalled()
+        child22Handler.assertNotCalled()
+    }
+
+    @Test
+    fun testSendMessageSenderTag() = runPmMessageHandlerTest {
+        val message = TestPmMessage()
+        assertEquals("", message.sender)
+        assertFalse { child11.messageHandler.send(message) }
+        assertEquals(child11.tag, message.sender)
+    }
+
+    @Test
+    fun testSendTargetMessage() = runPmMessageHandlerTest {
+        child22.messageHandler.addHandler(handlerTrue::handle)
+
+        assertTrue { child11.messageHandler.sendToTarget(TestPmMessage(), child22.tag) }
+
+        child11Handler.assertNotCalled()
+        parent1Handler.assertNotCalled()
+        rootHandler.assertNotCalled()
+        child12Handler.assertNotCalled()
+        parent2Handler.assertNotCalled()
+        child21Handler.assertNotCalled()
+        child22Handler.assertCalledOnce() // Target
+    }
+
+    @Test
+    fun testSendTargetMessageToUnknownPm() = runPmMessageHandlerTest {
+        assertFalse { child11.messageHandler.sendToTarget(TestPmMessage(), "foo") }
+
+        child11Handler.assertNotCalled()
+        parent1Handler.assertNotCalled()
+        rootHandler.assertNotCalled()
+        child12Handler.assertNotCalled()
+        parent2Handler.assertNotCalled()
+        child21Handler.assertNotCalled()
+        child22Handler.assertNotCalled()
+    }
+
+    @Test
+    fun testSendTargetMessageSenderTag() = runPmMessageHandlerTest {
+        val message = TestPmMessage()
+        child22.messageHandler.addHandler(handlerTrue::handle)
+        assertEquals("", message.sender)
+        assertTrue { child11.messageHandler.sendToTarget(message, child22.tag) }
+        assertEquals(child11.tag, message.sender)
+    }
+
+    @Test
+    fun testSendTargetMessageFromDestroyedPm() = runPmMessageHandlerTest {
+        child11.lifecycle.moveTo(DESTROYED)
+
+        assertFalse { child11.messageHandler.sendToTarget(TestPmMessage(), child22.tag) }
+
+        child11Handler.assertNotCalled()
+        parent1Handler.assertNotCalled()
+        rootHandler.assertNotCalled()
+        child12Handler.assertNotCalled()
+        parent2Handler.assertNotCalled()
+        child21Handler.assertNotCalled()
+        child22Handler.assertNotCalled()
+    }
+
+    @Test
+    fun testSendToChildren() {
+        // TODO
+    }
+
+    private class TestPmMessage : PmMessage()
+
+    private class TestMessageHandler(
+        private val handleResult: Boolean
+    ) : TestCallback() {
+        fun handle(message: PmMessage): Boolean {
+            call()
+            return handleResult
+        }
+    }
+
+    private class PmMessageHandlerTestContext(
+        private val pmTestContext: PmTestContext<TestPm>
+    ) : PmTestContext<TestPm> by pmTestContext {
+
+        val handlerTrue = TestMessageHandler(true)
+        val handlerFalse = TestMessageHandler(false)
+
+        val root = pm
+        val rootHandler = TestMessageHandler(false)
+
+        val parent1 = root.Child<TestPm>(TestPm.Args("parent1"))
+        val parent1Handler = TestMessageHandler(false)
+
+        val child11 = parent1.Child<TestPm>(TestPm.Args("child11"))
+        val child11Handler = TestMessageHandler(false)
+
+        val child12 = parent1.Child<TestPm>(TestPm.Args("child12"))
+        val child12Handler = TestMessageHandler(false)
+
+        val parent2 = root.Child<TestPm>(TestPm.Args("parent2"))
+        val parent2Handler = TestMessageHandler(false)
+
+        val child21 = parent2.Child<TestPm>(TestPm.Args("child21"))
+        val child21Handler = TestMessageHandler(false)
+
+        val child22 = parent2.Child<TestPm>(TestPm.Args("child22"))
+        val child22Handler = TestMessageHandler(false)
+
+        init {
+            root.messageHandler.addHandler(rootHandler::handle)
+            parent1.messageHandler.addHandler(parent1Handler::handle)
+            child11.messageHandler.addHandler(child11Handler::handle)
+            child12.messageHandler.addHandler(child12Handler::handle)
+            parent2.messageHandler.addHandler(parent2Handler::handle)
+            child21.messageHandler.addHandler(child21Handler::handle)
+            child22.messageHandler.addHandler(child22Handler::handle)
+        }
+    }
+
+    private fun runPmMessageHandlerTest(
+        testBody: PmMessageHandlerTestContext.() -> Unit
+    ) = runTest {
+        runPmTest(
+            pmArgs = TestPm.Args("root"),
+            pmFactory = TestPmFactory,
+            pmStateSaverFactory = TestPmStateSaverFactory,
+            initialPmLifecycleState = PmLifecycle.State.CREATED
+        ) {
+            val testContext = PmMessageHandlerTestContext(this)
+            testBody.invoke(testContext)
+        }
     }
 }

@@ -36,12 +36,12 @@ import kotlin.test.assertTrue
 class PmLifecycleTest {
 
     private lateinit var lifecycle: PmLifecycle
-    private lateinit var observer: PmLifecycleTestObserver
+    private lateinit var observer: TestPmLifecycleObserver
 
     @BeforeTest
     fun setUp() {
         lifecycle = PmLifecycle()
-        observer = PmLifecycleTestObserver()
+        observer = TestPmLifecycleObserver()
         lifecycle.addObserver(observer)
     }
 
@@ -140,8 +140,8 @@ class PmLifecycleTest {
 
     @Test
     fun testMultipleSubscribers() {
-        val observer1 = PmLifecycleTestObserver()
-        val observer2 = PmLifecycleTestObserver()
+        val observer1 = TestPmLifecycleObserver()
+        val observer2 = TestPmLifecycleObserver()
         lifecycle.addObserver(observer1)
         lifecycle.addObserver(observer2)
         lifecycle.moveTo(IN_FOREGROUND)

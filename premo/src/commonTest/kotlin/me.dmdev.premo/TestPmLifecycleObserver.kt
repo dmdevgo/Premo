@@ -24,7 +24,7 @@
 
 package me.dmdev.premo
 
-class PmLifecycleTestObserver : PmLifecycle.Observer {
+class TestPmLifecycleObserver : PmLifecycle.Observer {
 
     val states = mutableListOf<Pair<PmLifecycle.State, PmLifecycle.State>>()
 

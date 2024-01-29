@@ -53,11 +53,14 @@ class PmMessageHandler internal constructor(
         if (hostPm.lifecycle.isDestroyed) return false
 
         message.sender = hostPm.tag
-        return if (handle(message).not()) {
-            hostPm.parent?.messageHandler?.handle(message) ?: false
-        } else {
-            true
+
+        var pm: PresentationModel? = hostPm
+        while (pm != null) {
+            if (pm.messageHandler.handle(message)) return true
+
+            pm = pm.parent
         }
+        return false
     }
 
     /**
@@ -67,15 +70,21 @@ class PmMessageHandler internal constructor(
         if (hostPm.lifecycle.isDestroyed) return false
 
         message.sender = hostPm.tag
-        fun PresentationModel.handle(message: PmMessage, tag: String): Boolean {
-            if (this.tag == tag) return true
+
+        fun PresentationModel.findTarget(tag: String): PresentationModel? {
+            if (this.tag == tag) return this
             allChildren.forEach { pm ->
-                if (pm.handle(message, tag)) return true
+                val targetPm = pm.findTarget(tag)
+                if (targetPm != null) return targetPm
             }
-            return false
+            return null
         }
 
-        return findRootPm().handle(message, tag)
+        return findRootPm()
+            .findTarget(tag)
+            ?.messageHandler
+            ?.handle(message)
+            ?: false
     }
 
     /**
@@ -83,12 +92,12 @@ class PmMessageHandler internal constructor(
      * First, the message is delivered to the active leaves, if the message is not processed, it can be intercepted by the parent.
      * If the message is not processed by any child, the message will be intercepted by the sender.
      */
-    fun sendToChild(message: PmMessage): Boolean {
+    fun sendToChildren(message: PmMessage): Boolean {
         if (hostPm.lifecycle.isDestroyed) return false
 
         message.sender = hostPm.tag
         hostPm.allChildren.reversed().forEach { pm ->
-            if (pm.messageHandler.sendToChild(message)) {
+            if (pm.messageHandler.sendToChildren(message)) {
                 return true
             }
         }
@@ -98,7 +107,7 @@ class PmMessageHandler internal constructor(
         return false
     }
 
-    private fun findRootPm(): PresentationModel {
+    internal fun findRootPm(): PresentationModel {
         var root: PresentationModel = hostPm
         while (true) {
             val parent = root.parent

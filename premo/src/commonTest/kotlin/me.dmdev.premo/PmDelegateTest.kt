@@ -43,7 +43,7 @@ class PmDelegateTest {
     fun setUp() {
         pmFactory = TestPmFactory
         delegate = PmDelegate(
-            pmArgs = TestPm.Args(),
+            pmArgs = TestPm.Args("root"),
             pmFactory = pmFactory,
             pmStateSaverFactory = NoPmStateSaverFactory
         )

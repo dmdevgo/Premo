@@ -29,9 +29,11 @@ import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PmDelegate
 import me.dmdev.premo.PmFactory
 import me.dmdev.premo.PresentationModel
+import me.dmdev.premo.annotation.ExperimentalPremoApi
 import me.dmdev.premo.saver.NoPmStateSaverFactory
 import me.dmdev.premo.saver.PmStateSaverFactory
 
+@ExperimentalPremoApi
 interface PmTestContext<PM : PresentationModel> {
     val testDispatcher: CoroutineDispatcher
     val pm: PM
@@ -42,6 +44,7 @@ interface PmTestContext<PM : PresentationModel> {
     fun onSave()
 }
 
+@ExperimentalPremoApi
 internal class PmTestContextImpl<PM : PresentationModel>(
     pmArgs: PmArgs,
     pmFactory: PmFactory,

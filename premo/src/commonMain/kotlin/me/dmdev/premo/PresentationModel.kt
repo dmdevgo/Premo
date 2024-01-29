@@ -82,7 +82,7 @@ abstract class PresentationModel(
         }
 
         if (_attachedChildren.contains(pm)) {
-            throw IllegalArgumentException("${pm::class.qualifiedName} is already attached to the parent it parent.")
+            throw IllegalArgumentException("${pm::class.simpleName} is already attached to the parent it parent.")
         }
 
         if (pm.parent != this) {

@@ -26,7 +26,8 @@ package me.dmdev.premo
 
 import kotlin.test.assertEquals
 
-class TestCallback {
+open class TestCallback {
+
     private var callCounter = 0
 
     fun call() {

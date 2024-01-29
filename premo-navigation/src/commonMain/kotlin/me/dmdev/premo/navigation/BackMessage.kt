@@ -30,7 +30,7 @@ import me.dmdev.premo.PresentationModel
 object BackMessage : PmMessage()
 
 fun PresentationModel.handleBack(): Boolean {
-    return messageHandler.sendToChild(BackMessage)
+    return messageHandler.sendToChildren(BackMessage)
 }
 
 fun PresentationModel.back() {
