@@ -53,12 +53,10 @@ class PmStateSaverTest {
             onSave()
             val savedState = jsonStateSever.save()
 
-            onDestroy()
-
             val newJsonStateSever = JsonStateSaver(Serializer.json)
             newJsonStateSever.restore(savedState)
 
-            runPmTest<TestPm>(
+            runPmTest(
                 pmArgs = TestPm.Args("root"),
                 pmFactory = TestPmFactory(),
                 pmStateSaverFactory = newJsonStateSever
