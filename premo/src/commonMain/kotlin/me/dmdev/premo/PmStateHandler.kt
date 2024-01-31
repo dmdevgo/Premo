@@ -47,6 +47,10 @@ class PmStateHandler internal constructor(
         return stateSaver.restoreState(key, kType)
     }
 
+    fun <T> setSaved(key: String, kType: KType, value: T?) {
+        return stateSaver.saveState(key, kType, value)
+    }
+
     fun <T> setSaver(key: String, kType: KType, saveValue: () -> T) {
         if (savers.contains(key)) {
             throw IllegalArgumentException("Saver with for key [$key] already exists")
@@ -74,6 +78,10 @@ class PmStateHandler internal constructor(
 
 inline fun <reified T> PmStateHandler.getSaved(key: String): T? {
     return getSaved(key, typeOf<T>())
+}
+
+inline fun <reified T> PmStateHandler.setSaved(key: String, value: T?) {
+    return setSaved(key, typeOf<T>(), value)
 }
 
 inline fun <reified T> PmStateHandler.setSaver(key: String, noinline saveValue: () -> T) {
