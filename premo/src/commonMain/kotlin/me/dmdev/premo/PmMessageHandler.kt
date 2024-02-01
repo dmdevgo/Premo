@@ -24,6 +24,8 @@
 
 package me.dmdev.premo
 
+import me.dmdev.premo.annotation.ExperimentalPremoApi
+
 class PmMessageHandler internal constructor(
     private val hostPm: PresentationModel
 ) {
@@ -66,6 +68,7 @@ class PmMessageHandler internal constructor(
     /**
      * Sends a message to the target presentation model with related tag.
      */
+    @ExperimentalPremoApi
     fun sendToTarget(message: PmMessage, tag: String): Boolean {
         if (hostPm.lifecycle.isDestroyed) return false
 
@@ -92,19 +95,24 @@ class PmMessageHandler internal constructor(
      * First, the message is delivered to the active leaves, if the message is not processed, it can be intercepted by the parent.
      * If the message is not processed by any child, the message will be intercepted by the sender.
      */
+    @ExperimentalPremoApi
     fun sendToChildren(message: PmMessage): Boolean {
         if (hostPm.lifecycle.isDestroyed) return false
 
         message.sender = hostPm.tag
-        hostPm.allChildren.reversed().forEach { pm ->
-            if (pm.messageHandler.sendToChildren(message)) {
-                return true
+
+        fun PresentationModel.handleMessage(message: PmMessage): Boolean {
+            allChildren.reversed().forEach { pm ->
+                if (pm.handleMessage(message)) {
+                    return true
+                }
             }
+            if (lifecycle.state == PmLifecycle.State.IN_FOREGROUND) {
+                return messageHandler.handle(message)
+            }
+            return false
         }
-        if (hostPm.lifecycle.state == PmLifecycle.State.IN_FOREGROUND) {
-            return hostPm.messageHandler.handle(message)
-        }
-        return false
+        return hostPm.handleMessage(message)
     }
 
     internal fun findRootPm(): PresentationModel {
