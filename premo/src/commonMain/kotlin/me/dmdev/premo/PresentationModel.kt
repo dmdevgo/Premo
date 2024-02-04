@@ -104,10 +104,6 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
             throw IllegalArgumentException("A child can not be created for a destroyed presentation model.")
         }
 
-        if (allChildren.any { it.pmArgs.key == args.key }) {
-            throw IllegalArgumentException("Child presentation model with the key [${args.key}] already exists. The key from args must be unique.")
-        }
-
         args.pmFactory = pmFactory
         args.pmStateSaverFactory = pmStateSaverFactory
         args.parent = this

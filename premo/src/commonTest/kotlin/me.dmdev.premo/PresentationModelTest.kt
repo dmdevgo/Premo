@@ -147,14 +147,6 @@ class PresentationModelTest {
     }
 
     @Test
-    fun testCreateChildWhenChildWithSameKeyAlreadyExists() = runPmTest {
-        pm.Child<TestPm>(TestPm.Args(CHILD_KEY_1))
-        assertFailsWith<IllegalArgumentException> {
-            pm.Child<TestPm>(TestPm.Args(CHILD_KEY_1))
-        }
-    }
-
-    @Test
     fun testCreateChildForDestroyedParent() = runPmTest {
         onDestroy()
         assertFailsWith<IllegalArgumentException> {
