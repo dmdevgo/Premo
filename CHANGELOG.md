@@ -1,3 +1,16 @@
+# 1.0.0-alpha.13 / 04.02.2024
+- Published new module for PM testing: `premo-test`. Use `runPmTest` to test a presentation and navigation logic.
+- Added new methods to send PM messages: `sendToTarget` and `sendToChildren`. Added sender tag to `PmMessage` (now it is abstract class).
+- Added navigation hosts interfaces: `StackNavigationMost`, `SetNavigationHost`, `DialogGroupNavigationHost`, `DialogNavigationHost`, `MasterDetailNavigationHost`.
+- Added new extensions for `PmLifecycle`: `doOnCreate`, `doOnForeground`, `doOnBackground`, `doOnDestroy`.
+- Added errors handler for delegates `onSaveOrRestoreStateError`.
+- Added extension `JvmPmDelegate<*>.attachWindowLifecycle` for desktop.
+- Added `DialogNavigator`.
+- Added `SingleStatePresentationModel`.
+- Used `Dispatchers.Main.immediate` for PM scopes now.
+- Added `PmStateHandler.setSaved`. 
+- Fixed compatibility with java 1.8.
+
 # 1.0.0-alpha.12 / 15.01.2024
 - Removed `PmDescription` and `PmParams`. Instead, use `PmArgs` to pass serializable arguments to the `PresentationModel`.
 - Added `NoPmStateSaver` and `NoPmStateSaverFactory`.

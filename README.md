@@ -60,13 +60,19 @@ Add dependencies to the shared multiplatform module:
 ```Kotlin
 kotlin {
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api("me.dmdev.premo:premo:<latest_version>")
                 api("me.dmdev.premo:premo-navigation:<latest_version>")
                 api("me.dmdev.premo:premo-saver-json:<latest_version>")
             }
-        } 
+        }
+
+        commonTest {
+            dependencies {
+                implementation("me.dmdev.premo:premo-test:<latest_version>")
+            }
+        }
     }
 }
 ```
