@@ -52,7 +52,13 @@ kotlin {
     js(IR) {
         browser()
     }
-    androidTarget()
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
 
     sourceSets {
 

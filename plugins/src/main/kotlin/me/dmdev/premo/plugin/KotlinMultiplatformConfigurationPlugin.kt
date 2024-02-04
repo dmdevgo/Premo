@@ -33,11 +33,23 @@ class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         target.kotlin {
-            androidTarget()
+            androidTarget {
+                compilations.all {
+                    kotlinOptions {
+                        jvmTarget = "1.8"
+                    }
+                }
+            }
             iosX64()
             iosArm64()
             iosSimulatorArm64()
-            jvm()
+            jvm {
+                compilations.all {
+                    kotlinOptions {
+                        jvmTarget = "1.8"
+                    }
+                }
+            }
             js(IR) {
                 browser()
             }
