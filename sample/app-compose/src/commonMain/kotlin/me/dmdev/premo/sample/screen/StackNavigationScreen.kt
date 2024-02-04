@@ -31,7 +31,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import me.dmdev.premo.annotation.ExperimentalPremoApi
-import me.dmdev.premo.compose.AnimatedNavigationBox
 import me.dmdev.premo.navigation.back
 import me.dmdev.premo.sample.CardBox
 import me.dmdev.premo.sample.EmptyBox
@@ -39,6 +38,7 @@ import me.dmdev.premo.sample.ScreenBox
 import me.dmdev.premo.sample.bind
 import me.dmdev.premo.sample.stacknavigation.SimpleScreenPm
 import me.dmdev.premo.sample.stacknavigation.StackNavigationPm
+import navigation.AnimatedNavigationBox
 
 @OptIn(ExperimentalPremoApi::class)
 @Composable

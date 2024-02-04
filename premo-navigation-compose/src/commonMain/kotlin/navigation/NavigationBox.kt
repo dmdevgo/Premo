@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.compose
+package navigation
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*

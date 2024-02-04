@@ -34,7 +34,6 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import me.dmdev.premo.annotation.ExperimentalPremoApi
-import me.dmdev.premo.compose.AnimatedNavigationBox
 import me.dmdev.premo.navigation.back
 import me.dmdev.premo.sample.CardBox
 import me.dmdev.premo.sample.EmptyBox
@@ -44,6 +43,7 @@ import me.dmdev.premo.sample.bind
 import me.dmdev.premo.sample.bottomnavigation.BottomNavigationPm
 import me.dmdev.premo.sample.bottomnavigation.TabItemPm
 import me.dmdev.premo.sample.bottomnavigation.TabPm
+import navigation.AnimatedNavigationBox
 
 @OptIn(ExperimentalPremoApi::class)
 @Composable
