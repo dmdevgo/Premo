@@ -27,7 +27,7 @@ package me.dmdev.premo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-abstract class SingleStatePresentationModel<S>(pmArgs: PmArgs) : PresentationModel(pmArgs) {
+abstract class SingleStatePresentationModel<S>(args: PmArgs) : PresentationModel(args) {
 
     protected abstract val mutableStateFlow: MutableStateFlow<S>
     val stateFlow: StateFlow<S> get() = mutableStateFlow
