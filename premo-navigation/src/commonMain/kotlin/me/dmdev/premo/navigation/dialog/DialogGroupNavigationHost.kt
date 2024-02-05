@@ -24,6 +24,7 @@
 
 package me.dmdev.premo.navigation.dialog
 
-interface DialogGroupNavigationHost {
+interface DialogGroupNavigationHost : DialogNavigationHost {
     val dialogGroupNavigation: DialogGroupNavigation
+    override val dialogNavigation: DialogNavigation<*> get() = dialogGroupNavigation
 }

@@ -93,7 +93,7 @@ internal class DialogGroupNavigatorImpl(
             it.lastOrNull()
         }.stateIn(
             scope = hostPm.scope,
-            started = SharingStarted.WhileSubscribed(),
+            started = SharingStarted.Eagerly,
             initialValue = _dialogsFlow.value.lastOrNull()
         )
 

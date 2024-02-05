@@ -64,6 +64,8 @@ class DialogGroupNavigatorTest {
         val expectedDialogs = listOf(dialogPm1, dialogPm2, dialogPm3)
         assertEquals(expectedDialogs, dialogGroupNavigator.dialogs)
         assertEquals(expectedDialogs, dialogGroupNavigator.dialogsFlow.value)
+        assertEquals(dialogPm3, dialogGroupNavigator.dialog)
+        assertEquals(dialogPm3, dialogGroupNavigator.dialogFlow.value)
     }
 
     @Test
@@ -76,6 +78,8 @@ class DialogGroupNavigatorTest {
         val expectedDialogs = listOf(dialogPm1, dialogPm3)
         assertEquals(expectedDialogs, dialogGroupNavigator.dialogs)
         assertEquals(expectedDialogs, dialogGroupNavigator.dialogsFlow.value)
+        assertEquals(dialogPm3, dialogGroupNavigator.dialog)
+        assertEquals(dialogPm3, dialogGroupNavigator.dialogFlow.value)
     }
 
     @Test
@@ -87,6 +91,8 @@ class DialogGroupNavigatorTest {
 
         assertEquals(listOf(), dialogGroupNavigator.dialogs)
         assertEquals(listOf(), dialogGroupNavigator.dialogsFlow.value)
+        assertNull(dialogGroupNavigator.dialog)
+        assertNull(dialogGroupNavigator.dialogFlow.value)
     }
 
     @Test
@@ -101,6 +107,8 @@ class DialogGroupNavigatorTest {
         assertNull(navigator3.dialog)
         assertEquals(expectedDialogs, dialogGroupNavigator.dialogs)
         assertEquals(expectedDialogs, dialogGroupNavigator.dialogsFlow.value)
+        assertEquals(dialogPm2, dialogGroupNavigator.dialog)
+        assertEquals(dialogPm2, dialogGroupNavigator.dialogFlow.value)
     }
 
     @Test
