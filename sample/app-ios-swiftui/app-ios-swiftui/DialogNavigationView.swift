@@ -30,16 +30,16 @@ struct DialogNavigationView: View {
     private let pm: DialogNavigationPm
     
     @ObservedObject
-    private var dialogs: ObservableState<NSArray>
+    private var dialog: ObservableState<PresentationModel>
     
     init(pm: DialogNavigationPm) {
         self.pm = pm
-        self.dialogs = ObservableState<NSArray>(pm.dialogGroupNavigation.dialogsFlow)
+        self.dialog = ObservableState<PresentationModel>(pm.dialogGroupNavigation.dialogFlow)
     }
     
     var body: some View {
         
-        let alertIsShowingBinding = Binding<Bool>(get: { self.dialogs.value?.count ?? 0 > 0 }, set: { _ in })
+        let alertIsShowingBinding = Binding<Bool>(get: { self.dialog.value != nil }, set: { _ in })
         
         NavigationView {
             VStack {
@@ -67,7 +67,7 @@ struct DialogNavigationView: View {
                 Image(systemName: "arrow.left")
             })
             .alert(isPresented: alertIsShowingBinding) {
-                let dialogPm = dialogs.value?.lastObject as? AlertDialogPm<AnyObject>
+                let dialogPm = dialog.value as? AlertDialogPm<AnyObject>
                 return Alert(
                     title: Text(dialogPm?.args.title ?? ""),
                     message: Text(dialogPm?.args.message ?? ""),

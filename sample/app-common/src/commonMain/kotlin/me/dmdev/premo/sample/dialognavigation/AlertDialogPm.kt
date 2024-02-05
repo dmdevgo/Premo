@@ -47,7 +47,7 @@ class AlertDialogPm<T : DialogContextData>(
         override val key: String = "simple_dialog_${Random.nextUInt()}"
     }
 
-    sealed class ResultMessage<T : DialogContextData>(val contextData: T) : PmMessage()
+    sealed class ResultMessage<T : DialogContextData>(val contextData: T) : PmMessage
     inner class Ok(contextData: T) : ResultMessage<T>(contextData)
     inner class Cancel(contextData: T) : ResultMessage<T>(contextData)
 
@@ -70,8 +70,8 @@ inline fun <CONTEXT : DialogContextData> PresentationModel.AlertDialogNavigator(
         key = key,
         messageHandler = { message ->
             when (message) {
-                is AlertDialogPm.Cancel -> onOk(message.contextData)
-                is AlertDialogPm.Ok -> onCancel(message.contextData)
+                is AlertDialogPm.Cancel -> onCancel(message.contextData)
+                is AlertDialogPm.Ok -> onOk(message.contextData)
             }
         }
     )
