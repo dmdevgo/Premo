@@ -1,3 +1,7 @@
+# 1.0.0-alpha.14 / 05.02.2024
+- Fixed `DialogGroupNavigator` and `DialogGroupNavigationHost`.
+- Removed sender tag from `PmMessage`.`PmMessage` is the interface again.
+
 # 1.0.0-alpha.13 / 04.02.2024
 - Published new module for PM testing: `premo-test`. Use `runPmTest` to test a presentation and navigation logic.
 - Added new methods to send PM messages: `sendToTarget` and `sendToChildren`. Added sender tag to `PmMessage` (now it is abstract class).
