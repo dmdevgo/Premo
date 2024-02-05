@@ -32,7 +32,7 @@ class TestPm(args: Args) : PresentationModel(args) {
 
     data class Args(override val key: String) : PmArgs()
 
-    sealed class ResultMessage : PmMessage() {
+    sealed class ResultMessage : PmMessage {
         data object Ok : ResultMessage()
         data object Cancel : ResultMessage()
     }

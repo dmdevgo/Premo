@@ -24,7 +24,4 @@
 
 package me.dmdev.premo
 
-abstract class PmMessage {
-    var sender: String = ""
-        internal set
-}
+interface PmMessage

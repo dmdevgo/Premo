@@ -172,14 +172,6 @@ class PmMessageHandlerTest {
     }
 
     @Test
-    fun testSendMessageSenderTag() = runPmMessageHandlerTest {
-        val message = TestPmMessage()
-        assertEquals("", message.sender)
-        assertFalse { child11.messageHandler.send(message) }
-        assertEquals(child11.tag, message.sender)
-    }
-
-    @Test
     fun testSendTargetMessage() = runPmMessageHandlerTest {
         child22.messageHandler.addHandler(handlerTrue::handle)
 
@@ -208,15 +200,6 @@ class PmMessageHandlerTest {
     }
 
     @Test
-    fun testSendTargetMessageSenderTag() = runPmMessageHandlerTest {
-        val message = TestPmMessage()
-        child22.messageHandler.addHandler(handlerTrue::handle)
-        assertEquals("", message.sender)
-        assertTrue { child11.messageHandler.sendToTarget(message, child22.tag) }
-        assertEquals(child11.tag, message.sender)
-    }
-
-    @Test
     fun testSendTargetMessageFromDestroyedPm() = runPmMessageHandlerTest {
         child11.lifecycle.moveTo(DESTROYED)
 
@@ -236,7 +219,7 @@ class PmMessageHandlerTest {
         // TODO
     }
 
-    private class TestPmMessage : PmMessage()
+    private class TestPmMessage : PmMessage
 
     private class TestMessageHandler(
         private val handleResult: Boolean

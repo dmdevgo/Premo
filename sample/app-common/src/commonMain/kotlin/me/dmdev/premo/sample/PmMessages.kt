@@ -26,9 +26,9 @@ package me.dmdev.premo.sample
 
 import me.dmdev.premo.PmMessage
 
-object CounterSampleMessage : PmMessage()
-object StackNavigationSampleMessage : PmMessage()
-object BottomNavigationSampleMessage : PmMessage()
-object DialogNavigationSampleMessage : PmMessage()
-object NextClickMessage : PmMessage()
-object PreviousClickMessage : PmMessage()
+object CounterSampleMessage : PmMessage
+object StackNavigationSampleMessage : PmMessage
+object BottomNavigationSampleMessage : PmMessage
+object DialogNavigationSampleMessage : PmMessage
+object NextClickMessage : PmMessage
+object PreviousClickMessage : PmMessage

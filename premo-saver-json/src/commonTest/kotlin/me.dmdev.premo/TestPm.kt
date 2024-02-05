@@ -43,9 +43,9 @@ class TestPm(args: Args) : PresentationModel(args) {
 
         other as TestPm
 
-        return pmArgs == other.pmArgs
-                && state.value == other.state.value
-                && children == other.children
+        return pmArgs == other.pmArgs &&
+            state.value == other.state.value &&
+            children == other.children
     }
 
     override fun hashCode(): Int {

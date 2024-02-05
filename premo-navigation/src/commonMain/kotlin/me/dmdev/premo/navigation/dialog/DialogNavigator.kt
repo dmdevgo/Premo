@@ -27,7 +27,6 @@ package me.dmdev.premo.navigation.dialog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import me.dmdev.premo.AttachedChild
 import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PresentationModel
@@ -96,25 +95,39 @@ internal class DialogNavigatorImpl<PM, MESSAGE>(
         where PM : PresentationModel,
               MESSAGE : PmMessage {
 
+    private val pmMessageHandler: (message: PmMessage) -> Boolean = { message ->
+        if (messageClass.isInstance(message)) {
+            @Suppress("UNCHECKED_CAST")
+            handleResult(message as MESSAGE)
+            true
+        } else {
+            false
+        }
+    }
+
     private val _dialog: MutableStateFlow<PM?> = hostPm.SaveableFlow(
         key = key,
         initialValueProvider = { null },
         saveTypeMapper = { it?.pmArgs },
-        restoreTypeMapper = { it?.let { hostPm.AttachedChild(it) as PM } }
+        restoreTypeMapper = { args ->
+            args?.let { hostPm.AttachedChild(it) as PM }
+                ?.also { pm ->
+                    pm.messageHandler.addHandler(pmMessageHandler)
+                }
+        }
     )
-    override val dialogFlow: StateFlow<PM?> = _dialog.asStateFlow()
 
-    init {
-        subscribeToMessages()
-    }
+    override val dialogFlow: StateFlow<PM?> = _dialog.asStateFlow()
 
     override fun show(pm: PM) {
         if (isShowing) dismiss()
         pm.attachToParent()
+        pm.messageHandler.addHandler(pmMessageHandler)
         _dialog.value = pm
     }
 
     override fun dismiss() {
+        _dialog.value?.messageHandler?.removeHandler(pmMessageHandler)
         _dialog.value?.detachFromParent()
         _dialog.value = null
     }
@@ -124,23 +137,7 @@ internal class DialogNavigatorImpl<PM, MESSAGE>(
     }
 
     private fun handleResult(result: MESSAGE) {
-        dismiss()
         messageHandler(result)
-    }
-
-    private fun subscribeToMessages() {
-        hostPm.scope.launch {
-            dialogFlow.collect {
-                it?.messageHandler?.addHandler { message ->
-                    if (messageClass.isInstance(message) && message.sender == dialog?.tag) {
-                        @Suppress("UNCHECKED_CAST")
-                        handleResult(message as MESSAGE)
-                        true
-                    } else {
-                        false
-                    }
-                }
-            }
-        }
+        dismiss()
     }
 }

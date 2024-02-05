@@ -54,8 +54,6 @@ class PmMessageHandler internal constructor(
     fun send(message: PmMessage): Boolean {
         if (hostPm.lifecycle.isDestroyed) return false
 
-        message.sender = hostPm.tag
-
         var pm: PresentationModel? = hostPm
         while (pm != null) {
             if (pm.messageHandler.handle(message)) return true
@@ -71,8 +69,6 @@ class PmMessageHandler internal constructor(
     @ExperimentalPremoApi
     fun sendToTarget(message: PmMessage, tag: String): Boolean {
         if (hostPm.lifecycle.isDestroyed) return false
-
-        message.sender = hostPm.tag
 
         fun PresentationModel.findTarget(tag: String): PresentationModel? {
             if (this.tag == tag) return this
@@ -98,8 +94,6 @@ class PmMessageHandler internal constructor(
     @ExperimentalPremoApi
     fun sendToChildren(message: PmMessage): Boolean {
         if (hostPm.lifecycle.isDestroyed) return false
-
-        message.sender = hostPm.tag
 
         fun PresentationModel.handleMessage(message: PmMessage): Boolean {
             allChildren.reversed().forEach { pm ->
