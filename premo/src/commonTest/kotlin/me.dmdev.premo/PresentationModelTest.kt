@@ -29,8 +29,6 @@ import kotlinx.coroutines.test.runTest
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
-import me.dmdev.premo.test.PmTestContext
-import me.dmdev.premo.test.runPmTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

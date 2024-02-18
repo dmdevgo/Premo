@@ -25,7 +25,6 @@
 package me.dmdev.premo
 
 import kotlinx.coroutines.test.runTest
-import me.dmdev.premo.test.runPmTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

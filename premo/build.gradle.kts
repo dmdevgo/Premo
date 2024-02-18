@@ -50,9 +50,9 @@ kotlin {
 
         commonTest {
             dependencies {
-                implementation(project(":premo-test"))
                 implementation(libs.kotlin.test)
                 implementation(libs.kotlinx.serialization.json)
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
     }

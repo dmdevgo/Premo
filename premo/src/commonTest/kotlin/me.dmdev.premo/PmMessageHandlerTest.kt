@@ -26,8 +26,6 @@ package me.dmdev.premo
 
 import kotlinx.coroutines.test.runTest
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
-import me.dmdev.premo.test.PmTestContext
-import me.dmdev.premo.test.runPmTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -50,8 +48,9 @@ class PmMessageHandlerTest {
 
     @Test
     fun testRemoveHandler() = runPmMessageHandlerTest {
-        pm.messageHandler.addHandler(handlerTrue::handle)
-        pm.messageHandler.removeHandler(handlerTrue::handle)
+        val handler = handlerTrue::handle
+        pm.messageHandler.addHandler(handler)
+        pm.messageHandler.removeHandler(handler)
 
         assertFalse { pm.messageHandler.handle(TestPmMessage()) }
         handlerTrue.assertNotCalled()
