@@ -1,13 +1,13 @@
 [versions]
-agp = "8.2.1"
+agp = "8.3.0"
 # https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "1.9.21"
+kotlin = "1.9.22"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
-coroutines = "1.7.3"
+coroutines = "1.8.0"
 # https://github.com/Kotlin/kotlinx.serialization/releases
-kotlinx-serialization = "1.6.2"
+kotlinx-serialization = "1.6.3"
 # https://github.com/JetBrains/compose-multiplatform/releases
-compose-multiplatform = "1.5.11"
+compose-multiplatform = "1.6.0"
 ktlint = "11.3.1"
 
 [plugins]

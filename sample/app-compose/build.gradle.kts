@@ -74,8 +74,6 @@ kotlin {
                 api(compose.material)
                 api(compose.ui)
                 api(compose.material3)
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
             }
         }
 

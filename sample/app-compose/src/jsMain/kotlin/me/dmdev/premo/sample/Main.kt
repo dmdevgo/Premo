@@ -22,8 +22,11 @@
  * SOFTWARE.
  */
 
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package me.dmdev.premo.sample
 
+import androidx.compose.ui.*
 import androidx.compose.ui.window.*
 import me.dmdev.premo.JsPmDelegate
 import me.dmdev.premo.sample.WindowSizeClass.Expanded
@@ -39,7 +42,7 @@ fun main() {
     )
 
     onWasmReady {
-        Window {
+        CanvasBasedWindow ("Premo Sample") {
             App(pmDelegate.presentationModel, WindowSizes(Expanded, Expanded))
         }
     }
