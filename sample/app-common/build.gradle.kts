@@ -52,6 +52,11 @@ kotlin {
     js(IR) {
         browser()
     }
+
+    wasmJs {
+        browser()
+    }
+
     androidTarget {
         compilations.all {
             kotlinOptions {

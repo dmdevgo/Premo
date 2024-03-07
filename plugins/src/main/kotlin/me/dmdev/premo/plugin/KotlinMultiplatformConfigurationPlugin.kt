@@ -28,9 +28,11 @@ import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
 
+    @OptIn(ExperimentalWasmDsl::class)
     override fun apply(target: Project) {
         target.kotlin {
             androidTarget {
@@ -51,6 +53,9 @@ class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
                 }
             }
             js(IR) {
+                browser()
+            }
+            wasmJs {
                 browser()
             }
             applyDefaultHierarchyTemplate()
