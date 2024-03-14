@@ -33,20 +33,27 @@ public class ObservableState<T : AnyObject> : ObservableObject {
     @Published
     var value: T?
     
+    @Published
+    var isNotNil: Bool
+    
     private var cancelable: Cancelable? = nil
     
     init(_ value: StateFlow) {
+        self.isNotNil = false
         self.observableState = FlowWrapper<T>(flow: value)
         self.value = value.value as? T
         cancelable = observableState.bind(consumer: { value in
+            self.isNotNil = value != nil
             self.value = value
         })
     }
     
     init(initialValue: T, flow: Flow) {
+        self.isNotNil = false
         self.observableState = FlowWrapper<T>(flow: flow)
         self.value = initialValue
         cancelable = observableState.bind(consumer: { value in
+            self.isNotNil = value != nil
             self.value = value
         })
     }

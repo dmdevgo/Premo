@@ -39,8 +39,6 @@ struct DialogNavigationView: View {
     
     var body: some View {
         
-        let alertIsShowingBinding = Binding<Bool>(get: { self.dialog.value != nil }, set: { _ in })
-        
         NavigationView {
             VStack {
                 
@@ -66,7 +64,7 @@ struct DialogNavigationView: View {
             }){
                 Image(systemName: "arrow.left")
             })
-            .alert(isPresented: alertIsShowingBinding) {
+            .alert(isPresented: $dialog.isNotNil) {
                 let dialogPm = dialog.value as? AlertDialogPm<AnyObject>
                 return Alert(
                     title: Text(dialogPm?.args.title ?? ""),
