@@ -7,7 +7,7 @@ coroutines = "1.8.0"
 # https://github.com/Kotlin/kotlinx.serialization/releases
 kotlinx-serialization = "1.6.3"
 # https://github.com/JetBrains/compose-multiplatform/releases
-compose-multiplatform = "1.6.0"
+compose-multiplatform = "1.6.1"
 ktlint = "11.3.1"
 
 [plugins]
