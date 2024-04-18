@@ -34,7 +34,8 @@ class AndroidPmDelegate<PM : PresentationModel>(
     pmArgs: PmArgs,
     pmFactory: PmFactory,
     private val pmStateSaver: BundleStateSaver,
-    private val onSaveOrRestoreStateError: (e: Throwable) -> Unit = { throw it }
+    private val onSaveOrRestoreStateError: (e: Throwable) -> Unit = { throw it },
+    retainPmInstance: Boolean = true
 ) {
 
     private val pmDelegate: PmDelegate<PM> by lazy {
@@ -89,7 +90,11 @@ class AndroidPmDelegate<PM : PresentationModel>(
 
         override fun onActivityDestroyed(activity: Activity) {
             if (activity === pmActivity) {
-                if (pmActivity.isFinishing) {
+                if (retainPmInstance) {
+                    if (pmActivity.isFinishing) {
+                        pmDelegate.onDestroy()
+                    }
+                } else {
                     pmDelegate.onDestroy()
                 }
                 pmActivity.application.unregisterActivityLifecycleCallbacks(this)
