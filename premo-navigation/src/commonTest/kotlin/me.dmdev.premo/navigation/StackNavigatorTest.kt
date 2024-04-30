@@ -24,6 +24,9 @@
 
 package me.dmdev.premo.navigation
 
+import kotlinx.coroutines.test.TestCoroutineScheduler
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
@@ -71,6 +74,14 @@ class StackNavigatorTest {
             },
             key = "stack_navigator_2"
         )
+
+        assertEquals(
+            listOf(CREATED, CREATED, IN_FOREGROUND),
+            listOf(pm1, pm2, pm3).map {
+                it.lifecycle.state
+            }
+        )
+
         assertEquals(
             listOf(CREATED, CREATED, IN_FOREGROUND),
             navigator.backStack.map { it.lifecycle.state }
@@ -322,24 +333,27 @@ class StackNavigatorTest {
     }
 
     private class StackNavigationTestContext(
-        private val pmTestContext: PmTestContext<TestPm>
+        private val pmTestContext: PmTestContext<TestPm>,
+        val testCoroutineScheduler: TestCoroutineScheduler
     ) : PmTestContext<TestPm> by pmTestContext {
         val pm1 = pm.Child<TestPm>(PM1_ARGS)
         val pm2 = pm.Child<TestPm>(PM2_ARGS)
         val pm3 = pm.Child<TestPm>(PM3_ARGS)
-        val navigator = pm.StackNavigator()
+        val navigator: StackNavigator = pm.StackNavigator()
     }
 
     private fun runStackNavigationTest(
         pmStateSaverFactory: PmStateSaverFactory = NoPmStateSaverFactory,
+        testDispatcher: TestDispatcher = UnconfinedTestDispatcher(),
         testBody: StackNavigationTestContext.() -> Unit
-    ) = runTest {
+    ) = runTest(context = testDispatcher) {
         runPmTest(
             pmArgs = ROOT_PM_ARGS,
             pmFactory = TestPmFactory,
-            pmStateSaverFactory = pmStateSaverFactory
+            pmStateSaverFactory = pmStateSaverFactory,
+            testDispatcher = testDispatcher
         ) {
-            val testContext = StackNavigationTestContext(this)
+            val testContext = StackNavigationTestContext(this, testScheduler)
             testBody.invoke(testContext)
         }
     }

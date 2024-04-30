@@ -33,7 +33,7 @@ import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.attachToParent
-import me.dmdev.premo.detachFromParent
+import me.dmdev.premo.destroy
 import me.dmdev.premo.handle
 import me.dmdev.premo.navigation.BackMessage
 import kotlin.reflect.typeOf
@@ -97,7 +97,7 @@ internal class MasterDetailNavigatorImpl<MASTER, DETAIL>(
     override val detailFlow: StateFlow<DETAIL?> = _detailFlow.asStateFlow()
 
     override fun changeDetail(detail: DETAIL?) {
-        this.detail?.detachFromParent()
+        this.detail?.destroy()
         _detailFlow.value = detail
         detail?.attachToParent()
     }

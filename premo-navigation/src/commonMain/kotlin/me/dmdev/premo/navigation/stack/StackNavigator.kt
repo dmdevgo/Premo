@@ -31,18 +31,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import me.dmdev.premo.PmLifecycle.State.CREATED
-import me.dmdev.premo.PmLifecycle.State.DESTROYED
-import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
+import me.dmdev.premo.PmArgs
 import me.dmdev.premo.PmMessageHandler
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.annotation.ExperimentalPremoApi
+import me.dmdev.premo.attachToParent
+import me.dmdev.premo.destroy
+import me.dmdev.premo.detachFromParent
 import me.dmdev.premo.handle
 import me.dmdev.premo.navigation.BackMessage
 
 interface StackNavigator : StackNavigation {
-    fun changeBackStack(pms: List<PresentationModel>)
+    fun changeBackStack(backStack: List<PresentationModel>)
 }
 
 fun StackNavigator.push(pm: PresentationModel) {
@@ -110,9 +111,19 @@ internal class StackNavigatorImpl(
     private val _backStackFlow: MutableStateFlow<List<PresentationModel>> =
         hostPm.stateHandler.SaveableFlow(
             key = "${key}_backstack",
-            initialValueProvider = { initBackStack() },
+            initialValueProvider = {
+                initBackStack().apply {
+                    lastOrNull()?.attachToParent()
+                }
+            },
             saveTypeMapper = { backStack -> backStack.map { it.pmArgs } },
-            restoreTypeMapper = { backStack -> backStack.map { hostPm.Child(it) } }
+            restoreTypeMapper = { backStack ->
+                backStack.map<PmArgs, PresentationModel> {
+                    hostPm.Child(it)
+                }.apply {
+                    lastOrNull()?.attachToParent()
+                }
+            }
         )
 
     override val backStackFlow: StateFlow<List<PresentationModel>> = _backStackFlow
@@ -132,8 +143,22 @@ internal class StackNavigatorImpl(
                 initialValue = null
             )
 
-    init {
-        subscribeToLifecycle()
+    override fun changeBackStack(backStack: List<PresentationModel>) {
+        val iterator = backStack.listIterator()
+        while (iterator.hasNext()) {
+            val pm = iterator.next()
+            if (iterator.hasNext()) {
+                pm.detachFromParent()
+            } else {
+                pm.attachToParent()
+            }
+        }
+        this.backStack.forEach { pm ->
+            if (backStack.contains(pm).not()) {
+                pm.destroy()
+            }
+        }
+        this.backStack = backStack
     }
 
     @ExperimentalPremoApi
@@ -167,41 +192,6 @@ internal class StackNavigatorImpl(
 
             emit(pmStackChange)
             oldPmStack = newPmStack
-        }
-    }
-
-    override fun changeBackStack(pms: List<PresentationModel>) {
-        val iterator = pms.listIterator()
-        while (iterator.hasNext()) {
-            val pm = iterator.next()
-            if (iterator.hasNext()) {
-                pm.lifecycle.moveTo(CREATED)
-            } else {
-                pm.lifecycle.moveTo(hostPm.lifecycle.state)
-            }
-        }
-        backStack.forEach { pm ->
-            if (pms.contains(pm).not()) {
-                pm.lifecycle.moveTo(DESTROYED)
-            }
-        }
-        backStack = pms
-    }
-
-    private fun subscribeToLifecycle() {
-        hostPm.lifecycle.addObserver { _, newState ->
-            when (newState) {
-                CREATED,
-                DESTROYED -> {
-                    backStack.forEach { pm ->
-                        pm.lifecycle.moveTo(newState)
-                    }
-                }
-
-                IN_FOREGROUND -> {
-                    currentTop?.lifecycle?.moveTo(newState)
-                }
-            }
         }
     }
 }

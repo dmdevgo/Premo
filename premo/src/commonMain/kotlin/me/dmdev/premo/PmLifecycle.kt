@@ -26,6 +26,7 @@ package me.dmdev.premo
 
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import me.dmdev.premo.PmLifecycle.State.INITIALIZED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.annotation.DelicatePremoApi
 
@@ -33,7 +34,7 @@ class PmLifecycle internal constructor() {
 
     private val observers: MutableList<Observer> = mutableListOf()
 
-    var state: State = CREATED
+    var state: State = INITIALIZED
         private set
 
     fun addObserver(observer: Observer) {
@@ -51,10 +52,18 @@ class PmLifecycle internal constructor() {
         if (isDestroyed) return
 
         when (targetState) {
+            INITIALIZED -> {
+                /*do nothing */
+            }
+
             CREATED -> {
                 when (state) {
+                    INITIALIZED -> {
+                        changeStateAndNotify(CREATED)
+                    }
+
                     IN_FOREGROUND -> {
-                        notifyChange(CREATED)
+                        changeStateAndNotify(CREATED)
                     }
 
                     else -> { /*do nothing */
@@ -64,8 +73,13 @@ class PmLifecycle internal constructor() {
 
             IN_FOREGROUND -> {
                 when (state) {
+                    INITIALIZED -> {
+                        changeStateAndNotify(CREATED)
+                        changeStateAndNotify(IN_FOREGROUND)
+                    }
+
                     CREATED -> {
-                        notifyChange(IN_FOREGROUND)
+                        changeStateAndNotify(IN_FOREGROUND)
                     }
 
                     else -> { /*do nothing */
@@ -75,13 +89,17 @@ class PmLifecycle internal constructor() {
 
             DESTROYED -> {
                 when (state) {
+                    INITIALIZED -> {
+                        changeStateAndNotify(DESTROYED)
+                    }
+
                     CREATED -> {
-                        notifyChange(DESTROYED)
+                        changeStateAndNotify(DESTROYED)
                     }
 
                     IN_FOREGROUND -> {
-                        notifyChange(CREATED)
-                        notifyChange(DESTROYED)
+                        changeStateAndNotify(CREATED)
+                        changeStateAndNotify(DESTROYED)
                     }
 
                     DESTROYED -> { /*do nothing */
@@ -92,16 +110,17 @@ class PmLifecycle internal constructor() {
     }
 
     enum class State {
+        INITIALIZED,
+        DESTROYED,
         CREATED,
-        IN_FOREGROUND,
-        DESTROYED
+        IN_FOREGROUND
     }
 
     fun interface Observer {
         fun onLifecycleChange(oldState: State, newState: State)
     }
 
-    private fun notifyChange(newState: State) {
+    private fun changeStateAndNotify(newState: State) {
         val oldState = state
         state = newState
 
@@ -115,6 +134,8 @@ class PmLifecycle internal constructor() {
     }
 }
 
+val PmLifecycle.isInitialized: Boolean get() = this.state == INITIALIZED
+
 val PmLifecycle.isCreated: Boolean get() = this.state == CREATED
 
 val PmLifecycle.isInForeground: Boolean get() = this.state == IN_FOREGROUND
@@ -123,7 +144,7 @@ val PmLifecycle.isDestroyed: Boolean get() = this.state == DESTROYED
 
 fun PmLifecycle.doOnCreate(callback: () -> Unit) {
     addObserver { oldState, newState ->
-        if (newState == CREATED && oldState == CREATED) {
+        if (newState == CREATED && oldState == INITIALIZED) {
             callback()
         }
     }

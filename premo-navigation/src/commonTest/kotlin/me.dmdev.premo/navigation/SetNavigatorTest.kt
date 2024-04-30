@@ -35,8 +35,7 @@ import me.dmdev.premo.navigation.TestPm.Companion.PM4_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM5_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM6_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.ROOT_PM_ARGS
-import me.dmdev.premo.navigation.set.DEFAULT_SET_NAVIGATOR_STATE_CURRENT_INDEX_KEY
-import me.dmdev.premo.navigation.set.DEFAULT_SET_NAVIGATOR_STATE_VALUES_KEY
+import me.dmdev.premo.navigation.set.DEFAULT_SET_NAVIGATOR_STATE_KEY
 import me.dmdev.premo.navigation.set.SetNavigator
 import me.dmdev.premo.navigation.set.handleBack
 import me.dmdev.premo.saver.NoPmStateSaverFactory
@@ -167,12 +166,14 @@ class SetNavigatorTest {
         pmStateSaverFactory = TestStateSaverFactory(
             initialState = mutableMapOf(
                 ROOT_PM_ARGS.key to mutableMapOf(
-                    DEFAULT_SET_NAVIGATOR_STATE_VALUES_KEY to listOf(
-                        PM4_ARGS,
-                        PM5_ARGS,
-                        PM6_ARGS
-                    ),
-                    DEFAULT_SET_NAVIGATOR_STATE_CURRENT_INDEX_KEY to 0
+                    DEFAULT_SET_NAVIGATOR_STATE_KEY to Pair(
+                        listOf(
+                            PM4_ARGS,
+                            PM5_ARGS,
+                            PM6_ARGS
+                        ),
+                        0
+                    )
                 )
             )
         )
@@ -195,18 +196,21 @@ class SetNavigatorTest {
         runSetNavigationTest(
             pmStateSaverFactory = stateSaverFactory
         ) {
-            navigator.changeCurrent(1)
+            val index = 1
+            navigator.changeCurrent(index)
             onSave()
 
             assertEquals(
                 mutableMapOf(
-                    ROOT_PM_ARGS.key to mutableMapOf(
-                        DEFAULT_SET_NAVIGATOR_STATE_VALUES_KEY to listOf(
-                            PM1_ARGS,
-                            PM2_ARGS,
-                            PM3_ARGS
-                        ),
-                        DEFAULT_SET_NAVIGATOR_STATE_CURRENT_INDEX_KEY to 1
+                    ROOT_PM_ARGS.key to mutableMapOf<String, Any>(
+                        DEFAULT_SET_NAVIGATOR_STATE_KEY to Pair(
+                            listOf(
+                                PM1_ARGS,
+                                PM2_ARGS,
+                                PM3_ARGS
+                            ),
+                            index
+                        )
                     ),
                     "${ROOT_PM_ARGS.key}/${PM1_ARGS.key}" to mutableMapOf(),
                     "${ROOT_PM_ARGS.key}/${PM2_ARGS.key}" to mutableMapOf(),

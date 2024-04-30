@@ -223,16 +223,6 @@ class PresentationModelTest {
     }
 
     @Test
-    fun testAttachAlreadyAttachedChild() = runPmTest {
-        val childPm = pm.Child<TestPm>(TestPm.Args(CHILD_KEY_1))
-        pm.attachChild(childPm)
-
-        assertFailsWith<IllegalArgumentException> {
-            pm.attachChild(childPm)
-        }
-    }
-
-    @Test
     fun testAttachChildToNotItsParent() = runPmTest {
         val childPm = pm.Child<TestPm>(TestPm.Args(CHILD_KEY_1))
         val childOfChild = childPm.Child<TestPm>(TestPm.Args(CHILD_KEY_2))
@@ -247,15 +237,19 @@ class PresentationModelTest {
         val childPm = pm.Child<TestPm>(TestPm.Args(CHILD_KEY_1))
         assertEquals(listOf(childPm), pm.children)
         assertEquals(listOf(), pm.attachedChildren)
-
-        pm.attachChild(childPm)
-        assertEquals(listOf(childPm), pm.attachedChildren)
         assertEquals(CREATED, childPm.lifecycle.state)
 
-        pm.detachChild(childPm)
-        assertEquals(DESTROYED, childPm.lifecycle.state)
+        onForeground()
 
-        assertEquals(listOf(), pm.children)
+        pm.attachChild(childPm)
+        assertEquals(listOf(childPm), pm.children)
+        assertEquals(listOf(childPm), pm.attachedChildren)
+        assertEquals(IN_FOREGROUND, childPm.lifecycle.state)
+
+        pm.detachChild(childPm)
+        assertEquals(CREATED, childPm.lifecycle.state)
+
+        assertEquals(listOf(childPm), pm.children)
         assertEquals(listOf(), pm.attachedChildren)
     }
 

@@ -31,6 +31,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import me.dmdev.premo.PmLifecycle.State.INITIALIZED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.annotation.DelicatePremoApi
 import me.dmdev.premo.saver.PmStateSaverFactory
@@ -80,12 +81,12 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
             throw IllegalArgumentException("Destroyed presentation model cannot be attached to the parent.")
         }
 
-        if (_attachedChildren.contains(pm)) {
-            throw IllegalArgumentException("${pm::class.simpleName} is already attached to the parent it parent.")
-        }
-
         if (pm.parent != this) {
             throw IllegalArgumentException("The presentation model must be attached only to its parent.")
+        }
+
+        if (_attachedChildren.contains(pm)) {
+            return
         }
 
         pm.lifecycle.moveTo(lifecycle.state)
@@ -94,8 +95,12 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
 
     @DelicatePremoApi
     fun detachChild(pm: PresentationModel) {
-        pm.lifecycle.moveTo(DESTROYED)
-        removeChild(pm)
+        _attachedChildren.remove(pm)
+        if (lifecycle.state == INITIALIZED) {
+            pm.lifecycle.moveTo(INITIALIZED)
+        } else {
+            pm.lifecycle.moveTo(CREATED)
+        }
     }
 
     @Suppress("FunctionName", "UNCHECKED_CAST")
@@ -109,6 +114,9 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
         args.parent = this
 
         val childPm = pmFactory.createPresentationModel(args) as PM
+        if (lifecycle.state != INITIALIZED) {
+            childPm.lifecycle.moveTo(CREATED)
+        }
         allChildren.add(childPm)
         return childPm
     }
@@ -149,6 +157,10 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
             }
 
             when (newState) {
+                INITIALIZED -> {
+                    // do nothing
+                }
+
                 IN_FOREGROUND -> {
                     inForegroundScope = createMainScope()
                 }
@@ -156,6 +168,9 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
                 CREATED -> {
                     inForegroundScope?.cancel()
                     inForegroundScope = null
+                    children.forEach { pm ->
+                        pm.lifecycle.moveTo(CREATED)
+                    }
                 }
 
                 DESTROYED -> {
@@ -183,6 +198,11 @@ fun PresentationModel.attachToParent() {
 @DelicatePremoApi
 fun PresentationModel.detachFromParent() {
     parent?.detachChild(this)
+}
+
+@DelicatePremoApi
+fun PresentationModel.destroy() {
+    lifecycle.moveTo(DESTROYED)
 }
 
 @Suppress("FunctionName")

@@ -32,7 +32,7 @@ import me.dmdev.premo.PmMessage
 import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
 import me.dmdev.premo.attachToParent
-import me.dmdev.premo.detachFromParent
+import me.dmdev.premo.destroy
 import kotlin.reflect.KClass
 
 interface DialogNavigator<PM, MESSAGE> : DialogNavigation<PM>
@@ -128,7 +128,7 @@ internal class DialogNavigatorImpl<PM, MESSAGE>(
 
     override fun dismiss() {
         _dialog.value?.messageHandler?.removeHandler(pmMessageHandler)
-        _dialog.value?.detachFromParent()
+        _dialog.value?.destroy()
         _dialog.value = null
     }
 

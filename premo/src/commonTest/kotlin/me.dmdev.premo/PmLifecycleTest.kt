@@ -26,6 +26,7 @@ package me.dmdev.premo
 
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import me.dmdev.premo.PmLifecycle.State.INITIALIZED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -47,11 +48,17 @@ class PmLifecycleTest {
 
     @Test
     fun testInitialState() {
-        assertEquals(CREATED, lifecycle.state)
-        assertTrue { lifecycle.isCreated }
+        assertEquals(INITIALIZED, lifecycle.state)
+        assertTrue { lifecycle.isInitialized }
+        assertFalse { lifecycle.isCreated }
         assertFalse { lifecycle.isInForeground }
         assertFalse { lifecycle.isDestroyed }
-        assertEquals(listOf(CREATED to CREATED), observer.states)
+        assertEquals(
+            listOf(
+                INITIALIZED to INITIALIZED
+            ),
+            observer.states
+        )
     }
 
     @Test
@@ -59,10 +66,17 @@ class PmLifecycleTest {
         lifecycle.moveTo(CREATED)
 
         assertEquals(CREATED, lifecycle.state)
+        assertFalse { lifecycle.isInitialized }
         assertTrue { lifecycle.isCreated }
         assertFalse { lifecycle.isInForeground }
         assertFalse { lifecycle.isDestroyed }
-        assertEquals(listOf(CREATED to CREATED), observer.states)
+        assertEquals(
+            listOf(
+                INITIALIZED to INITIALIZED,
+                INITIALIZED to CREATED
+            ),
+            observer.states
+        )
     }
 
     @Test
@@ -70,12 +84,14 @@ class PmLifecycleTest {
         lifecycle.moveTo(IN_FOREGROUND)
 
         assertEquals(IN_FOREGROUND, lifecycle.state)
+        assertFalse { lifecycle.isInitialized }
         assertFalse { lifecycle.isCreated }
         assertTrue { lifecycle.isInForeground }
         assertFalse { lifecycle.isDestroyed }
         assertEquals(
             listOf(
-                CREATED to CREATED,
+                INITIALIZED to INITIALIZED,
+                INITIALIZED to CREATED,
                 CREATED to IN_FOREGROUND
             ),
             observer.states
@@ -88,12 +104,14 @@ class PmLifecycleTest {
         lifecycle.moveTo(CREATED)
 
         assertEquals(CREATED, lifecycle.state)
+        assertFalse { lifecycle.isInitialized }
         assertTrue { lifecycle.isCreated }
         assertFalse { lifecycle.isInForeground }
         assertFalse { lifecycle.isDestroyed }
         assertEquals(
             listOf(
-                CREATED to CREATED,
+                INITIALIZED to INITIALIZED,
+                INITIALIZED to CREATED,
                 CREATED to IN_FOREGROUND,
                 IN_FOREGROUND to CREATED
             ),
@@ -103,16 +121,37 @@ class PmLifecycleTest {
 
     @Test
     fun testMoveToDestroyedFromCreated() {
+        lifecycle.moveTo(CREATED)
         lifecycle.moveTo(DESTROYED)
 
         assertEquals(DESTROYED, lifecycle.state)
+        assertFalse { lifecycle.isInitialized }
         assertFalse { lifecycle.isCreated }
         assertFalse { lifecycle.isInForeground }
         assertTrue { lifecycle.isDestroyed }
         assertEquals(
             listOf(
-                CREATED to CREATED,
+                INITIALIZED to INITIALIZED,
+                INITIALIZED to CREATED,
                 CREATED to DESTROYED
+            ),
+            observer.states
+        )
+    }
+
+    @Test
+    fun testMoveToDestroyedFromInitialized() {
+        lifecycle.moveTo(DESTROYED)
+
+        assertEquals(DESTROYED, lifecycle.state)
+        assertFalse { lifecycle.isInitialized }
+        assertFalse { lifecycle.isCreated }
+        assertFalse { lifecycle.isInForeground }
+        assertTrue { lifecycle.isDestroyed }
+        assertEquals(
+            listOf(
+                INITIALIZED to INITIALIZED,
+                INITIALIZED to DESTROYED
             ),
             observer.states
         )
@@ -124,12 +163,14 @@ class PmLifecycleTest {
         lifecycle.moveTo(DESTROYED)
 
         assertEquals(DESTROYED, lifecycle.state)
+        assertFalse { lifecycle.isInitialized }
         assertFalse { lifecycle.isCreated }
         assertFalse { lifecycle.isInForeground }
         assertTrue { lifecycle.isDestroyed }
         assertEquals(
             listOf(
-                CREATED to CREATED,
+                INITIALIZED to INITIALIZED,
+                INITIALIZED to CREATED,
                 CREATED to IN_FOREGROUND,
                 IN_FOREGROUND to CREATED,
                 CREATED to DESTROYED
@@ -147,14 +188,16 @@ class PmLifecycleTest {
         lifecycle.moveTo(IN_FOREGROUND)
         assertEquals(
             listOf(
-                CREATED to CREATED,
+                INITIALIZED to INITIALIZED,
+                INITIALIZED to CREATED,
                 CREATED to IN_FOREGROUND
             ),
             observer1.states
         )
         assertEquals(
             listOf(
-                CREATED to CREATED,
+                INITIALIZED to INITIALIZED,
+                INITIALIZED to CREATED,
                 CREATED to IN_FOREGROUND
             ),
             observer2.states
@@ -165,7 +208,7 @@ class PmLifecycleTest {
     fun testRemoveLifecycleObserver() {
         lifecycle.removeObserver(observer)
         lifecycle.moveTo(IN_FOREGROUND)
-        assertEquals(listOf(CREATED to CREATED), observer.states)
+        assertEquals(listOf(INITIALIZED to INITIALIZED), observer.states)
     }
 
     @Test
@@ -173,8 +216,8 @@ class PmLifecycleTest {
         TestCallback().apply {
             assertNotCalled()
             lifecycle.doOnCreate(::call)
-            assertCalledOnce()
             lifecycle.moveTo(IN_FOREGROUND)
+            assertCalledOnce()
             lifecycle.moveTo(CREATED)
             lifecycle.moveTo(DESTROYED)
             assertCalledOnce()
