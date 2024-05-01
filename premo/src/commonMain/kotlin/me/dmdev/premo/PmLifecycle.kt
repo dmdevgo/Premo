@@ -124,7 +124,7 @@ class PmLifecycle internal constructor() {
         val oldState = state
         state = newState
 
-        observers.forEach { observer ->
+        observers.forEachSafe { observer ->
             observer.onLifecycleChange(oldState, newState)
         }
 

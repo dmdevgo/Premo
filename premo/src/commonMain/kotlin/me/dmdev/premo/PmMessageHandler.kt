@@ -72,7 +72,7 @@ class PmMessageHandler internal constructor(
 
         fun PresentationModel.findTarget(tag: String): PresentationModel? {
             if (this.tag == tag) return this
-            allChildren.forEach { pm ->
+            allChildren.forEachSafe { pm ->
                 val targetPm = pm.findTarget(tag)
                 if (targetPm != null) return targetPm
             }
@@ -96,7 +96,7 @@ class PmMessageHandler internal constructor(
         if (hostPm.lifecycle.isDestroyed) return false
 
         fun PresentationModel.handleMessage(message: PmMessage): Boolean {
-            allChildren.reversed().forEach { pm ->
+            allChildren.reversed().forEachSafe { pm ->
                 if (pm.handleMessage(message)) {
                     return true
                 }

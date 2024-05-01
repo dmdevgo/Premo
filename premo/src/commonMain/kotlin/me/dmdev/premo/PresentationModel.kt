@@ -126,7 +126,7 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
         if (lifecycle.isDestroyed) return
 
         stateHandler.saveState()
-        allChildren.forEach { it.saveState() }
+        allChildren.forEachSafe { it.saveState() }
     }
 
     private fun createMainScope(): CoroutineScope {
@@ -152,7 +152,7 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
     private fun subscribeToLifecycle() {
         lifecycle.addObserver { _, newState ->
 
-            attachedChildren.forEach { pm ->
+            attachedChildren.forEachSafe { pm ->
                 pm.lifecycle.moveTo(newState)
             }
 
@@ -168,13 +168,13 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
                 CREATED -> {
                     inForegroundScope?.cancel()
                     inForegroundScope = null
-                    children.forEach { pm ->
+                    children.forEachSafe { pm ->
                         pm.lifecycle.moveTo(CREATED)
                     }
                 }
 
                 DESTROYED -> {
-                    children.forEach { pm ->
+                    children.forEachSafe { pm ->
                         pm.lifecycle.moveTo(DESTROYED)
                     }
                     release()
