@@ -1,3 +1,12 @@
+# 1.0.0-alpha.15 / 01.05.2024
+- Added wasm target.
+- Added `INITIALIZED` state for `PmLifecycle`.
+- Update libraries:
+  - Kotlin 1.9.23
+  - Compose Multiplatform 1.6.1
+  - kotlinx-coroutines 1.8.0
+  - kotlinx-serialization 1.6.3 
+
 # 1.0.0-alpha.14 / 05.02.2024
 - Fixed `DialogGroupNavigator` and `DialogGroupNavigationHost`.
 - Removed sender tag from `PmMessage`.`PmMessage` is the interface again.

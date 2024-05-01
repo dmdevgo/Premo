@@ -6,6 +6,7 @@
 ![platform-ios](https://img.shields.io/badge/platform-ios-lightgray)
 ![platform-jvm](https://img.shields.io/badge/platform-jvm-orange)
 ![platform-js](https://img.shields.io/badge/platform-js-yellow)
+![platform-wasm](https://img.shields.io/badge/platform-wasm-red)
 
 Premo is a Kotlin Multiplatform library that helps to implement the Presentation Layer and share it on Android, iOS, Desktop and Web. Focus on writing logic instead of solving common and boring UI related issues.
 
