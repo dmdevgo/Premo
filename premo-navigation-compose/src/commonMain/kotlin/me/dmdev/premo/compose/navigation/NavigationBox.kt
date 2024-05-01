@@ -68,34 +68,15 @@ fun NavigationBox(
 ) {
     val stateHolder = rememberSaveableStateHolder()
 
-    fun removePms(pms: List<PresentationModel>) {
-        pms.forEach {
+    LaunchedEffect(backStackChange) {
+        backStackChange.removedPms.forEach {
             stateHolder.removeState(it.tag)
         }
     }
 
-    val pm = when (backStackChange) {
-        is BackStackChange.Push -> {
-            removePms(backStackChange.removedPms)
-            backStackChange.enterPm
-        }
-
-        is BackStackChange.Pop -> {
-            removePms(backStackChange.removedPms)
-            backStackChange.enterPm
-        }
-
-        is BackStackChange.Set -> {
-            removePms(backStackChange.removedPms)
-            backStackChange.pm
-        }
-
-        is BackStackChange.Nothing -> null
-    }
-
     Box(modifier) {
-        stateHolder.SaveableStateProvider(pm?.tag ?: "") {
-            content(pm)
+        stateHolder.SaveableStateProvider(backStackChange.enterPm?.tag ?: "") {
+            content(backStackChange.enterPm)
         }
     }
 }
@@ -163,7 +144,7 @@ fun AnimatedNavigationBox(
                 }
 
                 is BackStackChange.Set -> {
-                    setTransition(backStackChange.pm) togetherWith ExitTransition.None
+                    setTransition(backStackChange.enterPm) togetherWith ExitTransition.None
                 }
 
                 else -> {

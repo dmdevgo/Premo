@@ -29,22 +29,37 @@ import me.dmdev.premo.annotation.ExperimentalPremoApi
 
 @ExperimentalPremoApi
 sealed class BackStackChange {
+
+    abstract val enterPm: PresentationModel?
+    abstract val exitPm: PresentationModel?
+    abstract val removedPms: List<PresentationModel>
+
     data class Push(
-        val enterPm: PresentationModel,
-        val exitPm: PresentationModel,
-        val removedPms: List<PresentationModel>
+        override val enterPm: PresentationModel,
+        override val exitPm: PresentationModel,
+        override val removedPms: List<PresentationModel>
     ) : BackStackChange()
 
     data class Pop(
-        val enterPm: PresentationModel,
-        val exitPm: PresentationModel,
-        val removedPms: List<PresentationModel>
+        override val enterPm: PresentationModel,
+        override val exitPm: PresentationModel,
+        override val removedPms: List<PresentationModel>
     ) : BackStackChange()
 
     data class Set(
-        val pm: PresentationModel,
-        val removedPms: List<PresentationModel>
-    ) : BackStackChange()
+        override val enterPm: PresentationModel,
+        override val removedPms: List<PresentationModel>
+    ) : BackStackChange() {
+        override val exitPm: PresentationModel?
+            get() = null
+    }
 
-    data object Nothing : BackStackChange()
+    data object Nothing : BackStackChange() {
+        override val enterPm: PresentationModel?
+            get() = null
+        override val exitPm: PresentationModel?
+            get() = null
+        override val removedPms: List<PresentationModel>
+            get() = emptyList()
+    }
 }
