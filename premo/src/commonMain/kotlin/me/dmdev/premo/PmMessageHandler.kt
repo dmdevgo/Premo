@@ -24,6 +24,7 @@
 
 package me.dmdev.premo
 
+import me.dmdev.premo.annotation.DelicatePremoApi
 import me.dmdev.premo.annotation.ExperimentalPremoApi
 
 class PmMessageHandler internal constructor(
@@ -92,6 +93,7 @@ class PmMessageHandler internal constructor(
      * If the message is not processed by any child, the message will be intercepted by the sender.
      */
     @ExperimentalPremoApi
+    @DelicatePremoApi
     fun sendToChildren(message: PmMessage): Boolean {
         if (hostPm.lifecycle.isDestroyed) return false
 
