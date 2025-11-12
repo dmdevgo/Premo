@@ -1,13 +1,13 @@
 [versions]
 agp = "8.13.1"
 # https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "1.9.24"
+kotlin = "2.2.21"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
-coroutines = "1.8.1"
+coroutines = "1.10.2"
 # https://github.com/Kotlin/kotlinx.serialization/releases
-kotlinx-serialization = "1.6.3"
+kotlinx-serialization = "1.9.0"
 # https://github.com/JetBrains/compose-multiplatform/releases
-compose-multiplatform = "1.6.11"
+compose-multiplatform = "1.9.3"
 ktlint = "11.3.1"
 
 [plugins]
@@ -19,6 +19,7 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+jetbrains-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 
 [libraries]
@@ -40,10 +41,9 @@ kotlin-wrappers-emotion = { group = "org.jetbrains.kotlin-wrappers", name = "kot
 kotlin-wrappers-mui = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui", version = "5.11.2-pre.545" }
 kotlin-wrappers-mui-icons = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-icons", version = "5.11.11-pre.545" }
 
-androidx-window = { group = "androidx.window", name = "window", version = "1.3.0" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
+androidx-window = { group = "androidx.window", name = "window", version = "1.5.0" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.1" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.11.0" }
 
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.9.0" }
-
-bundlizer = { group = "dev.ahmedmourad.bundlizer", name = "bundlizer-core", version = "0.7.0" }
+bundlizer = { group = "dev.ahmedmourad.bundlizer", name = "bundlizer-core", version = "0.8.0" }
 parcelable-core = { group = "com.chrynan.parcelable", name = "parcelable-core", version = "0.6.0" }

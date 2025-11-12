@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2025 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,8 +61,8 @@ class AndroidConfigurationPlugin : Plugin<Project> {
 
     companion object {
         private const val ANDROID_SDK_MIN = 21
-        private const val ANDROID_SDK_COMPILE = 34
-        private const val ANDROID_SDK_TARGET = 34
+        private const val ANDROID_SDK_COMPILE = 36
+        private const val ANDROID_SDK_TARGET = 36
     }
 }
 

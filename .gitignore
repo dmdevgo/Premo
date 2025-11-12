@@ -9,6 +9,9 @@ local.properties
 .idea/
 **/*.iml
 
+# Kotlin
+.kotlin/
+
 # Mac OS
 .DS_Store
 

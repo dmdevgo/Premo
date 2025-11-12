@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2025 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ package me.dmdev.premo.plugin
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
@@ -37,9 +38,7 @@ class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
         target.kotlin {
             androidTarget {
                 compilations.all {
-                    kotlinOptions {
-                        jvmTarget = "1.8"
-                    }
+                    compilerOptions.options.jvmTarget.set(JvmTarget.fromTarget("1.8"))
                 }
             }
             iosX64()
@@ -47,9 +46,7 @@ class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
             iosSimulatorArm64()
             jvm {
                 compilations.all {
-                    kotlinOptions {
-                        jvmTarget = "1.8"
-                    }
+                    compilerOptions.options.jvmTarget.set(JvmTarget.fromTarget("1.8"))
                 }
             }
             js(IR) {
