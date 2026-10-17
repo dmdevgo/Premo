@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,29 +25,22 @@
 package me.dmdev.premo.sample.savers
 
 import android.os.Bundle
-import com.chrynan.parcelable.core.Parcelable
-import com.chrynan.parcelable.core.getParcelable
-import com.chrynan.parcelable.core.putParcelable
-import kotlinx.serialization.ExperimentalSerializationApi
+import dev.ahmedmourad.bundlizer.Bundlizer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 import me.dmdev.premo.sample.serialization.Serializers
 import me.dmdev.premo.saver.PmStateSaver
 import kotlin.reflect.KType
 
-class ParcelablePmStateSaver(
-    private val bundle: Bundle
-) : PmStateSaver {
+@Suppress("SpellCheckingInspection")
+class BundlizerPmStateSaver(private val bundle: Bundle) : PmStateSaver {
 
-    @OptIn(ExperimentalSerializationApi::class)
     override fun <T> saveState(key: String, kType: KType, value: T?) {
-        @Suppress("UNCHECKED_CAST")
         if (value != null) {
-            bundle.putParcelable(
-                key = key,
-                value = value,
-                serializer = serializer(kType) as KSerializer<T>,
-                parcelable = parcelable
+            @Suppress("UNCHECKED_CAST")
+            bundle.putBundle(
+                key,
+                Bundlizer.bundle(serializer(kType) as KSerializer<T>, value, Serializers.module)
             )
         } else {
             bundle.remove(key)
@@ -55,23 +48,9 @@ class ParcelablePmStateSaver(
     }
 
     override fun <T> restoreState(key: String, kType: KType): T? {
-        return restore(key, kType)
-    }
-
-    @OptIn(ExperimentalSerializationApi::class)
-    private fun <T : Any> restore(key: String, kType: KType): T? {
         @Suppress("UNCHECKED_CAST")
-        return bundle.getParcelable(
-            key = key,
-            deserializer = serializer(kType) as KSerializer<T>,
-            parcelable = parcelable
-        )
-    }
-
-    companion object {
-        @OptIn(ExperimentalSerializationApi::class)
-        val parcelable = Parcelable {
-            serializersModule = Serializers.module
+        return bundle.getBundle(key)?.let { bundle ->
+            Bundlizer.unbundle(serializer(kType) as KSerializer<T>, bundle, Serializers.module)
         }
     }
 }

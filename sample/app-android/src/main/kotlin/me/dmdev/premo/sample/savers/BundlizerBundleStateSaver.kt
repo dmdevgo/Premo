@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import android.os.Bundle
 import me.dmdev.premo.saver.BundleStateSaver
 import me.dmdev.premo.saver.PmStateSaver
 
-class ParcelableBundleStateSaver : BundleStateSaver {
+class BundlizerBundleStateSaver : BundleStateSaver {
 
     private var bundles = Bundle()
 
@@ -44,7 +44,7 @@ class ParcelableBundleStateSaver : BundleStateSaver {
         val bundle = bundles.getBundle(key) ?: Bundle().also {
             bundles.putBundle(key, it)
         }
-        return ParcelablePmStateSaver(bundle)
+        return BundlizerPmStateSaver(bundle)
     }
 
     override fun deletePmStateSaver(key: String) {

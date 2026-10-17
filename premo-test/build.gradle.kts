@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,18 @@
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.ktlint)
-    id("me.dmdev.premo.plugin.android")
     id("me.dmdev.premo.plugin.kmp")
     id("me.dmdev.premo.plugin.publish")
 }
 
 kotlin {
+
+    android {
+        namespace = "me.dmdev.premo.test"
+    }
+
     sourceSets {
         commonMain {
             dependencies {
@@ -41,8 +45,4 @@ kotlin {
             }
         }
     }
-}
-
-android {
-    namespace = "me.dmdev.premo.test"
 }

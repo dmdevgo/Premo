@@ -50,16 +50,19 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.jetbrains.compose.compiler)
-    alias(libs.plugins.android.library)
     alias(libs.plugins.ktlint)
-    id("me.dmdev.premo.plugin.android")
     id("me.dmdev.premo.plugin.kmp")
     id("me.dmdev.premo.plugin.publish")
 }
 
 kotlin {
+
+    android {
+        namespace = "me.dmdev.premo.compose"
+    }
 
     jvm {
         compilations.all {
@@ -78,8 +81,4 @@ kotlin {
             }
         }
     }
-}
-
-android {
-    namespace = "me.dmdev.premo.compose"
 }

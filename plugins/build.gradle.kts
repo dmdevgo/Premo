@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,6 @@ dependencies {
 
 gradlePlugin {
     plugins {
-        create("PremoAndroidPlugin") {
-            id = "me.dmdev.premo.plugin.android"
-            implementationClass = "me.dmdev.premo.plugin.AndroidConfigurationPlugin"
-        }
         create("PremoKotlinMultiplatformPlugin") {
             id = "me.dmdev.premo.plugin.kmp"
             implementationClass =

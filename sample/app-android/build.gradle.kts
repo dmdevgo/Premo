@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,32 @@
  * SOFTWARE.
  */
 
-package me.dmdev.premo.sample.savers
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.compose.compiler)
+    alias(libs.plugins.ktlint)
+}
 
-import android.os.Bundle
-import dev.ahmedmourad.bundlizer.Bundlizer
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.serializer
-import me.dmdev.premo.sample.serialization.Serializers
-import me.dmdev.premo.saver.PmStateSaver
-import kotlin.reflect.KType
-
-@Suppress("SpellCheckingInspection")
-class BundlizerPmStateSaver(private val bundle: Bundle) : PmStateSaver {
-
-    override fun <T> saveState(key: String, kType: KType, value: T?) {
-        if (value != null) {
-            @Suppress("UNCHECKED_CAST")
-            bundle.putBundle(
-                key,
-                Bundlizer.bundle(serializer(kType) as KSerializer<T>, value, Serializers.module)
-            )
-        } else {
-            bundle.remove(key)
-        }
+android {
+    namespace = "me.dmdev.premo.sample"
+    compileSdk = 37
+    defaultConfig {
+        applicationId = "me.dmdev.premo.sample"
+        minSdk = 26
+        versionCode = 1
+        versionName = "1.0"
     }
 
-    override fun <T> restoreState(key: String, kType: KType): T? {
-        @Suppress("UNCHECKED_CAST")
-        return bundle.getBundle(key)?.let { bundle ->
-            Bundlizer.unbundle(serializer(kType) as KSerializer<T>, bundle, Serializers.module)
-        }
+    buildFeatures {
+        compose = true
     }
+}
+
+dependencies {
+    implementation(project(":sample:app-compose"))
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.window)
+    implementation(libs.bundlizer)
+    implementation(libs.parcelable.core)
 }

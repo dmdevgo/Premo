@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,39 +25,53 @@
 package me.dmdev.premo.sample.savers
 
 import android.os.Bundle
+import com.chrynan.parcelable.core.Parcelable
+import com.chrynan.parcelable.core.getParcelable
+import com.chrynan.parcelable.core.putParcelable
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
-import me.dmdev.premo.sample.serialization.ProtoBufPmStateSaver
-import me.dmdev.premo.sample.serialization.Serializers.protoBuf
-import me.dmdev.premo.saver.BundleStateSaver
+import me.dmdev.premo.sample.serialization.Serializers
 import me.dmdev.premo.saver.PmStateSaver
+import kotlin.reflect.KType
 
-class ProtoBufBundleStateSaver : BundleStateSaver {
-
-    private var pmStates = mutableMapOf<String, MutableMap<String, ByteArray>>()
-
-    @OptIn(ExperimentalSerializationApi::class)
-    override fun save(outState: Bundle) {
-        outState.putByteArray(PM_STATE_KEY, protoBuf.encodeToByteArray(serializer(), pmStates))
-    }
+class ParcelablePmStateSaver(
+    private val bundle: Bundle
+) : PmStateSaver {
 
     @OptIn(ExperimentalSerializationApi::class)
-    override fun restore(savedState: Bundle?) {
-        savedState?.getByteArray(PM_STATE_KEY)?.let { byteArray ->
-            pmStates = protoBuf.decodeFromByteArray(serializer(), byteArray)
+    override fun <T> saveState(key: String, kType: KType, value: T?) {
+        @Suppress("UNCHECKED_CAST")
+        if (value != null) {
+            bundle.putParcelable(
+                key = key,
+                value = value,
+                serializer = serializer(kType) as KSerializer<T>,
+                parcelable = parcelable
+            )
+        } else {
+            bundle.remove(key)
         }
     }
 
-    override fun createPmStateSaver(key: String): PmStateSaver {
-        val map = pmStates[key] ?: mutableMapOf<String, ByteArray>().also { pmStates[key] = it }
-        return ProtoBufPmStateSaver(map)
+    override fun <T> restoreState(key: String, kType: KType): T? {
+        return restore(key, kType)
     }
 
-    override fun deletePmStateSaver(key: String) {
-        pmStates.remove(key)
+    @OptIn(ExperimentalSerializationApi::class)
+    private fun <T : Any> restore(key: String, kType: KType): T? {
+        @Suppress("UNCHECKED_CAST")
+        return bundle.getParcelable(
+            key = key,
+            deserializer = serializer(kType) as KSerializer<T>,
+            parcelable = parcelable
+        )
     }
 
     companion object {
-        private const val PM_STATE_KEY = "pm_state"
+        @OptIn(ExperimentalSerializationApi::class)
+        val parcelable = Parcelable {
+            serializersModule = Serializers.module
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2025 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,34 +24,37 @@
 
 package me.dmdev.premo.plugin
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
 
-    @OptIn(ExperimentalWasmDsl::class)
-    override fun apply(target: Project) {
-        target.kotlin {
-            androidTarget {
-                compilations.all {
-                    compilerOptions.options.jvmTarget.set(JvmTarget.fromTarget("1.8"))
+    override fun apply(project: Project) {
+        project.kotlin {
+            android {
+                compileSdk = 37
+                minSdk = 21
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_1_8)
                 }
             }
             iosX64()
             iosArm64()
             iosSimulatorArm64()
             jvm {
-                compilations.all {
-                    compilerOptions.options.jvmTarget.set(JvmTarget.fromTarget("1.8"))
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_1_8)
                 }
             }
             js(IR) {
                 browser()
             }
+            @OptIn(ExperimentalWasmDsl::class)
             wasmJs {
                 browser()
             }
@@ -62,4 +65,8 @@ class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
 
 internal fun Project.kotlin(configure: Action<KotlinMultiplatformExtension>) {
     extensions.configure("kotlin", configure)
+}
+
+internal fun KotlinMultiplatformExtension.android(configure: Action<KotlinMultiplatformAndroidLibraryTarget>) {
+    extensions.configure("android", configure)
 }
