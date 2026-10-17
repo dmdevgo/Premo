@@ -48,7 +48,7 @@ class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
             iosSimulatorArm64()
             jvm {
                 compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_1_8)
+                    jvmTarget.set(JvmTarget.JVM_11)
                 }
             }
             js(IR) {
