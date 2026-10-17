@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,41 +22,28 @@
  * SOFTWARE.
  */
 
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package me.dmdev.premo.sample
 
-import androidx.compose.desktop.ui.tooling.preview.*
+import androidx.compose.ui.*
 import androidx.compose.ui.window.*
-import me.dmdev.premo.JvmPmDelegate
-import me.dmdev.premo.annotation.ExperimentalPremoApi
-import me.dmdev.premo.compose.attachWindowLifecycle
-import me.dmdev.premo.sample.serialization.Serializers
-import me.dmdev.premo.saver.JsonFileStateSaver
+import me.dmdev.premo.PmDelegate
+import me.dmdev.premo.sample.WindowSizeClass.Expanded
+import me.dmdev.premo.saver.NoPmStateSaverFactory
 
-@OptIn(ExperimentalPremoApi::class)
-@Preview
+@OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    val pmDelegate = JvmPmDelegate<MainPm>(
+    val pmDelegate = PmDelegate<MainPm>(
         pmArgs = MainPm.Args,
         pmFactory = MainPmFactory(),
-        pmStateSaver = JsonFileStateSaver(Serializers.json)
+        pmStateSaverFactory = NoPmStateSaverFactory
     )
 
-    application {
-        val windowState = rememberWindowState()
-        val windowSizes = windowSizes(windowState.size.width, windowState.size.height)
-        pmDelegate.attachWindowLifecycle(windowState)
+    pmDelegate.onCreate()
+    pmDelegate.onForeground()
 
-        fun ApplicationScope.onCloseWindow() {
-            pmDelegate.onSaveState()
-            exitApplication()
-        }
-
-        Window(
-            onCloseRequest = ::onCloseWindow,
-            title = "Premo",
-            state = windowState
-        ) {
-            App(pmDelegate.presentationModel, windowSizes)
-        }
+    ComposeViewport {
+        App(pmDelegate.presentationModel, WindowSizes(Expanded, Expanded))
     }
 }

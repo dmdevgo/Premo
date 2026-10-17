@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,28 +22,35 @@
  * SOFTWARE.
  */
 
-@file:OptIn(ExperimentalComposeUiApi::class)
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
-package me.dmdev.premo.sample
+plugins {
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.jetbrains.compose.compiler)
+    alias(libs.plugins.ktlint)
+}
 
-import androidx.compose.ui.*
-import androidx.compose.ui.window.*
-import me.dmdev.premo.JsPmDelegate
-import me.dmdev.premo.sample.WindowSizeClass.Expanded
-import me.dmdev.premo.sample.serialization.Serializers
-import me.dmdev.premo.saver.JsonStateSaver
-import org.jetbrains.skiko.wasm.onWasmReady
+kotlin {
 
-fun main() {
-    val pmDelegate = JsPmDelegate<MainPm>(
-        pmArgs = MainPm.Args,
-        pmFactory = MainPmFactory(),
-        pmStateSaver = JsonStateSaver(Serializers.json)
-    )
+    js(IR) {
+        browser()
+        binaries.executable()
+    }
 
-    onWasmReady {
-        CanvasBasedWindow("Premo Sample") {
-            App(pmDelegate.presentationModel, WindowSizes(Expanded, Expanded))
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        binaries.executable()
+    }
+
+    sourceSets {
+
+        commonMain {
+            dependencies {
+                implementation(project(":sample:app-compose"))
+            }
         }
     }
 }
+
