@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,24 +25,16 @@
 package me.dmdev.premo.sample
 
 import androidx.compose.runtime.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
-import me.dmdev.premo.annotation.ExperimentalPremoApi
+import androidx.compose.ui.window.*
+import me.dmdev.premo.sample.WindowSizeClass.Compact
 
-@ExperimentalPremoApi
-@Composable
-fun <T> StateFlow<T>.bind(): T {
-    return collectAsState().value
-}
-
-@ExperimentalPremoApi
-@Composable
-fun <T> Flow<T>.bind(): T? {
-    return collectAsState(null).value
-}
-
-@ExperimentalPremoApi
-@Composable
-fun <T> Flow<T>.bind(initialValue: T): T {
-    return collectAsState(initialValue).value
+@Suppress("FunctionName")
+fun MainViewController() = ComposeUIViewController {
+    val delegate = remember {
+        PremoSample.createPmDelegate().apply {
+            onCreate()
+            onForeground()
+        }
+    }
+    App(delegate.presentationModel, WindowSizes(Compact, Compact))
 }

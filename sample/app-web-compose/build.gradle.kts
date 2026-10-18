@@ -48,7 +48,7 @@ kotlin {
 
         commonMain {
             dependencies {
-                implementation(project(":sample:app-compose"))
+                implementation(project(":sample:app-common-compose"))
             }
         }
     }

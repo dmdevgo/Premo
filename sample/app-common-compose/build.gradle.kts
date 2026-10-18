@@ -61,7 +61,7 @@ plugins {
 kotlin {
 
     android {
-        namespace = "me.dmdev.premo.sample.common"
+        namespace = "me.dmdev.premo.sample.common.compose"
     }
 
     jvm()

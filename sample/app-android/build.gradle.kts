@@ -44,7 +44,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":sample:app-compose"))
+    implementation(project(":sample:app-common-compose"))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.window)

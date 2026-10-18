@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,17 +24,32 @@
 
 package me.dmdev.premo.sample
 
-import androidx.compose.material.*
 import androidx.compose.runtime.*
-import me.dmdev.premo.sample.screen.MainScreen
+import androidx.compose.ui.unit.*
 
-@Composable
-fun App(
-    pm: MainPm,
-    windowSizes: WindowSizes
-) {
-    LocalWindowSizes.current.value = windowSizes
-    MaterialTheme {
-        MainScreen(pm)
+enum class WindowSizeClass { Compact, Medium, Expanded }
+
+data class WindowSizes(
+    val widthSizeClass: WindowSizeClass,
+    val heightSizeClass: WindowSizeClass
+)
+
+val LocalWindowSizes = staticCompositionLocalOf {
+    mutableStateOf(WindowSizes(WindowSizeClass.Compact, WindowSizeClass.Compact))
+}
+
+fun windowSizes(width: Dp, height: Dp): WindowSizes {
+    val widthWindowSizeClass = when {
+        width < 600.dp -> WindowSizeClass.Compact
+        width < 840.dp -> WindowSizeClass.Medium
+        else -> WindowSizeClass.Expanded
     }
+
+    val heightWindowSizeClass = when {
+        height < 480.dp -> WindowSizeClass.Compact
+        height < 900.dp -> WindowSizeClass.Medium
+        else -> WindowSizeClass.Expanded
+    }
+
+    return WindowSizes(widthWindowSizeClass, heightWindowSizeClass)
 }
