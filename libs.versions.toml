@@ -1,13 +1,13 @@
 [versions]
 agp = "9.4.0"
 # https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "2.2.21"
+kotlin = "2.4.21"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
-coroutines = "1.10.2"
+coroutines = "1.11.0"
 # https://github.com/Kotlin/kotlinx.serialization/releases
-kotlinx-serialization = "1.9.0"
+kotlinx-serialization = "1.11.0"
 # https://github.com/JetBrains/compose-multiplatform/releases
-compose-multiplatform = "1.9.3"
+compose-multiplatform = "1.12.1"
 ktlint = "11.3.1"
 
 [plugins]
@@ -43,9 +43,9 @@ kotlin-wrappers-emotion = { group = "org.jetbrains.kotlin-wrappers", name = "kot
 kotlin-wrappers-mui = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui", version = "5.11.2-pre.545" }
 kotlin-wrappers-mui-icons = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-icons", version = "5.11.11-pre.545" }
 
-androidx-window = { group = "androidx.window", name = "window", version = "1.5.0" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.1" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.11.0" }
+androidx-window = { group = "androidx.window", name = "window", version = "1.5.1" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.8.0" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.13.0" }
 
 bundlizer = { group = "dev.ahmedmourad.bundlizer", name = "bundlizer-core", version = "0.8.0" }
 parcelable-core = { group = "com.chrynan.parcelable", name = "parcelable-core", version = "0.6.0" }

@@ -40,10 +40,9 @@ class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
                 compileSdk = 37
                 minSdk = 21
                 compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_1_8)
+                    jvmTarget.set(JvmTarget.JVM_11)
                 }
             }
-            iosX64()
             iosArm64()
             iosSimulatorArm64()
             jvm {
@@ -51,7 +50,7 @@ class KotlinMultiplatformConfigurationPlugin : Plugin<Project> {
                     jvmTarget.set(JvmTarget.JVM_11)
                 }
             }
-            js(IR) {
+            js {
                 browser()
             }
             @OptIn(ExperimentalWasmDsl::class)
