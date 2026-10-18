@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,17 @@
 
 package me.dmdev.premo.sample
 
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.serialization.Serializable
 import me.dmdev.premo.PmArgs
+import me.dmdev.premo.PresentationModel
 import me.dmdev.premo.SaveableFlow
-import me.dmdev.premo.SingleStatePresentationModel
-import me.dmdev.premo.sample.CounterPm.State
 
 class CounterPm(
     args: Args
-) : SingleStatePresentationModel<State>(args) {
+) : PresentationModel(args) {
 
     @Serializable
     data class Args(val maxCount: Int) : PmArgs() {
@@ -48,22 +50,27 @@ class CounterPm(
         val minusEnabled: Boolean get() = count > 0
     }
 
-    override val mutableStateFlow = SaveableFlow(
-        key = "count",
-        initialValue = State(maxCount = args.maxCount, count = 0)
-    )
+     val stateFlow: StateFlow<State>
+        field : MutableStateFlow<State> = SaveableFlow(
+            key = "count",
+            initialValue = State(maxCount = args.maxCount, count = 0)
+        )
 
     fun plus() {
-        state = state.copy(
-            count = state.count + 1
-        )
+        stateFlow.update { state ->
+            state.copy(
+                count = state.count + 1
+            )
+        }
     }
 
     fun minus() {
-        if (state.count > 0) {
-            mutableStateFlow.value = state.copy(
-                count = state.count - 1
-            )
+        if (stateFlow.value.count > 0) {
+            stateFlow.update { state ->
+                state.copy(
+                    count = state.count - 1
+                )
+            }
         }
     }
 }

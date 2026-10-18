@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,6 @@ object TestPmFactory : PmFactory {
     override fun createPresentationModel(args: PmArgs): PresentationModel {
         return when (args) {
             is TestPm.Args -> TestPm(args)
-            is TestSingleStatePm.Args -> TestSingleStatePm(args)
             else -> throw IllegalArgumentException("Not handled instance creation for pm args $args")
         }
     }
