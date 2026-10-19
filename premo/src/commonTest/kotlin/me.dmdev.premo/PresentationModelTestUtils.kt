@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,6 +55,9 @@ suspend fun <PM : PresentationModel> runPmTest(
 
     try {
         when (initialPmLifecycleState) {
+            PmLifecycle.State.INITIALIZED -> { /* do nothing */
+            }
+
             PmLifecycle.State.CREATED -> {
                 pmTestContext.onCreate()
             }
@@ -64,7 +67,7 @@ suspend fun <PM : PresentationModel> runPmTest(
                 pmTestContext.onForeground()
             }
 
-            else -> throw IllegalArgumentException("Initial PM lifecycle state should be CREATED or IN FOREGROUND")
+            else -> throw IllegalArgumentException("Initial PM lifecycle state should be INITIALIZED OR CREATED or IN FOREGROUND")
         }
 
         testBody.invoke(pmTestContext)

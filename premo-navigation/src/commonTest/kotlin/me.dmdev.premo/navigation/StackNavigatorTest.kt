@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 package me.dmdev.premo.navigation
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -342,6 +343,7 @@ class StackNavigatorTest {
         val navigator: StackNavigator = pm.StackNavigator()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun runStackNavigationTest(
         pmStateSaverFactory: PmStateSaverFactory = NoPmStateSaverFactory,
         testDispatcher: TestDispatcher = UnconfinedTestDispatcher(),

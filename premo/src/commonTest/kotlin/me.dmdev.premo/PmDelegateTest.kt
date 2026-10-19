@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,11 @@
 
 package me.dmdev.premo
 
+import kotlinx.coroutines.test.runTest
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
+import me.dmdev.premo.PmLifecycle.State.INITIALIZED
 import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
-import me.dmdev.premo.saver.NoPmStateSaverFactory
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -36,64 +36,62 @@ import kotlin.test.assertNull
 
 class PmDelegateTest {
 
-    private lateinit var pmFactory: TestPmFactory
-    private lateinit var delegate: PmDelegate<TestPm>
-
-    @BeforeTest
-    fun setUp() {
-        pmFactory = TestPmFactory
-        delegate = PmDelegate(
-            pmArgs = TestPm.Args("root"),
-            pmFactory = pmFactory,
-            pmStateSaverFactory = NoPmStateSaverFactory
-        )
-    }
-
     @Test
-    fun testNoInteractions() {
-        val pm = delegate.presentationModel
+    fun testNoInteractions() = runPmTest {
         assertNotNull(pm)
         assertEquals(pm, PmStore[pm.tag])
     }
 
     @Test
-    fun testOnCreate() {
-        val pm = delegate.presentationModel
-        delegate.onCreate()
-        assertEquals(pm.lifecycle.state, CREATED)
+    fun testOnCreate() = runPmTest {
+        pmDelegate.onCreate()
+        assertEquals(CREATED, pm.lifecycle.state)
         assertNotNull(PmStore[pm.tag])
     }
 
     @Test
-    fun testOnForeground() {
-        val pm = delegate.presentationModel
-        delegate.onCreate()
-        delegate.onForeground()
+    fun testOnForeground() = runPmTest {
+        pmDelegate.onCreate()
+        pmDelegate.onForeground()
 
-        assertEquals(pm.lifecycle.state, IN_FOREGROUND)
+        assertEquals(IN_FOREGROUND, pm.lifecycle.state)
         assertNotNull(PmStore[pm.tag])
     }
 
     @Test
-    fun testOnBackground() {
-        val pm = delegate.presentationModel
-        delegate.onCreate()
-        delegate.onForeground()
-        delegate.onBackground()
+    fun testOnBackground() = runPmTest {
+        pmDelegate.onCreate()
+        pmDelegate.onForeground()
+        pmDelegate.onBackground()
 
-        assertEquals(pm.lifecycle.state, CREATED)
+        assertEquals(CREATED, pm.lifecycle.state)
         assertNotNull(PmStore[pm.tag])
     }
 
     @Test
-    fun testOnDestroy() {
-        val pm = delegate.presentationModel
-        delegate.onCreate()
-        delegate.onForeground()
-        delegate.onBackground()
-        delegate.onDestroy()
+    fun testOnDestroy() = runPmTest {
+        pmDelegate.onCreate()
+        pmDelegate.onForeground()
+        pmDelegate.onBackground()
+        pmDelegate.onDestroy()
 
-        assertEquals(pm.lifecycle.state, DESTROYED)
+        assertEquals(DESTROYED, pm.lifecycle.state)
         assertNull(PmStore[pm.tag])
+    }
+
+    private fun runPmTest(
+        testBody: suspend PmTestContext<TestPm>.() -> Unit
+    ) = runTest {
+        runPmTest(
+            pmArgs = TestPm.Args(ROOT_KEY),
+            pmFactory = TestPmFactory,
+            pmStateSaverFactory = TestPmStateSaverFactory,
+            initialPmLifecycleState = INITIALIZED,
+            testBody = testBody
+        )
+    }
+
+    companion object {
+        private const val ROOT_KEY = "root"
     }
 }

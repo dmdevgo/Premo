@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ import me.dmdev.premo.saver.PmStateSaverFactory
 interface PmTestContext<PM : PresentationModel> {
     val testDispatcher: CoroutineDispatcher
     val pm: PM
+    val pmDelegate: PmDelegate<PM>
     fun onCreate()
     fun onForeground()
     fun onBackground()
@@ -48,7 +49,7 @@ internal class PmTestContextImpl<PM : PresentationModel>(
     override val testDispatcher: CoroutineDispatcher
 ) : PmTestContext<PM> {
 
-    private val pmDelegate: PmDelegate<PM> = PmDelegate(
+    override val pmDelegate: PmDelegate<PM> = PmDelegate(
         pmArgs = pmArgs,
         pmFactory = pmFactory,
         pmStateSaverFactory = pmStateSaverFactory
