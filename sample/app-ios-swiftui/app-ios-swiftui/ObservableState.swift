@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,39 +26,34 @@
 import Foundation
 import Common
 
-public class ObservableState<T : AnyObject> : ObservableObject {
+public final class ObservableState<T : AnyObject> : ObservableObject {
     
     private let observableState: FlowWrapper<T>
 
     @Published
     var value: T?
     
-    @Published
-    var isNotNil: Bool
-    
     private var cancelable: Cancelable? = nil
     
     init(_ value: StateFlow) {
-        self.isNotNil = false
         self.observableState = FlowWrapper<T>(flow: value)
         self.value = value.value as? T
-        cancelable = observableState.bind(consumer: { value in
-            self.isNotNil = value != nil
-            self.value = value
-        })
+        setupBinding()
     }
     
     init(initialValue: T, flow: Flow) {
-        self.isNotNil = false
         self.observableState = FlowWrapper<T>(flow: flow)
         self.value = initialValue
-        cancelable = observableState.bind(consumer: { value in
-            self.isNotNil = value != nil
-            self.value = value
-        })
+        setupBinding()
     }
 
-    
+    private func setupBinding() {
+        cancelable = observableState.bind { [weak self] value in
+            guard let self = self else { return }
+            self.value = value
+        }
+    }
+
     deinit {
         self.cancelable?.cancel()
     }

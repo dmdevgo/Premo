@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2023 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ class FlowWrapper<T>(
 
     fun bind(consumer: (T) -> Unit): Cancelable {
         val job = Job()
-        onEach { consumer(it) }.launchIn(CoroutineScope(Dispatchers.Main + job))
+        onEach { consumer(it) }.launchIn(CoroutineScope(Dispatchers.Main.immediate + job))
         return object : Cancelable {
             override fun cancel() {
                 job.cancel()

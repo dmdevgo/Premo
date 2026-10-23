@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,12 @@ struct DialogNavigationView: View {
     @ObservedObject
     private var dialog: ObservableState<PresentationModel>
     
+    private var alertDialog: AlertDialogPm<AnyObject>? {
+        get {
+            return dialog.value as? AlertDialogPm<AnyObject>
+        }
+    }
+    
     init(pm: DialogNavigationPm) {
         self.pm = pm
         self.dialog = ObservableState<PresentationModel>(pm.dialogGroupNavigation.dialogFlow)
@@ -47,12 +53,12 @@ struct DialogNavigationView: View {
                 Button("Show simple dialog", action: {
                     pm.onSimpleDialogClick()
                 })
-                    .padding()
+                .padding()
                 
                 Button("Show dialog for result", action: {
                     pm.onSimpleDialogForResultClick()
                 })
-                    .padding()
+                .padding()
                 
                 Spacer()
             }
@@ -64,17 +70,23 @@ struct DialogNavigationView: View {
             }){
                 Image(systemName: "arrow.left")
             })
-            .alert(isPresented: $dialog.isNotNil) {
-                let dialogPm = dialog.value as? AlertDialogPm<AnyObject>
+            .alert(
+                isPresented: Binding(
+                    get: {
+                        return alertDialog != nil
+                    },
+                    set: { isPresented in }
+                )
+            ) {
                 return Alert(
-                    title: Text(dialogPm?.args.title ?? ""),
-                    message: Text(dialogPm?.args.message ?? ""),
-                    primaryButton: .default(Text(dialogPm?.args.cancelButtonText ?? ""), action: {
-                        dialogPm?.onCancelClick()
-
+                    title: Text(alertDialog?.args.title ?? ""),
+                    message: Text(alertDialog?.args.message ?? ""),
+                    primaryButton: .default(Text(alertDialog?.args.cancelButtonText ?? ""), action: {
+                        alertDialog?.onCancelClick()
+                        
                     }),
-                    secondaryButton: .default(Text(dialogPm?.args.okButtonText ?? ""), action: {
-                        dialogPm?.onOkClick()
+                    secondaryButton: .default(Text(alertDialog?.args.okButtonText ?? ""), action: {
+                        alertDialog?.onOkClick()
                     })
                 )
             }
