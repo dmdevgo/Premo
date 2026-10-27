@@ -27,11 +27,13 @@ package me.dmdev.premo
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
+import me.dmdev.premo.annotation.ExperimentalPremoApi
 import me.dmdev.premo.saver.StringStateSaver
 import org.w3c.dom.Document
 import org.w3c.dom.get
 import org.w3c.dom.set
 
+@ExperimentalPremoApi
 class JsPmDelegate<PM : PresentationModel>(
     pmArgs: PmArgs,
     pmFactory: PmFactory,

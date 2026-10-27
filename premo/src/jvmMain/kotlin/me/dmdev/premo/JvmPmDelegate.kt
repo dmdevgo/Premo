@@ -24,9 +24,11 @@
 
 package me.dmdev.premo
 
+import me.dmdev.premo.annotation.ExperimentalPremoApi
 import me.dmdev.premo.saver.FileStateSaver
 import java.io.File
 
+@ExperimentalPremoApi
 class JvmPmDelegate<PM : PresentationModel>(
     pmArgs: PmArgs,
     pmFactory: PmFactory,

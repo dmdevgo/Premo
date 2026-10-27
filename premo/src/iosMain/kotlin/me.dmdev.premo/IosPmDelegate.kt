@@ -24,10 +24,12 @@
 
 package me.dmdev.premo
 
+import me.dmdev.premo.annotation.ExperimentalPremoApi
 import me.dmdev.premo.saver.NSCoderStateSaver
 import platform.Foundation.NSCoder
 
 @Suppress("unused")
+@ExperimentalPremoApi
 class IosPmDelegate<PM : PresentationModel>(
     pmArgs: PmArgs,
     pmFactory: PmFactory,
