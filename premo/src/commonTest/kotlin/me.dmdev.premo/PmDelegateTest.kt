@@ -25,10 +25,10 @@
 package me.dmdev.premo
 
 import kotlinx.coroutines.test.runTest
+import me.dmdev.premo.PmLifecycle.State.ACTIVE
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.INITIALIZED
-import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -50,19 +50,19 @@ class PmDelegateTest {
     }
 
     @Test
-    fun testOnForeground() = runPmTest {
+    fun testOnActive() = runPmTest {
         pmDelegate.onCreate()
-        pmDelegate.onForeground()
+        pmDelegate.onActive()
 
-        assertEquals(IN_FOREGROUND, pm.lifecycle.state)
+        assertEquals(ACTIVE, pm.lifecycle.state)
         assertNotNull(PmStore[pm.tag])
     }
 
     @Test
-    fun testOnBackground() = runPmTest {
+    fun testOnInactive() = runPmTest {
         pmDelegate.onCreate()
-        pmDelegate.onForeground()
-        pmDelegate.onBackground()
+        pmDelegate.onActive()
+        pmDelegate.onInactive()
 
         assertEquals(CREATED, pm.lifecycle.state)
         assertNotNull(PmStore[pm.tag])
@@ -71,8 +71,8 @@ class PmDelegateTest {
     @Test
     fun testOnDestroy() = runPmTest {
         pmDelegate.onCreate()
-        pmDelegate.onForeground()
-        pmDelegate.onBackground()
+        pmDelegate.onActive()
+        pmDelegate.onInactive()
         pmDelegate.onDestroy()
 
         assertEquals(DESTROYED, pm.lifecycle.state)

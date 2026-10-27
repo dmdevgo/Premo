@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,8 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.test.runTest
+import me.dmdev.premo.PmLifecycle.State.ACTIVE
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
-import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.navigation.TestPm.Companion.PM1_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM2_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM3_ARGS
@@ -60,7 +60,7 @@ class DialogNavigatorTest {
 
         assertEquals(dialogPm, navigator.dialog)
         assertEquals(dialogPm, navigator.dialogFlow.value)
-        assertEquals(IN_FOREGROUND, dialogPm.lifecycle.state)
+        assertEquals(ACTIVE, dialogPm.lifecycle.state)
         assertTrue { navigator.isShowing }
     }
 
@@ -72,7 +72,7 @@ class DialogNavigatorTest {
         assertEquals(DESTROYED, dialogPm.lifecycle.state)
         assertEquals(dialogPm2, navigator.dialog)
         assertEquals(dialogPm2, navigator.dialogFlow.value)
-        assertEquals(IN_FOREGROUND, dialogPm2.lifecycle.state)
+        assertEquals(ACTIVE, dialogPm2.lifecycle.state)
         assertTrue { navigator.isShowing }
     }
 
@@ -135,7 +135,7 @@ class DialogNavigatorTest {
     ) {
         assertEquals(PM3_ARGS, navigator.dialog?.pmArgs)
         assertEquals(PM3_ARGS, navigator.dialogFlow.value?.pmArgs)
-        assertEquals(IN_FOREGROUND, navigator.dialog?.lifecycle?.state)
+        assertEquals(ACTIVE, navigator.dialog?.lifecycle?.state)
         assertTrue { navigator.isShowing }
     }
 

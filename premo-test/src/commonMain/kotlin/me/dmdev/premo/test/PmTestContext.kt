@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,8 +38,8 @@ interface PmTestContext<PM : PresentationModel> {
     val testDispatcher: CoroutineDispatcher
     val pm: PM
     fun onCreate()
-    fun onForeground()
-    fun onBackground()
+    fun onActive()
+    fun onInactive()
     fun onDestroy()
     fun onSave()
 }
@@ -64,12 +64,12 @@ internal class PmTestContextImpl<PM : PresentationModel>(
         pmDelegate.onCreate()
     }
 
-    override fun onForeground() {
-        pmDelegate.onForeground()
+    override fun onActive() {
+        pmDelegate.onActive()
     }
 
-    override fun onBackground() {
-        pmDelegate.onBackground()
+    override fun onInactive() {
+        pmDelegate.onInactive()
     }
 
     override fun onDestroy() {

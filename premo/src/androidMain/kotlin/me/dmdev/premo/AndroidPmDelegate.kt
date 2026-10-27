@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,7 @@ class AndroidPmDelegate<PM : PresentationModel>(
 
         override fun onActivityStarted(activity: Activity) {
             if (activity === pmActivity) {
-                pmDelegate.onForeground()
+                pmDelegate.onActive()
             }
         }
 
@@ -73,7 +73,7 @@ class AndroidPmDelegate<PM : PresentationModel>(
 
         override fun onActivityStopped(activity: Activity) {
             if (activity === pmActivity) {
-                pmDelegate.onBackground()
+                pmDelegate.onInactive()
             }
         }
 

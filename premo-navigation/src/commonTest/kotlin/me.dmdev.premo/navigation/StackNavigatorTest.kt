@@ -29,9 +29,9 @@ import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import me.dmdev.premo.PmLifecycle.State.ACTIVE
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
-import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.navigation.TestPm.Companion.PM1_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM2_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM3_ARGS
@@ -77,14 +77,14 @@ class StackNavigatorTest {
         )
 
         assertEquals(
-            listOf(CREATED, CREATED, IN_FOREGROUND),
+            listOf(CREATED, CREATED, ACTIVE),
             listOf(pm1, pm2, pm3).map {
                 it.lifecycle.state
             }
         )
 
         assertEquals(
-            listOf(CREATED, CREATED, IN_FOREGROUND),
+            listOf(CREATED, CREATED, ACTIVE),
             navigator.backStack.map { it.lifecycle.state }
         )
 
@@ -99,7 +99,7 @@ class StackNavigatorTest {
         navigator.push(pm1)
 
         assertEquals(pm1, navigator.currentTop)
-        assertEquals(pm1.lifecycle.state, IN_FOREGROUND)
+        assertEquals(pm1.lifecycle.state, ACTIVE)
         assertEquals(listOf(pm1), navigator.backStack)
     }
 
@@ -110,7 +110,7 @@ class StackNavigatorTest {
 
         assertEquals(pm2, navigator.currentTop)
         assertEquals(CREATED, pm1.lifecycle.state)
-        assertEquals(IN_FOREGROUND, pm2.lifecycle.state)
+        assertEquals(ACTIVE, pm2.lifecycle.state)
         assertEquals(listOf(pm1, pm2), navigator.backStack)
     }
 
@@ -141,7 +141,7 @@ class StackNavigatorTest {
         navigator.pop()
 
         assertEquals(pm1, navigator.currentTop)
-        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(ACTIVE, pm1.lifecycle.state)
         assertEquals(DESTROYED, pm2.lifecycle.state)
         assertEquals(listOf(pm1), navigator.backStack)
     }
@@ -152,7 +152,7 @@ class StackNavigatorTest {
 
         assertTrue { navigator.popToRoot() }
         assertEquals(pm1, navigator.currentTop)
-        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(ACTIVE, pm1.lifecycle.state)
         assertEquals(DESTROYED, pm2.lifecycle.state)
         assertEquals(DESTROYED, pm3.lifecycle.state)
         assertEquals(listOf(pm1), navigator.backStack)
@@ -171,7 +171,7 @@ class StackNavigatorTest {
 
         assertEquals(CREATED, pm1.lifecycle.state)
         assertEquals(DESTROYED, pm2.lifecycle.state)
-        assertEquals(IN_FOREGROUND, pm3.lifecycle.state)
+        assertEquals(ACTIVE, pm3.lifecycle.state)
         assertEquals(pm3, navigator.currentTop)
         assertEquals(listOf(pm1, pm3), navigator.backStack)
     }
@@ -181,7 +181,7 @@ class StackNavigatorTest {
         navigator.replaceTop(pm3)
 
         assertEquals(pm3, navigator.currentTop)
-        assertEquals(IN_FOREGROUND, pm3.lifecycle.state)
+        assertEquals(ACTIVE, pm3.lifecycle.state)
         assertEquals(listOf(pm3), navigator.backStack)
     }
 
@@ -192,7 +192,7 @@ class StackNavigatorTest {
 
         assertEquals(DESTROYED, pm1.lifecycle.state)
         assertEquals(DESTROYED, pm2.lifecycle.state)
-        assertEquals(IN_FOREGROUND, pm3.lifecycle.state)
+        assertEquals(ACTIVE, pm3.lifecycle.state)
         assertEquals(pm3, navigator.currentTop)
         assertEquals(listOf(pm3), navigator.backStack)
     }
@@ -203,7 +203,7 @@ class StackNavigatorTest {
         navigator.popUntil { it === pm1 }
 
         assertEquals(pm1, navigator.currentTop)
-        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(ACTIVE, pm1.lifecycle.state)
         assertEquals(DESTROYED, pm2.lifecycle.state)
         assertEquals(DESTROYED, pm3.lifecycle.state)
         assertEquals(listOf(pm1), navigator.backStack)
@@ -216,7 +216,7 @@ class StackNavigatorTest {
 
         assertEquals(CREATED, pm1.lifecycle.state)
         assertEquals(CREATED, pm2.lifecycle.state)
-        assertEquals(IN_FOREGROUND, pm3.lifecycle.state)
+        assertEquals(ACTIVE, pm3.lifecycle.state)
         assertEquals(backstack, navigator.backStack)
     }
 
@@ -227,7 +227,7 @@ class StackNavigatorTest {
 
         assertTrue { navigator.handleBack() }
         assertEquals(pm1, navigator.currentTop)
-        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(ACTIVE, pm1.lifecycle.state)
         assertEquals(DESTROYED, pm2.lifecycle.state)
     }
 
@@ -237,7 +237,7 @@ class StackNavigatorTest {
 
         assertFalse { navigator.handleBack() }
         assertEquals(pm1, navigator.currentTop)
-        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(ACTIVE, pm1.lifecycle.state)
     }
 
     @Test
@@ -249,26 +249,26 @@ class StackNavigatorTest {
     fun testMoveTopPmToCreatedWhenLifecycleMoveToCreated() = runStackNavigationTest {
         navigator.push(pm1)
         navigator.push(pm2)
-        onBackground()
+        onInactive()
 
         assertEquals(CREATED, pm1.lifecycle.state)
         assertEquals(CREATED, pm2.lifecycle.state)
     }
 
     @Test
-    fun testMoveTopPmToInForegroundWhenLifecycleMoveToInForeground() = runStackNavigationTest {
+    fun testMoveTopPmToActiveWhenLifecycleMoveToActive() = runStackNavigationTest {
         navigator.push(pm1)
         navigator.push(pm2)
 
         assertEquals(CREATED, pm1.lifecycle.state)
-        assertEquals(IN_FOREGROUND, pm2.lifecycle.state)
+        assertEquals(ACTIVE, pm2.lifecycle.state)
     }
 
     @Test
     fun testMoveAllPmToDestroyedWhenLifecycleMoveToDestroyed() = runStackNavigationTest {
         navigator.push(pm1)
         navigator.push(pm2)
-        onBackground()
+        onInactive()
         onDestroy()
 
         assertEquals(DESTROYED, pm1.lifecycle.state)
@@ -295,7 +295,7 @@ class StackNavigatorTest {
         )
     ) {
         assertEquals(
-            listOf(CREATED, CREATED, IN_FOREGROUND),
+            listOf(CREATED, CREATED, ACTIVE),
             navigator.backStack.map { it.lifecycle.state }
         )
 

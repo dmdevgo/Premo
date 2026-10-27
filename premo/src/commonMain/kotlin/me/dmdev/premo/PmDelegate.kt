@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,9 @@
 
 package me.dmdev.premo
 
+import me.dmdev.premo.PmLifecycle.State.ACTIVE
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
-import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.saver.PmStateSaverFactory
 
 class PmDelegate<PM : PresentationModel>(
@@ -48,11 +48,11 @@ class PmDelegate<PM : PresentationModel>(
         presentationModel.lifecycle.moveTo(CREATED)
     }
 
-    fun onForeground() {
-        presentationModel.lifecycle.moveTo(IN_FOREGROUND)
+    fun onActive() {
+        presentationModel.lifecycle.moveTo(ACTIVE)
     }
 
-    fun onBackground() {
+    fun onInactive() {
         presentationModel.lifecycle.moveTo(CREATED)
     }
 

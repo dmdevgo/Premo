@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -103,7 +103,7 @@ class PmMessageHandler internal constructor(
                     return true
                 }
             }
-            if (lifecycle.state == PmLifecycle.State.IN_FOREGROUND) {
+            if (lifecycle.state == PmLifecycle.State.ACTIVE) {
                 return messageHandler.handle(message)
             }
             return false

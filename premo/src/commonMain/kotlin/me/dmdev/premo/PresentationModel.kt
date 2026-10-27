@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,10 +29,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
+import me.dmdev.premo.PmLifecycle.State.ACTIVE
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.INITIALIZED
-import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.annotation.DelicatePremoApi
 import me.dmdev.premo.saver.PmStateSaverFactory
 import kotlin.reflect.KType
@@ -56,7 +56,7 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
 
     val lifecycle: PmLifecycle = PmLifecycle()
     val scope: CoroutineScope = createMainScope()
-    var inForegroundScope: CoroutineScope? = null
+    var activeScope: CoroutineScope? = null
         private set
 
     @Suppress("LeakingThis")
@@ -140,8 +140,8 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
 
     private fun release() {
         scope.cancel()
-        inForegroundScope?.cancel()
-        inForegroundScope = null
+        activeScope?.cancel()
+        activeScope = null
         messageHandler.release()
         stateHandler.release()
         parent?.removeChild(this)
@@ -161,13 +161,13 @@ abstract class PresentationModel(val pmArgs: PmArgs) {
                     // do nothing
                 }
 
-                IN_FOREGROUND -> {
-                    inForegroundScope = createMainScope()
+                ACTIVE -> {
+                    activeScope = createMainScope()
                 }
 
                 CREATED -> {
-                    inForegroundScope?.cancel()
-                    inForegroundScope = null
+                    activeScope?.cancel()
+                    activeScope = null
                     children.forEachSafe { pm ->
                         pm.lifecycle.moveTo(CREATED)
                     }

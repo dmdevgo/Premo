@@ -35,8 +35,8 @@ interface PmTestContext<PM : PresentationModel> {
     val pm: PM
     val pmDelegate: PmDelegate<PM>
     fun onCreate()
-    fun onForeground()
-    fun onBackground()
+    fun onActive()
+    fun onInactive()
     fun onDestroy()
     fun onSave()
 }
@@ -61,12 +61,12 @@ internal class PmTestContextImpl<PM : PresentationModel>(
         pmDelegate.onCreate()
     }
 
-    override fun onForeground() {
-        pmDelegate.onForeground()
+    override fun onActive() {
+        pmDelegate.onActive()
     }
 
-    override fun onBackground() {
-        pmDelegate.onBackground()
+    override fun onInactive() {
+        pmDelegate.onInactive()
     }
 
     override fun onDestroy() {

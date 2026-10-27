@@ -33,7 +33,7 @@ fun MainViewController() = ComposeUIViewController {
     val delegate = remember {
         PremoSample.createPmDelegate().apply {
             onCreate()
-            onForeground()
+            onActive()
         }
     }
     App(delegate.presentationModel, WindowSizes(Compact, Compact))

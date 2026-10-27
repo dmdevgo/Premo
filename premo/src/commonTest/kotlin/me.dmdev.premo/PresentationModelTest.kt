@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,9 @@ package me.dmdev.premo
 
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.test.runTest
+import me.dmdev.premo.PmLifecycle.State.ACTIVE
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
-import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -60,40 +60,40 @@ class PresentationModelTest {
     fun testOnCreated() = runPmTest {
         assertEquals(CREATED, pm.lifecycle.state)
         assertTrue(pm.scope.isActive)
-        assertNull(pm.inForegroundScope)
+        assertNull(pm.activeScope)
     }
 
     @Test
-    fun testOnForeground() = runPmTest {
-        onForeground()
+    fun testOnActive() = runPmTest {
+        onActive()
 
-        assertEquals(IN_FOREGROUND, pm.lifecycle.state)
+        assertEquals(ACTIVE, pm.lifecycle.state)
         assertTrue(pm.scope.isActive)
-        assertNotNull(pm.inForegroundScope)
+        assertNotNull(pm.activeScope)
     }
 
     @Test
-    fun testOnBackground() = runPmTest {
-        onForeground()
-        val inForegroundScope = pm.inForegroundScope
-        onBackground()
+    fun testOnInactive() = runPmTest {
+        onActive()
+        val activeScope = pm.activeScope
+        onInactive()
 
         assertEquals(CREATED, pm.lifecycle.state)
         assertTrue(pm.scope.isActive)
-        assertNotNull(inForegroundScope)
-        assertFalse(inForegroundScope.isActive)
-        assertNull(pm.inForegroundScope)
+        assertNotNull(activeScope)
+        assertFalse(activeScope.isActive)
+        assertNull(pm.activeScope)
     }
 
     @Test
     fun testOnDestroy() = runPmTest {
-        onForeground()
-        onBackground()
+        onActive()
+        onInactive()
         onDestroy()
 
         assertEquals(DESTROYED, pm.lifecycle.state)
         assertFalse(pm.scope.isActive)
-        assertNull(pm.inForegroundScope)
+        assertNull(pm.activeScope)
     }
 
     @Test
@@ -156,7 +156,7 @@ class PresentationModelTest {
     fun testChildNotAttachedToParentLifecycle() = runPmTest {
         val childPm = pm.Child<TestPm>(TestPm.Args(CHILD_KEY_1))
         assertEquals(CREATED, childPm.lifecycle.state)
-        onForeground()
+        onActive()
         assertEquals(CREATED, childPm.lifecycle.state)
     }
 
@@ -181,10 +181,10 @@ class PresentationModelTest {
         assertEquals(listOf(childPm), pm.children)
         assertEquals(listOf(childPm), pm.attachedChildren)
 
-        onForeground()
-        assertEquals(IN_FOREGROUND, childPm.lifecycle.state)
+        onActive()
+        assertEquals(ACTIVE, childPm.lifecycle.state)
 
-        onBackground()
+        onInactive()
         assertEquals(CREATED, childPm.lifecycle.state)
 
         onDestroy()
@@ -239,12 +239,12 @@ class PresentationModelTest {
         assertEquals(listOf(), pm.attachedChildren)
         assertEquals(CREATED, childPm.lifecycle.state)
 
-        onForeground()
+        onActive()
 
         pm.attachChild(childPm)
         assertEquals(listOf(childPm), pm.children)
         assertEquals(listOf(childPm), pm.attachedChildren)
-        assertEquals(IN_FOREGROUND, childPm.lifecycle.state)
+        assertEquals(ACTIVE, childPm.lifecycle.state)
 
         pm.detachChild(childPm)
         assertEquals(CREATED, childPm.lifecycle.state)

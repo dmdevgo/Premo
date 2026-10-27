@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ suspend fun <PM : PresentationModel> runPmTest(
     pmFactory: PmFactory,
     pmStateSaverFactory: PmStateSaverFactory = NoPmStateSaverFactory,
     testDispatcher: CoroutineDispatcher = UnconfinedTestDispatcher(),
-    initialPmLifecycleState: PmLifecycle.State = PmLifecycle.State.IN_FOREGROUND,
+    initialPmLifecycleState: PmLifecycle.State = PmLifecycle.State.ACTIVE,
     testBody: suspend PmTestContext<PM>.() -> Unit
 ) {
     Dispatchers.setMain(testDispatcher)
@@ -63,18 +63,18 @@ suspend fun <PM : PresentationModel> runPmTest(
                 pmTestContext.onCreate()
             }
 
-            PmLifecycle.State.IN_FOREGROUND -> {
+            PmLifecycle.State.ACTIVE -> {
                 pmTestContext.onCreate()
-                pmTestContext.onForeground()
+                pmTestContext.onActive()
             }
 
-            else -> throw IllegalArgumentException("Initial PM lifecycle state should be CREATED or IN FOREGROUND")
+            else -> throw IllegalArgumentException("Initial PM lifecycle state should be CREATED or ACTIVE")
         }
 
         testBody.invoke(pmTestContext)
     } finally {
         try {
-            pmTestContext.onBackground()
+            pmTestContext.onInactive()
             pmTestContext.onDestroy()
         } finally {
             Dispatchers.resetMain()

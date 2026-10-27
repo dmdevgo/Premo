@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,10 @@
 
 package me.dmdev.premo
 
+import me.dmdev.premo.PmLifecycle.State.ACTIVE
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
 import me.dmdev.premo.PmLifecycle.State.INITIALIZED
-import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.annotation.DelicatePremoApi
 
 class PmLifecycle internal constructor() {
@@ -62,7 +62,7 @@ class PmLifecycle internal constructor() {
                         changeStateAndNotify(CREATED)
                     }
 
-                    IN_FOREGROUND -> {
+                    ACTIVE -> {
                         changeStateAndNotify(CREATED)
                     }
 
@@ -71,15 +71,15 @@ class PmLifecycle internal constructor() {
                 }
             }
 
-            IN_FOREGROUND -> {
+            ACTIVE -> {
                 when (state) {
                     INITIALIZED -> {
                         changeStateAndNotify(CREATED)
-                        changeStateAndNotify(IN_FOREGROUND)
+                        changeStateAndNotify(ACTIVE)
                     }
 
                     CREATED -> {
-                        changeStateAndNotify(IN_FOREGROUND)
+                        changeStateAndNotify(ACTIVE)
                     }
 
                     else -> { /*do nothing */
@@ -97,7 +97,7 @@ class PmLifecycle internal constructor() {
                         changeStateAndNotify(DESTROYED)
                     }
 
-                    IN_FOREGROUND -> {
+                    ACTIVE -> {
                         changeStateAndNotify(CREATED)
                         changeStateAndNotify(DESTROYED)
                     }
@@ -113,7 +113,7 @@ class PmLifecycle internal constructor() {
         INITIALIZED,
         DESTROYED,
         CREATED,
-        IN_FOREGROUND
+        ACTIVE
     }
 
     fun interface Observer {
@@ -138,7 +138,7 @@ val PmLifecycle.isInitialized: Boolean get() = this.state == INITIALIZED
 
 val PmLifecycle.isCreated: Boolean get() = this.state == CREATED
 
-val PmLifecycle.isInForeground: Boolean get() = this.state == IN_FOREGROUND
+val PmLifecycle.isActive: Boolean get() = this.state == ACTIVE
 
 val PmLifecycle.isDestroyed: Boolean get() = this.state == DESTROYED
 
@@ -150,17 +150,17 @@ fun PmLifecycle.doOnCreate(callback: () -> Unit) {
     }
 }
 
-fun PmLifecycle.doOnForeground(callback: () -> Unit) {
+fun PmLifecycle.doOnActive(callback: () -> Unit) {
     addObserver { _, newState ->
-        if (newState == IN_FOREGROUND) {
+        if (newState == ACTIVE) {
             callback()
         }
     }
 }
 
-fun PmLifecycle.doOnBackground(callback: () -> Unit) {
+fun PmLifecycle.doOnInactive(callback: () -> Unit) {
     addObserver { oldState, newState ->
-        if (newState == CREATED && oldState == IN_FOREGROUND) {
+        if (newState == CREATED && oldState == ACTIVE) {
             callback()
         }
     }

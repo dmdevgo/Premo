@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,8 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.test.runTest
+import me.dmdev.premo.PmLifecycle.State.ACTIVE
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
-import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.navigation.TestPm.Companion.DETAIL1_PM_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.DETAIL2_PM_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.DETAIL_SAVED_PM_ARGS
@@ -50,7 +50,7 @@ class MasterDetailNavigatorTest {
     @Test
     fun testInitialState() = runMasterDetailNavigationTest {
         assertEquals(masterPm, navigator.master)
-        assertEquals(IN_FOREGROUND, navigator.master.lifecycle.state)
+        assertEquals(ACTIVE, navigator.master.lifecycle.state)
         assertNull(navigator.detail)
     }
 
@@ -58,8 +58,8 @@ class MasterDetailNavigatorTest {
     fun testSetDetail() = runMasterDetailNavigationTest {
         navigator.changeDetail(detailPm1)
         assertEquals(detailPm1, navigator.detail)
-        assertEquals(IN_FOREGROUND, detailPm1.lifecycle.state)
-        assertEquals(IN_FOREGROUND, navigator.master.lifecycle.state)
+        assertEquals(ACTIVE, detailPm1.lifecycle.state)
+        assertEquals(ACTIVE, navigator.master.lifecycle.state)
     }
 
     @Test
@@ -69,8 +69,8 @@ class MasterDetailNavigatorTest {
 
         assertEquals(detailPm2, navigator.detail)
         assertEquals(DESTROYED, detailPm1.lifecycle.state)
-        assertEquals(IN_FOREGROUND, detailPm2.lifecycle.state)
-        assertEquals(IN_FOREGROUND, navigator.master.lifecycle.state)
+        assertEquals(ACTIVE, detailPm2.lifecycle.state)
+        assertEquals(ACTIVE, navigator.master.lifecycle.state)
     }
 
     @Test
@@ -80,14 +80,14 @@ class MasterDetailNavigatorTest {
 
         assertEquals(DESTROYED, detailPm1.lifecycle.state)
         assertEquals(null, navigator.detail)
-        assertEquals(IN_FOREGROUND, navigator.master.lifecycle.state)
+        assertEquals(ACTIVE, navigator.master.lifecycle.state)
     }
 
     @Test
     fun testHandleBackWhenDetailIsNull() = runMasterDetailNavigationTest {
         assertFalse { navigator.handleBack() }
         assertEquals(null, navigator.detail)
-        assertEquals(IN_FOREGROUND, navigator.master.lifecycle.state)
+        assertEquals(ACTIVE, navigator.master.lifecycle.state)
     }
 
     @Test
@@ -97,7 +97,7 @@ class MasterDetailNavigatorTest {
         assertTrue { navigator.handleBack() }
         assertEquals(DESTROYED, detailPm1.lifecycle.state)
         assertEquals(null, navigator.detail)
-        assertEquals(IN_FOREGROUND, navigator.master.lifecycle.state)
+        assertEquals(ACTIVE, navigator.master.lifecycle.state)
     }
 
     @Test
@@ -111,8 +111,8 @@ class MasterDetailNavigatorTest {
         )
     ) {
         assertEquals(DETAIL_SAVED_PM_ARGS, navigator.detail?.pmArgs)
-        assertEquals(IN_FOREGROUND, navigator.master.lifecycle.state)
-        assertEquals(IN_FOREGROUND, navigator.detail?.lifecycle?.state)
+        assertEquals(ACTIVE, navigator.master.lifecycle.state)
+        assertEquals(ACTIVE, navigator.detail?.lifecycle?.state)
     }
 
     @Test

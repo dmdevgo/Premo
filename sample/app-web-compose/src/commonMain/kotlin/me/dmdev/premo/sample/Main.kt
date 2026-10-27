@@ -41,7 +41,7 @@ fun main() {
     )
 
     pmDelegate.onCreate()
-    pmDelegate.onForeground()
+    pmDelegate.onActive()
 
     ComposeViewport {
         App(pmDelegate.presentationModel, WindowSizes(Expanded, Expanded))

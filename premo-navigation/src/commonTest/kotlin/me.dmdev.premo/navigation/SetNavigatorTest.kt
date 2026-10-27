@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020-2024 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
+ * Copyright (c) 2020-2026 Dmitriy Gorbunov (dmitriy.goto@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,9 @@
 package me.dmdev.premo.navigation
 
 import kotlinx.coroutines.test.runTest
+import me.dmdev.premo.PmLifecycle.State.ACTIVE
 import me.dmdev.premo.PmLifecycle.State.CREATED
 import me.dmdev.premo.PmLifecycle.State.DESTROYED
-import me.dmdev.premo.PmLifecycle.State.IN_FOREGROUND
 import me.dmdev.premo.navigation.TestPm.Companion.PM1_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM2_ARGS
 import me.dmdev.premo.navigation.TestPm.Companion.PM3_ARGS
@@ -54,7 +54,7 @@ class SetNavigatorTest {
     fun testInitialState() = runSetNavigationTest {
         assertEquals(listOf(pm1, pm2, pm3), navigator.values)
         assertEquals(pm1, navigator.current)
-        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(ACTIVE, pm1.lifecycle.state)
         assertEquals(CREATED, pm2.lifecycle.state)
         assertEquals(CREATED, pm3.lifecycle.state)
     }
@@ -65,13 +65,13 @@ class SetNavigatorTest {
 
         assertEquals(pm2, navigator.current)
         assertEquals(CREATED, pm1.lifecycle.state)
-        assertEquals(IN_FOREGROUND, pm2.lifecycle.state)
+        assertEquals(ACTIVE, pm2.lifecycle.state)
         assertEquals(CREATED, pm3.lifecycle.state)
     }
 
     @Test
     fun testMoveParentLifecycleToCreated() = runSetNavigationTest {
-        onBackground()
+        onInactive()
 
         assertEquals(CREATED, pm1.lifecycle.state)
         assertEquals(CREATED, pm2.lifecycle.state)
@@ -79,11 +79,11 @@ class SetNavigatorTest {
     }
 
     @Test
-    fun testMoveParentLifecycleToCreatedAndThenInForeground() = runSetNavigationTest {
-        onBackground()
-        onForeground()
+    fun testMoveParentLifecycleToCreatedAndThenActive() = runSetNavigationTest {
+        onInactive()
+        onActive()
 
-        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(ACTIVE, pm1.lifecycle.state)
         assertEquals(CREATED, pm2.lifecycle.state)
         assertEquals(CREATED, pm3.lifecycle.state)
     }
@@ -110,7 +110,7 @@ class SetNavigatorTest {
 
         assertEquals(listOf(pm1, pm2, pm3), navigator.values)
         assertEquals(navigator.current, pm1)
-        assertEquals(IN_FOREGROUND, pm1.lifecycle.state)
+        assertEquals(ACTIVE, pm1.lifecycle.state)
         assertEquals(CREATED, pm2.lifecycle.state)
         assertEquals(CREATED, pm3.lifecycle.state)
     }
@@ -127,7 +127,7 @@ class SetNavigatorTest {
         assertEquals(DESTROYED, pm1.lifecycle.state)
         assertEquals(DESTROYED, pm2.lifecycle.state)
         assertEquals(DESTROYED, pm3.lifecycle.state)
-        assertEquals(IN_FOREGROUND, pm4.lifecycle.state)
+        assertEquals(ACTIVE, pm4.lifecycle.state)
         assertEquals(CREATED, pm5.lifecycle.state)
         assertEquals(CREATED, pm6.lifecycle.state)
     }
@@ -141,7 +141,7 @@ class SetNavigatorTest {
         assertEquals(listOf(pm2, pm4, pm5), navigator.values)
         assertEquals(navigator.current, pm2)
         assertEquals(DESTROYED, pm1.lifecycle.state)
-        assertEquals(IN_FOREGROUND, pm2.lifecycle.state)
+        assertEquals(ACTIVE, pm2.lifecycle.state)
         assertEquals(DESTROYED, pm3.lifecycle.state)
         assertEquals(CREATED, pm4.lifecycle.state)
         assertEquals(CREATED, pm5.lifecycle.state)
@@ -179,7 +179,7 @@ class SetNavigatorTest {
         )
     ) {
         assertEquals(
-            listOf(IN_FOREGROUND, CREATED, CREATED),
+            listOf(ACTIVE, CREATED, CREATED),
             navigator.values.map { it.lifecycle.state }
         )
 

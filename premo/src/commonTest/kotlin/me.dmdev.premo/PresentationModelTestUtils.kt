@@ -41,7 +41,7 @@ suspend fun <PM : PresentationModel> runPmTest(
     pmFactory: PmFactory,
     pmStateSaverFactory: PmStateSaverFactory = NoPmStateSaverFactory,
     testDispatcher: CoroutineDispatcher = UnconfinedTestDispatcher(),
-    initialPmLifecycleState: PmLifecycle.State = PmLifecycle.State.IN_FOREGROUND,
+    initialPmLifecycleState: PmLifecycle.State = PmLifecycle.State.ACTIVE,
     testBody: suspend PmTestContext<PM>.() -> Unit
 ) {
     Dispatchers.setMain(testDispatcher)
@@ -62,18 +62,18 @@ suspend fun <PM : PresentationModel> runPmTest(
                 pmTestContext.onCreate()
             }
 
-            PmLifecycle.State.IN_FOREGROUND -> {
+            PmLifecycle.State.ACTIVE -> {
                 pmTestContext.onCreate()
-                pmTestContext.onForeground()
+                pmTestContext.onActive()
             }
 
-            else -> throw IllegalArgumentException("Initial PM lifecycle state should be INITIALIZED OR CREATED or IN FOREGROUND")
+            else -> throw IllegalArgumentException("Initial PM lifecycle state should be INITIALIZED OR CREATED or ACTIVE")
         }
 
         testBody.invoke(pmTestContext)
     } finally {
         try {
-            pmTestContext.onBackground()
+            pmTestContext.onInactive()
             pmTestContext.onDestroy()
         } finally {
             Dispatchers.resetMain()

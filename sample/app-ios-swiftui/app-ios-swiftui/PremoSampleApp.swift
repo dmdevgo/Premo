@@ -40,12 +40,12 @@ struct PremoSampleApp: App {
               switch newScenePhase {
               case .active:
                 print("App is active")
-                appDelegate.pmDelegate.onForeground()
+                appDelegate.pmDelegate.onActive()
               case .inactive:
                 print("App is inactive")
               case .background:
                 print("App is in background")
-                appDelegate.pmDelegate.onBackground()
+                appDelegate.pmDelegate.onInactive()
               @unknown default:
                 print("Unexpected Scene Phase")
               }
